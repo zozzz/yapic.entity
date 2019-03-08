@@ -1,10 +1,8 @@
 {
     "python.unitTest.pyTestArgs": [
-        "tests",
-        "--exitfirst",
-        "--verbose",
         "-x",
-        "-s"
+        "-s",
+        "tests"
     ],
     "python.unitTest.unittestEnabled": false,
     "python.unitTest.nosetestsEnabled": false,
