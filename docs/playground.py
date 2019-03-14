@@ -11,7 +11,7 @@ class GetTValue(Generic[T]):
 
 
 class X:
-    pass
+    A: "CCC"
 
 
 String = GetTValue["X"]
@@ -21,16 +21,18 @@ fr2 = CCC.__args__[0]
 print(String.__module__)
 print(CCC.__module__)
 
-resolver = TypeResolver(String, resolved)
+print(GetTValue["D"].__args__[0].__module__)
 
-for resolved in resolver:
-    resolved.attributes = {
-        "attr_name": ("<code_object>", globals, locals),  ## ha forward ref, akkor egy code object lesz
-        "attr_name": "<real type>"
-    }
+# resolver = TypeResolver(String, resolved)
 
-    resolved.init_posargs
-    resolved.init_kwargs
+# for resolved in resolver:
+#     resolved.attributes = {
+#         "attr_name": ("<code_object>", globals, locals),  ## ha forward ref, akkor egy code object lesz
+#         "attr_name": "<real type>"
+#     }
+
+#     resolved.init_posargs
+#     resolved.init_kwargs
 
 # Impl = TypeVar("Impl")
 # T = TypeVar("T")

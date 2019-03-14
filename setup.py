@@ -7,7 +7,8 @@ from distutils.extension import Extension
 from Cython.Build import cythonize
 
 extensions = [
-    Extension("*", ["src/yapic/entity/*.pyx"], language="c++"),
+    Extension(
+        "*", ["src/yapic/entity/*.pyx"], language="c++", include_dirs=["./libs/yapic.core/src/yapic/core/include"]),
 ]
 
 subcommand_args = []
@@ -80,7 +81,8 @@ almafa = setup(
             "language_level": 3,
             "iterable_coroutine": False,
             "boundscheck": False,
-            "wraparound": False
+            "wraparound": False,
+            "auto_pickle": False
         }),
     tests_require=["pytest", "typing_inspect"],
     cmdclass={"test": PyTest})

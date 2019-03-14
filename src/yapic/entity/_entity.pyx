@@ -5,48 +5,56 @@ from cpython.ref cimport Py_DECREF, Py_INCREF
 from cpython.tuple cimport PyTuple_SetItem, PyTuple_GetItem, PyTuple_New, PyTuple_GET_SIZE, PyTuple_SET_ITEM, PyTuple_GET_ITEM, PyTuple_Pack
 
 from ._field cimport Field, FieldExtension
+from ._relation cimport Relation
+from ._factory cimport Factory, get_type_hints
 
 
-@cython.auto_pickle(False)
 cdef class EntityType(type):
     def __cinit__(self, name, bases, attrs):
         cdef list fields = []
+        cdef list relations = []
         cdef list names = []
-        cdef FieldExtension ext
 
-        if "__annotations__" in attrs:
-            for k, v in attrs["__annotations__"].items():
-                if hasattr(v, "__origin__") and issubclass(v.__origin__, Field):
-                    names.append(k)
+        cdef Field field
+        cdef Relation relation
 
-            for name in names:
-                ext = None
+        cdef tuple hints = get_type_hints(self)
+
+        if hints[1] is not None:
+            for name, type in (<dict>hints[1]).items():
+                factory = Factory.create(type, Field)
+
                 try:
-                    definition = attrs[name]
+                    value = attrs[name]
                 except KeyError:
-                    definition = Field()
+                    value = None
+
+                if factory is not None:
+                    field = init_field(factory(), value)
+
+                    if not field.name:
+                        field.name = name
+
+                    fields.append(field)
+                    names.append(name)
+                    setattr(self, name, field)
                 else:
-                    if isinstance(definition, FieldExtension):
-                        ext = definition
-                        definition = ext.field
+                    factory = Factory.create(type, Relation)
+                    if factory is not None:
+                        relation = init_relation(factory(), value)
+                        relations.append(relation)
+                        setattr(self, name, relation)
 
-                    if not isinstance(definition, Field):
-                        definition = Field(default=definition)
-
-                if ext and not ext.field:
-                    ext.field = definition
-                    ext.field.extensions.append(ext)
-
-                fields.append(definition)
-                setattr(self, name, definition)
 
         self.__fields__ = tuple(fields)
         self.__field_names__ = tuple(names)
 
-        cdef Field field
         for i, field in enumerate(fields):
             field.index = i
-            field.bind(self, names[i])
+            field.bind(self)
+
+        for relation in relations:
+            relation.bind(self)
 
     @staticmethod
     def __prepare__(name, bases, **kw):
@@ -58,7 +66,35 @@ cdef class EntityType(type):
         return "<Entity %s>" % self.__name__
 
 
-@cython.auto_pickle(False)
+cdef Field init_field(Field by_type, object value):
+    cdef Field field
+    cdef FieldExtension ext
+
+    if isinstance(value, Field):
+        field = <Field>value
+        field.impl = by_type.impl
+        return field
+    elif isinstance(value, FieldExtension):
+        ext = <FieldExtension>value
+
+        if ext.field:
+            by_type.extensions = ext.field.extensions
+        else:
+            by_type.extensions = [ext]
+
+        for ext in by_type.extensions:
+            ext.field = by_type
+
+        return by_type
+    else:
+        by_type._default = value
+        return by_type
+
+
+cdef Relation init_relation(Relation by_type, object value):
+    return by_type
+
+
 @cython.final
 cdef class EntityState:
     def __cinit__(self, tuple fields, tuple data):
@@ -167,7 +203,6 @@ cdef class EntityState:
         return "<EntityState %r>" % (dict(self),)
 
 
-@cython.auto_pickle(False)
 cdef class EntityBase:
     def __cinit__(self):
         cdef EntityType model = type(self)

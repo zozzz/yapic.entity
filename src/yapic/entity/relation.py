@@ -1,8 +1,8 @@
-from typing import Generic, TypeVar, overload, List
+from typing import Generic, TypeVar, overload, Type
 
-from ._relation import Relation as _Releation, ManyToOne, OneToMany, ManyToMany
+from . import _relation
 
-__all__ = "Relation", "Many", "One"
+__all__ = "Relation", "Many", "One", "ManyAcross"
 
 # TO MOVE THIS CODE INTO CYTHON:
 # https://github.com/cython/cython/issues/2753
@@ -11,11 +11,14 @@ Impl = TypeVar("Impl")
 T = TypeVar("T")
 
 
-class Relation(Generic[Impl, T], _Releation):
-    def __new__(cls, *args, **kwargs):
-        return _Releation.__new__(_Releation, *args, **kwargs)
+class Relation(Generic[Impl, T], _relation.Relation):
+    __slots__ = ()
+    __impl__: Impl
 
-    def __init__(self):
+    # def __new__(cls, *args, **kwargs):
+    #     return _relation.Relation.__new__(_relation.Relation, *args, **kwargs)
+
+    def __init__(self, impl: Impl):
         pass
 
     # TODO: move to stub file
@@ -35,16 +38,64 @@ class Relation(Generic[Impl, T], _Releation):
 
 
 JoinedT = TypeVar("JoinedT")
-CrossT = TypeVar("CrossT")
+AcrossT = TypeVar("AcrossT")
+ValueStore = TypeVar("ValueStore")
 
 
-class One(Generic[JoinedT], Relation[OneToMany, JoinedT]):
+class OneToMany(Generic[JoinedT, ValueStore], _relation.OneToMany):
+    joined: JoinedT
+    value: ValueStore
+
+    def __new__(cls, *args, **kwargs):
+        return _relation.OneToMany.__new__(_relation.OneToMany, *args, **kwargs)
+
+    def __init__(self, joined: JoinedT, value: ValueStore):
+        pass
+
+
+class ManyToOne(Generic[JoinedT, ValueStore], _relation.ManyToOne):
+    joined: JoinedT
+    value: ValueStore
+
+    def __new__(cls, *args, **kwargs):
+        return _relation.ManyToOne.__new__(_relation.ManyToOne, *args, **kwargs)
+
+    def __init__(self, joined: JoinedT, value: ValueStore):
+        pass
+
+
+class ManyToMany(Generic[JoinedT, AcrossT, ValueStore], _relation.ManyToMany):
+    joined: JoinedT
+    across: AcrossT
+    value: ValueStore
+
+    def __new__(cls, *args, **kwargs):
+        return _relation.ManyToMany.__new__(_relation.ManyToMany, *args, **kwargs)
+
+    def __init__(self, joined: JoinedT, across: AcrossT, value: ValueStore):
+        pass
+
+
+class RelatedItem(Generic[T], _relation.RelatedItem):
     pass
 
 
-class Many(Generic[JoinedT], Relation[ManyToOne, List[JoinedT]]):
+class RelatedList(Generic[T], _relation.RelatedList):
     pass
 
 
-class ManyAcross(Generic[CrossT, JoinedT], Relation[ManyToMany, List[JoinedT]]):
+class RelatedDict(Generic[T], _relation.RelatedDict):
     pass
+
+
+class One(Generic[JoinedT], Relation[ManyToOne[Type[JoinedT], RelatedItem[JoinedT]], JoinedT]):
+    __slots__ = ()
+
+
+class Many(Generic[JoinedT], Relation[OneToMany[Type[JoinedT], RelatedList[JoinedT]], RelatedList[JoinedT]]):
+    __slots__ = ()
+
+
+class ManyAcross(Generic[AcrossT, JoinedT],
+                 Relation[ManyToMany[Type[JoinedT], Type[AcrossT], RelatedList[JoinedT]], RelatedList[JoinedT]]):
+    __slots__ = ()

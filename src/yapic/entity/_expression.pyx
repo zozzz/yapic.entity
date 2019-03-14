@@ -2,7 +2,6 @@ import operator
 import cython
 
 
-@cython.auto_pickle(False)
 cdef class Expression:
     cpdef visit(self, Visitor visitor):
         raise NotImplementedError("%s::visit", type(self))
@@ -34,7 +33,6 @@ cdef class Expression:
         return "<Expr EMPTY>"
 
 
-@cython.auto_pickle(False)
 cdef class BinaryExpression(Expression):
     def __cinit__(self, left, right, op):
         self.left = coerce_expression(left)
@@ -48,7 +46,6 @@ cdef class BinaryExpression(Expression):
         return visitor.visit_binary(self)
 
 
-@cython.auto_pickle(False)
 cdef class UnaryExpression(Expression):
     def __cinit__(self, expr, op):
         self.expr = coerce_expression(expr)
@@ -61,7 +58,6 @@ cdef class UnaryExpression(Expression):
         return visitor.visit_unary(self)
 
 
-@cython.auto_pickle(False)
 cdef class ConstExpression(Expression):
     def __cinit__(self, object value, type type):
         self.value = value
@@ -74,7 +70,6 @@ cdef class ConstExpression(Expression):
         return visitor.visit_const(self)
 
 
-@cython.auto_pickle(False)
 cdef class Visitor:
     cpdef visit(self, Expression expr):
         return expr.visit(self)

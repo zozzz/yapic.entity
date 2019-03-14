@@ -3,13 +3,14 @@ from cpython.weakref cimport PyWeakref_NewRef, PyWeakref_GetObject
 
 from ._expression cimport Expression, Visitor
 from ._entity cimport EntityType, EntityBase
+from ._factory cimport ForwardDecl, get_type_hints, new_instance, new_instance_from_forward, is_forward_decl
 
 
-@cython.auto_pickle(False)
 cdef class Field(Expression):
-    def __cinit__(self, *, name = None, default = None, size = None):
+    def __cinit__(self, impl = None, *, name = None, default = None, size = None):
+        self._impl = impl
+        self._default = default
         self.name = name
-        self.default_ = default
         self.extensions = []
 
         if size is not None:
@@ -33,7 +34,13 @@ cdef class Field(Expression):
 
     @property
     def default(self):
-        return self.default_
+        return self._default
+
+    @property
+    def __impl__(self):
+        if is_forward_decl(self._impl):
+            self._impl = new_instance_from_forward(self._impl)
+        return self._impl
 
     def __get__(self, instance, owner):
         if instance is None:
@@ -41,12 +48,12 @@ cdef class Field(Expression):
         elif isinstance(instance, EntityBase):
             return (<EntityBase>instance).__state__.get_value(self.index)
         else:
-            raise TypeError("Instance must be None or EntityBase")
+            raise TypeError("Instance must be 'None' or 'EntityBase'")
 
     def __set__(self, EntityBase instance, value):
         instance.__state__.set_value(self.index, value)
 
-    def __del__(self, EntityBase instance):
+    def __delete__(self, EntityBase instance):
         instance.__state__.del_value(self.index)
 
     def __floordiv__(Field self, FieldExtension other):
@@ -54,13 +61,17 @@ cdef class Field(Expression):
         self.extensions.append(other)
         return self
 
-    cdef void bind(self, EntityType entity, str name):
+    # cdef bint init_from_type(self, object t):
+    #     annots = get_annots(t)
+    #     print(annots)
+
+
+    cdef void bind(self, EntityType entity):
         self.entity = entity
-        self.name = name
         self.extensions = tuple(self.extensions)
 
         for ext in self.extensions:
-            ext.bind(entity, name)
+            ext.bind(entity)
 
     cdef bint values_is_eq(self, object a, object b):
         # TODO: ...
@@ -68,15 +79,19 @@ cdef class Field(Expression):
 
     def __repr__(self):
         if self.entity:
-            return "<Field %s of %s>" % (self.name, self.entity)
+            return "<Field %s %s of %s>" % (self.__impl__, self.name, self.entity)
         else:
-            return "<Field %s (unbound)>" % self.name
+            return "<Field %s %s (unbound)>" % (self.__impl__, self.name)
 
     cpdef visit(self, Visitor visitor):
         return visitor.visit_field(self)
 
 
-@cython.auto_pickle(False)
+# cdef bint Field_init_attributes(object inst, dict attrs):
+#     print("Field_init_attributes (%s, %s)", inst, attrs)
+#     return True
+
+
 cdef class FieldExtension:
     def __floordiv__(FieldExtension self, FieldExtension other):
         if not self.field:
@@ -87,11 +102,10 @@ cdef class FieldExtension:
         self.field.extensions.append(other)
         return self.field
 
-    def bind(self, EntityType entity, str name):
+    def bind(self, EntityType entity):
         pass
 
 
-@cython.auto_pickle(False)
 cdef class FieldImpl:
     cpdef object read(self, value):
         pass
@@ -103,7 +117,6 @@ cdef class FieldImpl:
         return self.write(a) == self.write(b)
 
 
-@cython.auto_pickle(False)
 cdef class StringImpl(FieldImpl):
     cpdef read(self, value):
         if isinstance(value, str):
@@ -121,7 +134,6 @@ cdef class StringImpl(FieldImpl):
         return value.encode("utf-8")
 
 
-@cython.auto_pickle(False)
 cdef class IntImpl(FieldImpl):
     cpdef read(self, value):
         return int(value)

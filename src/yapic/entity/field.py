@@ -18,7 +18,9 @@ class Field(Generic[Impl, PyType, RawType], _Field):
         return _Field.__new__(_Field, *args, **kwargs)
 
     def __init__(self,
+                 impl: Impl = None,
                  *,
+                 name: Optional[str] = None,
                  default: Optional[Union[PyType, RawType]] = None,
                  size: Union[int, Tuple[int, int], None] = None):
         pass

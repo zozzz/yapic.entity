@@ -3,6 +3,9 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
+        "include_dirs": [
+            "./libs/yapic.core/src/yapic/core/include"
+        ],
         "language": "c++",
         "name": "yapic.entity._expression",
         "sources": [
@@ -833,9 +836,9 @@ struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression;
 struct __pyx_obj_5yapic_6entity_11_expression_UnaryExpression;
 struct __pyx_obj_5yapic_6entity_11_expression_ConstExpression;
 
-/* "yapic/entity/_expression.pxd":5
+/* "yapic/entity/_expression.pxd":4
  * 
- * @cython.auto_pickle(False)
+ * 
  * cdef class Visitor:             # <<<<<<<<<<<<<<
  *     cpdef visit(self, Expression expr)
  * 
@@ -846,9 +849,9 @@ struct __pyx_obj_5yapic_6entity_11_expression_Visitor {
 };
 
 
-/* "yapic/entity/_expression.pxd":10
+/* "yapic/entity/_expression.pxd":8
  * 
- * @cython.auto_pickle(False)
+ * 
  * cdef class Expression:             # <<<<<<<<<<<<<<
  *     cpdef visit(self, Visitor visitor)
  * 
@@ -859,9 +862,9 @@ struct __pyx_obj_5yapic_6entity_11_expression_Expression {
 };
 
 
-/* "yapic/entity/_expression.pxd":15
+/* "yapic/entity/_expression.pxd":12
  * 
- * @cython.auto_pickle(False)
+ * 
  * cdef class BinaryExpression(Expression):             # <<<<<<<<<<<<<<
  *     cpdef readonly Expression left
  *     cpdef readonly Expression right
@@ -874,9 +877,9 @@ struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression {
 };
 
 
-/* "yapic/entity/_expression.pxd":22
+/* "yapic/entity/_expression.pxd":18
  * 
- * @cython.auto_pickle(False)
+ * 
  * cdef class UnaryExpression(Expression):             # <<<<<<<<<<<<<<
  *     cpdef readonly Expression expr
  *     cpdef readonly object op
@@ -888,9 +891,9 @@ struct __pyx_obj_5yapic_6entity_11_expression_UnaryExpression {
 };
 
 
-/* "yapic/entity/_expression.pxd":28
+/* "yapic/entity/_expression.pxd":23
  * 
- * @cython.auto_pickle(False)
+ * 
  * cdef class ConstExpression(Expression):             # <<<<<<<<<<<<<<
  *     cpdef readonly object value
  *     cpdef readonly type type
@@ -903,9 +906,9 @@ struct __pyx_obj_5yapic_6entity_11_expression_ConstExpression {
 
 
 
-/* "yapic/entity/_expression.pyx":78
+/* "yapic/entity/_expression.pyx":73
  * 
- * @cython.auto_pickle(False)
+ * 
  * cdef class Visitor:             # <<<<<<<<<<<<<<
  *     cpdef visit(self, Expression expr):
  *         return expr.visit(self)
@@ -917,9 +920,9 @@ struct __pyx_vtabstruct_5yapic_6entity_11_expression_Visitor {
 static struct __pyx_vtabstruct_5yapic_6entity_11_expression_Visitor *__pyx_vtabptr_5yapic_6entity_11_expression_Visitor;
 
 
-/* "yapic/entity/_expression.pyx":6
+/* "yapic/entity/_expression.pyx":5
  * 
- * @cython.auto_pickle(False)
+ * 
  * cdef class Expression:             # <<<<<<<<<<<<<<
  *     cpdef visit(self, Visitor visitor):
  *         raise NotImplementedError("%s::visit", type(self))
@@ -931,9 +934,9 @@ struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression {
 static struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression *__pyx_vtabptr_5yapic_6entity_11_expression_Expression;
 
 
-/* "yapic/entity/_expression.pyx":38
+/* "yapic/entity/_expression.pyx":36
  * 
- * @cython.auto_pickle(False)
+ * 
  * cdef class BinaryExpression(Expression):             # <<<<<<<<<<<<<<
  *     def __cinit__(self, left, right, op):
  *         self.left = coerce_expression(left)
@@ -945,9 +948,9 @@ struct __pyx_vtabstruct_5yapic_6entity_11_expression_BinaryExpression {
 static struct __pyx_vtabstruct_5yapic_6entity_11_expression_BinaryExpression *__pyx_vtabptr_5yapic_6entity_11_expression_BinaryExpression;
 
 
-/* "yapic/entity/_expression.pyx":52
+/* "yapic/entity/_expression.pyx":49
  * 
- * @cython.auto_pickle(False)
+ * 
  * cdef class UnaryExpression(Expression):             # <<<<<<<<<<<<<<
  *     def __cinit__(self, expr, op):
  *         self.expr = coerce_expression(expr)
@@ -959,9 +962,9 @@ struct __pyx_vtabstruct_5yapic_6entity_11_expression_UnaryExpression {
 static struct __pyx_vtabstruct_5yapic_6entity_11_expression_UnaryExpression *__pyx_vtabptr_5yapic_6entity_11_expression_UnaryExpression;
 
 
-/* "yapic/entity/_expression.pyx":65
+/* "yapic/entity/_expression.pyx":61
  * 
- * @cython.auto_pickle(False)
+ * 
  * cdef class ConstExpression(Expression):             # <<<<<<<<<<<<<<
  *     def __cinit__(self, object value, type type):
  *         self.value = value
@@ -1470,8 +1473,8 @@ static PyObject *__pyx_tp_new_5yapic_6entity_11_expression_UnaryExpression(PyTyp
 static PyObject *__pyx_tp_new_5yapic_6entity_11_expression_ConstExpression(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 /* Late includes */
 
-/* "yapic/entity/_expression.pyx":7
- * @cython.auto_pickle(False)
+/* "yapic/entity/_expression.pyx":6
+ * 
  * cdef class Expression:
  *     cpdef visit(self, Visitor visitor):             # <<<<<<<<<<<<<<
  *         raise NotImplementedError("%s::visit", type(self))
@@ -1496,7 +1499,7 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_10Expression_visit(struct 
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_visit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 7, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_visit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 6, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_11_expression_10Expression_1visit)) {
         __Pyx_XDECREF(__pyx_r);
@@ -1513,7 +1516,7 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_10Expression_visit(struct 
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, ((PyObject *)__pyx_v_visitor)) : __Pyx_PyObject_CallOneArg(__pyx_t_3, ((PyObject *)__pyx_v_visitor));
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 7, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 6, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -1534,14 +1537,14 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_10Expression_visit(struct 
     #endif
   }
 
-  /* "yapic/entity/_expression.pyx":8
+  /* "yapic/entity/_expression.pyx":7
  * cdef class Expression:
  *     cpdef visit(self, Visitor visitor):
  *         raise NotImplementedError("%s::visit", type(self))             # <<<<<<<<<<<<<<
  * 
  *     def __lt__(self, other): return BinaryExpression(self, other, operator.__lt__)
  */
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_kp_u_s_visit);
   __Pyx_GIVEREF(__pyx_kp_u_s_visit);
@@ -1549,15 +1552,15 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_10Expression_visit(struct 
   __Pyx_INCREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
   __Pyx_GIVEREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
   PyTuple_SET_ITEM(__pyx_t_1, 1, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_Raise(__pyx_t_2, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __PYX_ERR(0, 8, __pyx_L1_error)
+  __PYX_ERR(0, 7, __pyx_L1_error)
 
-  /* "yapic/entity/_expression.pyx":7
- * @cython.auto_pickle(False)
+  /* "yapic/entity/_expression.pyx":6
+ * 
  * cdef class Expression:
  *     cpdef visit(self, Visitor visitor):             # <<<<<<<<<<<<<<
  *         raise NotImplementedError("%s::visit", type(self))
@@ -1584,7 +1587,7 @@ static PyObject *__pyx_pw_5yapic_6entity_11_expression_10Expression_1visit(PyObj
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("visit (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_visitor), __pyx_ptype_5yapic_6entity_11_expression_Visitor, 1, "visitor", 0))) __PYX_ERR(0, 7, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_visitor), __pyx_ptype_5yapic_6entity_11_expression_Visitor, 1, "visitor", 0))) __PYX_ERR(0, 6, __pyx_L1_error)
   __pyx_r = __pyx_pf_5yapic_6entity_11_expression_10Expression_visit(((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_visitor));
 
   /* function exit code */
@@ -1602,7 +1605,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_visit(struct
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("visit", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_11_expression_10Expression_visit(__pyx_v_self, __pyx_v_visitor, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 7, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_11_expression_10Expression_visit(__pyx_v_self, __pyx_v_visitor, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1619,7 +1622,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_visit(struct
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":10
+/* "yapic/entity/_expression.pyx":9
  *         raise NotImplementedError("%s::visit", type(self))
  * 
  *     def __lt__(self, other): return BinaryExpression(self, other, operator.__lt__)             # <<<<<<<<<<<<<<
@@ -1647,12 +1650,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_2__lt__(stru
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__lt__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_lt); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_lt); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
@@ -1663,7 +1666,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_2__lt__(stru
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -1682,7 +1685,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_2__lt__(stru
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":11
+/* "yapic/entity/_expression.pyx":10
  * 
  *     def __lt__(self, other): return BinaryExpression(self, other, operator.__lt__)
  *     def __le__(self, other): return BinaryExpression(self, other, operator.__le__)             # <<<<<<<<<<<<<<
@@ -1710,12 +1713,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_4__le__(stru
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__le__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_le); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_le); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
@@ -1726,7 +1729,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_4__le__(stru
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -1745,7 +1748,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_4__le__(stru
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":12
+/* "yapic/entity/_expression.pyx":11
  *     def __lt__(self, other): return BinaryExpression(self, other, operator.__lt__)
  *     def __le__(self, other): return BinaryExpression(self, other, operator.__le__)
  *     def __eq__(self, other): return BinaryExpression(self, other, operator.__eq__)             # <<<<<<<<<<<<<<
@@ -1773,12 +1776,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_6__eq__(stru
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__eq__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_eq); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_eq); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
@@ -1789,7 +1792,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_6__eq__(stru
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -1808,7 +1811,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_6__eq__(stru
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":13
+/* "yapic/entity/_expression.pyx":12
  *     def __le__(self, other): return BinaryExpression(self, other, operator.__le__)
  *     def __eq__(self, other): return BinaryExpression(self, other, operator.__eq__)
  *     def __ne__(self, other): return BinaryExpression(self, other, operator.__ne__)             # <<<<<<<<<<<<<<
@@ -1836,12 +1839,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_8__ne__(stru
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__ne__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_ne); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_ne); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
@@ -1852,7 +1855,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_8__ne__(stru
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -1871,7 +1874,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_8__ne__(stru
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":14
+/* "yapic/entity/_expression.pyx":13
  *     def __eq__(self, other): return BinaryExpression(self, other, operator.__eq__)
  *     def __ne__(self, other): return BinaryExpression(self, other, operator.__ne__)
  *     def __ge__(self, other): return BinaryExpression(self, other, operator.__ge__)             # <<<<<<<<<<<<<<
@@ -1899,12 +1902,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_10__ge__(str
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__ge__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_ge); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_ge); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
@@ -1915,7 +1918,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_10__ge__(str
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -1934,7 +1937,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_10__ge__(str
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":15
+/* "yapic/entity/_expression.pyx":14
  *     def __ne__(self, other): return BinaryExpression(self, other, operator.__ne__)
  *     def __ge__(self, other): return BinaryExpression(self, other, operator.__ge__)
  *     def __gt__(self, other): return BinaryExpression(self, other, operator.__gt__)             # <<<<<<<<<<<<<<
@@ -1962,12 +1965,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_12__gt__(str
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__gt__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_gt); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 15, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_gt); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
@@ -1978,7 +1981,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_12__gt__(str
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 15, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -1997,7 +2000,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_12__gt__(str
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":17
+/* "yapic/entity/_expression.pyx":16
  *     def __gt__(self, other): return BinaryExpression(self, other, operator.__gt__)
  * 
  *     def __add__(self, other): return BinaryExpression(self, other, operator.__add__)             # <<<<<<<<<<<<<<
@@ -2025,12 +2028,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_14__add__(Py
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__add__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_add); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_add); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_self);
   __Pyx_GIVEREF(__pyx_v_self);
@@ -2041,7 +2044,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_14__add__(Py
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -2060,7 +2063,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_14__add__(Py
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":18
+/* "yapic/entity/_expression.pyx":17
  * 
  *     def __add__(self, other): return BinaryExpression(self, other, operator.__add__)
  *     def __sub__(self, other): return BinaryExpression(self, other, operator.__sub__)             # <<<<<<<<<<<<<<
@@ -2088,12 +2091,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_16__sub__(Py
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__sub__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 18, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_sub); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_sub); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_self);
   __Pyx_GIVEREF(__pyx_v_self);
@@ -2104,7 +2107,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_16__sub__(Py
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -2123,7 +2126,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_16__sub__(Py
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":19
+/* "yapic/entity/_expression.pyx":18
  *     def __add__(self, other): return BinaryExpression(self, other, operator.__add__)
  *     def __sub__(self, other): return BinaryExpression(self, other, operator.__sub__)
  *     def __and__(self, other): return BinaryExpression(self, other, operator.__and__)             # <<<<<<<<<<<<<<
@@ -2151,12 +2154,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_18__and__(Py
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__and__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_and); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_and); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_self);
   __Pyx_GIVEREF(__pyx_v_self);
@@ -2167,7 +2170,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_18__and__(Py
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -2186,7 +2189,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_18__and__(Py
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":20
+/* "yapic/entity/_expression.pyx":19
  *     def __sub__(self, other): return BinaryExpression(self, other, operator.__sub__)
  *     def __and__(self, other): return BinaryExpression(self, other, operator.__and__)
  *     def __or__(self, other): return BinaryExpression(self, other, operator.__or__)             # <<<<<<<<<<<<<<
@@ -2214,12 +2217,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_20__or__(PyO
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__or__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_or); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_or); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_self);
   __Pyx_GIVEREF(__pyx_v_self);
@@ -2230,7 +2233,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_20__or__(PyO
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -2249,7 +2252,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_20__or__(PyO
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":21
+/* "yapic/entity/_expression.pyx":20
  *     def __and__(self, other): return BinaryExpression(self, other, operator.__and__)
  *     def __or__(self, other): return BinaryExpression(self, other, operator.__or__)
  *     def __xor__(self, other): return BinaryExpression(self, other, operator.__xor__)             # <<<<<<<<<<<<<<
@@ -2277,12 +2280,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_22__xor__(Py
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__xor__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_xor); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_xor); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 20, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_self);
   __Pyx_GIVEREF(__pyx_v_self);
@@ -2293,7 +2296,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_22__xor__(Py
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 20, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -2312,7 +2315,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_22__xor__(Py
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":22
+/* "yapic/entity/_expression.pyx":21
  *     def __or__(self, other): return BinaryExpression(self, other, operator.__or__)
  *     def __xor__(self, other): return BinaryExpression(self, other, operator.__xor__)
  *     def __invert__(self): return UnaryExpression(self, operator.__invert__)             # <<<<<<<<<<<<<<
@@ -2340,12 +2343,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_24__invert__
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__invert__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 21, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_invert); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_invert); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 21, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 21, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
@@ -2353,7 +2356,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_24__invert__
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_UnaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_UnaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 21, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -2372,7 +2375,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_24__invert__
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":23
+/* "yapic/entity/_expression.pyx":22
  *     def __xor__(self, other): return BinaryExpression(self, other, operator.__xor__)
  *     def __invert__(self): return UnaryExpression(self, operator.__invert__)
  *     def __lshift__(self, other): return BinaryExpression(self, other, operator.__lshift__)             # <<<<<<<<<<<<<<
@@ -2400,12 +2403,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_26__lshift__
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__lshift__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_lshift); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_lshift); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_self);
   __Pyx_GIVEREF(__pyx_v_self);
@@ -2416,7 +2419,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_26__lshift__
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -2435,7 +2438,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_26__lshift__
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":24
+/* "yapic/entity/_expression.pyx":23
  *     def __invert__(self): return UnaryExpression(self, operator.__invert__)
  *     def __lshift__(self, other): return BinaryExpression(self, other, operator.__lshift__)
  *     def __rshift__(self, other): return BinaryExpression(self, other, operator.__rshift__)             # <<<<<<<<<<<<<<
@@ -2463,12 +2466,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_28__rshift__
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__rshift__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_rshift); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_rshift); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_self);
   __Pyx_GIVEREF(__pyx_v_self);
@@ -2479,7 +2482,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_28__rshift__
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -2498,7 +2501,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_28__rshift__
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":25
+/* "yapic/entity/_expression.pyx":24
  *     def __lshift__(self, other): return BinaryExpression(self, other, operator.__lshift__)
  *     def __rshift__(self, other): return BinaryExpression(self, other, operator.__rshift__)
  *     def __mod__(self, other): return BinaryExpression(self, other, operator.__mod__)             # <<<<<<<<<<<<<<
@@ -2526,12 +2529,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_30__mod__(Py
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__mod__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_mod); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_mod); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_self);
   __Pyx_GIVEREF(__pyx_v_self);
@@ -2542,7 +2545,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_30__mod__(Py
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -2561,7 +2564,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_30__mod__(Py
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":26
+/* "yapic/entity/_expression.pyx":25
  *     def __rshift__(self, other): return BinaryExpression(self, other, operator.__rshift__)
  *     def __mod__(self, other): return BinaryExpression(self, other, operator.__mod__)
  *     def __mul__(self, other): return BinaryExpression(self, other, operator.__mul__)             # <<<<<<<<<<<<<<
@@ -2589,12 +2592,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_32__mul__(Py
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__mul__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_mul); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_mul); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_self);
   __Pyx_GIVEREF(__pyx_v_self);
@@ -2605,7 +2608,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_32__mul__(Py
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -2624,7 +2627,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_32__mul__(Py
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":27
+/* "yapic/entity/_expression.pyx":26
  *     def __mod__(self, other): return BinaryExpression(self, other, operator.__mod__)
  *     def __mul__(self, other): return BinaryExpression(self, other, operator.__mul__)
  *     def __truediv__(self, other): return BinaryExpression(self, other, operator.__truediv__)             # <<<<<<<<<<<<<<
@@ -2652,12 +2655,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_34__truediv_
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__truediv__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_truediv); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_truediv); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_self);
   __Pyx_GIVEREF(__pyx_v_self);
@@ -2668,7 +2671,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_34__truediv_
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -2687,7 +2690,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_34__truediv_
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":28
+/* "yapic/entity/_expression.pyx":27
  *     def __mul__(self, other): return BinaryExpression(self, other, operator.__mul__)
  *     def __truediv__(self, other): return BinaryExpression(self, other, operator.__truediv__)
  *     def __neg__(self): return UnaryExpression(self, operator.__neg__)             # <<<<<<<<<<<<<<
@@ -2715,12 +2718,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_36__neg__(st
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__neg__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_neg); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_neg); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
@@ -2728,7 +2731,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_36__neg__(st
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_UnaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_UnaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -2747,7 +2750,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_36__neg__(st
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":29
+/* "yapic/entity/_expression.pyx":28
  *     def __truediv__(self, other): return BinaryExpression(self, other, operator.__truediv__)
  *     def __neg__(self): return UnaryExpression(self, operator.__neg__)
  *     def __pos__(self): return UnaryExpression(self, operator.__pos__)             # <<<<<<<<<<<<<<
@@ -2775,12 +2778,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_38__pos__(st
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__pos__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_pos); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_pos); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
@@ -2788,7 +2791,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_38__pos__(st
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_UnaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_UnaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -2807,7 +2810,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_38__pos__(st
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":30
+/* "yapic/entity/_expression.pyx":29
  *     def __neg__(self): return UnaryExpression(self, operator.__neg__)
  *     def __pos__(self): return UnaryExpression(self, operator.__pos__)
  *     def __pow__(self, other, modulo): return BinaryExpression(self, other, operator.__pow__)             # <<<<<<<<<<<<<<
@@ -2835,12 +2838,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_40__pow__(Py
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__pow__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_pow); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_pow); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_self);
   __Pyx_GIVEREF(__pyx_v_self);
@@ -2851,7 +2854,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_40__pow__(Py
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -2870,7 +2873,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_40__pow__(Py
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":31
+/* "yapic/entity/_expression.pyx":30
  *     def __pos__(self): return UnaryExpression(self, operator.__pos__)
  *     def __pow__(self, other, modulo): return BinaryExpression(self, other, operator.__pow__)
  *     def in_(self, other): return BinaryExpression(self, other, operator.__contains__)             # <<<<<<<<<<<<<<
@@ -2898,12 +2901,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_42in_(struct
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("in_", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_contains); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_contains); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
@@ -2914,7 +2917,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_42in_(struct
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_BinaryExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -2933,7 +2936,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_42in_(struct
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":33
+/* "yapic/entity/_expression.pyx":32
  *     def in_(self, other): return BinaryExpression(self, other, operator.__contains__)
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -2959,7 +2962,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_44__repr__(C
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "yapic/entity/_expression.pyx":34
+  /* "yapic/entity/_expression.pyx":33
  * 
  *     def __repr__(self):
  *         return "<Expr EMPTY>"             # <<<<<<<<<<<<<<
@@ -2971,7 +2974,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_44__repr__(C
   __pyx_r = __pyx_kp_u_Expr_EMPTY;
   goto __pyx_L0;
 
-  /* "yapic/entity/_expression.pyx":33
+  /* "yapic/entity/_expression.pyx":32
  *     def in_(self, other): return BinaryExpression(self, other, operator.__contains__)
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -2986,8 +2989,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_44__repr__(C
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":39
- * @cython.auto_pickle(False)
+/* "yapic/entity/_expression.pyx":37
+ * 
  * cdef class BinaryExpression(Expression):
  *     def __cinit__(self, left, right, op):             # <<<<<<<<<<<<<<
  *         self.left = coerce_expression(left)
@@ -3028,17 +3031,17 @@ static int __pyx_pw_5yapic_6entity_11_expression_16BinaryExpression_1__cinit__(P
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_right)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 1); __PYX_ERR(0, 39, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 1); __PYX_ERR(0, 37, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_op)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 2); __PYX_ERR(0, 39, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 2); __PYX_ERR(0, 37, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 39, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 37, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -3053,7 +3056,7 @@ static int __pyx_pw_5yapic_6entity_11_expression_16BinaryExpression_1__cinit__(P
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 39, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 37, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("yapic.entity._expression.BinaryExpression.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3072,14 +3075,14 @@ static int __pyx_pf_5yapic_6entity_11_expression_16BinaryExpression___cinit__(st
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "yapic/entity/_expression.pyx":40
+  /* "yapic/entity/_expression.pyx":38
  * cdef class BinaryExpression(Expression):
  *     def __cinit__(self, left, right, op):
  *         self.left = coerce_expression(left)             # <<<<<<<<<<<<<<
  *         self.right = coerce_expression(right)
  *         self.op = op
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_5yapic_6entity_11_expression_coerce_expression(__pyx_v_left)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_5yapic_6entity_11_expression_coerce_expression(__pyx_v_left)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->left);
@@ -3087,14 +3090,14 @@ static int __pyx_pf_5yapic_6entity_11_expression_16BinaryExpression___cinit__(st
   __pyx_v_self->left = ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/entity/_expression.pyx":41
+  /* "yapic/entity/_expression.pyx":39
  *     def __cinit__(self, left, right, op):
  *         self.left = coerce_expression(left)
  *         self.right = coerce_expression(right)             # <<<<<<<<<<<<<<
  *         self.op = op
  * 
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_5yapic_6entity_11_expression_coerce_expression(__pyx_v_right)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_5yapic_6entity_11_expression_coerce_expression(__pyx_v_right)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->right);
@@ -3102,7 +3105,7 @@ static int __pyx_pf_5yapic_6entity_11_expression_16BinaryExpression___cinit__(st
   __pyx_v_self->right = ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/entity/_expression.pyx":42
+  /* "yapic/entity/_expression.pyx":40
  *         self.left = coerce_expression(left)
  *         self.right = coerce_expression(right)
  *         self.op = op             # <<<<<<<<<<<<<<
@@ -3115,8 +3118,8 @@ static int __pyx_pf_5yapic_6entity_11_expression_16BinaryExpression___cinit__(st
   __Pyx_DECREF(__pyx_v_self->op);
   __pyx_v_self->op = __pyx_v_op;
 
-  /* "yapic/entity/_expression.pyx":39
- * @cython.auto_pickle(False)
+  /* "yapic/entity/_expression.pyx":37
+ * 
  * cdef class BinaryExpression(Expression):
  *     def __cinit__(self, left, right, op):             # <<<<<<<<<<<<<<
  *         self.left = coerce_expression(left)
@@ -3135,7 +3138,7 @@ static int __pyx_pf_5yapic_6entity_11_expression_16BinaryExpression___cinit__(st
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":44
+/* "yapic/entity/_expression.pyx":42
  *         self.op = op
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -3165,7 +3168,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_16BinaryExpression_2__rep
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "yapic/entity/_expression.pyx":45
+  /* "yapic/entity/_expression.pyx":43
  * 
  *     def __repr__(self):
  *         return "<Expr %r %r %r>" % (self.left, self.op, self.right)             # <<<<<<<<<<<<<<
@@ -3173,7 +3176,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_16BinaryExpression_2__rep
  *     cpdef visit(self, Visitor visitor):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = 0;
   __pyx_t_3 = 127;
@@ -3181,7 +3184,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_16BinaryExpression_2__rep
   __pyx_t_2 += 6;
   __Pyx_GIVEREF(__pyx_kp_u_Expr);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_Expr);
-  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(((PyObject *)__pyx_v_self->left)), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(((PyObject *)__pyx_v_self->left)), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
   __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
@@ -3192,7 +3195,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_16BinaryExpression_2__rep
   __pyx_t_2 += 1;
   __Pyx_GIVEREF(__pyx_kp_u_);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_);
-  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_v_self->op), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_v_self->op), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
   __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
@@ -3203,7 +3206,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_16BinaryExpression_2__rep
   __pyx_t_2 += 1;
   __Pyx_GIVEREF(__pyx_kp_u_);
   PyTuple_SET_ITEM(__pyx_t_1, 4, __pyx_kp_u_);
-  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(((PyObject *)__pyx_v_self->right)), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(((PyObject *)__pyx_v_self->right)), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
   __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
@@ -3214,14 +3217,14 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_16BinaryExpression_2__rep
   __pyx_t_2 += 1;
   __Pyx_GIVEREF(__pyx_kp_u__2);
   PyTuple_SET_ITEM(__pyx_t_1, 6, __pyx_kp_u__2);
-  __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_1, 7, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_1, 7, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "yapic/entity/_expression.pyx":44
+  /* "yapic/entity/_expression.pyx":42
  *         self.op = op
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -3241,7 +3244,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_16BinaryExpression_2__rep
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":47
+/* "yapic/entity/_expression.pyx":45
  *         return "<Expr %r %r %r>" % (self.left, self.op, self.right)
  * 
  *     cpdef visit(self, Visitor visitor):             # <<<<<<<<<<<<<<
@@ -3267,7 +3270,7 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_16BinaryExpression_visit(s
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_visit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_visit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_11_expression_16BinaryExpression_5visit)) {
         __Pyx_XDECREF(__pyx_r);
@@ -3284,7 +3287,7 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_16BinaryExpression_visit(s
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, ((PyObject *)__pyx_v_visitor)) : __Pyx_PyObject_CallOneArg(__pyx_t_3, ((PyObject *)__pyx_v_visitor));
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 47, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 45, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -3305,7 +3308,7 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_16BinaryExpression_visit(s
     #endif
   }
 
-  /* "yapic/entity/_expression.pyx":48
+  /* "yapic/entity/_expression.pyx":46
  * 
  *     cpdef visit(self, Visitor visitor):
  *         return visitor.visit_binary(self)             # <<<<<<<<<<<<<<
@@ -3313,7 +3316,7 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_16BinaryExpression_visit(s
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_visitor), __pyx_n_s_visit_binary); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_visitor), __pyx_n_s_visit_binary); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -3327,14 +3330,14 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_16BinaryExpression_visit(s
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, ((PyObject *)__pyx_v_self)) : __Pyx_PyObject_CallOneArg(__pyx_t_2, ((PyObject *)__pyx_v_self));
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "yapic/entity/_expression.pyx":47
+  /* "yapic/entity/_expression.pyx":45
  *         return "<Expr %r %r %r>" % (self.left, self.op, self.right)
  * 
  *     cpdef visit(self, Visitor visitor):             # <<<<<<<<<<<<<<
@@ -3362,7 +3365,7 @@ static PyObject *__pyx_pw_5yapic_6entity_11_expression_16BinaryExpression_5visit
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("visit (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_visitor), __pyx_ptype_5yapic_6entity_11_expression_Visitor, 1, "visitor", 0))) __PYX_ERR(0, 47, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_visitor), __pyx_ptype_5yapic_6entity_11_expression_Visitor, 1, "visitor", 0))) __PYX_ERR(0, 45, __pyx_L1_error)
   __pyx_r = __pyx_pf_5yapic_6entity_11_expression_16BinaryExpression_4visit(((struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_visitor));
 
   /* function exit code */
@@ -3380,7 +3383,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_16BinaryExpression_4visit
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("visit", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_11_expression_16BinaryExpression_visit(__pyx_v_self, __pyx_v_visitor, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_11_expression_16BinaryExpression_visit(__pyx_v_self, __pyx_v_visitor, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3397,8 +3400,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_16BinaryExpression_4visit
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pxd":16
- * @cython.auto_pickle(False)
+/* "yapic/entity/_expression.pxd":13
+ * 
  * cdef class BinaryExpression(Expression):
  *     cpdef readonly Expression left             # <<<<<<<<<<<<<<
  *     cpdef readonly Expression right
@@ -3434,7 +3437,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_16BinaryExpression_4left_
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pxd":17
+/* "yapic/entity/_expression.pxd":14
  * cdef class BinaryExpression(Expression):
  *     cpdef readonly Expression left
  *     cpdef readonly Expression right             # <<<<<<<<<<<<<<
@@ -3471,7 +3474,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_16BinaryExpression_5right
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pxd":18
+/* "yapic/entity/_expression.pxd":15
  *     cpdef readonly Expression left
  *     cpdef readonly Expression right
  *     cpdef readonly object op             # <<<<<<<<<<<<<<
@@ -3508,8 +3511,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_16BinaryExpression_2op___
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":53
- * @cython.auto_pickle(False)
+/* "yapic/entity/_expression.pyx":50
+ * 
  * cdef class UnaryExpression(Expression):
  *     def __cinit__(self, expr, op):             # <<<<<<<<<<<<<<
  *         self.expr = coerce_expression(expr)
@@ -3547,11 +3550,11 @@ static int __pyx_pw_5yapic_6entity_11_expression_15UnaryExpression_1__cinit__(Py
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_op)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, 1); __PYX_ERR(0, 53, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, 1); __PYX_ERR(0, 50, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 53, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 50, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -3564,7 +3567,7 @@ static int __pyx_pw_5yapic_6entity_11_expression_15UnaryExpression_1__cinit__(Py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 53, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 50, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("yapic.entity._expression.UnaryExpression.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3583,14 +3586,14 @@ static int __pyx_pf_5yapic_6entity_11_expression_15UnaryExpression___cinit__(str
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "yapic/entity/_expression.pyx":54
+  /* "yapic/entity/_expression.pyx":51
  * cdef class UnaryExpression(Expression):
  *     def __cinit__(self, expr, op):
  *         self.expr = coerce_expression(expr)             # <<<<<<<<<<<<<<
  *         self.op = op
  * 
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_5yapic_6entity_11_expression_coerce_expression(__pyx_v_expr)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_5yapic_6entity_11_expression_coerce_expression(__pyx_v_expr)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->expr);
@@ -3598,7 +3601,7 @@ static int __pyx_pf_5yapic_6entity_11_expression_15UnaryExpression___cinit__(str
   __pyx_v_self->expr = ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/entity/_expression.pyx":55
+  /* "yapic/entity/_expression.pyx":52
  *     def __cinit__(self, expr, op):
  *         self.expr = coerce_expression(expr)
  *         self.op = op             # <<<<<<<<<<<<<<
@@ -3611,8 +3614,8 @@ static int __pyx_pf_5yapic_6entity_11_expression_15UnaryExpression___cinit__(str
   __Pyx_DECREF(__pyx_v_self->op);
   __pyx_v_self->op = __pyx_v_op;
 
-  /* "yapic/entity/_expression.pyx":53
- * @cython.auto_pickle(False)
+  /* "yapic/entity/_expression.pyx":50
+ * 
  * cdef class UnaryExpression(Expression):
  *     def __cinit__(self, expr, op):             # <<<<<<<<<<<<<<
  *         self.expr = coerce_expression(expr)
@@ -3631,7 +3634,7 @@ static int __pyx_pf_5yapic_6entity_11_expression_15UnaryExpression___cinit__(str
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":57
+/* "yapic/entity/_expression.pyx":54
  *         self.op = op
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -3661,7 +3664,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_15UnaryExpression_2__repr
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "yapic/entity/_expression.pyx":58
+  /* "yapic/entity/_expression.pyx":55
  * 
  *     def __repr__(self):
  *         return "<Expr %r%r>" % (self.op, self.expr)             # <<<<<<<<<<<<<<
@@ -3669,7 +3672,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_15UnaryExpression_2__repr
  *     cpdef visit(self, Visitor visitor):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = 0;
   __pyx_t_3 = 127;
@@ -3677,14 +3680,14 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_15UnaryExpression_2__repr
   __pyx_t_2 += 6;
   __Pyx_GIVEREF(__pyx_kp_u_Expr);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_Expr);
-  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_v_self->op), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_v_self->op), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
   __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_4);
   __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(((PyObject *)__pyx_v_self->expr)), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(((PyObject *)__pyx_v_self->expr)), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
   __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
@@ -3695,14 +3698,14 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_15UnaryExpression_2__repr
   __pyx_t_2 += 1;
   __Pyx_GIVEREF(__pyx_kp_u__2);
   PyTuple_SET_ITEM(__pyx_t_1, 3, __pyx_kp_u__2);
-  __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_1, 4, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_1, 4, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "yapic/entity/_expression.pyx":57
+  /* "yapic/entity/_expression.pyx":54
  *         self.op = op
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -3722,7 +3725,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_15UnaryExpression_2__repr
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":60
+/* "yapic/entity/_expression.pyx":57
  *         return "<Expr %r%r>" % (self.op, self.expr)
  * 
  *     cpdef visit(self, Visitor visitor):             # <<<<<<<<<<<<<<
@@ -3748,7 +3751,7 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_15UnaryExpression_visit(st
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_visit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_visit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_11_expression_15UnaryExpression_5visit)) {
         __Pyx_XDECREF(__pyx_r);
@@ -3765,7 +3768,7 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_15UnaryExpression_visit(st
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, ((PyObject *)__pyx_v_visitor)) : __Pyx_PyObject_CallOneArg(__pyx_t_3, ((PyObject *)__pyx_v_visitor));
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -3786,7 +3789,7 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_15UnaryExpression_visit(st
     #endif
   }
 
-  /* "yapic/entity/_expression.pyx":61
+  /* "yapic/entity/_expression.pyx":58
  * 
  *     cpdef visit(self, Visitor visitor):
  *         return visitor.visit_unary(self)             # <<<<<<<<<<<<<<
@@ -3794,7 +3797,7 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_15UnaryExpression_visit(st
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_visitor), __pyx_n_s_visit_unary); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_visitor), __pyx_n_s_visit_unary); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -3808,14 +3811,14 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_15UnaryExpression_visit(st
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, ((PyObject *)__pyx_v_self)) : __Pyx_PyObject_CallOneArg(__pyx_t_2, ((PyObject *)__pyx_v_self));
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 61, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 58, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "yapic/entity/_expression.pyx":60
+  /* "yapic/entity/_expression.pyx":57
  *         return "<Expr %r%r>" % (self.op, self.expr)
  * 
  *     cpdef visit(self, Visitor visitor):             # <<<<<<<<<<<<<<
@@ -3843,7 +3846,7 @@ static PyObject *__pyx_pw_5yapic_6entity_11_expression_15UnaryExpression_5visit(
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("visit (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_visitor), __pyx_ptype_5yapic_6entity_11_expression_Visitor, 1, "visitor", 0))) __PYX_ERR(0, 60, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_visitor), __pyx_ptype_5yapic_6entity_11_expression_Visitor, 1, "visitor", 0))) __PYX_ERR(0, 57, __pyx_L1_error)
   __pyx_r = __pyx_pf_5yapic_6entity_11_expression_15UnaryExpression_4visit(((struct __pyx_obj_5yapic_6entity_11_expression_UnaryExpression *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_visitor));
 
   /* function exit code */
@@ -3861,7 +3864,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_15UnaryExpression_4visit(
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("visit", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_11_expression_15UnaryExpression_visit(__pyx_v_self, __pyx_v_visitor, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_11_expression_15UnaryExpression_visit(__pyx_v_self, __pyx_v_visitor, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3878,8 +3881,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_15UnaryExpression_4visit(
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pxd":23
- * @cython.auto_pickle(False)
+/* "yapic/entity/_expression.pxd":19
+ * 
  * cdef class UnaryExpression(Expression):
  *     cpdef readonly Expression expr             # <<<<<<<<<<<<<<
  *     cpdef readonly object op
@@ -3915,7 +3918,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_15UnaryExpression_4expr__
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pxd":24
+/* "yapic/entity/_expression.pxd":20
  * cdef class UnaryExpression(Expression):
  *     cpdef readonly Expression expr
  *     cpdef readonly object op             # <<<<<<<<<<<<<<
@@ -3952,8 +3955,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_15UnaryExpression_2op___g
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":66
- * @cython.auto_pickle(False)
+/* "yapic/entity/_expression.pyx":62
+ * 
  * cdef class ConstExpression(Expression):
  *     def __cinit__(self, object value, type type):             # <<<<<<<<<<<<<<
  *         self.value = value
@@ -3991,11 +3994,11 @@ static int __pyx_pw_5yapic_6entity_11_expression_15ConstExpression_1__cinit__(Py
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_type)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, 1); __PYX_ERR(0, 66, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, 1); __PYX_ERR(0, 62, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 66, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 62, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -4008,13 +4011,13 @@ static int __pyx_pw_5yapic_6entity_11_expression_15ConstExpression_1__cinit__(Py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 66, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 62, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("yapic.entity._expression.ConstExpression.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_type), (&PyType_Type), 1, "type", 1))) __PYX_ERR(0, 66, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_type), (&PyType_Type), 1, "type", 1))) __PYX_ERR(0, 62, __pyx_L1_error)
   __pyx_r = __pyx_pf_5yapic_6entity_11_expression_15ConstExpression___cinit__(((struct __pyx_obj_5yapic_6entity_11_expression_ConstExpression *)__pyx_v_self), __pyx_v_value, __pyx_v_type);
 
   /* function exit code */
@@ -4031,7 +4034,7 @@ static int __pyx_pf_5yapic_6entity_11_expression_15ConstExpression___cinit__(str
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "yapic/entity/_expression.pyx":67
+  /* "yapic/entity/_expression.pyx":63
  * cdef class ConstExpression(Expression):
  *     def __cinit__(self, object value, type type):
  *         self.value = value             # <<<<<<<<<<<<<<
@@ -4044,7 +4047,7 @@ static int __pyx_pf_5yapic_6entity_11_expression_15ConstExpression___cinit__(str
   __Pyx_DECREF(__pyx_v_self->value);
   __pyx_v_self->value = __pyx_v_value;
 
-  /* "yapic/entity/_expression.pyx":68
+  /* "yapic/entity/_expression.pyx":64
  *     def __cinit__(self, object value, type type):
  *         self.value = value
  *         self.type = type             # <<<<<<<<<<<<<<
@@ -4057,8 +4060,8 @@ static int __pyx_pf_5yapic_6entity_11_expression_15ConstExpression___cinit__(str
   __Pyx_DECREF(((PyObject *)__pyx_v_self->type));
   __pyx_v_self->type = __pyx_v_type;
 
-  /* "yapic/entity/_expression.pyx":66
- * @cython.auto_pickle(False)
+  /* "yapic/entity/_expression.pyx":62
+ * 
  * cdef class ConstExpression(Expression):
  *     def __cinit__(self, object value, type type):             # <<<<<<<<<<<<<<
  *         self.value = value
@@ -4071,7 +4074,7 @@ static int __pyx_pf_5yapic_6entity_11_expression_15ConstExpression___cinit__(str
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":70
+/* "yapic/entity/_expression.pyx":66
  *         self.type = type
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -4102,7 +4105,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_15ConstExpression_2__repr
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "yapic/entity/_expression.pyx":71
+  /* "yapic/entity/_expression.pyx":67
  * 
  *     def __repr__(self):
  *         return "<Expr %s typeof %s>" % (self.value, self.type.__name__)             # <<<<<<<<<<<<<<
@@ -4110,7 +4113,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_15ConstExpression_2__repr
  *     cpdef visit(self, Visitor visitor):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = 0;
   __pyx_t_3 = 127;
@@ -4118,7 +4121,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_15ConstExpression_2__repr
   __pyx_t_2 += 6;
   __Pyx_GIVEREF(__pyx_kp_u_Expr);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_Expr);
-  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Unicode(__pyx_v_self->value), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Unicode(__pyx_v_self->value), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
   __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
@@ -4129,9 +4132,9 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_15ConstExpression_2__repr
   __pyx_t_2 += 8;
   __Pyx_GIVEREF(__pyx_kp_u_typeof);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_typeof);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->type), __pyx_n_s_name); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->type), __pyx_n_s_name); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Unicode(__pyx_t_4), __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Unicode(__pyx_t_4), __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) : __pyx_t_3;
@@ -4143,14 +4146,14 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_15ConstExpression_2__repr
   __pyx_t_2 += 1;
   __Pyx_GIVEREF(__pyx_kp_u__2);
   PyTuple_SET_ITEM(__pyx_t_1, 4, __pyx_kp_u__2);
-  __pyx_t_5 = __Pyx_PyUnicode_Join(__pyx_t_1, 5, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyUnicode_Join(__pyx_t_1, 5, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_5;
   __pyx_t_5 = 0;
   goto __pyx_L0;
 
-  /* "yapic/entity/_expression.pyx":70
+  /* "yapic/entity/_expression.pyx":66
  *         self.type = type
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -4171,7 +4174,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_15ConstExpression_2__repr
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":73
+/* "yapic/entity/_expression.pyx":69
  *         return "<Expr %s typeof %s>" % (self.value, self.type.__name__)
  * 
  *     cpdef visit(self, Visitor visitor):             # <<<<<<<<<<<<<<
@@ -4197,7 +4200,7 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_15ConstExpression_visit(st
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_visit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_visit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_11_expression_15ConstExpression_5visit)) {
         __Pyx_XDECREF(__pyx_r);
@@ -4214,7 +4217,7 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_15ConstExpression_visit(st
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, ((PyObject *)__pyx_v_visitor)) : __Pyx_PyObject_CallOneArg(__pyx_t_3, ((PyObject *)__pyx_v_visitor));
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 69, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -4235,7 +4238,7 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_15ConstExpression_visit(st
     #endif
   }
 
-  /* "yapic/entity/_expression.pyx":74
+  /* "yapic/entity/_expression.pyx":70
  * 
  *     cpdef visit(self, Visitor visitor):
  *         return visitor.visit_const(self)             # <<<<<<<<<<<<<<
@@ -4243,7 +4246,7 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_15ConstExpression_visit(st
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_visitor), __pyx_n_s_visit_const); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_visitor), __pyx_n_s_visit_const); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 70, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -4257,14 +4260,14 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_15ConstExpression_visit(st
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, ((PyObject *)__pyx_v_self)) : __Pyx_PyObject_CallOneArg(__pyx_t_2, ((PyObject *)__pyx_v_self));
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "yapic/entity/_expression.pyx":73
+  /* "yapic/entity/_expression.pyx":69
  *         return "<Expr %s typeof %s>" % (self.value, self.type.__name__)
  * 
  *     cpdef visit(self, Visitor visitor):             # <<<<<<<<<<<<<<
@@ -4292,7 +4295,7 @@ static PyObject *__pyx_pw_5yapic_6entity_11_expression_15ConstExpression_5visit(
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("visit (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_visitor), __pyx_ptype_5yapic_6entity_11_expression_Visitor, 1, "visitor", 0))) __PYX_ERR(0, 73, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_visitor), __pyx_ptype_5yapic_6entity_11_expression_Visitor, 1, "visitor", 0))) __PYX_ERR(0, 69, __pyx_L1_error)
   __pyx_r = __pyx_pf_5yapic_6entity_11_expression_15ConstExpression_4visit(((struct __pyx_obj_5yapic_6entity_11_expression_ConstExpression *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_visitor));
 
   /* function exit code */
@@ -4310,7 +4313,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_15ConstExpression_4visit(
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("visit", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_11_expression_15ConstExpression_visit(__pyx_v_self, __pyx_v_visitor, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_11_expression_15ConstExpression_visit(__pyx_v_self, __pyx_v_visitor, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -4327,8 +4330,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_15ConstExpression_4visit(
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pxd":29
- * @cython.auto_pickle(False)
+/* "yapic/entity/_expression.pxd":24
+ * 
  * cdef class ConstExpression(Expression):
  *     cpdef readonly object value             # <<<<<<<<<<<<<<
  *     cpdef readonly type type
@@ -4364,7 +4367,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_15ConstExpression_5value_
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pxd":30
+/* "yapic/entity/_expression.pxd":25
  * cdef class ConstExpression(Expression):
  *     cpdef readonly object value
  *     cpdef readonly type type             # <<<<<<<<<<<<<<
@@ -4401,8 +4404,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_15ConstExpression_4type__
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":79
- * @cython.auto_pickle(False)
+/* "yapic/entity/_expression.pyx":74
+ * 
  * cdef class Visitor:
  *     cpdef visit(self, Expression expr):             # <<<<<<<<<<<<<<
  *         return expr.visit(self)
@@ -4427,7 +4430,7 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_7Visitor_visit(struct __py
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_visit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_visit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_11_expression_7Visitor_1visit)) {
         __Pyx_XDECREF(__pyx_r);
@@ -4444,7 +4447,7 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_7Visitor_visit(struct __py
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, ((PyObject *)__pyx_v_expr)) : __Pyx_PyObject_CallOneArg(__pyx_t_3, ((PyObject *)__pyx_v_expr));
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 79, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 74, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -4465,7 +4468,7 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_7Visitor_visit(struct __py
     #endif
   }
 
-  /* "yapic/entity/_expression.pyx":80
+  /* "yapic/entity/_expression.pyx":75
  * cdef class Visitor:
  *     cpdef visit(self, Expression expr):
  *         return expr.visit(self)             # <<<<<<<<<<<<<<
@@ -4473,14 +4476,14 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_7Visitor_visit(struct __py
  *     def visit_binary(self, binary):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression *)__pyx_v_expr->__pyx_vtab)->visit(__pyx_v_expr, __pyx_v_self, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 80, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression *)__pyx_v_expr->__pyx_vtab)->visit(__pyx_v_expr, __pyx_v_self, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "yapic/entity/_expression.pyx":79
- * @cython.auto_pickle(False)
+  /* "yapic/entity/_expression.pyx":74
+ * 
  * cdef class Visitor:
  *     cpdef visit(self, Expression expr):             # <<<<<<<<<<<<<<
  *         return expr.visit(self)
@@ -4507,7 +4510,7 @@ static PyObject *__pyx_pw_5yapic_6entity_11_expression_7Visitor_1visit(PyObject 
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("visit (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_expr), __pyx_ptype_5yapic_6entity_11_expression_Expression, 1, "expr", 0))) __PYX_ERR(0, 79, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_expr), __pyx_ptype_5yapic_6entity_11_expression_Expression, 1, "expr", 0))) __PYX_ERR(0, 74, __pyx_L1_error)
   __pyx_r = __pyx_pf_5yapic_6entity_11_expression_7Visitor_visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_v_expr));
 
   /* function exit code */
@@ -4525,7 +4528,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_visit(struct __p
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("visit", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_11_expression_7Visitor_visit(__pyx_v_self, __pyx_v_expr, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_11_expression_7Visitor_visit(__pyx_v_self, __pyx_v_expr, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -4542,7 +4545,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_visit(struct __p
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":82
+/* "yapic/entity/_expression.pyx":77
  *         return expr.visit(self)
  * 
  *     def visit_binary(self, binary):             # <<<<<<<<<<<<<<
@@ -4574,18 +4577,18 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_2visit_binary(st
   int __pyx_t_5;
   __Pyx_RefNannySetupContext("visit_binary", 0);
 
-  /* "yapic/entity/_expression.pyx":83
+  /* "yapic/entity/_expression.pyx":78
  * 
  *     def visit_binary(self, binary):
  *         if binary.op is operator.__or__:             # <<<<<<<<<<<<<<
  *             fn_name = "visit_binary_or"
  *         elif binary.op is operator.__and__:
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_binary, __pyx_n_s_op); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_binary, __pyx_n_s_op); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_operator); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 83, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_operator); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_or); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 83, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_or); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_4 = (__pyx_t_1 == __pyx_t_3);
@@ -4594,7 +4597,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_2visit_binary(st
   __pyx_t_5 = (__pyx_t_4 != 0);
   if (__pyx_t_5) {
 
-    /* "yapic/entity/_expression.pyx":84
+    /* "yapic/entity/_expression.pyx":79
  *     def visit_binary(self, binary):
  *         if binary.op is operator.__or__:
  *             fn_name = "visit_binary_or"             # <<<<<<<<<<<<<<
@@ -4604,7 +4607,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_2visit_binary(st
     __Pyx_INCREF(__pyx_n_u_visit_binary_or);
     __pyx_v_fn_name = __pyx_n_u_visit_binary_or;
 
-    /* "yapic/entity/_expression.pyx":83
+    /* "yapic/entity/_expression.pyx":78
  * 
  *     def visit_binary(self, binary):
  *         if binary.op is operator.__or__:             # <<<<<<<<<<<<<<
@@ -4614,18 +4617,18 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_2visit_binary(st
     goto __pyx_L3;
   }
 
-  /* "yapic/entity/_expression.pyx":85
+  /* "yapic/entity/_expression.pyx":80
  *         if binary.op is operator.__or__:
  *             fn_name = "visit_binary_or"
  *         elif binary.op is operator.__and__:             # <<<<<<<<<<<<<<
  *             fn_name = "visit_binary_and"
  *         else:
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_binary, __pyx_n_s_op); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_binary, __pyx_n_s_op); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_operator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_and); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_and); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_5 = (__pyx_t_3 == __pyx_t_2);
@@ -4634,7 +4637,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_2visit_binary(st
   __pyx_t_4 = (__pyx_t_5 != 0);
   if (__pyx_t_4) {
 
-    /* "yapic/entity/_expression.pyx":86
+    /* "yapic/entity/_expression.pyx":81
  *             fn_name = "visit_binary_or"
  *         elif binary.op is operator.__and__:
  *             fn_name = "visit_binary_and"             # <<<<<<<<<<<<<<
@@ -4644,7 +4647,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_2visit_binary(st
     __Pyx_INCREF(__pyx_n_u_visit_binary_and);
     __pyx_v_fn_name = __pyx_n_u_visit_binary_and;
 
-    /* "yapic/entity/_expression.pyx":85
+    /* "yapic/entity/_expression.pyx":80
  *         if binary.op is operator.__or__:
  *             fn_name = "visit_binary_or"
  *         elif binary.op is operator.__and__:             # <<<<<<<<<<<<<<
@@ -4654,7 +4657,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_2visit_binary(st
     goto __pyx_L3;
   }
 
-  /* "yapic/entity/_expression.pyx":88
+  /* "yapic/entity/_expression.pyx":83
  *             fn_name = "visit_binary_and"
  *         else:
  *             fn_name = "visit_binary_%s" % binary.op.__name__             # <<<<<<<<<<<<<<
@@ -4662,12 +4665,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_2visit_binary(st
  * 
  */
   /*else*/ {
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_binary, __pyx_n_s_op); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_binary, __pyx_n_s_op); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 83, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 83, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyUnicode_FormatSafe(__pyx_kp_u_visit_binary__s, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyUnicode_FormatSafe(__pyx_kp_u_visit_binary__s, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 83, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_v_fn_name = ((PyObject*)__pyx_t_2);
@@ -4675,7 +4678,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_2visit_binary(st
   }
   __pyx_L3:;
 
-  /* "yapic/entity/_expression.pyx":89
+  /* "yapic/entity/_expression.pyx":84
  *         else:
  *             fn_name = "visit_binary_%s" % binary.op.__name__
  *         return getattr(self, fn_name)(binary)             # <<<<<<<<<<<<<<
@@ -4683,7 +4686,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_2visit_binary(st
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_GetAttr(((PyObject *)__pyx_v_self), __pyx_v_fn_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetAttr(((PyObject *)__pyx_v_self), __pyx_v_fn_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 84, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_1 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -4697,14 +4700,14 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_2visit_binary(st
   }
   __pyx_t_2 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_1, __pyx_v_binary) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_binary);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 89, __pyx_L1_error)
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 84, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "yapic/entity/_expression.pyx":82
+  /* "yapic/entity/_expression.pyx":77
  *         return expr.visit(self)
  * 
  *     def visit_binary(self, binary):             # <<<<<<<<<<<<<<
@@ -4726,7 +4729,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_2visit_binary(st
   return __pyx_r;
 }
 
-/* "yapic/entity/_expression.pyx":92
+/* "yapic/entity/_expression.pyx":87
  * 
  * 
  * cdef Expression coerce_expression(object expr):             # <<<<<<<<<<<<<<
@@ -4743,7 +4746,7 @@ static struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_f_5yapic_
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("coerce_expression", 0);
 
-  /* "yapic/entity/_expression.pyx":93
+  /* "yapic/entity/_expression.pyx":88
  * 
  * cdef Expression coerce_expression(object expr):
  *     if isinstance(expr, Expression):             # <<<<<<<<<<<<<<
@@ -4754,7 +4757,7 @@ static struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_f_5yapic_
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "yapic/entity/_expression.pyx":94
+    /* "yapic/entity/_expression.pyx":89
  * cdef Expression coerce_expression(object expr):
  *     if isinstance(expr, Expression):
  *         return <Expression>expr             # <<<<<<<<<<<<<<
@@ -4766,7 +4769,7 @@ static struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_f_5yapic_
     __pyx_r = ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_v_expr);
     goto __pyx_L0;
 
-    /* "yapic/entity/_expression.pyx":93
+    /* "yapic/entity/_expression.pyx":88
  * 
  * cdef Expression coerce_expression(object expr):
  *     if isinstance(expr, Expression):             # <<<<<<<<<<<<<<
@@ -4775,14 +4778,14 @@ static struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_f_5yapic_
  */
   }
 
-  /* "yapic/entity/_expression.pyx":96
+  /* "yapic/entity/_expression.pyx":91
  *         return <Expression>expr
  *     else:
  *         return ConstExpression(expr, type(expr))             # <<<<<<<<<<<<<<
  */
   /*else*/ {
     __Pyx_XDECREF(((PyObject *)__pyx_r));
-    __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 96, __pyx_L1_error)
+    __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 91, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_INCREF(__pyx_v_expr);
     __Pyx_GIVEREF(__pyx_v_expr);
@@ -4790,7 +4793,7 @@ static struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_f_5yapic_
     __Pyx_INCREF(((PyObject *)Py_TYPE(__pyx_v_expr)));
     __Pyx_GIVEREF(((PyObject *)Py_TYPE(__pyx_v_expr)));
     PyTuple_SET_ITEM(__pyx_t_3, 1, ((PyObject *)Py_TYPE(__pyx_v_expr)));
-    __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_ConstExpression), __pyx_t_3, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 96, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_ConstExpression), __pyx_t_3, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 91, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_r = ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_4);
@@ -4798,7 +4801,7 @@ static struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_f_5yapic_
     goto __pyx_L0;
   }
 
-  /* "yapic/entity/_expression.pyx":92
+  /* "yapic/entity/_expression.pyx":87
  * 
  * 
  * cdef Expression coerce_expression(object expr):             # <<<<<<<<<<<<<<
@@ -5605,7 +5608,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_NotImplementedError = __Pyx_GetBuiltinName(__pyx_n_s_NotImplementedError); if (!__pyx_builtin_NotImplementedError) __PYX_ERR(0, 8, __pyx_L1_error)
+  __pyx_builtin_NotImplementedError = __Pyx_GetBuiltinName(__pyx_n_s_NotImplementedError); if (!__pyx_builtin_NotImplementedError) __PYX_ERR(0, 7, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -5667,59 +5670,59 @@ static int __Pyx_modinit_type_init_code(void) {
   /*--- Type init code ---*/
   __pyx_vtabptr_5yapic_6entity_11_expression_Visitor = &__pyx_vtable_5yapic_6entity_11_expression_Visitor;
   __pyx_vtable_5yapic_6entity_11_expression_Visitor.visit = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_11_expression_Visitor *, struct __pyx_obj_5yapic_6entity_11_expression_Expression *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_11_expression_7Visitor_visit;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_expression_Visitor) < 0) __PYX_ERR(0, 78, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_expression_Visitor) < 0) __PYX_ERR(0, 73, __pyx_L1_error)
   __pyx_type_5yapic_6entity_11_expression_Visitor.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_11_expression_Visitor.tp_dictoffset && __pyx_type_5yapic_6entity_11_expression_Visitor.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_11_expression_Visitor.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_expression_Visitor.tp_dict, __pyx_vtabptr_5yapic_6entity_11_expression_Visitor) < 0) __PYX_ERR(0, 78, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Visitor, (PyObject *)&__pyx_type_5yapic_6entity_11_expression_Visitor) < 0) __PYX_ERR(0, 78, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_expression_Visitor.tp_dict, __pyx_vtabptr_5yapic_6entity_11_expression_Visitor) < 0) __PYX_ERR(0, 73, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Visitor, (PyObject *)&__pyx_type_5yapic_6entity_11_expression_Visitor) < 0) __PYX_ERR(0, 73, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_expression_Visitor = &__pyx_type_5yapic_6entity_11_expression_Visitor;
   __pyx_vtabptr_5yapic_6entity_11_expression_Expression = &__pyx_vtable_5yapic_6entity_11_expression_Expression;
   __pyx_vtable_5yapic_6entity_11_expression_Expression.visit = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_11_expression_Expression *, struct __pyx_obj_5yapic_6entity_11_expression_Visitor *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_11_expression_10Expression_visit;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_expression_Expression) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_expression_Expression) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
   __pyx_type_5yapic_6entity_11_expression_Expression.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_11_expression_Expression.tp_dictoffset && __pyx_type_5yapic_6entity_11_expression_Expression.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_11_expression_Expression.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_expression_Expression.tp_dict, __pyx_vtabptr_5yapic_6entity_11_expression_Expression) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Expression, (PyObject *)&__pyx_type_5yapic_6entity_11_expression_Expression) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_expression_Expression.tp_dict, __pyx_vtabptr_5yapic_6entity_11_expression_Expression) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Expression, (PyObject *)&__pyx_type_5yapic_6entity_11_expression_Expression) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_expression_Expression = &__pyx_type_5yapic_6entity_11_expression_Expression;
   __pyx_vtabptr_5yapic_6entity_11_expression_BinaryExpression = &__pyx_vtable_5yapic_6entity_11_expression_BinaryExpression;
   __pyx_vtable_5yapic_6entity_11_expression_BinaryExpression.__pyx_base = *__pyx_vtabptr_5yapic_6entity_11_expression_Expression;
   __pyx_vtable_5yapic_6entity_11_expression_BinaryExpression.__pyx_base.visit = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_11_expression_Expression *, struct __pyx_obj_5yapic_6entity_11_expression_Visitor *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_11_expression_16BinaryExpression_visit;
   __pyx_type_5yapic_6entity_11_expression_BinaryExpression.tp_base = __pyx_ptype_5yapic_6entity_11_expression_Expression;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_expression_BinaryExpression) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_expression_BinaryExpression) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __pyx_type_5yapic_6entity_11_expression_BinaryExpression.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_11_expression_BinaryExpression.tp_dictoffset && __pyx_type_5yapic_6entity_11_expression_BinaryExpression.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_11_expression_BinaryExpression.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_expression_BinaryExpression.tp_dict, __pyx_vtabptr_5yapic_6entity_11_expression_BinaryExpression) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_BinaryExpression, (PyObject *)&__pyx_type_5yapic_6entity_11_expression_BinaryExpression) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_expression_BinaryExpression.tp_dict, __pyx_vtabptr_5yapic_6entity_11_expression_BinaryExpression) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_BinaryExpression, (PyObject *)&__pyx_type_5yapic_6entity_11_expression_BinaryExpression) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_expression_BinaryExpression = &__pyx_type_5yapic_6entity_11_expression_BinaryExpression;
   __pyx_vtabptr_5yapic_6entity_11_expression_UnaryExpression = &__pyx_vtable_5yapic_6entity_11_expression_UnaryExpression;
   __pyx_vtable_5yapic_6entity_11_expression_UnaryExpression.__pyx_base = *__pyx_vtabptr_5yapic_6entity_11_expression_Expression;
   __pyx_vtable_5yapic_6entity_11_expression_UnaryExpression.__pyx_base.visit = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_11_expression_Expression *, struct __pyx_obj_5yapic_6entity_11_expression_Visitor *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_11_expression_15UnaryExpression_visit;
   __pyx_type_5yapic_6entity_11_expression_UnaryExpression.tp_base = __pyx_ptype_5yapic_6entity_11_expression_Expression;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_expression_UnaryExpression) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_expression_UnaryExpression) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
   __pyx_type_5yapic_6entity_11_expression_UnaryExpression.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_11_expression_UnaryExpression.tp_dictoffset && __pyx_type_5yapic_6entity_11_expression_UnaryExpression.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_11_expression_UnaryExpression.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_expression_UnaryExpression.tp_dict, __pyx_vtabptr_5yapic_6entity_11_expression_UnaryExpression) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_UnaryExpression, (PyObject *)&__pyx_type_5yapic_6entity_11_expression_UnaryExpression) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_expression_UnaryExpression.tp_dict, __pyx_vtabptr_5yapic_6entity_11_expression_UnaryExpression) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_UnaryExpression, (PyObject *)&__pyx_type_5yapic_6entity_11_expression_UnaryExpression) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_expression_UnaryExpression = &__pyx_type_5yapic_6entity_11_expression_UnaryExpression;
   __pyx_vtabptr_5yapic_6entity_11_expression_ConstExpression = &__pyx_vtable_5yapic_6entity_11_expression_ConstExpression;
   __pyx_vtable_5yapic_6entity_11_expression_ConstExpression.__pyx_base = *__pyx_vtabptr_5yapic_6entity_11_expression_Expression;
   __pyx_vtable_5yapic_6entity_11_expression_ConstExpression.__pyx_base.visit = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_11_expression_Expression *, struct __pyx_obj_5yapic_6entity_11_expression_Visitor *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_11_expression_15ConstExpression_visit;
   __pyx_type_5yapic_6entity_11_expression_ConstExpression.tp_base = __pyx_ptype_5yapic_6entity_11_expression_Expression;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_expression_ConstExpression) < 0) __PYX_ERR(0, 65, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_expression_ConstExpression) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
   __pyx_type_5yapic_6entity_11_expression_ConstExpression.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_11_expression_ConstExpression.tp_dictoffset && __pyx_type_5yapic_6entity_11_expression_ConstExpression.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_11_expression_ConstExpression.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_expression_ConstExpression.tp_dict, __pyx_vtabptr_5yapic_6entity_11_expression_ConstExpression) < 0) __PYX_ERR(0, 65, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ConstExpression, (PyObject *)&__pyx_type_5yapic_6entity_11_expression_ConstExpression) < 0) __PYX_ERR(0, 65, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_expression_ConstExpression.tp_dict, __pyx_vtabptr_5yapic_6entity_11_expression_ConstExpression) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ConstExpression, (PyObject *)&__pyx_type_5yapic_6entity_11_expression_ConstExpression) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_expression_ConstExpression = &__pyx_type_5yapic_6entity_11_expression_ConstExpression;
   __Pyx_RefNannyFinishContext();
   return 0;
@@ -5960,7 +5963,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_operator, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "yapic/entity/_expression.pyx":92
+  /* "yapic/entity/_expression.pyx":87
  * 
  * 
  * cdef Expression coerce_expression(object expr):             # <<<<<<<<<<<<<<

@@ -5,35 +5,95 @@ from ._expression cimport Expression
 from ._field cimport Field
 
 
-@cython.auto_pickle(False)
 cdef class Relation(Expression):
-    cdef readonly object __impl__
+    cdef object _impl
     cdef readonly EntityType __entity__
-    cdef readonly EntityType __related__
-    cdef readonly EntityType __across__
+
+    cdef void bind(self, EntityType entity)
 
 
-@cython.auto_pickle(False)
 cdef class RelationField(Expression):
     cdef Relation relation
     cdef Field field
 
 
-@cython.auto_pickle(False)
 cdef class RelationImpl:
-    cdef readonly object state
+    cpdef object get_value(self)
+    cpdef void set_value(self, object value)
+    cpdef void del_value(self)
 
 
-@cython.auto_pickle(False)
 cdef class ManyToOne(RelationImpl):
-    pass
+    cdef readonly EntityType joined
+    cdef readonly RelatedItem value
 
 
-@cython.auto_pickle(False)
 cdef class OneToMany(RelationImpl):
-    pass
+    cdef readonly EntityType joined
+    cdef readonly RelatedContainer value
 
 
-@cython.auto_pickle(False)
 cdef class ManyToMany(RelationImpl):
-    pass
+    cdef readonly EntityType joined
+    cdef readonly EntityType across
+    cdef readonly RelatedContainer value
+
+
+cdef class RelatedItem:
+    cdef object original
+    cdef object current
+
+    cdef object get_value(self)
+    cdef void set_value(self, object value)
+    cdef void del_value(self)
+    cpdef reset(self)
+
+
+cdef class RelatedContainer:
+    # dict of tuple (OP_REMOVE / OP_ADD / OP_REPLACE, original_value)
+    cdef readonly dict __operations__
+
+    cpdef _set_item(self, object key, object value)
+    cpdef _get_item(self, object key)
+    cpdef _del_item(self, object key)
+
+
+cdef class RelatedList(RelatedContainer):
+    cdef list value
+
+    cpdef append(self, object o)
+    cpdef extend(self, object o)
+    cpdef insert(self, object index, object o)
+    cpdef remove(self, object o)
+    cpdef pop(self, object index=*)
+    cpdef clear(self)
+    cpdef reset(self)
+
+    # __getitem__
+    # __setitem__
+    # __delitem__
+    # __len__
+    # __contains__
+    # __iter__
+
+
+cdef class RelatedDict(RelatedContainer):
+    cdef dict value
+
+    cpdef get(self, object key, object dv=*)
+    cpdef items(self)
+    cpdef keys(self)
+    cpdef pop(self, object key, object dv=*)
+    cpdef popitem(self)
+    cpdef setdefault(self, object key, object dv=*)
+    cpdef update(self, object other)
+    cpdef values(self)
+    cpdef clear(self)
+    cpdef reset(self)
+
+    # __getitem__
+    # __setitem__
+    # __delitem__
+    # __len__
+    # __contains__
+    # __iter__
