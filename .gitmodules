@@ -1,0 +1,3 @@
+[submodule "libs/yapic.core"]
+	path = libs/yapic.core
+	url = git@github.com:zozzz/yapic.core.git
