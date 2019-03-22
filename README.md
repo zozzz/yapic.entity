@@ -4,12 +4,32 @@
 Example:
 ```python
 
+class Mood(Enum):
+    SAD = "sad"
+    OK = "ok"
+    HAPPY = "happy"
+
+
+class Color(Flag):
+    RED = 1
+    GREEN = 2
+    BLUE = 4
+
+
 class User(Entity):
     id: Int = PrimaryKey()
     name: String = Field(size=100)
     with_default: String = "Default value"
     roles: Many["UserRole"]
     tags: ManyAcross["UserTags", "Tag"]
+
+    # only a single value can be accepted
+    # because Mood is inheriting from Enum
+    mood: Choice[Mood]
+
+    # can use set of values: user.colors = Color.RED | Color.GREEN
+    # because Color is inheriting from Flag
+    colors: Choice[Color]
 
 
 class UserRole(Entity):
@@ -23,8 +43,8 @@ class Tag(Entity):
 
 
 class UserTags(Entity):
-   user_id: Int = ForeignKey(User.id)
-   tag_id: Int = ForeignKey(Tag.id)
+   user_id: Int = PrimaryKey() // ForeignKey(User.id)
+   tag_id: Int = PrimaryKey() // ForeignKey("Tag.id")
 
 
 ```

@@ -1,15 +1,18 @@
 import cython
+from cpython.object cimport PyObject
 
 from ._entity cimport EntityType
 from ._expression cimport Expression
 from ._field cimport Field
+from ._factory cimport Factory
 
 
 cdef class Relation(Expression):
     cdef object _impl
+    cdef int index
     cdef readonly EntityType __entity__
 
-    cdef void bind(self, EntityType entity)
+    cdef bind(self, EntityType entity)
 
 
 cdef class RelationField(Expression):
@@ -18,56 +21,80 @@ cdef class RelationField(Expression):
 
 
 cdef class RelationImpl:
-    cpdef object get_value(self)
-    cpdef void set_value(self, object value)
-    cpdef void del_value(self)
+    cdef Factory value_store_factory
+    cdef readonly object value_store_t
+
+    cdef object new_value_store(self)
+    cdef void set_value_store_type(self, object t)
+    cdef determine_join_expr(self, EntityType entity)
 
 
 cdef class ManyToOne(RelationImpl):
     cdef readonly EntityType joined
-    cdef readonly RelatedItem value
+    cdef readonly object join_expr
 
 
 cdef class OneToMany(RelationImpl):
     cdef readonly EntityType joined
-    cdef readonly RelatedContainer value
+    cdef readonly object join_expr
 
 
 cdef class ManyToMany(RelationImpl):
     cdef readonly EntityType joined
     cdef readonly EntityType across
-    cdef readonly RelatedContainer value
+    cdef readonly object across_join_expr
+    cdef readonly object join_expr
 
 
-cdef class RelatedItem:
-    cdef object original
-    cdef object current
+@cython.final
+@cython.freelist(1000)
+cdef class RelationState:
+    cdef tuple data
 
-    cdef object get_value(self)
-    cdef void set_value(self, object value)
-    cdef void del_value(self)
+    cdef object get_value(self, int index)
+    cdef bint set_value(self, int index, object value)
+    cdef bint del_value(self, int index)
     cpdef reset(self)
 
 
-cdef class RelatedContainer:
-    # dict of tuple (OP_REMOVE / OP_ADD / OP_REPLACE, original_value)
-    cdef readonly dict __operations__
+cdef class ValueStore:
+    cdef object get_value(self)
+    cdef bint set_value(self, object value)
+    cdef bint del_value(self)
+    cpdef reset(self)
 
-    cpdef _set_item(self, object key, object value)
-    cpdef _get_item(self, object key)
-    cpdef _del_item(self, object key)
+
+cdef class RelatedItem(ValueStore):
+    cdef PyObject* original
+    cdef PyObject* current
+
+
+# cpdef RCOP_ADD = 1
+# cpdef RCOP_MOD = 2
+# cpdef RCOP_DEL = 4
+
+
+cdef class RelatedContainer(ValueStore):
+    # dict of tuple (RCOP_ADD / RCOP_MOD / RCOP_DEL, original_value)
+    # cdef readonly dict __operations__
+    cdef readonly list __removed__
+    cdef readonly list __added__
+
+    cpdef _op_add(self, object value)
+    cpdef _op_del(self, object value)
 
 
 cdef class RelatedList(RelatedContainer):
     cdef list value
 
+
     cpdef append(self, object o)
-    cpdef extend(self, object o)
+    cpdef extend(self, list o)
     cpdef insert(self, object index, object o)
     cpdef remove(self, object o)
     cpdef pop(self, object index=*)
     cpdef clear(self)
-    cpdef reset(self)
+    cdef void _op_delitems_by_key(self, key)
 
     # __getitem__
     # __setitem__
@@ -89,7 +116,6 @@ cdef class RelatedDict(RelatedContainer):
     cpdef update(self, object other)
     cpdef values(self)
     cpdef clear(self)
-    cpdef reset(self)
 
     # __getitem__
     # __setitem__

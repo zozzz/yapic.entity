@@ -45,7 +45,9 @@ cdef class Factory:
     cdef bint has_forward_ref
 
     @staticmethod
-    cdef Factory create(object t, object generic_base)
+    cdef Factory create(object t)
+
+    cdef object invoke(self)
 
 
 cdef object new_instance(object type, tuple hints, bint resolve_forward)

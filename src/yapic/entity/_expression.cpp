@@ -10,6 +10,9 @@
         "name": "yapic.entity._expression",
         "sources": [
             "src/yapic/entity\\_expression.pyx"
+        ],
+        "undef_macros": [
+            "_DEBUG"
         ]
     },
     "module_name": "yapic.entity._expression"

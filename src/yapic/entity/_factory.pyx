@@ -17,7 +17,7 @@ cdef tuple get_type_hints(object t):
 @cython.final
 cdef class Factory:
     @staticmethod
-    cdef Factory create(object t, object generic_base):
+    cdef Factory create(object t):
         cdef bint has_forward_ref = False
 
         if is_forward_decl(t):
@@ -30,19 +30,18 @@ cdef class Factory:
         cdef tuple tinfo = typing_.TypeHints(t)
         cdef Factory result
 
-        if issubclass(tinfo[0], generic_base):
-            result = Factory(t, tinfo)
-            # result.init_attrs = init_attrs
-            result.has_forward_ref = has_forward_ref
-            return result
-        else:
-            return None
+        result = Factory(t, tinfo)
+        result.has_forward_ref = has_forward_ref
+        return result
 
     def __cinit__(self, object orig_type, tuple hints):
         self.orig_type = orig_type
         self.hints = hints
 
     def __call__(self):
+        return self.invoke()
+
+    cdef object invoke(self):
         return new_instance(self.orig_type, self.hints, not self.has_forward_ref)
 
 
@@ -84,27 +83,3 @@ cdef object new_instance_from_forward(object fwd):
     argType = forward.Resolve()
     hints = typing_.TypeHints(argType)
     return new_instance(argType, hints, True)
-
-
-# cdef object create_type_factory(object t, object generic_base, set_attribute_fn init_attrs):
-#     if is_forward_decl(t):
-#         pass
-
-#     cdef tuple tinfo = typing_.TypeHints(t)
-
-#     if issubclass(tinfo[0], generic_base):
-#         return _create_type_factory(t, tinfo, init_attrs)
-#     else:
-#         return None
-
-
-# cdef object _create_type_factory(object type, tuple info, set_attribute_fn init_attrs):
-#     def factory(object existing = None):
-#         if not existing:
-#             pass
-
-#         attrs = dict()
-#         init_attrs(existing, attrs)
-#         return existing
-#     return factory
-

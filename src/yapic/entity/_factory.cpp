@@ -13,6 +13,9 @@
         "name": "yapic.entity._factory",
         "sources": [
             "src/yapic/entity\\_factory.pyx"
+        ],
+        "undef_macros": [
+            "_DEBUG"
         ]
     },
     "module_name": "yapic.entity._factory"
@@ -875,14 +878,16 @@ struct __pyx_obj_5yapic_6entity_8_factory_Factory {
  * @cython.final
  * cdef class Factory:             # <<<<<<<<<<<<<<
  *     @staticmethod
- *     cdef Factory create(object t, object generic_base):
+ *     cdef Factory create(object t):
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_8_factory_Factory {
-  struct __pyx_obj_5yapic_6entity_8_factory_Factory *(*create)(PyObject *, PyObject *);
+  struct __pyx_obj_5yapic_6entity_8_factory_Factory *(*create)(PyObject *);
+  PyObject *(*invoke)(struct __pyx_obj_5yapic_6entity_8_factory_Factory *);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_8_factory_Factory *__pyx_vtabptr_5yapic_6entity_8_factory_Factory;
-static struct __pyx_obj_5yapic_6entity_8_factory_Factory *__pyx_f_5yapic_6entity_8_factory_7Factory_create(PyObject *, PyObject *);
+static struct __pyx_obj_5yapic_6entity_8_factory_Factory *__pyx_f_5yapic_6entity_8_factory_7Factory_create(PyObject *);
+static PyObject *__pyx_f_5yapic_6entity_8_factory_7Factory_invoke(struct __pyx_obj_5yapic_6entity_8_factory_Factory *);
 
 /* --- Runtime support code (head) --- */
 /* Refnanny.proto */
@@ -1245,7 +1250,8 @@ static int __Pyx_ExportFunction(const char *name, void (*f)(void), const char *s
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
-static struct __pyx_obj_5yapic_6entity_8_factory_Factory *__pyx_f_5yapic_6entity_8_factory_7Factory_create(PyObject *__pyx_v_t, PyObject *__pyx_v_generic_base); /* proto*/
+static struct __pyx_obj_5yapic_6entity_8_factory_Factory *__pyx_f_5yapic_6entity_8_factory_7Factory_create(PyObject *__pyx_v_t); /* proto*/
+static PyObject *__pyx_f_5yapic_6entity_8_factory_7Factory_invoke(struct __pyx_obj_5yapic_6entity_8_factory_Factory *__pyx_v_self); /* proto*/
 
 /* Module declarations from 'cython' */
 
@@ -1401,12 +1407,12 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_get_type_hints(PyObject *__pyx
 /* "yapic/entity/_factory.pyx":20
  * cdef class Factory:
  *     @staticmethod
- *     cdef Factory create(object t, object generic_base):             # <<<<<<<<<<<<<<
+ *     cdef Factory create(object t):             # <<<<<<<<<<<<<<
  *         cdef bint has_forward_ref = False
  * 
  */
 
-static struct __pyx_obj_5yapic_6entity_8_factory_Factory *__pyx_f_5yapic_6entity_8_factory_7Factory_create(PyObject *__pyx_v_t, PyObject *__pyx_v_generic_base) {
+static struct __pyx_obj_5yapic_6entity_8_factory_Factory *__pyx_f_5yapic_6entity_8_factory_7Factory_create(PyObject *__pyx_v_t) {
   int __pyx_v_has_forward_ref;
   PyObject *__pyx_v_tinfo = 0;
   struct __pyx_obj_5yapic_6entity_8_factory_Factory *__pyx_v_result = 0;
@@ -1414,14 +1420,13 @@ static struct __pyx_obj_5yapic_6entity_8_factory_Factory *__pyx_f_5yapic_6entity
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
-  int __pyx_t_3;
-  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("create", 0);
   __Pyx_INCREF(__pyx_v_t);
 
   /* "yapic/entity/_factory.pyx":21
  *     @staticmethod
- *     cdef Factory create(object t, object generic_base):
+ *     cdef Factory create(object t):
  *         cdef bint has_forward_ref = False             # <<<<<<<<<<<<<<
  * 
  *         if is_forward_decl(t):
@@ -1517,89 +1522,49 @@ static struct __pyx_obj_5yapic_6entity_8_factory_Factory *__pyx_f_5yapic_6entity
   /* "yapic/entity/_factory.pyx":33
  *         cdef Factory result
  * 
- *         if issubclass(tinfo[0], generic_base):             # <<<<<<<<<<<<<<
- *             result = Factory(t, tinfo)
- *             # result.init_attrs = init_attrs
+ *         result = Factory(t, tinfo)             # <<<<<<<<<<<<<<
+ *         result.has_forward_ref = has_forward_ref
+ *         return result
  */
-  if (unlikely(__pyx_v_tinfo == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 33, __pyx_L1_error)
-  }
-  __pyx_t_2 = PyTuple_GET_ITEM(__pyx_v_tinfo, 0);
-  __Pyx_INCREF(__pyx_t_2);
-  __pyx_t_1 = PyObject_IsSubclass(__pyx_t_2, __pyx_v_generic_base); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_v_t);
+  __Pyx_GIVEREF(__pyx_v_t);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_t);
+  __Pyx_INCREF(__pyx_v_tinfo);
+  __Pyx_GIVEREF(__pyx_v_tinfo);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_v_tinfo);
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_8_factory_Factory), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_3 = (__pyx_t_1 != 0);
-  if (__pyx_t_3) {
+  __pyx_v_result = ((struct __pyx_obj_5yapic_6entity_8_factory_Factory *)__pyx_t_3);
+  __pyx_t_3 = 0;
 
-    /* "yapic/entity/_factory.pyx":34
+  /* "yapic/entity/_factory.pyx":34
  * 
- *         if issubclass(tinfo[0], generic_base):
- *             result = Factory(t, tinfo)             # <<<<<<<<<<<<<<
- *             # result.init_attrs = init_attrs
- *             result.has_forward_ref = has_forward_ref
- */
-    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 34, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_INCREF(__pyx_v_t);
-    __Pyx_GIVEREF(__pyx_v_t);
-    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_t);
-    __Pyx_INCREF(__pyx_v_tinfo);
-    __Pyx_GIVEREF(__pyx_v_tinfo);
-    PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_v_tinfo);
-    __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_8_factory_Factory), __pyx_t_2, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 34, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_v_result = ((struct __pyx_obj_5yapic_6entity_8_factory_Factory *)__pyx_t_4);
-    __pyx_t_4 = 0;
-
-    /* "yapic/entity/_factory.pyx":36
- *             result = Factory(t, tinfo)
- *             # result.init_attrs = init_attrs
- *             result.has_forward_ref = has_forward_ref             # <<<<<<<<<<<<<<
- *             return result
- *         else:
- */
-    __pyx_v_result->has_forward_ref = __pyx_v_has_forward_ref;
-
-    /* "yapic/entity/_factory.pyx":37
- *             # result.init_attrs = init_attrs
- *             result.has_forward_ref = has_forward_ref
- *             return result             # <<<<<<<<<<<<<<
- *         else:
- *             return None
- */
-    __Pyx_XDECREF(((PyObject *)__pyx_r));
-    __Pyx_INCREF(((PyObject *)__pyx_v_result));
-    __pyx_r = __pyx_v_result;
-    goto __pyx_L0;
-
-    /* "yapic/entity/_factory.pyx":33
- *         cdef Factory result
+ *         result = Factory(t, tinfo)
+ *         result.has_forward_ref = has_forward_ref             # <<<<<<<<<<<<<<
+ *         return result
  * 
- *         if issubclass(tinfo[0], generic_base):             # <<<<<<<<<<<<<<
- *             result = Factory(t, tinfo)
- *             # result.init_attrs = init_attrs
  */
-  }
+  __pyx_v_result->has_forward_ref = __pyx_v_has_forward_ref;
 
-  /* "yapic/entity/_factory.pyx":39
- *             return result
- *         else:
- *             return None             # <<<<<<<<<<<<<<
+  /* "yapic/entity/_factory.pyx":35
+ *         result = Factory(t, tinfo)
+ *         result.has_forward_ref = has_forward_ref
+ *         return result             # <<<<<<<<<<<<<<
  * 
  *     def __cinit__(self, object orig_type, tuple hints):
  */
-  /*else*/ {
-    __Pyx_XDECREF(((PyObject *)__pyx_r));
-    __pyx_r = ((struct __pyx_obj_5yapic_6entity_8_factory_Factory *)Py_None); __Pyx_INCREF(Py_None);
-    goto __pyx_L0;
-  }
+  __Pyx_XDECREF(((PyObject *)__pyx_r));
+  __Pyx_INCREF(((PyObject *)__pyx_v_result));
+  __pyx_r = __pyx_v_result;
+  goto __pyx_L0;
 
   /* "yapic/entity/_factory.pyx":20
  * cdef class Factory:
  *     @staticmethod
- *     cdef Factory create(object t, object generic_base):             # <<<<<<<<<<<<<<
+ *     cdef Factory create(object t):             # <<<<<<<<<<<<<<
  *         cdef bint has_forward_ref = False
  * 
  */
@@ -1607,7 +1572,7 @@ static struct __pyx_obj_5yapic_6entity_8_factory_Factory *__pyx_f_5yapic_6entity
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_3);
   __Pyx_AddTraceback("yapic.entity._factory.Factory.create", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
@@ -1619,8 +1584,8 @@ static struct __pyx_obj_5yapic_6entity_8_factory_Factory *__pyx_f_5yapic_6entity
   return __pyx_r;
 }
 
-/* "yapic/entity/_factory.pyx":41
- *             return None
+/* "yapic/entity/_factory.pyx":37
+ *         return result
  * 
  *     def __cinit__(self, object orig_type, tuple hints):             # <<<<<<<<<<<<<<
  *         self.orig_type = orig_type
@@ -1658,11 +1623,11 @@ static int __pyx_pw_5yapic_6entity_8_factory_7Factory_1__cinit__(PyObject *__pyx
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_hints)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, 1); __PYX_ERR(0, 41, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, 1); __PYX_ERR(0, 37, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 41, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 37, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -1675,13 +1640,13 @@ static int __pyx_pw_5yapic_6entity_8_factory_7Factory_1__cinit__(PyObject *__pyx
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 41, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 37, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("yapic.entity._factory.Factory.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_hints), (&PyTuple_Type), 1, "hints", 1))) __PYX_ERR(0, 41, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_hints), (&PyTuple_Type), 1, "hints", 1))) __PYX_ERR(0, 37, __pyx_L1_error)
   __pyx_r = __pyx_pf_5yapic_6entity_8_factory_7Factory___cinit__(((struct __pyx_obj_5yapic_6entity_8_factory_Factory *)__pyx_v_self), __pyx_v_orig_type, __pyx_v_hints);
 
   /* function exit code */
@@ -1698,7 +1663,7 @@ static int __pyx_pf_5yapic_6entity_8_factory_7Factory___cinit__(struct __pyx_obj
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "yapic/entity/_factory.pyx":42
+  /* "yapic/entity/_factory.pyx":38
  * 
  *     def __cinit__(self, object orig_type, tuple hints):
  *         self.orig_type = orig_type             # <<<<<<<<<<<<<<
@@ -1711,7 +1676,7 @@ static int __pyx_pf_5yapic_6entity_8_factory_7Factory___cinit__(struct __pyx_obj
   __Pyx_DECREF(__pyx_v_self->orig_type);
   __pyx_v_self->orig_type = __pyx_v_orig_type;
 
-  /* "yapic/entity/_factory.pyx":43
+  /* "yapic/entity/_factory.pyx":39
  *     def __cinit__(self, object orig_type, tuple hints):
  *         self.orig_type = orig_type
  *         self.hints = hints             # <<<<<<<<<<<<<<
@@ -1724,8 +1689,8 @@ static int __pyx_pf_5yapic_6entity_8_factory_7Factory___cinit__(struct __pyx_obj
   __Pyx_DECREF(__pyx_v_self->hints);
   __pyx_v_self->hints = __pyx_v_hints;
 
-  /* "yapic/entity/_factory.pyx":41
- *             return None
+  /* "yapic/entity/_factory.pyx":37
+ *         return result
  * 
  *     def __cinit__(self, object orig_type, tuple hints):             # <<<<<<<<<<<<<<
  *         self.orig_type = orig_type
@@ -1738,11 +1703,11 @@ static int __pyx_pf_5yapic_6entity_8_factory_7Factory___cinit__(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "yapic/entity/_factory.pyx":45
+/* "yapic/entity/_factory.pyx":41
  *         self.hints = hints
  * 
  *     def __call__(self):             # <<<<<<<<<<<<<<
- *         return new_instance(self.orig_type, self.hints, not self.has_forward_ref)
+ *         return self.invoke()
  * 
  */
 
@@ -1766,13 +1731,60 @@ static PyObject *__pyx_pf_5yapic_6entity_8_factory_7Factory_2__call__(struct __p
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("__call__", 0);
 
-  /* "yapic/entity/_factory.pyx":46
+  /* "yapic/entity/_factory.pyx":42
  * 
  *     def __call__(self):
+ *         return self.invoke()             # <<<<<<<<<<<<<<
+ * 
+ *     cdef object invoke(self):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __pyx_f_5yapic_6entity_8_factory_7Factory_invoke(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "yapic/entity/_factory.pyx":41
+ *         self.hints = hints
+ * 
+ *     def __call__(self):             # <<<<<<<<<<<<<<
+ *         return self.invoke()
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("yapic.entity._factory.Factory.__call__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "yapic/entity/_factory.pyx":44
+ *         return self.invoke()
+ * 
+ *     cdef object invoke(self):             # <<<<<<<<<<<<<<
+ *         return new_instance(self.orig_type, self.hints, not self.has_forward_ref)
+ * 
+ */
+
+static PyObject *__pyx_f_5yapic_6entity_8_factory_7Factory_invoke(struct __pyx_obj_5yapic_6entity_8_factory_Factory *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  __Pyx_RefNannySetupContext("invoke", 0);
+
+  /* "yapic/entity/_factory.pyx":45
+ * 
+ *     cdef object invoke(self):
  *         return new_instance(self.orig_type, self.hints, not self.has_forward_ref)             # <<<<<<<<<<<<<<
  * 
  * 
@@ -1782,7 +1794,7 @@ static PyObject *__pyx_pf_5yapic_6entity_8_factory_7Factory_2__call__(struct __p
   __Pyx_INCREF(__pyx_t_1);
   __pyx_t_2 = __pyx_v_self->hints;
   __Pyx_INCREF(__pyx_t_2);
-  __pyx_t_3 = __pyx_f_5yapic_6entity_8_factory_new_instance(__pyx_t_1, ((PyObject*)__pyx_t_2), (!(__pyx_v_self->has_forward_ref != 0))); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_5yapic_6entity_8_factory_new_instance(__pyx_t_1, ((PyObject*)__pyx_t_2), (!(__pyx_v_self->has_forward_ref != 0))); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -1790,10 +1802,10 @@ static PyObject *__pyx_pf_5yapic_6entity_8_factory_7Factory_2__call__(struct __p
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "yapic/entity/_factory.pyx":45
- *         self.hints = hints
+  /* "yapic/entity/_factory.pyx":44
+ *         return self.invoke()
  * 
- *     def __call__(self):             # <<<<<<<<<<<<<<
+ *     cdef object invoke(self):             # <<<<<<<<<<<<<<
  *         return new_instance(self.orig_type, self.hints, not self.has_forward_ref)
  * 
  */
@@ -1803,15 +1815,15 @@ static PyObject *__pyx_pf_5yapic_6entity_8_factory_7Factory_2__call__(struct __p
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("yapic.entity._factory.Factory.__call__", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
+  __Pyx_AddTraceback("yapic.entity._factory.Factory.invoke", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "yapic/entity/_factory.pyx":49
+/* "yapic/entity/_factory.pyx":48
  * 
  * 
  * cdef object new_instance(object type, tuple hints, bint resolve_forward):             # <<<<<<<<<<<<<<
@@ -1842,7 +1854,7 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
   __Pyx_RefNannySetupContext("new_instance", 0);
   __Pyx_INCREF(__pyx_v_hints);
 
-  /* "yapic/entity/_factory.pyx":55
+  /* "yapic/entity/_factory.pyx":54
  *     cdef tuple arg
  * 
  *     (cls, attrs, init) = hints             # <<<<<<<<<<<<<<
@@ -1855,7 +1867,7 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
     if (unlikely(size != 3)) {
       if (size > 3) __Pyx_RaiseTooManyValuesError(3);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 55, __pyx_L1_error)
+      __PYX_ERR(0, 54, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     __pyx_t_1 = PyTuple_GET_ITEM(sequence, 0); 
@@ -1865,18 +1877,18 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
     __Pyx_INCREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_t_3);
     #else
-    __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __pyx_t_2 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __pyx_t_3 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 54, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     #endif
   } else {
-    __Pyx_RaiseNoneNotIterableError(); __PYX_ERR(0, 55, __pyx_L1_error)
+    __Pyx_RaiseNoneNotIterableError(); __PYX_ERR(0, 54, __pyx_L1_error)
   }
-  if (!(likely(PyDict_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "dict", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 55, __pyx_L1_error)
-  if (!(likely(PyTuple_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 55, __pyx_L1_error)
+  if (!(likely(PyDict_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "dict", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 54, __pyx_L1_error)
+  if (!(likely(PyTuple_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 54, __pyx_L1_error)
   __pyx_v_cls = __pyx_t_1;
   __pyx_t_1 = 0;
   __pyx_v_attrs = ((PyObject*)__pyx_t_2);
@@ -1884,19 +1896,19 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
   __pyx_v_init = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "yapic/entity/_factory.pyx":57
+  /* "yapic/entity/_factory.pyx":56
  *     (cls, attrs, init) = hints
  * 
  *     args = []             # <<<<<<<<<<<<<<
  * 
  *     if init is not None and init[0] is not None:
  */
-  __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_args = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "yapic/entity/_factory.pyx":59
+  /* "yapic/entity/_factory.pyx":58
  *     args = []
  * 
  *     if init is not None and init[0] is not None:             # <<<<<<<<<<<<<<
@@ -1912,7 +1924,7 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
   }
   if (unlikely(__pyx_v_init == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 59, __pyx_L1_error)
+    __PYX_ERR(0, 58, __pyx_L1_error)
   }
   __pyx_t_6 = (PyTuple_GET_ITEM(__pyx_v_init, 0) != Py_None);
   __pyx_t_5 = (__pyx_t_6 != 0);
@@ -1920,7 +1932,7 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_4) {
 
-    /* "yapic/entity/_factory.pyx":61
+    /* "yapic/entity/_factory.pyx":60
  *     if init is not None and init[0] is not None:
  *         # print(init[0])
  *         for arg in init[0]:             # <<<<<<<<<<<<<<
@@ -1929,32 +1941,32 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
  */
     if (unlikely(__pyx_v_init == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 61, __pyx_L1_error)
+      __PYX_ERR(0, 60, __pyx_L1_error)
     }
     if (likely(PyList_CheckExact(PyTuple_GET_ITEM(__pyx_v_init, 0))) || PyTuple_CheckExact(PyTuple_GET_ITEM(__pyx_v_init, 0))) {
       __pyx_t_3 = PyTuple_GET_ITEM(__pyx_v_init, 0); __Pyx_INCREF(__pyx_t_3); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
     } else {
-      __pyx_t_7 = -1; __pyx_t_3 = PyObject_GetIter(PyTuple_GET_ITEM(__pyx_v_init, 0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 61, __pyx_L1_error)
+      __pyx_t_7 = -1; __pyx_t_3 = PyObject_GetIter(PyTuple_GET_ITEM(__pyx_v_init, 0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_8 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 61, __pyx_L1_error)
+      __pyx_t_8 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 60, __pyx_L1_error)
     }
     for (;;) {
       if (likely(!__pyx_t_8)) {
         if (likely(PyList_CheckExact(__pyx_t_3))) {
           if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_3)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_2 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_2); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 61, __pyx_L1_error)
+          __pyx_t_2 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_2); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 60, __pyx_L1_error)
           #else
-          __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 61, __pyx_L1_error)
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           #endif
         } else {
           if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_2); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 61, __pyx_L1_error)
+          __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_2); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 60, __pyx_L1_error)
           #else
-          __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 61, __pyx_L1_error)
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           #endif
         }
@@ -1964,17 +1976,17 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 61, __pyx_L1_error)
+            else __PYX_ERR(0, 60, __pyx_L1_error)
           }
           break;
         }
         __Pyx_GOTREF(__pyx_t_2);
       }
-      if (!(likely(PyTuple_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 61, __pyx_L1_error)
+      if (!(likely(PyTuple_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 60, __pyx_L1_error)
       __Pyx_XDECREF_SET(__pyx_v_arg, ((PyObject*)__pyx_t_2));
       __pyx_t_2 = 0;
 
-      /* "yapic/entity/_factory.pyx":62
+      /* "yapic/entity/_factory.pyx":61
  *         # print(init[0])
  *         for arg in init[0]:
  *             argName = arg[0]             # <<<<<<<<<<<<<<
@@ -1983,14 +1995,14 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
  */
       if (unlikely(__pyx_v_arg == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 62, __pyx_L1_error)
+        __PYX_ERR(0, 61, __pyx_L1_error)
       }
       __pyx_t_2 = PyTuple_GET_ITEM(__pyx_v_arg, 0);
       __Pyx_INCREF(__pyx_t_2);
       __Pyx_XDECREF_SET(__pyx_v_argName, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "yapic/entity/_factory.pyx":63
+      /* "yapic/entity/_factory.pyx":62
  *         for arg in init[0]:
  *             argName = arg[0]
  *             argType = arg[1]             # <<<<<<<<<<<<<<
@@ -1999,14 +2011,14 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
  */
       if (unlikely(__pyx_v_arg == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 63, __pyx_L1_error)
+        __PYX_ERR(0, 62, __pyx_L1_error)
       }
       __pyx_t_2 = PyTuple_GET_ITEM(__pyx_v_arg, 1);
       __Pyx_INCREF(__pyx_t_2);
       __Pyx_XDECREF_SET(__pyx_v_argType, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "yapic/entity/_factory.pyx":64
+      /* "yapic/entity/_factory.pyx":63
  *             argName = arg[0]
  *             argType = arg[1]
  *             if argType is not None:             # <<<<<<<<<<<<<<
@@ -2017,7 +2029,7 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
       __pyx_t_5 = (__pyx_t_4 != 0);
       if (likely(__pyx_t_5)) {
 
-        /* "yapic/entity/_factory.pyx":65
+        /* "yapic/entity/_factory.pyx":64
  *             argType = arg[1]
  *             if argType is not None:
  *                 if is_forward_decl(argType):             # <<<<<<<<<<<<<<
@@ -2027,7 +2039,7 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
         __pyx_t_5 = (__pyx_f_5yapic_6entity_8_factory_is_forward_decl(__pyx_v_argType) != 0);
         if (__pyx_t_5) {
 
-          /* "yapic/entity/_factory.pyx":66
+          /* "yapic/entity/_factory.pyx":65
  *             if argType is not None:
  *                 if is_forward_decl(argType):
  *                     if resolve_forward:             # <<<<<<<<<<<<<<
@@ -2037,19 +2049,19 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
           __pyx_t_5 = (__pyx_v_resolve_forward != 0);
           if (__pyx_t_5) {
 
-            /* "yapic/entity/_factory.pyx":67
+            /* "yapic/entity/_factory.pyx":66
  *                 if is_forward_decl(argType):
  *                     if resolve_forward:
  *                         args.append(new_instance_from_forward(argType))             # <<<<<<<<<<<<<<
  *                     else:
  *                         args.append(argType)
  */
-            __pyx_t_2 = __pyx_f_5yapic_6entity_8_factory_new_instance_from_forward(__pyx_v_argType); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 67, __pyx_L1_error)
+            __pyx_t_2 = __pyx_f_5yapic_6entity_8_factory_new_instance_from_forward(__pyx_v_argType); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 66, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_2);
-            __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_args, __pyx_t_2); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 67, __pyx_L1_error)
+            __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_args, __pyx_t_2); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 66, __pyx_L1_error)
             __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-            /* "yapic/entity/_factory.pyx":66
+            /* "yapic/entity/_factory.pyx":65
  *             if argType is not None:
  *                 if is_forward_decl(argType):
  *                     if resolve_forward:             # <<<<<<<<<<<<<<
@@ -2059,7 +2071,7 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
             goto __pyx_L10;
           }
 
-          /* "yapic/entity/_factory.pyx":69
+          /* "yapic/entity/_factory.pyx":68
  *                         args.append(new_instance_from_forward(argType))
  *                     else:
  *                         args.append(argType)             # <<<<<<<<<<<<<<
@@ -2067,11 +2079,11 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
  *                     if hasattr(argType, "__origin__") and issubclass(argType.__origin__, typing.Type):
  */
           /*else*/ {
-            __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_args, __pyx_v_argType); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 69, __pyx_L1_error)
+            __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_args, __pyx_v_argType); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 68, __pyx_L1_error)
           }
           __pyx_L10:;
 
-          /* "yapic/entity/_factory.pyx":65
+          /* "yapic/entity/_factory.pyx":64
  *             argType = arg[1]
  *             if argType is not None:
  *                 if is_forward_decl(argType):             # <<<<<<<<<<<<<<
@@ -2081,7 +2093,7 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
           goto __pyx_L9;
         }
 
-        /* "yapic/entity/_factory.pyx":71
+        /* "yapic/entity/_factory.pyx":70
  *                         args.append(argType)
  *                 else:
  *                     if hasattr(argType, "__origin__") and issubclass(argType.__origin__, typing.Type):             # <<<<<<<<<<<<<<
@@ -2089,21 +2101,21 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
  *                     else:
  */
         /*else*/ {
-          __pyx_t_4 = __Pyx_HasAttr(__pyx_v_argType, __pyx_n_u_origin); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 71, __pyx_L1_error)
+          __pyx_t_4 = __Pyx_HasAttr(__pyx_v_argType, __pyx_n_u_origin); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 70, __pyx_L1_error)
           __pyx_t_6 = (__pyx_t_4 != 0);
           if (__pyx_t_6) {
           } else {
             __pyx_t_5 = __pyx_t_6;
             goto __pyx_L12_bool_binop_done;
           }
-          __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_argType, __pyx_n_s_origin); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 71, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_argType, __pyx_n_s_origin); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 70, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
-          __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_typing); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
+          __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_typing); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
-          __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_Type); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 71, __pyx_L1_error)
+          __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_Type); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 70, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_10);
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-          __pyx_t_6 = PyObject_IsSubclass(__pyx_t_2, __pyx_t_10); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 71, __pyx_L1_error)
+          __pyx_t_6 = PyObject_IsSubclass(__pyx_t_2, __pyx_t_10); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 70, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
           __pyx_t_4 = (__pyx_t_6 != 0);
@@ -2111,22 +2123,22 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
           __pyx_L12_bool_binop_done:;
           if (__pyx_t_5) {
 
-            /* "yapic/entity/_factory.pyx":72
+            /* "yapic/entity/_factory.pyx":71
  *                 else:
  *                     if hasattr(argType, "__origin__") and issubclass(argType.__origin__, typing.Type):
  *                         args.append(argType.__args__[0])             # <<<<<<<<<<<<<<
  *                     else:
  *                         hints = typing_.TypeHints(argType)
  */
-            __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_argType, __pyx_n_s_args); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 72, __pyx_L1_error)
+            __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_argType, __pyx_n_s_args); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 71, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_10);
-            __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_10, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 72, __pyx_L1_error)
+            __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_10, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 71, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_2);
             __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-            __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_args, __pyx_t_2); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 72, __pyx_L1_error)
+            __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_args, __pyx_t_2); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 71, __pyx_L1_error)
             __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-            /* "yapic/entity/_factory.pyx":71
+            /* "yapic/entity/_factory.pyx":70
  *                         args.append(argType)
  *                 else:
  *                     if hasattr(argType, "__origin__") and issubclass(argType.__origin__, typing.Type):             # <<<<<<<<<<<<<<
@@ -2136,7 +2148,7 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
             goto __pyx_L11;
           }
 
-          /* "yapic/entity/_factory.pyx":74
+          /* "yapic/entity/_factory.pyx":73
  *                         args.append(argType.__args__[0])
  *                     else:
  *                         hints = typing_.TypeHints(argType)             # <<<<<<<<<<<<<<
@@ -2144,28 +2156,28 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
  *             else:
  */
           /*else*/ {
-            __pyx_t_2 = __pyx_v_5yapic_6entity_8_factory_typing_->TypeHints(__pyx_v_argType); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 74, __pyx_L1_error)
+            __pyx_t_2 = __pyx_v_5yapic_6entity_8_factory_typing_->TypeHints(__pyx_v_argType); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_2);
             __Pyx_DECREF_SET(__pyx_v_hints, ((PyObject*)__pyx_t_2));
             __pyx_t_2 = 0;
 
-            /* "yapic/entity/_factory.pyx":75
+            /* "yapic/entity/_factory.pyx":74
  *                     else:
  *                         hints = typing_.TypeHints(argType)
  *                         args.append(new_instance(argType, hints, resolve_forward))             # <<<<<<<<<<<<<<
  *             else:
  *                 raise TypeError("Positional arguments must have a type hint: %r" % type)
  */
-            __pyx_t_2 = __pyx_f_5yapic_6entity_8_factory_new_instance(__pyx_v_argType, __pyx_v_hints, __pyx_v_resolve_forward); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 75, __pyx_L1_error)
+            __pyx_t_2 = __pyx_f_5yapic_6entity_8_factory_new_instance(__pyx_v_argType, __pyx_v_hints, __pyx_v_resolve_forward); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 74, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_2);
-            __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_args, __pyx_t_2); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 75, __pyx_L1_error)
+            __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_args, __pyx_t_2); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 74, __pyx_L1_error)
             __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           }
           __pyx_L11:;
         }
         __pyx_L9:;
 
-        /* "yapic/entity/_factory.pyx":64
+        /* "yapic/entity/_factory.pyx":63
  *             argName = arg[0]
  *             argType = arg[1]
  *             if argType is not None:             # <<<<<<<<<<<<<<
@@ -2175,7 +2187,7 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
         goto __pyx_L8;
       }
 
-      /* "yapic/entity/_factory.pyx":77
+      /* "yapic/entity/_factory.pyx":76
  *                         args.append(new_instance(argType, hints, resolve_forward))
  *             else:
  *                 raise TypeError("Positional arguments must have a type hint: %r" % type)             # <<<<<<<<<<<<<<
@@ -2183,18 +2195,18 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
  *     return type(*args)
  */
       /*else*/ {
-        __pyx_t_2 = __Pyx_PyUnicode_FormatSafe(__pyx_kp_u_Positional_arguments_must_have_a, __pyx_v_type); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 77, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyUnicode_FormatSafe(__pyx_kp_u_Positional_arguments_must_have_a, __pyx_v_type); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 76, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_10 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 77, __pyx_L1_error)
+        __pyx_t_10 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 76, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_10);
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __Pyx_Raise(__pyx_t_10, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-        __PYX_ERR(0, 77, __pyx_L1_error)
+        __PYX_ERR(0, 76, __pyx_L1_error)
       }
       __pyx_L8:;
 
-      /* "yapic/entity/_factory.pyx":61
+      /* "yapic/entity/_factory.pyx":60
  *     if init is not None and init[0] is not None:
  *         # print(init[0])
  *         for arg in init[0]:             # <<<<<<<<<<<<<<
@@ -2204,7 +2216,7 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "yapic/entity/_factory.pyx":59
+    /* "yapic/entity/_factory.pyx":58
  *     args = []
  * 
  *     if init is not None and init[0] is not None:             # <<<<<<<<<<<<<<
@@ -2213,7 +2225,7 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
  */
   }
 
-  /* "yapic/entity/_factory.pyx":79
+  /* "yapic/entity/_factory.pyx":78
  *                 raise TypeError("Positional arguments must have a type hint: %r" % type)
  * 
  *     return type(*args)             # <<<<<<<<<<<<<<
@@ -2221,16 +2233,16 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = PySequence_Tuple(__pyx_v_args); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __pyx_t_3 = PySequence_Tuple(__pyx_v_args); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_10 = __Pyx_PyObject_Call(__pyx_v_type, __pyx_t_3, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyObject_Call(__pyx_v_type, __pyx_t_3, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_r = __pyx_t_10;
   __pyx_t_10 = 0;
   goto __pyx_L0;
 
-  /* "yapic/entity/_factory.pyx":49
+  /* "yapic/entity/_factory.pyx":48
  * 
  * 
  * cdef object new_instance(object type, tuple hints, bint resolve_forward):             # <<<<<<<<<<<<<<
@@ -2260,7 +2272,7 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
   return __pyx_r;
 }
 
-/* "yapic/entity/_factory.pyx":82
+/* "yapic/entity/_factory.pyx":81
  * 
  * 
  * cdef object new_instance_from_forward(object fwd):             # <<<<<<<<<<<<<<
@@ -2277,7 +2289,7 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance_from_forward(PyOb
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("new_instance_from_forward", 0);
 
-  /* "yapic/entity/_factory.pyx":83
+  /* "yapic/entity/_factory.pyx":82
  * 
  * cdef object new_instance_from_forward(object fwd):
  *     cdef ForwardDecl* forward = (<ForwardDecl*>(<PyObject*>fwd))             # <<<<<<<<<<<<<<
@@ -2286,45 +2298,42 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance_from_forward(PyOb
  */
   __pyx_v_forward = ((Yapic::ForwardDecl *)((PyObject *)__pyx_v_fwd));
 
-  /* "yapic/entity/_factory.pyx":84
+  /* "yapic/entity/_factory.pyx":83
  * cdef object new_instance_from_forward(object fwd):
  *     cdef ForwardDecl* forward = (<ForwardDecl*>(<PyObject*>fwd))
  *     argType = forward.Resolve()             # <<<<<<<<<<<<<<
  *     hints = typing_.TypeHints(argType)
  *     return new_instance(argType, hints, True)
  */
-  __pyx_t_1 = __pyx_v_forward->Resolve(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_1 = __pyx_v_forward->Resolve(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_argType = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "yapic/entity/_factory.pyx":85
+  /* "yapic/entity/_factory.pyx":84
  *     cdef ForwardDecl* forward = (<ForwardDecl*>(<PyObject*>fwd))
  *     argType = forward.Resolve()
  *     hints = typing_.TypeHints(argType)             # <<<<<<<<<<<<<<
  *     return new_instance(argType, hints, True)
- * 
  */
-  __pyx_t_1 = __pyx_v_5yapic_6entity_8_factory_typing_->TypeHints(__pyx_v_argType); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_t_1 = __pyx_v_5yapic_6entity_8_factory_typing_->TypeHints(__pyx_v_argType); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_hints = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/entity/_factory.pyx":86
+  /* "yapic/entity/_factory.pyx":85
  *     argType = forward.Resolve()
  *     hints = typing_.TypeHints(argType)
  *     return new_instance(argType, hints, True)             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_8_factory_new_instance(__pyx_v_argType, __pyx_v_hints, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_8_factory_new_instance(__pyx_v_argType, __pyx_v_hints, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "yapic/entity/_factory.pyx":82
+  /* "yapic/entity/_factory.pyx":81
  * 
  * 
  * cdef object new_instance_from_forward(object fwd):             # <<<<<<<<<<<<<<
@@ -2521,7 +2530,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 77, __pyx_L1_error)
+  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 76, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -2585,7 +2594,8 @@ static int __Pyx_modinit_type_init_code(void) {
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
   __pyx_vtabptr_5yapic_6entity_8_factory_Factory = &__pyx_vtable_5yapic_6entity_8_factory_Factory;
-  __pyx_vtable_5yapic_6entity_8_factory_Factory.create = (struct __pyx_obj_5yapic_6entity_8_factory_Factory *(*)(PyObject *, PyObject *))__pyx_f_5yapic_6entity_8_factory_7Factory_create;
+  __pyx_vtable_5yapic_6entity_8_factory_Factory.create = (struct __pyx_obj_5yapic_6entity_8_factory_Factory *(*)(PyObject *))__pyx_f_5yapic_6entity_8_factory_7Factory_create;
+  __pyx_vtable_5yapic_6entity_8_factory_Factory.invoke = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_8_factory_Factory *))__pyx_f_5yapic_6entity_8_factory_7Factory_invoke;
   if (PyType_Ready(&__pyx_type_5yapic_6entity_8_factory_Factory) < 0) __PYX_ERR(0, 18, __pyx_L1_error)
   __pyx_type_5yapic_6entity_8_factory_Factory.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_8_factory_Factory.tp_dictoffset && __pyx_type_5yapic_6entity_8_factory_Factory.tp_getattro == PyObject_GenericGetAttr)) {

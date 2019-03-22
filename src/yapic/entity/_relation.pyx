@@ -1,34 +1,45 @@
+import sys
 import cython
+from cpython.ref cimport Py_XDECREF, Py_XINCREF, Py_DECREF, Py_INCREF, Py_CLEAR
+from cpython.object cimport PyObject, PyObject_RichCompareBool, Py_EQ
+from cpython.tuple cimport PyTuple_SetItem, PyTuple_GetItem, PyTuple_New, PyTuple_GET_SIZE, PyTuple_SET_ITEM, PyTuple_GET_ITEM, PyTuple_Pack
 
 from ._entity cimport EntityType, EntityBase
 from ._expression cimport Expression, Visitor
-from ._field cimport Field
-from ._factory cimport ForwardDecl, new_instance_from_forward, is_forward_decl
+from ._field cimport Field, ForeignKey, collect_foreign_keys
+from ._factory cimport Factory, ForwardDecl, new_instance_from_forward, is_forward_decl
 
 
 cdef class Relation(Expression):
     def __cinit__(self, impl):
-        self._impl = impl
+        if is_forward_decl(impl) or isinstance(impl, RelationImpl):
+            self._impl = impl
+        else:
+            raise TypeError("Invalid impl argument for relation")
 
     @property
     def __impl__(self):
         if is_forward_decl(self._impl):
             self._impl = new_instance_from_forward(self._impl)
+            if not isinstance(self._impl, RelationImpl):
+                raise TypeError("Invalid impl argument for relation")
+            else:
+                (<RelationImpl>self._impl).determine_join_expr(self.__entity__)
         return self._impl
 
     def __get__(self, instance, owner):
         if instance is None:
             return self
         elif isinstance(instance, EntityBase):
-            return self.__impl__.get_value()
+            return (<EntityBase>instance).__rstate__.get_value(self.index)
         else:
             raise TypeError("Instance must be 'None' or 'EntityBase'")
 
     def __set__(self, EntityBase instance, value):
-        self.__impl__.set_value(value)
+        instance.__rstate__.set_value(self.index, value)
 
     def __delete__(self, EntityBase instance):
-        self.__impl__.del_value()
+        instance.__rstate__.del_value(self.index)
 
     def __getattr__(self, name):
         cdef EntityType joined = self.__impl__.joined
@@ -41,8 +52,10 @@ cdef class Relation(Expression):
     def __repr__(self):
         return "<Relation %s :: %s>" % (self.__entity__, self.__impl__)
 
-    cdef void bind(self, EntityType entity):
+    cdef bind(self, EntityType entity):
         self.__entity__ = entity
+        if isinstance(self._impl, RelationImpl):
+            (<RelationImpl>self._impl).determine_join_expr(entity)
 
 
 cdef class RelationField(Expression):
@@ -58,116 +71,310 @@ cdef class RelationField(Expression):
 
 
 cdef class RelationImpl:
-    cpdef object get_value(self):
-        raise NotImplementedError()
+    cdef object new_value_store(self):
+        return self.value_store_factory.invoke()
 
-    cpdef void set_value(self, value):
-        raise NotImplementedError()
+    cdef void set_value_store_type(self, object t):
+        if self.value_store_t != t:
+            self.value_store_factory = Factory.create(t)
 
-    cpdef void del_value(self):
+    cdef determine_join_expr(self, EntityType entity):
         raise NotImplementedError()
 
 
 cdef class ManyToOne(RelationImpl):
-    def __cinit__(self, joined, value):
+    def __cinit__(self, joined, value_t):
         self.joined = joined
-        self.value = value
-
-    cpdef object get_value(self):
-        return self.value.get_value()
-
-    cpdef void set_value(self, value):
-        self.value.set_value(value)
-
-    cpdef void del_value(self):
-        self.value.del_value()
+        self.set_value_store_type(value_t)
 
     def __repr__(self):
         return "ManyToOne %r" % self.joined
 
+    cdef determine_join_expr(self, EntityType entity):
+        self.join_expr = determine_join_expr(entity, self.joined)
+
 
 cdef class OneToMany(RelationImpl):
-    def __cinit__(self, joined, value):
+    def __cinit__(self, joined, value_t):
         self.joined = joined
-        self.value = value
+        self.set_value_store_type(value_t)
 
     def __repr__(self):
         return "OneToMany %r" % self.joined
 
+    cdef determine_join_expr(self, EntityType entity):
+        self.join_expr = determine_join_expr(entity, self.joined)
+
 
 cdef class ManyToMany(RelationImpl):
-    def __cinit__(self, joined, across, value):
+    def __cinit__(self, joined, across, value_t):
         self.joined = joined
         self.across = across
-        self.value = value
+        self.set_value_store_type(value_t)
 
     def __repr__(self):
         return "ManyToMany %r => %r" % (self.across, self.joined)
+
+    cdef determine_join_expr(self, EntityType entity):
+        self.across_join_expr = determine_join_expr(self.across, entity)
+        self.join_expr = determine_join_expr(self.across, self.joined)
+
+
+cdef determine_join_expr(EntityType entity, EntityType joined):
+    cdef dict fks = collect_foreign_keys(entity)
+    cdef list keys
+    cdef Field field
+    cdef ForeignKey fk
+    cdef object found = None
+
+    for fk_name, keys in fks.items():
+        fk = <ForeignKey>keys[0]
+
+        if fk.ref.entity is joined:
+            if found is not None:
+                raise RuntimeError("Multiple join conditions between %s <-> %s" % (entity, joined))
+
+            found = fk.field == fk.ref
+            for i in range(1, len(keys)):
+                fk = <ForeignKey>keys[i]
+                found &= fk.field == fk.ref
+
+    if found is None:
+        raise RuntimeError("Can't determine join condition between %s <-> %s" % (entity, joined))
+
+    return found
 
 
 # ****************************************************************************
 # ** VALUE STORES **
 # ****************************************************************************
 
-cdef class RelatedItem:
-    cdef object get_value(self):
-        return self.current
+@cython.final
+@cython.freelist(1000)
+cdef class RelationState:
+    def __cinit__(self, tuple relations):
+        cdef int size = PyTuple_GET_SIZE(relations)
+        self.data = PyTuple_New(size)
+        cdef PyObject* data = <PyObject*>self.data
 
-    cdef void set_value(self, object value):
-        if self.original is None:
-            self.original = value
-            self.current = value
-        else:
-            self.current = value
+        cdef Relation rel
+        cdef RelationImpl impl
+        cdef object store
 
-    cdef void del_value(self):
-        self.current = None
+        for i from 0 <= i < size:
+            rel = <Relation>PyTuple_GET_ITEM(relations, i)
+            impl = <RelationImpl>rel.__impl__
+            store = impl.new_value_store()
+            Py_INCREF(<object>store)
+            PyTuple_SET_ITEM(<object>data, i, <object>store)
+
+    cdef object get_value(self, int index):
+        cdef ValueStore vs = <ValueStore>self.data[index]
+        return vs.get_value()
+
+    cdef bint set_value(self, int index, object value):
+        cdef ValueStore vs = <ValueStore>self.data[index]
+        return vs.set_value(value)
+
+    cdef bint del_value(self, int index):
+        cdef ValueStore vs = <ValueStore>self.data[index]
+        return vs.del_value()
 
     cpdef reset(self):
-        self.original = self.current
+        cdef int size = PyTuple_GET_SIZE(self.data)
+
+        cdef ValueStore store
+
+        for i from 0 <= i < size:
+            store = <ValueStore>self.data[i]
+            store.reset()
 
 
-cdef class RelatedContainer:
-    cpdef _set_item(self, object key, object value):
+cdef class ValueStore:
+    cdef object get_value(self):
         raise NotImplementedError()
 
-    cpdef _get_item(self, object key):
+    cdef bint set_value(self, object value):
         raise NotImplementedError()
 
-    cpdef _del_item(self, object key):
+    cdef bint del_value(self):
         raise NotImplementedError()
+
+    cpdef reset(self):
+        raise NotImplementedError()
+
+
+cdef class RelatedItem(ValueStore):
+    def __cinit__(self):
+        self.original = NULL
+        self.current = NULL
+
+    cdef object get_value(self):
+        if self.current is NULL:
+            if self.original is NULL:
+                return None
+            else:
+                return <object>self.original
+        else:
+            return <object>self.current
+
+    cdef bint set_value(self, object value):
+        if self.current is NULL:
+            self.current = <PyObject*>value
+            Py_XINCREF(self.current)
+        elif self.original is NULL or not PyObject_RichCompareBool(<object>self.original, value, Py_EQ):
+            Py_XDECREF(self.current)
+            self.current = <PyObject*>value
+            Py_XINCREF(self.current)
+        return 1
+
+    cdef bint del_value(self):
+        Py_XDECREF(self.current)
+        self.current = <PyObject*>None
+        Py_XINCREF(self.current)
+        return 1
+
+    cpdef reset(self):
+        if self.current is not NULL:
+            Py_XDECREF(self.original)
+            self.original = self.current
+            self.current = NULL
+
+    def __dealloc__(self):
+        Py_CLEAR(self.original)
+        Py_CLEAR(self.current)
+
+
+cdef class RelatedContainer(ValueStore):
+    def __cinit__(self):
+        # todo: maybe use set instead of list
+        self.__removed__ = []
+        self.__added__ = []
+
+    cpdef _op_add(self, object value):
+        try:
+            key = self.__removed__.index(value)
+        except:
+            pass
+        else:
+            del self.__removed__[key]
+
+        if value not in self.__added__:
+            self.__added__.append(value)
+
+    cpdef _op_del(self, object value):
+        try:
+            key = self.__added__.index(value)
+        except:
+            pass
+        else:
+            del self.__added__[key]
+
+        if value not in self.__removed__:
+            self.__removed__.append(value)
+
+    cpdef reset(self):
+        self.__added__ = []
+        self.__removed__ = []
 
 
 cdef class RelatedList(RelatedContainer):
-    cpdef append(self, object o):
-        raise NotImplementedError()
+    def __cinit__(self):
+        self.value = []
 
-    cpdef extend(self, object o):
-        raise NotImplementedError()
+    cdef object get_value(self):
+        return self
+
+    cdef bint set_value(self, object value):
+        for item in self.value:
+            self._op_del(item)
+
+        if isinstance(value, tuple):
+            self.value = list(<tuple>value)
+        else:
+            self.value = value
+
+        for item in self.value:
+            self._op_add(item)
+        return 1
+
+    cdef bint del_value(self):
+        for item in self.value:
+            self._op_del(item)
+        self.value = []
+        return 1
+
+    cpdef append(self, object o):
+        self.value.append(o)
+        self._op_add(o)
+
+    cpdef extend(self, list o):
+        self.value.extend(o)
+        for item in o:
+            self._op_add(item)
 
     cpdef insert(self, object index, object o):
-        raise NotImplementedError()
+        self.value.insert(index, o)
+        self._op_add(o)
 
     cpdef remove(self, object o):
-        raise NotImplementedError()
+        self.value.remove(o)
+        self._op_del(o)
 
     cpdef pop(self, object index = None):
-        raise NotImplementedError()
+        item = self.value.pop(index)
+        self._op_del(item)
+        return item
 
     cpdef clear(self):
-        raise NotImplementedError()
+        for item in self.value:
+            self._op_del(item)
+        del self.value[:]
 
     cpdef reset(self):
-        raise NotImplementedError()
+        del self.__removed__[:]
+        del self.__added__[:]
 
-    # def __getitem__(self, object key)
+    def __getitem__(self, key):
+        return self.value[key]
 
-    # __getitem__
-    # __setitem__
-    # __delitem__
-    # __len__
-    # __contains__
-    # __iter__
+    def __setitem__(self, key, value):
+        self._op_delitems_by_key(key)
+
+        self.value[key] = value
+
+        if isinstance(key, int):
+            self._op_add(value)
+        elif isinstance(key, slice):
+            for x in value:
+                self._op_add(x)
+
+    def __delitem__(self, key):
+        self._op_delitems_by_key(key)
+        del self.value[key]
+
+    def __len__(self):
+        return len(self.value)
+
+    def __contains__(self, value):
+        return value in self.value
+
+    def __iter__(self):
+        return iter(self.value)
+
+    def __str__(self):
+        return str(self.value)
+
+    def __repr__(self):
+        return repr(self.value)
+
+    cdef void _op_delitems_by_key(self, key):
+        if isinstance(key, int):
+            if key >= 0 and key < len(self.value):
+                self._op_del(self.value[key])
+        elif isinstance(key, slice):
+            for x in xrange(*key.indices(len(self.value))):
+                self._op_del(self.value[x])
 
 
 cdef class RelatedDict(RelatedContainer):

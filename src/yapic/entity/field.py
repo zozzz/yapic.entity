@@ -1,7 +1,13 @@
-from typing import Generic, TypeVar, Union, Optional, List, Tuple
-from ._field import Field as _Field, StringImpl, IntImpl
+from typing import Generic, TypeVar, Union, Optional, List, Tuple, Type, Any
+from enum import Enum
+from ._field import Field as _Field, Index, ForeignKey
+from ._field_impl import (
+    StringImpl,
+    IntImpl,
+    ChoiceImpl as _ChoiceImpl,
+)
 
-__all__ = ["Field", "String", "Int"]
+__all__ = ["Field", "String", "Int", "Choice", "Index", "ForeignKey"]
 
 Impl = TypeVar("Impl")
 PyType = TypeVar("PyType")
@@ -28,3 +34,17 @@ class Field(Generic[Impl, PyType, RawType], _Field):
 
 String = Field[StringImpl, str, bytes]
 Int = Field[IntImpl, int, bytes]
+
+EnumT = TypeVar("EnumT", bound=Enum)
+
+
+class ChoiceImpl(Generic[EnumT], _ChoiceImpl):
+    enum: Type[EnumT]
+    is_multi: bool
+
+    def __init__(self, enum: Type[EnumT]):
+        pass
+
+
+class Choice(Generic[EnumT], Field[ChoiceImpl[EnumT], EnumT, Any]):
+    pass

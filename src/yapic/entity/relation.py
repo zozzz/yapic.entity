@@ -1,6 +1,7 @@
-from typing import Generic, TypeVar, overload, Type
+from typing import Generic, TypeVar, overload, Type, Union, Any
 
 from . import _relation
+from .field import Field
 
 __all__ = "Relation", "Many", "One", "ManyAcross"
 
@@ -49,7 +50,7 @@ class OneToMany(Generic[JoinedT, ValueStore], _relation.OneToMany):
     def __new__(cls, *args, **kwargs):
         return _relation.OneToMany.__new__(_relation.OneToMany, *args, **kwargs)
 
-    def __init__(self, joined: JoinedT, value: ValueStore):
+    def __init__(self, joined: JoinedT, value: Type[ValueStore]):
         pass
 
 
@@ -60,7 +61,7 @@ class ManyToOne(Generic[JoinedT, ValueStore], _relation.ManyToOne):
     def __new__(cls, *args, **kwargs):
         return _relation.ManyToOne.__new__(_relation.ManyToOne, *args, **kwargs)
 
-    def __init__(self, joined: JoinedT, value: ValueStore):
+    def __init__(self, joined: JoinedT, value: Type[ValueStore]):
         pass
 
 
@@ -72,7 +73,7 @@ class ManyToMany(Generic[JoinedT, AcrossT, ValueStore], _relation.ManyToMany):
     def __new__(cls, *args, **kwargs):
         return _relation.ManyToMany.__new__(_relation.ManyToMany, *args, **kwargs)
 
-    def __init__(self, joined: JoinedT, across: AcrossT, value: ValueStore):
+    def __init__(self, joined: JoinedT, across: AcrossT, value: Type[ValueStore]):
         pass
 
 
@@ -99,3 +100,17 @@ class Many(Generic[JoinedT], Relation[OneToMany[Type[JoinedT], RelatedList[Joine
 class ManyAcross(Generic[AcrossT, JoinedT],
                  Relation[ManyToMany[Type[JoinedT], Type[AcrossT], RelatedList[JoinedT]], RelatedList[JoinedT]]):
     __slots__ = ()
+
+
+# class Index(_field.Index):
+#     def __init__(self):
+#         pass
+
+# class ForeignKey(_field.ForeignKey):
+#     def __init__(self,
+#                  field: Union[Field[Any, Any, Any], str],
+#                  *,
+#                  group: str = None,
+#                  on_update: str = "CASCADE",
+#                  on_delete: str = "UPDATE"):
+#         pass

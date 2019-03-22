@@ -17,49 +17,53 @@ cdef class EntityType(type):
 
         cdef Field field
         cdef Relation relation
+        cdef Factory factory
 
         cdef tuple hints = get_type_hints(self)
 
         if hints[1] is not None:
             for name, type in (<dict>hints[1]).items():
-                factory = Factory.create(type, Field)
+                factory = Factory.create(type)
+                if factory is None:
+                    continue
 
                 try:
                     value = attrs[name]
                 except KeyError:
                     value = None
 
-                if factory is not None:
-                    field = init_field(factory(), value)
+                attr_type = factory.hints[0]
 
+                if issubclass(attr_type, Field):
+                    field = init_field(factory(), value)
                     if not field.name:
                         field.name = name
 
                     fields.append(field)
                     names.append(name)
                     setattr(self, name, field)
-                else:
-                    factory = Factory.create(type, Relation)
-                    if factory is not None:
-                        relation = init_relation(factory(), value)
-                        relations.append(relation)
-                        setattr(self, name, relation)
+                elif issubclass(attr_type, Relation):
+                    relation = init_relation(factory(), value)
+                    relations.append(relation)
+                    setattr(self, name, relation)
 
 
         self.__fields__ = tuple(fields)
         self.__field_names__ = tuple(names)
+        self.__relations__ = tuple(relations)
 
         for i, field in enumerate(fields):
             field.index = i
             field.bind(self)
 
-        for relation in relations:
+        for i, relation in enumerate(relations):
+            relation.index = i
             relation.bind(self)
 
     @staticmethod
     def __prepare__(name, bases, **kw):
         scope = type.__prepare__(name, bases, **kw)
-        scope["__slots__"] = []
+        scope["__slots__"] = ()
         return scope
 
     def __repr__(self):
@@ -96,7 +100,8 @@ cdef Relation init_relation(Relation by_type, object value):
 
 
 @cython.final
-cdef class EntityState:
+@cython.freelist(1000)
+cdef class FieldState:
     def __cinit__(self, tuple fields, tuple data):
         self.fields = fields
         self.data = data
@@ -200,15 +205,52 @@ cdef class EntityState:
             yield PyTuple_Pack(2, <PyObject*>(<Field>field).name, cv)
 
     def __repr__(self):
-        return "<EntityState %r>" % (dict(self),)
+        return "<FieldState %r>" % (dict(self),)
+
+
+
+
+    # cdef bint set_value(self, int index, object value):
+    #     cdef PyObject* data = <PyObject*>self.data
+    #     cdef PyObject* cv = PyTuple_GET_ITEM(<object>data, index)
+
+    #     if cv is not NULL:
+    #         Py_DECREF(<object>cv)
+
+    #     Py_INCREF(<object>value)
+    #     PyTuple_SET_ITEM(<object>data, index, value)
+
+    # cdef object get_value(self, int index):
+    #     cdef PyObject* data = <PyObject*>self.data
+    #     cdef PyObject* cv = PyTuple_GET_ITEM(<object>data, index)
+    #     Py_INCREF(<object>cv)
+    #     return <object>cv
+
+    # cdef void del_value(self, int index):
+    #     cdef PyObject* data = <PyObject*>self.data
+    #     cdef PyObject* cv = PyTuple_GET_ITEM(<object>data, index)
+
+    #     if cv is not NULL:
+    #         Py_DECREF(<object>cv)
+
+    #     PyTuple_SET_ITEM(<object>data, index, <object>NULL)
+
+    # cpdef reset(self):
+    #     self.data = PyTuple_New(PyTuple_GET_SIZE(self.relations))
+
+    def __repr__(self):
+        return "<RelationState>"
 
 
 cdef class EntityBase:
     def __cinit__(self):
         cdef EntityType model = type(self)
         cdef tuple fields = <tuple>model.__fields__
-        cdef tuple data = PyTuple_New(PyTuple_GET_SIZE(fields))
-        self.__state__ = EntityState(fields, data)
+        cdef tuple fdata = PyTuple_New(PyTuple_GET_SIZE(fields))
+        self.__fstate__ = FieldState(fields, fdata)
+
+        cdef tuple relations = <tuple>model.__relations__
+        self.__rstate__ = RelationState(relations)
 
 
 class Entity(EntityBase, metaclass=EntityType):

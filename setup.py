@@ -6,15 +6,46 @@ from setuptools.command.test import test as TestCommand
 from distutils.extension import Extension
 from Cython.Build import cythonize
 
-extensions = [
-    Extension(
-        "*", ["src/yapic/entity/*.pyx"], language="c++", include_dirs=["./libs/yapic.core/src/yapic/core/include"]),
-]
-
 subcommand_args = []
 if "--" in sys.argv:
     subcommand_args = sys.argv[sys.argv.index("--") + 1:]
     del sys.argv[sys.argv.index("--"):]
+
+define_macros = {}
+undef_macros = []
+extra_compile_args = []
+
+if sys.platform == "win32":
+    DEVELOP = sys.executable.endswith("python_d.exe")
+
+    if DEVELOP:
+        define_macros["_DEBUG"] = "1"
+        undef_macros.append("NDEBUG")
+        extra_compile_args.append("/MTd")
+        extra_compile_args.append("/Zi")
+    else:
+        undef_macros.append("_DEBUG")
+else:
+    DEVELOP = sys.executable.endswith("-dbg")
+    extra_compile_args.append("-std=c++11")
+
+    if DEVELOP:
+        define_macros["_DEBUG"] = 1
+        undef_macros.append("NDEBUG")
+    else:
+        extra_compile_args.append("-O3")
+
+extensions = [
+    Extension(
+        "*",
+        ["src/yapic/entity/*.pyx"],
+        language="c++",
+        include_dirs=["./libs/yapic.core/src/yapic/core/include"],
+        extra_compile_args=extra_compile_args,
+        define_macros=list(define_macros.items()),
+        undef_macros=undef_macros,
+    ),
+]
 
 
 def cmd_prerun(cmd: TestCommand, requirements):
