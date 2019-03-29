@@ -1,11 +1,12 @@
 import cython
+from cpython.object cimport PyObject
 from ._relation cimport RelationState
 
 cdef class EntityType(type):
     cdef readonly tuple __fields__
     cdef readonly tuple __field_names__
     cdef readonly tuple __relations__
-    cdef dict __meta__
+    cdef PyObject* meta
     cdef object __weakref__
 
 

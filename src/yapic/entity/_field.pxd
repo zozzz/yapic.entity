@@ -13,6 +13,7 @@ cdef class Field(Expression):
     cdef readonly int min_size
     cdef readonly int max_size
     cdef readonly int index
+    cdef readonly object nullable
     cdef readonly object extensions
     cdef readonly EntityType entity
 
@@ -25,11 +26,15 @@ cdef class FieldExtension:
     cdef readonly Field field
 
 
+cdef class PrimaryKey(FieldExtension):
+    cdef readonly bint auto_increment
+
+
 cdef class Index(FieldExtension):
     pass
 
 
-cdef class ForeignKey(Index):
+cdef class ForeignKey(FieldExtension):
     cdef object _ref
     cdef readonly str name
     cdef readonly str on_update

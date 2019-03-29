@@ -12,6 +12,11 @@ cdef class FieldImpl:
         return self.write(a) == self.write(b)
 
 
+cdef class StorageType:
+    cpdef requirements(self):
+        raise NotImplementedError()
+
+
 cdef class StringImpl(FieldImpl):
     cpdef read(self, value):
         if isinstance(value, str):

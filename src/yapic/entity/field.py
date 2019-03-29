@@ -1,13 +1,13 @@
 from typing import Generic, TypeVar, Union, Optional, List, Tuple, Type, Any
 from enum import Enum
-from ._field import Field as _Field, Index, ForeignKey
+from ._field import Field as _Field, Index, ForeignKey, PrimaryKey
 from ._field_impl import (
     StringImpl,
     IntImpl,
     ChoiceImpl as _ChoiceImpl,
 )
 
-__all__ = ["Field", "String", "Int", "Choice", "Index", "ForeignKey"]
+__all__ = ["Field", "String", "Int", "Serial", "Choice", "PrimaryKey", "Index", "ForeignKey"]
 
 Impl = TypeVar("Impl")
 PyType = TypeVar("PyType")
@@ -33,7 +33,17 @@ class Field(Generic[Impl, PyType, RawType], _Field):
 
 
 String = Field[StringImpl, str, bytes]
-Int = Field[IntImpl, int, bytes]
+
+
+class Int(Field[IntImpl, int, int]):
+    def __new__(cls, *args, **kwargs):
+        return Field.__new__(cls, *args, **kwargs)
+
+
+class Serial(Int):
+    def __new__(cls, *args, **kwargs):
+        return Int.__new__(cls, *args, **kwargs) // PrimaryKey(auto_increment=True)
+
 
 EnumT = TypeVar("EnumT", bound=Enum)
 

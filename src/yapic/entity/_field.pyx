@@ -9,7 +9,7 @@ from ._factory cimport ForwardDecl, get_type_hints, new_instance, new_instance_f
 
 
 cdef class Field(Expression):
-    def __cinit__(self, impl = None, *, name = None, default = None, size = None):
+    def __cinit__(self, impl = None, *, name = None, default = None, size = None, nullable = None):
         self._impl = impl
         self._default = default
         self.name = name
@@ -75,6 +75,13 @@ cdef class Field(Expression):
         for ext in self.extensions:
             ext.init()
 
+        if self.nullable is None:
+            if self.get_ext(PrimaryKey):
+                self.nullable = False
+            else:
+                self.nullable = bool(self._default is None)
+
+
     cdef bint values_is_eq(self, object a, object b):
         # TODO: ...
         return a == b
@@ -113,14 +120,19 @@ cdef class FieldExtension:
         pass
 
 
+cdef class PrimaryKey(FieldExtension):
+    def __cinit__(self, *, bint auto_increment = False):
+        self.auto_increment = auto_increment
+
+
 cdef class Index(FieldExtension):
     pass
 
 
 # todo: faster eval, with Py_CompileString(ref, "<string>", Py_eval_input); PyEval_EvalCode
 
-cdef class ForeignKey(Index):
-    def __cinit__(self, field, *, str name = None, str on_update = "CASCADE", str on_delete = "UPDATE"):
+cdef class ForeignKey(FieldExtension):
+    def __cinit__(self, field, *, str name = None, str on_update = "RESTRICT", str on_delete = "RESTRICT"):
         # self._field = field
         if isinstance(field, str):
             self._ref = compile(field, "<string>", "eval")

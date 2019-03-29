@@ -7,6 +7,11 @@ cdef class FieldImpl:
     cpdef bint eq(self, a, b)
 
 
+cdef class StorageType:
+    cdef readonly name
+    cpdef requirements(self)
+
+
 cdef class StringImpl(FieldImpl):
     pass
 

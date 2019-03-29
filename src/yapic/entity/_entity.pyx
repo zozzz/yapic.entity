@@ -1,7 +1,7 @@
 import cython
 
 from cpython.object cimport PyObject
-from cpython.ref cimport Py_DECREF, Py_INCREF
+from cpython.ref cimport Py_DECREF, Py_INCREF, Py_XDECREF, Py_XINCREF
 from cpython.tuple cimport PyTuple_SetItem, PyTuple_GetItem, PyTuple_New, PyTuple_GET_SIZE, PyTuple_SET_ITEM, PyTuple_GET_ITEM, PyTuple_Pack
 
 from ._field cimport Field, FieldExtension
@@ -10,7 +10,14 @@ from ._factory cimport Factory, get_type_hints
 
 
 cdef class EntityType(type):
-    def __cinit__(self, name, bases, attrs):
+    def __cinit__(self, *args, **kwargs):
+        (name, bases, attrs) = args
+
+        # if self.meta is NULL:
+        #     meta_dict = dict()
+        #     self.meta = <PyObject*>(<object>meta_dict)
+        #     Py_XINCREF(self.meta)
+
         cdef list fields = []
         cdef list relations = []
         cdef list names = []
@@ -60,9 +67,17 @@ cdef class EntityType(type):
             relation.index = i
             relation.bind(self)
 
+    def __init__(self, *args, **kwargs):
+        type.__init__(self, *args)
+
+    @property
+    def __meta__(self):
+        return <object>self.meta
+
+
     @staticmethod
-    def __prepare__(name, bases, **kw):
-        scope = type.__prepare__(name, bases, **kw)
+    def __prepare__(*args, **kwargs):
+        scope = type.__prepare__(args, kwargs)
         scope["__slots__"] = ()
         return scope
 
@@ -76,7 +91,9 @@ cdef Field init_field(Field by_type, object value):
 
     if isinstance(value, Field):
         field = <Field>value
-        field.impl = by_type.impl
+        field._impl = by_type._impl
+        if by_type.extensions:
+            field.extensions[0:0] = by_type.extensions
         return field
     elif isinstance(value, FieldExtension):
         ext = <FieldExtension>value
@@ -251,6 +268,17 @@ cdef class EntityBase:
 
         cdef tuple relations = <tuple>model.__relations__
         self.__rstate__ = RelationState(relations)
+
+    @classmethod
+    def __init_subclass__(cls, *, str name=None, **meta):
+        cdef EntityType ent = cls
+        if name is not None:
+            cls.__name__ = name
+
+        meta_dict = dict(meta)
+        Py_XDECREF(ent.meta)
+        ent.meta = <PyObject*>(<object>meta_dict)
+        Py_XINCREF(ent.meta)
 
 
 class Entity(EntityBase, metaclass=EntityType):
