@@ -22,7 +22,12 @@ cdef class Query:
     cpdef Query clone(self)
 
 
-cdef class QueryExecContext:
+# cdef class QueryExecContext:
+#     cpdef QueryExecContext clone(self)
 
 
-    cpdef QueryExecContext clone(self)
+cdef class RawExpression(Expression):
+    cdef readonly str sql
+
+
+cpdef raw(self, str sql)

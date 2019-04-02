@@ -7,6 +7,9 @@ cdef class Visitor:
 
 cdef class Expression:
     cpdef visit(self, Visitor visitor)
+    cpdef asc(self)
+    cpdef desc(self)
+    cpdef cast(self, str to)
 
 
 cdef class BinaryExpression(Expression):
@@ -20,9 +23,22 @@ cdef class UnaryExpression(Expression):
     cpdef readonly object op
 
 
+cdef class CastExpression(Expression):
+    cpdef readonly Expression expr
+    cpdef readonly object to
+
+
 cdef class ConstExpression(Expression):
     cpdef readonly object value
     cpdef readonly type type
 
 
 cdef Expression coerce_expression(object expr)
+
+
+cdef class DirectionExpression(Expression):
+    cdef readonly Expression expr
+    cdef readonly bint is_asc
+
+
+cpdef direction(self, Expression expr, str dir)
