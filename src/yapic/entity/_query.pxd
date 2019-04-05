@@ -1,5 +1,6 @@
 import cython
 from ._expression cimport Expression, Visitor
+from ._entity cimport EntityType
 
 
 @cython.final
@@ -15,10 +16,12 @@ cdef class Query(Expression):
     cdef readonly list prefixes
     cdef readonly list suffixes
     cdef readonly dict joins
+    cdef readonly dict entities
     cdef readonly slice range
 
     cpdef Query clone(self)
     cdef Query finalize(self)
+    cdef _add_entity(self, EntityType ent)
 
 
 cdef class RawExpression(Expression):

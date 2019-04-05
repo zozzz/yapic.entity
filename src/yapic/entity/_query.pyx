@@ -1,13 +1,17 @@
 from contextlib import contextmanager
 
-from yapic.entity._entity cimport EntityType, EntityAliasExpression
+from yapic.entity._entity cimport EntityType
 from yapic.entity._field cimport Field
 from yapic.entity._expression cimport Expression, AliasExpression, DirectionExpression, Visitor, BinaryExpression, UnaryExpression, CastExpression
 from yapic.entity._expression import and_
 from yapic.entity._relation cimport Relation, RelationImpl, ManyToMany, determine_join_expr, RelationAttribute
+from yapic.entity._error cimport JoinError
 
 
 cdef class Query(Expression):
+    def __cinit__(self):
+        self.entities = {}
+
     cpdef visit(self, Visitor visitor):
         return visitor.visit_query(self)
 
@@ -17,6 +21,9 @@ cdef class Query(Expression):
 
         if from_ not in self.from_clause:
             self.from_clause.append(from_)
+
+        if isinstance(from_, EntityType):
+            self._add_entity(<EntityType>from_)
 
         return self
 
@@ -122,11 +129,14 @@ cdef class Query(Expression):
         if self.joins is None:
             self.joins = {}
 
-        if isinstance(what, EntityType) or isinstance(what, EntityAliasExpression):
-            if what not in self.joins:
-                if condition is None:
-                    # condition = determine_join_expr()
-                    pass
+        if what in self.entities:
+            return self
+
+        if isinstance(what, EntityType):
+            if condition is None:
+                condition = determine_join(self, <EntityType>what)
+            self.joins[what] = (what, condition, type)
+            self._add_entity(what)
         elif isinstance(what, Relation):
             impl = (<Relation>what)._impl_
 
@@ -134,7 +144,9 @@ cdef class Query(Expression):
                 cross_condition = (<ManyToMany>impl).across_join_expr
                 cross_what = (<ManyToMany>impl).across
 
-                self.joins[cross_what] = (cross_what, cross_condition, "INNER")
+                if cross_what not in self.entities:
+                    self.joins[cross_what] = (cross_what, cross_condition, "INNER")
+                    self._add_entity(cross_what)
 
                 condition = impl.join_expr
                 what = impl.joined
@@ -142,8 +154,9 @@ cdef class Query(Expression):
                 condition = impl.join_expr
                 what = impl.joined
 
-            if what not in self.joins:
+            if what not in self.entities:
                 self.joins[what] = (what, condition, type)
+                self._add_entity(what)
 
         # print(self.joins)
         return self
@@ -194,6 +207,10 @@ cdef class Query(Expression):
 
         return res
 
+    cdef _add_entity(self, EntityType ent):
+        if ent not in self.entities:
+            self.entities[ent] = f"t{len(self.entities)}"
+
 
 
 cdef class RawExpression(Expression):
@@ -241,8 +258,8 @@ cdef class QueryFinalizer(Visitor):
     def visit_alias(self, AliasExpression expr):
         self.visit(expr.expr)
 
-    def visit_entity_alias(self, EntityAliasExpression expr):
-        pass
+    # def visit_entity_alias(self, EntityAliasExpression expr):
+    #     pass
 
 # cdef class RelationAttribute(Expression):
 #     cdef Relation relation
@@ -275,3 +292,24 @@ cdef class QueryFinalizer(Visitor):
             yield self
         finally:
             setattr(self, name, original)
+
+
+cdef inline determine_join(Query q, EntityType joined):
+    cdef EntityType ent
+    condition = None
+
+    for ent in q.entities:
+        try:
+            condition = determine_join_expr(ent, joined)
+        except JoinError:
+            try:
+                condition = determine_join_expr(joined, ent)
+            except JoinError:
+                continue
+            else:
+                return condition
+        else:
+            return condition
+
+    raise JoinError("Can't found suitable join condition between %r <-> %r" % (q, joined))
+

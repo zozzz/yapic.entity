@@ -37,6 +37,7 @@ cdef class EntityType(type):
             for k, v in aliased.__dict__.items():
                 if isinstance(v, EntityAttribute):
                     attr = (<EntityAttribute>v).clone()
+                    attr._attr_name_in_class = k
 
                     if isinstance(v, Field):
                         fields.append(attr)
@@ -62,6 +63,7 @@ cdef class EntityType(type):
 
                     if issubclass(attr_type, EntityAttribute):
                         attr = init_attribute(factory(), value)
+                        attr._attr_name_in_class = name
                         if not attr._name_:
                             attr._name_ = name
 
@@ -201,8 +203,6 @@ cdef class EntityAttribute(Expression):
 
         if self._impl is None:
             raise RuntimeError("Missing attribute implementation")
-
-        print(self._impl)
 
         if isinstance(self._impl, EntityAttributeImpl) and not (<EntityAttributeImpl>self._impl).inited:
             (<EntityAttributeImpl>self._impl).init(entity)

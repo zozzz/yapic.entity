@@ -116,6 +116,10 @@ cdef class PostgreQueryCompiler(QueryCompiler):
     def visit_binary_mul(self, expr): return compile_binary(self, <BinaryExpression>expr, "*")
     def visit_binary_truediv(self, expr): return compile_binary(self, <BinaryExpression>expr, "/")
     def visit_binary_pow(self, expr): return compile_binary(self, <BinaryExpression>expr, "^")
+    def visit_unary_invert(self, expr): return compile_unary(self, (<UnaryExpression>expr).expr, "NOT ")
+    def visit_unary_neg(self, expr): return compile_unary(self, (<UnaryExpression>expr).expr, "-")
+    def visit_unary_pos(self, expr): return compile_unary(self, (<UnaryExpression>expr).expr, "+")
+    def visit_unary_abs(self, expr): return compile_unary(self, (<UnaryExpression>expr).expr, "@")
 
     def visit_binary_and(self, expr):
         cdef BinaryExpression e = <BinaryExpression> expr
@@ -149,10 +153,20 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
         return " OR ".join(parts)
 
-    def visit_unary_invert(self, expr): return compile_unary(self, (<UnaryExpression>expr).expr, "NOT ")
-    def visit_unary_neg(self, expr): return compile_unary(self, (<UnaryExpression>expr).expr, "-")
-    def visit_unary_pos(self, expr): return compile_unary(self, (<UnaryExpression>expr).expr, "+")
-    def visit_unary_abs(self, expr): return compile_unary(self, (<UnaryExpression>expr).expr, "@")
+    def visit_binary_in(self, expr):
+        left = (<BinaryExpression>expr).left
+        right = (<BinaryExpression>expr).right
+
+        if isinstance(right, ConstExpression):
+            value = (<ConstExpression>right).value
+            if isinstance(value, list) or isinstance(value, tuple):
+                entries = [self.visit(x) for x in value]
+            else:
+                entries = [self.visit(value)]
+        else:
+            entries = [self.visit(right)]
+
+        return f"{self.visit(left)} IN ({', '.join(entries)})"
 
     def visit_const(self, expr):
         value = (<ConstExpression>expr).value
@@ -187,20 +201,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         e = (<DirectionExpression>expr).expr
         return f"{self.visit(e)} {'ASC' if (<DirectionExpression>expr).is_asc else 'DESC'}"
 
-    def visit_binary_contains(self, expr):
-        left = (<BinaryExpression>expr).left
-        right = (<BinaryExpression>expr).right
 
-        if isinstance(right, ConstExpression):
-            value = (<ConstExpression>right).value
-            if isinstance(value, list) or isinstance(value, tuple):
-                entries = [self.visit(x) for x in value]
-            else:
-                entries = [self.visit(value)]
-        else:
-            entries = [self.visit(right)]
-
-        return f"{self.visit(left)} IN ({', '.join(entries)})"
 
     def visit_alias(self, expr):
         return f"{self.visit((<AliasExpression>expr).expr)} as {self.dialect.quote_ident((<AliasExpression>expr).value)}"

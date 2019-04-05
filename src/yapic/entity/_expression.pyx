@@ -58,7 +58,7 @@ cdef class Expression:
     def in_(self, *values):
         if len(values) == 1 and (isinstance(values[0], list) or isinstance(values[0], tuple)):
             values = values[0]
-        return BinaryExpression(self, values, operator.__contains__)
+        return BinaryExpression(self, values, in_)
     def is_true(self): return self == True
     def is_false(self): return self == False
     def is_null(self): return self == None
@@ -166,6 +166,8 @@ cdef class Visitor:
             fn_name = "visit_binary_or"
         elif binary.op is operator.__and__:
             fn_name = "visit_binary_and"
+        elif binary.op is in_:
+            fn_name = "visit_binary_in"
         else:
             fn_name = f"visit_binary_{binary.op.__name__}"
         return getattr(self, fn_name)(binary)
@@ -207,6 +209,9 @@ def or_(*expr):
 
     return res
 
+
+def in_(expr, value):
+    return expr.in_(value)
 
 cpdef direction(Expression expr, str dir):
     return DirectionExpression(expr, str(dir).lower() == "asc")

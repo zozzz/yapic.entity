@@ -197,17 +197,22 @@ def test_entity_alias():
     assert sql == 'SELECT * FROM "User" "TEST" WHERE "TEST"."id" = $1'
     assert params == (12, )
 
+    q2 = Query().select_from(User).where(q > 0)
+    sql, params = dialect.create_query_compiler().compile_select(q2)
+    assert sql == 'SELECT * FROM "User" "t0" WHERE (SELECT * FROM "User" "TEST" WHERE "TEST"."id" = $1) > $2'
+    assert params == (12, 0)
+
     q = Query().select_from(TEST).join(TEST.address) \
         .where(TEST.address.title == "OK") \
         .where(TEST.id == 42)
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == 'SELECT * FROM "User" "TEST" INNER JOIN "Address" "t1" ON "TEST"."address_id" = "t1"."id" WHERE "t1"."title" = $1 AND "TEST"."id" = $2'
-    assert params == ("ok", 42)
+    assert params == ("OK", 42)
 
-    q2 = Query().select_from(User).where(q > 0)
-    sql, params = dialect.create_query_compiler().compile_select(q2)
-    assert sql == 'SELECT * FROM "User" "t0" WHERE (SELECT * FROM "User" "TEST") > $1'
-    assert params == (0, )
+    q = Query().select_from(TEST).join(TEST.tags).where(TEST.tags.value == 42)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT * FROM "User" "TEST" INNER JOIN "UserTags" "t1" ON "t1"."user_id" = "TEST"."id" INNER JOIN "Tag" "t2" ON "t1"."tag_id" = "t2"."id" WHERE "t2"."value" = $1'
+    assert params == (42, )
 
 
 def test_join_relation():
@@ -221,6 +226,20 @@ def test_join_across_relation():
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == 'SELECT * FROM "User" "t0" INNER JOIN "UserTags" "t1" ON "t1"."user_id" = "t0"."id" INNER JOIN "Tag" "t2" ON "t1"."tag_id" = "t2"."id" WHERE "t2"."value" = $1'
     assert params == ("nice", )
+
+
+def test_join_entity():
+    q = Query().select_from(User).join(Address).where(Address.title == "address")
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT * FROM "User" "t0" INNER JOIN "Address" "t1" ON "t0"."address_id" = "t1"."id" WHERE "t1"."title" = $1'
+    assert params == ("address", )
+
+
+def test_join_entity_across():
+    q = Query().select_from(User).join(UserTags).join(Tag).where(Tag.value == "address")
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT * FROM "User" "t0" INNER JOIN "UserTags" "t1" ON "t1"."user_id" = "t0"."id" INNER JOIN "Tag" "t2" ON "t1"."tag_id" = "t2"."id" WHERE "t2"."value" = $1'
+    assert params == ("address", )
 
 
 @pytest.mark.skip(reason="deferred")

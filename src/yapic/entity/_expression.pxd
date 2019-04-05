@@ -49,3 +49,4 @@ cdef class DirectionExpression(Expression):
 
 cpdef direction(Expression expr, str dir)
 # cpdef alias(object obj, str alias)
+

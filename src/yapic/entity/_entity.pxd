@@ -23,6 +23,7 @@ cdef class EntityBase:
 
 cdef class EntityAttribute(Expression):
     cdef object _impl
+    cdef str _attr_name_in_class
     cdef readonly int _index_
     cdef readonly str _name_
     cdef readonly str _initial_
@@ -49,12 +50,12 @@ cdef class EntityAttributeImpl:
     cpdef object clone(self)
 
 
-cdef class EntityAliasExpression(Expression):
-    cdef readonly EntityType entity
-    cdef readonly str value
+# cdef class EntityAliasExpression(Expression):
+#     cdef readonly EntityType entity
+#     cdef readonly str value
 
-    cdef readonly tuple __fields__
-    cdef readonly tuple __relations__
+#     cdef readonly tuple __fields__
+#     cdef readonly tuple __relations__
 
 
 @cython.final

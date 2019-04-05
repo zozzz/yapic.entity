@@ -4,10 +4,12 @@ from cpython.ref cimport Py_XDECREF, Py_XINCREF, Py_DECREF, Py_INCREF, Py_CLEAR
 from cpython.object cimport PyObject, PyObject_RichCompareBool, Py_EQ
 from cpython.tuple cimport PyTuple_SetItem, PyTuple_GetItem, PyTuple_New, PyTuple_GET_SIZE, PyTuple_SET_ITEM, PyTuple_GET_ITEM, PyTuple_Pack
 
-from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeImpl
+from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeImpl, get_alias_target
 from ._expression cimport Expression, Visitor
 from ._field cimport Field, ForeignKey, collect_foreign_keys
 from ._factory cimport Factory, ForwardDecl, new_instance_from_forward, is_forward_decl
+from ._entity_replacer cimport replace_entity
+from ._error cimport JoinError
 
 
 cdef class Relation(EntityAttribute):
@@ -127,7 +129,7 @@ cdef determine_join_expr(EntityType entity, EntityType joined):
 
         if fk.ref._entity_ is joined:
             if found is not None:
-                raise RuntimeError("Multiple join conditions between %s <-> %s" % (entity, joined))
+                raise JoinError("Multiple join conditions between %s <-> %s" % (entity, joined))
 
             found = fk.attr == fk.ref
             for i in range(1, len(keys)):
@@ -135,7 +137,17 @@ cdef determine_join_expr(EntityType entity, EntityType joined):
                 found &= fk.attr == fk.ref
 
     if found is None:
-        raise RuntimeError("Can't determine join condition between %s <-> %s" % (entity, joined))
+        aliased_ent = get_alias_target(entity)
+        aliased_join = get_alias_target(joined)
+
+        if aliased_ent is not entity or aliased_join is not joined:
+            found = determine_join_expr(aliased_ent, aliased_join)
+            if aliased_ent is not entity:
+                found = replace_entity(found, aliased_ent, entity)
+            if aliased_join is not joined:
+                found = replace_entity(found, aliased_join, joined)
+        else:
+            raise JoinError("Can't determine join condition between %s <-> %s" % (entity, joined))
 
     return found
 
