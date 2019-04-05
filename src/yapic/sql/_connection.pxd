@@ -8,3 +8,6 @@ cdef class Connection:
     cdef readonly Dialect dialect
 
     cpdef select(self, Query q, prefetch, timeout)
+
+
+cpdef wrap_connection(conn, dialect)

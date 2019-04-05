@@ -48,7 +48,7 @@ cdef class DDLCompiler:
                 raise TypeError("StorageType.requirements must returns with str or None")
             requirements.append(req)
 
-        cdef str res = f"{self.dialect.quote_ident(field.name)} {type.name}"
+        cdef str res = f"{self.dialect.quote_ident(field._name_)} {type.name}"
 
         if field.get_ext(PrimaryKey):
             res += " PRIMARY KEY"
@@ -70,15 +70,15 @@ cdef class DDLCompiler:
             length = len(foreign_keys)
             for i in range(length):
                 fk = foreign_keys[i]
-                res += self.dialect.quote_ident(fk.field.name)
+                res += self.dialect.quote_ident(fk.attr._name_)
                 if i != length - 1:
                     res += ", "
 
-            res += f") REFERENCES {self.dialect.table_qname(foreign_keys[0].ref.entity)} ("
+            res += f") REFERENCES {self.dialect.table_qname(foreign_keys[0].ref._entity_)} ("
 
             for i in range(length):
                 fk = foreign_keys[i]
-                res += self.dialect.quote_ident(fk.ref.name)
+                res += self.dialect.quote_ident(fk.ref._name_)
                 if i != length - 1:
                     res += ", "
 

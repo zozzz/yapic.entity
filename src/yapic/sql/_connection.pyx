@@ -1,14 +1,23 @@
 
 
 from yapic.entity._query cimport Query
+from yapic.entity._entity cimport EntityType
 
 from ._query_context cimport QueryContext
+from ._dialect cimport Dialect
 
 
 cdef class Connection:
     def __cinit__(self, conn, dialect):
         self.conn = conn
         self.dialect = dialect
+
+        # self.fetch = self.conn.fetch
+        # self.fetchrow = self.conn.fetchrow
+        # self.fetchval = self.conn.fetchval
+        # self.execute = self.conn.execute
+        # self.executemany = self.conn.executemany
+        # self.cursor = self.conn.cursor
 
     cpdef select(self, Query q, prefetch, timeout):
         qc = self.dialect.create_query_compiler()
@@ -17,3 +26,16 @@ cdef class Connection:
         return QueryContext(
             self.conn.cursor(sql, *params, prefetch=prefetch, timeout=timeout)
         )
+
+    async def create_entity(self, EntityType ent, *, drop=False):
+        raise NotImplementedError()
+
+
+cpdef wrap_connection(conn, dialect):
+    if isinstance(dialect, str):
+        package = __import__(f"yapic.sql.{dialect}", fromlist=["Dialect", "Connection"])
+        dialect = getattr(package, "Dialect")
+        connection = getattr(package, "Connection")
+    else:
+        raise TypeError("Invalid dialect argument: %r" % dialect)
+    return connection(conn, dialect())

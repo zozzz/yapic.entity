@@ -111,7 +111,7 @@ class PyTest(TestCommand):
 
 almafa = setup(
     name="yapic.entity",
-    packages=["yapic.entity", "yapic.sql"],
+    packages=["yapic.entity", "yapic.sql", "yapic.sql.pgsql"],
     package_dir={
         "yapic.entity": "src/yapic/entity",
         "yapic.sql": "src/yapic/sql"

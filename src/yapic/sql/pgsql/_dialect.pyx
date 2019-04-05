@@ -7,6 +7,7 @@ from .._query_compiler cimport QueryCompiler
 from ._ddl cimport PostgreDLLCompiler
 from ._query_compiler cimport PostgreQueryCompiler
 
+
 cdef class PostgreDialect(Dialect):
     cpdef DDLCompiler create_ddl_compiler(self):
         return PostgreDLLCompiler(self)

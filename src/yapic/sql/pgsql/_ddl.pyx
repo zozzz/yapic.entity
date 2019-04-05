@@ -8,7 +8,7 @@ from .._ddl cimport DDLCompiler
 
 cdef class PostgreDLLCompiler(DDLCompiler):
     def gues_type(self, Field field):
-        impl = field.__impl__
+        impl = field._impl_
 
         if isinstance(impl, IntImpl):
             return self._int_type(field, <IntImpl>impl)
@@ -70,7 +70,7 @@ cdef class PostgreDLLCompiler(DDLCompiler):
             elif type is str:
                 values = [self.dialect.quote_value(entry.value) for entry in impl._enum]
 
-                return PostgreType(f"VARCHAR({str_max_len}) CHECK(\"{field.name}\" IN ({', '.join(values)}))")
+                return PostgreType(f"VARCHAR({str_max_len}) CHECK(\"{field._name_}\" IN ({', '.join(values)}))")
 
 
 cdef class PostgreType(StorageType):

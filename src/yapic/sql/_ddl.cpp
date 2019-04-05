@@ -2377,7 +2377,7 @@ static const char __pyx_k_ref[] = "ref";
 static const char __pyx_k_None[] = "None";
 static const char __pyx_k_args[] = "args";
 static const char __pyx_k_main[] = "__main__";
-static const char __pyx_k_name[] = "name";
+static const char __pyx_k_name[] = "_name_";
 static const char __pyx_k_send[] = "send";
 static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_close[] = "close";
@@ -2385,7 +2385,7 @@ static const char __pyx_k_field[] = "field";
 static const char __pyx_k_items[] = "items";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_throw[] = "throw";
-static const char __pyx_k_entity[] = "entity";
+static const char __pyx_k_entity[] = "_entity_";
 static const char __pyx_k_name_2[] = "__name__";
 static const char __pyx_k_dialect[] = "dialect";
 static const char __pyx_k_is_last[] = "is_last";
@@ -3244,7 +3244,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
  *                 raise TypeError("StorageType.requirements must returns with str or None")
  *             requirements.append(req)             # <<<<<<<<<<<<<<
  * 
- *         cdef str res = f"{self.dialect.quote_ident(field.name)} {type.name}"
+ *         cdef str res = f"{self.dialect.quote_ident(field._name_)} {type.name}"
  */
     if (unlikely(__pyx_v_requirements == Py_None)) {
       PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
@@ -3264,7 +3264,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
   /* "yapic/sql/_ddl.pyx":51
  *             requirements.append(req)
  * 
- *         cdef str res = f"{self.dialect.quote_ident(field.name)} {type.name}"             # <<<<<<<<<<<<<<
+ *         cdef str res = f"{self.dialect.quote_ident(field._name_)} {type.name}"             # <<<<<<<<<<<<<<
  * 
  *         if field.get_ext(PrimaryKey):
  */
@@ -3272,9 +3272,8 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_7 = 0;
   __pyx_t_8 = 127;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_field), __pyx_n_s_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(PyUnicode_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_1 = __pyx_v_field->__pyx_base._name_;
+  __Pyx_INCREF(__pyx_t_1);
   __pyx_t_3 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_v_self->dialect, ((PyObject*)__pyx_t_1), 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -3304,7 +3303,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
   __pyx_t_1 = 0;
 
   /* "yapic/sql/_ddl.pyx":53
- *         cdef str res = f"{self.dialect.quote_ident(field.name)} {type.name}"
+ *         cdef str res = f"{self.dialect.quote_ident(field._name_)} {type.name}"
  * 
  *         if field.get_ext(PrimaryKey):             # <<<<<<<<<<<<<<
  *             res += " PRIMARY KEY"
@@ -3329,7 +3328,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
     __pyx_t_1 = 0;
 
     /* "yapic/sql/_ddl.pyx":53
- *         cdef str res = f"{self.dialect.quote_ident(field.name)} {type.name}"
+ *         cdef str res = f"{self.dialect.quote_ident(field._name_)} {type.name}"
  * 
  *         if field.get_ext(PrimaryKey):             # <<<<<<<<<<<<<<
  *             res += " PRIMARY KEY"
@@ -3587,7 +3586,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
  *             length = len(foreign_keys)
  *             for i in range(length):             # <<<<<<<<<<<<<<
  *                 fk = foreign_keys[i]
- *                 res += self.dialect.quote_ident(fk.field.name)
+ *                 res += self.dialect.quote_ident(fk.attr._name_)
  */
     __pyx_t_7 = __pyx_cur_scope->__pyx_v_length;
     __pyx_t_11 = __pyx_t_7;
@@ -3598,7 +3597,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
  *             length = len(foreign_keys)
  *             for i in range(length):
  *                 fk = foreign_keys[i]             # <<<<<<<<<<<<<<
- *                 res += self.dialect.quote_ident(fk.field.name)
+ *                 res += self.dialect.quote_ident(fk.attr._name_)
  *                 if i != length - 1:
  */
       if (unlikely(__pyx_cur_scope->__pyx_v_foreign_keys == Py_None)) {
@@ -3616,30 +3615,26 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
       /* "yapic/sql/_ddl.pyx":73
  *             for i in range(length):
  *                 fk = foreign_keys[i]
- *                 res += self.dialect.quote_ident(fk.field.name)             # <<<<<<<<<<<<<<
+ *                 res += self.dialect.quote_ident(fk.attr._name_)             # <<<<<<<<<<<<<<
  *                 if i != length - 1:
  *                     res += ", "
  */
-      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_fk), __pyx_n_s_field); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 73, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_10);
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_name); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 73, __pyx_L1_error)
+      __pyx_t_10 = __pyx_cur_scope->__pyx_v_fk->__pyx_base.__pyx_base.attr->_name_;
+      __Pyx_INCREF(__pyx_t_10);
+      __pyx_t_6 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_cur_scope->__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_cur_scope->__pyx_v_self->dialect, ((PyObject*)__pyx_t_10), 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 73, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-      if (!(likely(PyUnicode_CheckExact(__pyx_t_6))||((__pyx_t_6) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_t_6)->tp_name), 0))) __PYX_ERR(0, 73, __pyx_L1_error)
-      __pyx_t_10 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_cur_scope->__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_cur_scope->__pyx_v_self->dialect, ((PyObject*)__pyx_t_6), 0); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 73, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyUnicode_ConcatSafe(__pyx_cur_scope->__pyx_v_res, __pyx_t_6); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 73, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __pyx_t_6 = __Pyx_PyUnicode_ConcatSafe(__pyx_cur_scope->__pyx_v_res, __pyx_t_10); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 73, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_6);
-      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_res);
-      __Pyx_DECREF_SET(__pyx_cur_scope->__pyx_v_res, ((PyObject*)__pyx_t_6));
-      __Pyx_GIVEREF(__pyx_t_6);
-      __pyx_t_6 = 0;
+      __Pyx_DECREF_SET(__pyx_cur_scope->__pyx_v_res, ((PyObject*)__pyx_t_10));
+      __Pyx_GIVEREF(__pyx_t_10);
+      __pyx_t_10 = 0;
 
       /* "yapic/sql/_ddl.pyx":74
  *                 fk = foreign_keys[i]
- *                 res += self.dialect.quote_ident(fk.field.name)
+ *                 res += self.dialect.quote_ident(fk.attr._name_)
  *                 if i != length - 1:             # <<<<<<<<<<<<<<
  *                     res += ", "
  * 
@@ -3648,22 +3643,22 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
       if (__pyx_t_13) {
 
         /* "yapic/sql/_ddl.pyx":75
- *                 res += self.dialect.quote_ident(fk.field.name)
+ *                 res += self.dialect.quote_ident(fk.attr._name_)
  *                 if i != length - 1:
  *                     res += ", "             # <<<<<<<<<<<<<<
  * 
- *             res += f") REFERENCES {self.dialect.table_qname(foreign_keys[0].ref.entity)} ("
+ *             res += f") REFERENCES {self.dialect.table_qname(foreign_keys[0].ref._entity_)} ("
  */
-        __pyx_t_6 = __Pyx_PyUnicode_Concat(__pyx_cur_scope->__pyx_v_res, __pyx_kp_u__9); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 75, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_6);
+        __pyx_t_10 = __Pyx_PyUnicode_Concat(__pyx_cur_scope->__pyx_v_res, __pyx_kp_u__9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 75, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_10);
         __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_res);
-        __Pyx_DECREF_SET(__pyx_cur_scope->__pyx_v_res, ((PyObject*)__pyx_t_6));
-        __Pyx_GIVEREF(__pyx_t_6);
-        __pyx_t_6 = 0;
+        __Pyx_DECREF_SET(__pyx_cur_scope->__pyx_v_res, ((PyObject*)__pyx_t_10));
+        __Pyx_GIVEREF(__pyx_t_10);
+        __pyx_t_10 = 0;
 
         /* "yapic/sql/_ddl.pyx":74
  *                 fk = foreign_keys[i]
- *                 res += self.dialect.quote_ident(fk.field.name)
+ *                 res += self.dialect.quote_ident(fk.attr._name_)
  *                 if i != length - 1:             # <<<<<<<<<<<<<<
  *                     res += ", "
  * 
@@ -3674,60 +3669,60 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
     /* "yapic/sql/_ddl.pyx":77
  *                     res += ", "
  * 
- *             res += f") REFERENCES {self.dialect.table_qname(foreign_keys[0].ref.entity)} ("             # <<<<<<<<<<<<<<
+ *             res += f") REFERENCES {self.dialect.table_qname(foreign_keys[0].ref._entity_)} ("             # <<<<<<<<<<<<<<
  * 
  *             for i in range(length):
  */
-    __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 77, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_10 = PyTuple_New(3); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 77, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
     __pyx_t_8 = 0;
     __pyx_t_9 = 127;
     __Pyx_INCREF(__pyx_kp_u_REFERENCES);
     __pyx_t_8 += 13;
     __Pyx_GIVEREF(__pyx_kp_u_REFERENCES);
-    PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_kp_u_REFERENCES);
+    PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_kp_u_REFERENCES);
     if (unlikely(__pyx_cur_scope->__pyx_v_foreign_keys == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
       __PYX_ERR(0, 77, __pyx_L1_error)
     }
-    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_cur_scope->__pyx_v_foreign_keys, 0), __pyx_n_s_ref); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 77, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_10);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_entity); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 77, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_cur_scope->__pyx_v_foreign_keys, 0), __pyx_n_s_ref); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 77, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_entity); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 77, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5yapic_6entity_7_entity_EntityType))))) __PYX_ERR(0, 77, __pyx_L1_error)
-    __pyx_t_10 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_cur_scope->__pyx_v_self->dialect->__pyx_vtab)->table_qname(__pyx_cur_scope->__pyx_v_self->dialect, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_5), 0); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 77, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_10);
+    __pyx_t_6 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_cur_scope->__pyx_v_self->dialect->__pyx_vtab)->table_qname(__pyx_cur_scope->__pyx_v_self->dialect, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_5), 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 77, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyUnicode_Unicode(__pyx_t_10); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 77, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyUnicode_Unicode(__pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 77, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_9 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) > __pyx_t_9) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) : __pyx_t_9;
     __pyx_t_8 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_5);
-    PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_5);
+    PyTuple_SET_ITEM(__pyx_t_10, 1, __pyx_t_5);
     __pyx_t_5 = 0;
     __Pyx_INCREF(__pyx_kp_u__10);
     __pyx_t_8 += 2;
     __Pyx_GIVEREF(__pyx_kp_u__10);
-    PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_kp_u__10);
-    __pyx_t_5 = __Pyx_PyUnicode_Join(__pyx_t_6, 3, __pyx_t_8, __pyx_t_9); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 77, __pyx_L1_error)
+    PyTuple_SET_ITEM(__pyx_t_10, 2, __pyx_kp_u__10);
+    __pyx_t_5 = __Pyx_PyUnicode_Join(__pyx_t_10, 3, __pyx_t_8, __pyx_t_9); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 77, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyUnicode_Concat(__pyx_cur_scope->__pyx_v_res, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 77, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    __pyx_t_10 = __Pyx_PyUnicode_Concat(__pyx_cur_scope->__pyx_v_res, __pyx_t_5); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 77, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_res);
-    __Pyx_DECREF_SET(__pyx_cur_scope->__pyx_v_res, ((PyObject*)__pyx_t_6));
-    __Pyx_GIVEREF(__pyx_t_6);
-    __pyx_t_6 = 0;
+    __Pyx_DECREF_SET(__pyx_cur_scope->__pyx_v_res, ((PyObject*)__pyx_t_10));
+    __Pyx_GIVEREF(__pyx_t_10);
+    __pyx_t_10 = 0;
 
     /* "yapic/sql/_ddl.pyx":79
- *             res += f") REFERENCES {self.dialect.table_qname(foreign_keys[0].ref.entity)} ("
+ *             res += f") REFERENCES {self.dialect.table_qname(foreign_keys[0].ref._entity_)} ("
  * 
  *             for i in range(length):             # <<<<<<<<<<<<<<
  *                 fk = foreign_keys[i]
- *                 res += self.dialect.quote_ident(fk.ref.name)
+ *                 res += self.dialect.quote_ident(fk.ref._name_)
  */
     __pyx_t_7 = __pyx_cur_scope->__pyx_v_length;
     __pyx_t_11 = __pyx_t_7;
@@ -3738,7 +3733,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
  * 
  *             for i in range(length):
  *                 fk = foreign_keys[i]             # <<<<<<<<<<<<<<
- *                 res += self.dialect.quote_ident(fk.ref.name)
+ *                 res += self.dialect.quote_ident(fk.ref._name_)
  *                 if i != length - 1:
  */
       if (unlikely(__pyx_cur_scope->__pyx_v_foreign_keys == Py_None)) {
@@ -3746,32 +3741,32 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
         __PYX_ERR(0, 80, __pyx_L1_error)
       }
       if (!(likely(((PyList_GET_ITEM(__pyx_cur_scope->__pyx_v_foreign_keys, __pyx_cur_scope->__pyx_v_i)) == Py_None) || likely(__Pyx_TypeTest(PyList_GET_ITEM(__pyx_cur_scope->__pyx_v_foreign_keys, __pyx_cur_scope->__pyx_v_i), __pyx_ptype_5yapic_6entity_6_field_ForeignKey))))) __PYX_ERR(0, 80, __pyx_L1_error)
-      __pyx_t_6 = PyList_GET_ITEM(__pyx_cur_scope->__pyx_v_foreign_keys, __pyx_cur_scope->__pyx_v_i);
-      __Pyx_INCREF(__pyx_t_6);
+      __pyx_t_10 = PyList_GET_ITEM(__pyx_cur_scope->__pyx_v_foreign_keys, __pyx_cur_scope->__pyx_v_i);
+      __Pyx_INCREF(__pyx_t_10);
       __Pyx_XGOTREF(((PyObject *)__pyx_cur_scope->__pyx_v_fk));
-      __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_fk, ((struct __pyx_obj_5yapic_6entity_6_field_ForeignKey *)__pyx_t_6));
-      __Pyx_GIVEREF(__pyx_t_6);
-      __pyx_t_6 = 0;
+      __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_fk, ((struct __pyx_obj_5yapic_6entity_6_field_ForeignKey *)__pyx_t_10));
+      __Pyx_GIVEREF(__pyx_t_10);
+      __pyx_t_10 = 0;
 
       /* "yapic/sql/_ddl.pyx":81
  *             for i in range(length):
  *                 fk = foreign_keys[i]
- *                 res += self.dialect.quote_ident(fk.ref.name)             # <<<<<<<<<<<<<<
+ *                 res += self.dialect.quote_ident(fk.ref._name_)             # <<<<<<<<<<<<<<
  *                 if i != length - 1:
  *                     res += ", "
  */
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_fk), __pyx_n_s_ref); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 81, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_name); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 81, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_fk), __pyx_n_s_ref); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 81, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_10);
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_name); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 81, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       if (!(likely(PyUnicode_CheckExact(__pyx_t_5))||((__pyx_t_5) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_t_5)->tp_name), 0))) __PYX_ERR(0, 81, __pyx_L1_error)
-      __pyx_t_6 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_cur_scope->__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_cur_scope->__pyx_v_self->dialect, ((PyObject*)__pyx_t_5), 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 81, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_10 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_cur_scope->__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_cur_scope->__pyx_v_self->dialect, ((PyObject*)__pyx_t_5), 0); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 81, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_5 = __Pyx_PyUnicode_ConcatSafe(__pyx_cur_scope->__pyx_v_res, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 81, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyUnicode_ConcatSafe(__pyx_cur_scope->__pyx_v_res, __pyx_t_10); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 81, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_res);
       __Pyx_DECREF_SET(__pyx_cur_scope->__pyx_v_res, ((PyObject*)__pyx_t_5));
       __Pyx_GIVEREF(__pyx_t_5);
@@ -3779,7 +3774,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
 
       /* "yapic/sql/_ddl.pyx":82
  *                 fk = foreign_keys[i]
- *                 res += self.dialect.quote_ident(fk.ref.name)
+ *                 res += self.dialect.quote_ident(fk.ref._name_)
  *                 if i != length - 1:             # <<<<<<<<<<<<<<
  *                     res += ", "
  * 
@@ -3788,7 +3783,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
       if (__pyx_t_13) {
 
         /* "yapic/sql/_ddl.pyx":83
- *                 res += self.dialect.quote_ident(fk.ref.name)
+ *                 res += self.dialect.quote_ident(fk.ref._name_)
  *                 if i != length - 1:
  *                     res += ", "             # <<<<<<<<<<<<<<
  * 
@@ -3803,7 +3798,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
 
         /* "yapic/sql/_ddl.pyx":82
  *                 fk = foreign_keys[i]
- *                 res += self.dialect.quote_ident(fk.ref.name)
+ *                 res += self.dialect.quote_ident(fk.ref._name_)
  *                 if i != length - 1:             # <<<<<<<<<<<<<<
  *                     res += ", "
  * 
