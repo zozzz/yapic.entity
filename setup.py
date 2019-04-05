@@ -65,7 +65,7 @@ def cmd_prerun(cmd: TestCommand, requirements):
             if dp not in sys.path:
                 sys.path.insert(0, dp)
 
-    cmd.distribution.get_command_obj("build").force = True
+    # cmd.distribution.get_command_obj("build").force = True
     cmd.run_command("build")
 
     ext = cmd.get_finalized_command("build_ext")
@@ -127,5 +127,5 @@ almafa = setup(
             "wraparound": False,
             "auto_pickle": False
         }),
-    tests_require=["pytest", "typing_inspect"],
+    tests_require=["pytest", "docker", "pytest-asyncio"],
     cmdclass={"test": PyTest})
