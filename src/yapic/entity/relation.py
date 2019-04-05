@@ -73,7 +73,7 @@ class ManyToMany(Generic[JoinedT, AcrossT, ValueStore], _relation.ManyToMany):
     def __new__(cls, *args, **kwargs):
         return _relation.ManyToMany.__new__(_relation.ManyToMany, *args, **kwargs)
 
-    def __init__(self, joined: JoinedT, across: AcrossT, value: Type[ValueStore]):
+    def __init__(self, joined: JoinedT, value: Type[ValueStore], across: AcrossT):
         pass
 
 

@@ -1,7 +1,12 @@
 from enum import Enum, Flag
 
+from ._entity cimport EntityType, EntityAttributeImpl
 
-cdef class FieldImpl:
+
+cdef class FieldImpl(EntityAttributeImpl):
+    cpdef init(self, EntityType entity):
+        pass
+
     cpdef object read(self, value):
         pass
 

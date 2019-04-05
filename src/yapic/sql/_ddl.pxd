@@ -2,7 +2,6 @@ from yapic.entity._entity cimport EntityType
 from yapic.entity._field cimport Field
 from yapic.entity._field_impl cimport StorageType
 
-from ._str_builder cimport UnicodeBuilder
 from ._dialect cimport Dialect
 
 cdef class DDLCompiler:

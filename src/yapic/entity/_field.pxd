@@ -1,29 +1,19 @@
 import cython
 
-from ._expression cimport Expression
-from ._entity cimport EntityType
+from ._entity cimport EntityType, EntityAttribute, EntityAttributeExt
 from ._field_impl cimport FieldImpl
 
 
-cdef class Field(Expression):
-    cdef FieldImpl _impl
-    cdef object _default
-
-    cdef readonly str name
+cdef class Field(EntityAttribute):
     cdef readonly int min_size
     cdef readonly int max_size
-    cdef readonly int index
     cdef readonly object nullable
-    cdef readonly object extensions
-    cdef readonly EntityType entity
 
-    cdef void bind(self, EntityType entity)
     cdef bint values_is_eq(self, object a, object b)
-    cdef object get_ext(self, ext_type)
 
 
-cdef class FieldExtension:
-    cdef readonly Field field
+cdef class FieldExtension(EntityAttributeExt):
+    pass
 
 
 cdef class PrimaryKey(FieldExtension):

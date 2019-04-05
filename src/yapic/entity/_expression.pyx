@@ -1,11 +1,18 @@
 import operator
 import cython
+from cpython.object cimport PyObject
+from cpython.tuple cimport PyTuple_New, PyTuple_GET_ITEM, PyTuple_SET_ITEM, PyTuple_GET_SIZE
+
+
+cdef extern from "Python.h":
+    int _Py_HashPointer(void* ptr)
 
 
 cdef class Expression:
     cpdef visit(self, Visitor visitor):
         raise NotImplementedError("%s::visit", type(self))
 
+    def __hash__(self): return _Py_HashPointer(<PyObject*>(<object>self))
     def __lt__(self, other): return BinaryExpression(self, other, operator.__lt__)
     def __le__(self, other): return BinaryExpression(self, other, operator.__le__)
     def __eq__(self, other): return BinaryExpression(self, other, operator.__eq__)
@@ -21,17 +28,17 @@ cdef class Expression:
     def __invert__(self):
         if isinstance(self, BinaryExpression):
             op = (<BinaryExpression>self).op
-            if op == operator.__lt__:
+            if op is operator.__lt__:
                 op = operator.__ge__
-            elif op == operator.__le__:
+            elif op is operator.__le__:
                 op = operator.__gt__
-            elif op == operator.__eq__:
+            elif op is operator.__eq__:
                 op = operator.__ne__
-            elif op == operator.__ne__:
+            elif op is operator.__ne__:
                 op = operator.__eq__
-            elif op == operator.__ge__:
+            elif op is operator.__ge__:
                 op = operator.__lt__
-            elif op == operator.__gt__:
+            elif op is operator.__gt__:
                 op = operator.__le__
             else:
                 return UnaryExpression(self, operator.__invert__)
@@ -52,12 +59,14 @@ cdef class Expression:
         if len(values) == 1 and (isinstance(values[0], list) or isinstance(values[0], tuple)):
             values = values[0]
         return BinaryExpression(self, values, operator.__contains__)
-    cpdef asc(self): return DirectionExpression(self, True)
-    cpdef desc(self): return DirectionExpression(self, False)
-    cpdef cast(self, str to): return CastExpression(self, to)
     def is_true(self): return self == True
     def is_false(self): return self == False
     def is_null(self): return self == None
+
+    cpdef asc(self): return DirectionExpression(self, True)
+    cpdef desc(self): return DirectionExpression(self, False)
+    cpdef cast(self, str to): return CastExpression(self, to)
+    cpdef alias(self, str alias): return AliasExpression(self, alias)
 
     def __repr__(self):
         return "<Expr EMPTY>"
@@ -99,6 +108,9 @@ cdef class CastExpression(Expression):
     cpdef visit(self, Visitor visitor):
         return visitor.visit_cast(self)
 
+    cpdef cast(self, str to):
+        return CastExpression(self.expr, to)
+
 
 cdef class ConstExpression(Expression):
     def __cinit__(self, object value, type type):
@@ -117,8 +129,32 @@ cdef class DirectionExpression(Expression):
         self.expr = expr
         self.is_asc = is_asc
 
+    def __repr__(self):
+        return "<Direction %s %s>" % (self.expr, "ASC" if self.is_asc else "DESC")
+
     cpdef visit(self, Visitor visitor):
         return visitor.visit_direction(self)
+
+    cpdef asc(self):
+        return DirectionExpression(self.expr, True)
+
+    cpdef desc(self):
+        return DirectionExpression(self.expr, False)
+
+
+cdef class AliasExpression(Expression):
+    def __cinit__(self, Expression expr, str alias):
+        self.expr = expr
+        self.value = alias
+
+    def __repr__(self):
+        return "<Alias %s AS %s>" % (self.expr, self.value)
+
+    cpdef visit(self, Visitor visitor):
+        return visitor.visit_alias(self)
+
+    cpdef alias(self, str alias):
+        return AliasExpression(self.expr, alias)
 
 
 cdef class Visitor:
@@ -172,5 +208,5 @@ def or_(*expr):
     return res
 
 
-cpdef direction(self, Expression expr, str dir):
+cpdef direction(Expression expr, str dir):
     return DirectionExpression(expr, str(dir).lower() == "asc")

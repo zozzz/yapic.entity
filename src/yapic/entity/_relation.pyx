@@ -4,29 +4,13 @@ from cpython.ref cimport Py_XDECREF, Py_XINCREF, Py_DECREF, Py_INCREF, Py_CLEAR
 from cpython.object cimport PyObject, PyObject_RichCompareBool, Py_EQ
 from cpython.tuple cimport PyTuple_SetItem, PyTuple_GetItem, PyTuple_New, PyTuple_GET_SIZE, PyTuple_SET_ITEM, PyTuple_GET_ITEM, PyTuple_Pack
 
-from ._entity cimport EntityType, EntityBase
+from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeImpl
 from ._expression cimport Expression, Visitor
 from ._field cimport Field, ForeignKey, collect_foreign_keys
 from ._factory cimport Factory, ForwardDecl, new_instance_from_forward, is_forward_decl
 
 
-cdef class Relation(Expression):
-    def __cinit__(self, impl):
-        if is_forward_decl(impl) or isinstance(impl, RelationImpl):
-            self._impl = impl
-        else:
-            raise TypeError("Invalid impl argument for relation")
-
-    @property
-    def __impl__(self):
-        if is_forward_decl(self._impl):
-            self._impl = new_instance_from_forward(self._impl)
-            if not isinstance(self._impl, RelationImpl):
-                raise TypeError("Invalid impl argument for relation")
-            else:
-                (<RelationImpl>self._impl).determine_join_expr(self.__entity__)
-        return self._impl
-
+cdef class Relation(EntityAttribute):
     def __get__(self, instance, owner):
         if instance is None:
             return self
@@ -42,51 +26,64 @@ cdef class Relation(Expression):
         instance.__rstate__.del_value(self.index)
 
     def __getattr__(self, name):
-        cdef EntityType joined = self.__impl__.joined
-        cdef Field field = getattr(joined, name)
-        return RelationField(self, field)
+        cdef EntityType joined = self._impl_.joined
+        cdef EntityAttribute attr = getattr(joined, name)
+        return RelationAttribute(self, attr)
 
     cpdef visit(self, Visitor visitor):
         return visitor.visit_relation(self)
 
     def __repr__(self):
-        return "<Relation %s :: %s>" % (self.__entity__, self.__impl__)
+        return "<Relation %s :: %s>" % (self._entity_, self._impl_)
 
     cdef bind(self, EntityType entity):
-        self.__entity__ = entity
-        if isinstance(self._impl, RelationImpl):
-            (<RelationImpl>self._impl).determine_join_expr(entity)
+        EntityAttribute.bind(self, entity)
+
+    cpdef object clone(self):
+        cdef EntityAttribute res = type(self)(self._impl_.clone())
+        res._exts_ = self.clone_exts(res)
+        return res
 
 
-cdef class RelationField(Expression):
-    def __cinit__(self, Relation relation, Field field):
+cdef class RelationAttribute(Expression):
+    def __cinit__(self, Relation relation, EntityAttribute attr):
         self.relation = relation
-        self.field = field
+        self.attr = attr
 
     cpdef visit(self, Visitor visitor):
-        return visitor.visit_relation_field(self)
+        return visitor.visit_relation_attribute(self)
+
+    def __getattr__(self, name):
+        return getattr(self.attr, name)
 
     def __repr__(self):
-        return "<RelationField %s :: %s>" % (self.relation, self.field.name)
+        return "<RelationAttribute %s :: %s>" % (self.relation, self.attr.name)
 
 
-cdef class RelationImpl:
+cdef class RelationImpl(EntityAttributeImpl):
+    def __cinit__(self, joined, value_t, *args):
+        self.joined = joined
+        self.set_value_store_type(value_t)
+
+    cpdef init(self, EntityType entity):
+        self.determine_join_expr(entity)
+
     cdef object new_value_store(self):
         return self.value_store_factory.invoke()
 
     cdef void set_value_store_type(self, object t):
         if self.value_store_t != t:
+            self.value_store_t = t
             self.value_store_factory = Factory.create(t)
 
     cdef determine_join_expr(self, EntityType entity):
         raise NotImplementedError()
 
+    cpdef object clone(self):
+        return type(self)(self.joined, self.value_store_t)
+
 
 cdef class ManyToOne(RelationImpl):
-    def __cinit__(self, joined, value_t):
-        self.joined = joined
-        self.set_value_store_type(value_t)
-
     def __repr__(self):
         return "ManyToOne %r" % self.joined
 
@@ -95,10 +92,6 @@ cdef class ManyToOne(RelationImpl):
 
 
 cdef class OneToMany(RelationImpl):
-    def __cinit__(self, joined, value_t):
-        self.joined = joined
-        self.set_value_store_type(value_t)
-
     def __repr__(self):
         return "OneToMany %r" % self.joined
 
@@ -107,10 +100,8 @@ cdef class OneToMany(RelationImpl):
 
 
 cdef class ManyToMany(RelationImpl):
-    def __cinit__(self, joined, across, value_t):
-        self.joined = joined
+    def __cinit__(self, joined, value_t, across):
         self.across = across
-        self.set_value_store_type(value_t)
 
     def __repr__(self):
         return "ManyToMany %r => %r" % (self.across, self.joined)
@@ -119,9 +110,13 @@ cdef class ManyToMany(RelationImpl):
         self.across_join_expr = determine_join_expr(self.across, entity)
         self.join_expr = determine_join_expr(self.across, self.joined)
 
+    cpdef object clone(self):
+        return type(self)(self.joined, self.value_store_t, self.across)
+
 
 cdef determine_join_expr(EntityType entity, EntityType joined):
     cdef dict fks = collect_foreign_keys(entity)
+
     cdef list keys
     cdef Field field
     cdef ForeignKey fk
@@ -130,14 +125,14 @@ cdef determine_join_expr(EntityType entity, EntityType joined):
     for fk_name, keys in fks.items():
         fk = <ForeignKey>keys[0]
 
-        if fk.ref.entity is joined:
+        if fk.ref._entity_ is joined:
             if found is not None:
                 raise RuntimeError("Multiple join conditions between %s <-> %s" % (entity, joined))
 
-            found = fk.field == fk.ref
+            found = fk.attr == fk.ref
             for i in range(1, len(keys)):
                 fk = <ForeignKey>keys[i]
-                found &= fk.field == fk.ref
+                found &= fk.attr == fk.ref
 
     if found is None:
         raise RuntimeError("Can't determine join condition between %s <-> %s" % (entity, joined))
@@ -163,7 +158,7 @@ cdef class RelationState:
 
         for i from 0 <= i < size:
             rel = <Relation>PyTuple_GET_ITEM(relations, i)
-            impl = <RelationImpl>rel.__impl__
+            impl = <RelationImpl>rel._impl_
             store = impl.new_value_store()
             Py_INCREF(<object>store)
             PyTuple_SET_ITEM(<object>data, i, <object>store)

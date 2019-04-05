@@ -1,6 +1,6 @@
 import pytest
 from yapic.entity import Entity, String, Int
-from yapic.entity._entity import EntityState
+from yapic.entity._entity import FieldState
 from yapic.entity._field import FieldExtension, Field
 
 
@@ -17,16 +17,16 @@ def test_entity_basics():
         test_none: String
 
     assert issubclass(Ent, Entity)
-    assert Ent.__fields__[0].name == "id"
-    assert Ent.__fields__[0].entity == Ent
-    assert Ent.__fields__[0].extensions[0] == pkInst
-    assert pkInst.field == Ent.__fields__[0]
-    assert Ent.__fields__[1].name == "test"
-    assert Ent.__fields__[1].entity == Ent
-    assert Ent.__fields__[2].name == "test_def"
-    assert Ent.__fields__[2].entity == Ent
-    assert Ent.__fields__[3].name == "test_none"
-    assert Ent.__fields__[3].entity == Ent
+    assert Ent.__fields__[0]._name_ == "id"
+    assert Ent.__fields__[0]._entity_ == Ent
+    assert Ent.__fields__[0]._exts_[0] == pkInst
+    assert pkInst.attr == Ent.__fields__[0]
+    assert Ent.__fields__[1]._name_ == "test"
+    assert Ent.__fields__[1]._entity_ == Ent
+    assert Ent.__fields__[2]._name_ == "test_def"
+    assert Ent.__fields__[2]._entity_ == Ent
+    assert Ent.__fields__[3]._name_ == "test_none"
+    assert Ent.__fields__[3]._entity_ == Ent
 
     # with pytest.raises(AttributeError):
     #     Ent.missing = ""
@@ -56,23 +56,23 @@ def test_field_ext():
 
     f1 = Ent.__fields__[0]
     assert isinstance(f1, Field)
-    assert len(f1.extensions) == 1
-    assert isinstance(f1.extensions[0], FE1)
-    assert f1.extensions[0].field == f1
+    assert len(f1._exts_) == 1
+    assert isinstance(f1._exts_[0], FE1)
+    assert f1._exts_[0].attr == f1
 
     f2 = Ent.__fields__[1]
     assert isinstance(f2, Field)
-    assert len(f2.extensions) == 1
-    assert isinstance(f2.extensions[0], FE2)
-    assert f2.extensions[0].field == f2
+    assert len(f2._exts_) == 1
+    assert isinstance(f2._exts_[0], FE2)
+    assert f2._exts_[0].attr == f2
 
     f3 = Ent.__fields__[2]
     assert isinstance(f3, Field)
-    assert len(f3.extensions) == 2
-    assert isinstance(f3.extensions[0], FE3)
-    assert isinstance(f3.extensions[1], FE4)
-    assert f3.extensions[0].field == f3
-    assert f3.extensions[1].field == f3
+    assert len(f3._exts_) == 2
+    assert isinstance(f3._exts_[0], FE3)
+    assert isinstance(f3._exts_[1], FE4)
+    assert f3._exts_[0].attr == f3
+    assert f3._exts_[1].attr == f3
 
 
 def test_entity_state_common():
@@ -82,7 +82,7 @@ def test_entity_state_common():
 
     user = User()
 
-    assert isinstance(user.__state__, EntityState)
+    assert isinstance(user.__state__, FieldState)
 
     with pytest.raises(AttributeError):
         user.__state__.x = 10
@@ -92,7 +92,7 @@ def test_entity_state_common():
 
     with pytest.raises(TypeError) as excinfo:
 
-        class MyState(EntityState):
+        class MyState(FieldState):
             pass
 
     assert "is not an acceptable base type" in str(excinfo.value)
@@ -131,7 +131,7 @@ def test_entity_state_usage():
     changes = list(user.__state__.changes)
     assert len(changes) == 0
 
-    user.name = "New Name"
+    user._name_ = "New Name"
     changes = list(user.__state__.changes)
     assert len(changes) == 1
     assert changes[0][0] is User.name

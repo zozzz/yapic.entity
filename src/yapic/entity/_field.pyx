@@ -4,16 +4,14 @@ from cpython.weakref cimport PyWeakref_NewRef, PyWeakref_GetObject
 from cpython.module cimport PyImport_Import, PyModule_GetDict
 
 from ._expression cimport Expression, Visitor
-from ._entity cimport EntityType, EntityBase
+from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeExt
 from ._factory cimport ForwardDecl, get_type_hints, new_instance, new_instance_from_forward, is_forward_decl
 
 
-cdef class Field(Expression):
+cdef class Field(EntityAttribute):
     def __cinit__(self, impl = None, *, name = None, default = None, size = None, nullable = None):
-        self._impl = impl
-        self._default = default
-        self.name = name
-        self.extensions = []
+        self._initial_ = default
+        self._name_ = name
 
         if size is not None:
             if isinstance(size, list) or isinstance(size, tuple):
@@ -36,66 +34,48 @@ cdef class Field(Expression):
 
     @property
     def default(self):
-        return self._default
-
-    @property
-    def __impl__(self):
-        if is_forward_decl(self._impl):
-            self._impl = new_instance_from_forward(self._impl)
-        return self._impl
+        return self._initial_
 
     def __get__(self, instance, owner):
         if instance is None:
             return self
         elif isinstance(instance, EntityBase):
-            return (<EntityBase>instance).__fstate__.get_value(self.index)
+            return (<EntityBase>instance).__fstate__.get_value(self._index_)
         else:
             raise TypeError("Instance must be 'None' or 'EntityBase'")
 
     def __set__(self, EntityBase instance, value):
-        instance.__fstate__.set_value(self.index, value)
+        instance.__fstate__.set_value(self._index_, value)
 
     def __delete__(self, EntityBase instance):
-        instance.__fstate__.del_value(self.index)
+        instance.__fstate__.del_value(self._index_)
 
-    def __floordiv__(Field self, FieldExtension other):
-        other.field = self
-        self.extensions.append(other)
-        return self
-
-    # cdef bint init_from_type(self, object t):
-    #     annots = get_annots(t)
-    #     print(annots)
-
-
-    cdef void bind(self, EntityType entity):
-        self.entity = entity
-        self.extensions = tuple(self.extensions)
-
-        for ext in self.extensions:
-            ext.init()
-
+    cdef bind(self, EntityType entity):
+        EntityAttribute.bind(self, entity)
         if self.nullable is None:
             if self.get_ext(PrimaryKey):
                 self.nullable = False
             else:
-                self.nullable = bool(self._default is None)
+                self.nullable = bool(self._initial_ is None)
 
+    cpdef clone(self):
+        cdef EntityAttribute res = Field(self._impl_,
+            name=self._name_,
+            default=self._initial_,
+            size=(self.min_size, self.max_size),
+            nullable=self.nullable)
+        res._exts_ = self.clone_exts(res)
+        return res
 
     cdef bint values_is_eq(self, object a, object b):
         # TODO: ...
         return a == b
 
-    cdef object get_ext(self, ext_type):
-        for ext in self.extensions:
-            if isinstance(ext, ext_type):
-                return ext
-
     def __repr__(self):
-        if self.entity:
-            return "<Field %s: %s of %s>" % (self.name, self.__impl__, self.entity)
+        if self._entity_:
+            return "<Field %s: %s of %s>" % (self._name_, self._impl_, self._entity_.__name__)
         else:
-            return "<Field %s: %s (unbound)>" % (self.name, self.__impl__)
+            return "<Field %s: %s (unbound)>" % (self._name_, self._impl_)
 
     cpdef visit(self, Visitor visitor):
         return visitor.visit_field(self)
@@ -106,23 +86,16 @@ cdef class Field(Expression):
 #     return True
 
 
-cdef class FieldExtension:
-    def __floordiv__(FieldExtension self, FieldExtension other):
-        if not self.field:
-            self.field = Field()
-            self.field.extensions.append(self)
-
-        other.field = self.field
-        self.field.extensions.append(other)
-        return self.field
-
-    def init(self):
-        pass
+cdef class FieldExtension(EntityAttributeExt):
+    pass
 
 
 cdef class PrimaryKey(FieldExtension):
     def __cinit__(self, *, bint auto_increment = False):
         self.auto_increment = auto_increment
+
+    cpdef object clone(self):
+        return type(self)(auto_increment=self.auto_increment)
 
 
 cdef class Index(FieldExtension):
@@ -162,19 +135,22 @@ cdef class ForeignKey(FieldExtension):
 
         return self._ref
 
-    def init(self):
-        super().init()
+    cpdef object bind(self, EntityAttribute attr):
+        FieldExtension.bind(self, attr)
         if self.name is None:
             if isinstance(self._ref, Field):
-                self.name = compute_fk_name(self.field, self._ref)
+                self.name = compute_fk_name(attr, self._ref)
+
+    cpdef object clone(self):
+        return type(self)(self.ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)
 
 
 cdef compute_fk_name(Field field_from, Field field_to):
     return "fk_%s__%s-%s__%s" % (
-        field_from.entity.__name__,
-        field_from.name,
-        field_to.entity.__name__,
-        field_to.name
+        field_from._entity_.__name__,
+        field_from._name_,
+        field_to._entity_.__name__,
+        field_to._name_
     )
 
 
@@ -191,7 +167,7 @@ cdef dict collect_foreign_keys(EntityType entity):
 
             if fk.name in fks:
                 for fkInFks in fks[fk.name]:
-                    if fkInFks.ref.entity != referenced.entity:
+                    if fkInFks.ref._entity_ != referenced._entity_:
                         raise ValueError("Can't use fields from different entities in the same foreign key")
                 fks[fk.name].append(fk)
             else:

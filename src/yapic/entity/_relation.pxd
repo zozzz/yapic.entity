@@ -1,28 +1,25 @@
 import cython
 from cpython.object cimport PyObject
 
-from ._entity cimport EntityType
+from ._entity cimport EntityType, EntityAttribute, EntityAttributeImpl
 from ._expression cimport Expression
-from ._field cimport Field
 from ._factory cimport Factory
 
 
-cdef class Relation(Expression):
-    cdef object _impl
-    cdef int index
-    cdef readonly EntityType __entity__
-
-    cdef bind(self, EntityType entity)
+cdef class Relation(EntityAttribute):
+    pass
 
 
-cdef class RelationField(Expression):
+cdef class RelationAttribute(Expression):
     cdef Relation relation
-    cdef Field field
+    cdef EntityAttribute attr
 
 
-cdef class RelationImpl:
+cdef class RelationImpl(EntityAttributeImpl):
     cdef Factory value_store_factory
     cdef readonly object value_store_t
+    cdef readonly EntityType joined
+    cdef readonly object join_expr
 
     cdef object new_value_store(self)
     cdef void set_value_store_type(self, object t)
@@ -30,20 +27,15 @@ cdef class RelationImpl:
 
 
 cdef class ManyToOne(RelationImpl):
-    cdef readonly EntityType joined
-    cdef readonly object join_expr
+    pass
 
 
 cdef class OneToMany(RelationImpl):
-    cdef readonly EntityType joined
-    cdef readonly object join_expr
-
+    pass
 
 cdef class ManyToMany(RelationImpl):
-    cdef readonly EntityType joined
     cdef readonly EntityType across
     cdef readonly object across_join_expr
-    cdef readonly object join_expr
 
 
 @cython.final
@@ -123,3 +115,6 @@ cdef class RelatedDict(RelatedContainer):
     # __len__
     # __contains__
     # __iter__
+
+
+cdef determine_join_expr(EntityType entity, EntityType joined)

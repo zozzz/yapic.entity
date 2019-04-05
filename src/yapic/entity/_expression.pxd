@@ -10,6 +10,7 @@ cdef class Expression:
     cpdef asc(self)
     cpdef desc(self)
     cpdef cast(self, str to)
+    cpdef alias(self, str alias)
 
 
 cdef class BinaryExpression(Expression):
@@ -33,6 +34,11 @@ cdef class ConstExpression(Expression):
     cpdef readonly type type
 
 
+cdef class AliasExpression(Expression):
+    cpdef readonly Expression expr
+    cpdef readonly str value
+
+
 cdef Expression coerce_expression(object expr)
 
 
@@ -41,4 +47,5 @@ cdef class DirectionExpression(Expression):
     cdef readonly bint is_asc
 
 
-cpdef direction(self, Expression expr, str dir)
+cpdef direction(Expression expr, str dir)
+# cpdef alias(object obj, str alias)

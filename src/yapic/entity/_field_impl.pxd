@@ -1,7 +1,8 @@
+from ._entity cimport EntityAttributeImpl
 from ._field cimport Field
 
 
-cdef class FieldImpl:
+cdef class FieldImpl(EntityAttributeImpl):
     cpdef object read(self, value)
     cpdef object write(self, value)
     cpdef bint eq(self, a, b)

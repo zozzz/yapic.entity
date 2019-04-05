@@ -1,57 +1,100 @@
 import operator
 
+from yapic.entity._entity cimport EntityType, get_alias_target
 from yapic.entity._query cimport Query
-from yapic.entity._expression cimport BinaryExpression, UnaryExpression, ConstExpression, CastExpression, DirectionExpression
+from yapic.entity._expression cimport BinaryExpression, UnaryExpression, ConstExpression, CastExpression, DirectionExpression, AliasExpression
 from yapic.entity._expression import and_
+from yapic.entity._relation cimport RelationAttribute
 
 from .._query_compiler cimport QueryCompiler
 
 
 cdef class PostgreQueryCompiler(QueryCompiler):
+    cpdef init_subquery(self, PostgreQueryCompiler parent):
+        self.parent = parent
+
     cpdef compile_select(self, Query query):
         self.parts = ["SELECT"]
-        self.table_alias = {}
-        self.params = []
+        self.table_alias = self.parent.table_alias if self.parent else {}
+        self.params = self.parent.params if self.parent else []
 
         from_ = self.visit_from_clause(query.from_clause)
+        if query.joins:
+            join = self.visit_joins(query.joins)
+        else:
+            join = None
 
         if query.prefixes:
             self.parts.append(" ".join(query.prefixes))
 
         if query.columns:
-            self.parts.append(self.visit_columns(query.columns))
+            self.parts.append(", ".join(visit_list(self, query.columns)))
         else:
             self.parts.append("*")
 
         self.parts.append("FROM")
         self.parts.append(from_)
+        if join:
+            self.parts.append(join)
 
         if query.where_clause:
             self.parts.append("WHERE")
             self.parts.append(self.visit(and_(*query.where_clause)))
 
+        if query.groups:
+            self.parts.append("GROUP BY")
+            self.parts.append(", ".join(visit_list(self, query.groups)))
+
+        if query.havings:
+            self.parts.append("HAVING")
+            self.parts.append(self.visit(and_(*query.havings)))
+
+        # TODO: window
+
+        if query.orders:
+            self.parts.append("ORDER BY")
+            self.parts.append(", ".join(visit_list(self, query.orders)))
+
+        if query.range:
+            if query.range.start:
+                self.parts.append(f"OFFSET {query.range.start}")
+            if query.range.stop is not None:
+                if query.range.stop == 1:
+                    self.parts.append(f"FETCH FIRST ROW ONLY")
+                else:
+                    self.parts.append(f"FETCH FIRST {query.range.stop - query.range.start} ROWS ONLY")
+
         return " ".join(self.parts), tuple(self.params)
 
-    def visit_columns(self, list columns):
-        res = []
-
-        for col in columns:
-            res.append(self.visit(col))
-
-        return ", ".join(res)
-
     def visit_from_clause(self, list from_clause):
-        for i, entity in enumerate(from_clause):
-            self.table_alias[entity] = f"t{i}"
+        result = []
 
-        return ", ".join([f"{self.dialect.table_qname(k)} as {v}" for k, v in self.table_alias.items()])
+        for i, expr in enumerate(from_clause):
+            if isinstance(expr, EntityType):
+                qname, alias = self._add_entity_alias(<EntityType>expr)
+                result.append(f"{qname} {alias}")
+            else:
+                result.append(self.visit(expr))
+
+        return ",".join(result)
+
+    def visit_joins(self, dict joins):
+        result = []
+
+        for ent, condition, type in joins.values():
+            qname, alias = self._add_entity_alias(ent)
+            result.append(f"{type} JOIN {qname} {alias} ON {self.visit(condition)}")
+
+        return " ".join(result)
+
 
     def visit_field(self, field):
         try:
-            tbl = self.table_alias[field.entity]
+            tbl = self.table_alias[field._entity_][1]
         except KeyError:
-            tbl = self.dialect.table_qname(field.entity)
-        return f'"{tbl}"."{field.name}"'
+            raise RuntimeError("Entity is missing from query: %r" % field._entity_)
+            # tbl = self.dialect.table_qname(field._entity_)
+        return f'{tbl}.{self.dialect.quote_ident(field._name_)}'
 
     def visit_binary_eq(self, expr):
         cdef BinaryExpression e = <BinaryExpression> expr
@@ -158,6 +201,37 @@ cdef class PostgreQueryCompiler(QueryCompiler):
             entries = [self.visit(right)]
 
         return f"{self.visit(left)} IN ({', '.join(entries)})"
+
+    def visit_alias(self, expr):
+        return f"{self.visit((<AliasExpression>expr).expr)} as {self.dialect.quote_ident((<AliasExpression>expr).value)}"
+
+    def visit_query(self, expr):
+        cdef PostgreQueryCompiler qc = self.dialect.create_query_compiler()
+        qc.init_subquery(self)
+        sql, params = qc.compile_select(expr)
+        return f"({sql})"
+
+    def visit_relation_attribute(self, RelationAttribute expr):
+        return self.visit(expr.attr)
+
+    def _add_entity_alias(self, EntityType ent):
+        try:
+            return self.table_alias[ent]
+        except KeyError:
+            aliased = get_alias_target(ent)
+            if aliased is ent:
+                alias = (self.dialect.table_qname(ent), self.dialect.quote_ident(f"t{len(self.table_alias)}"))
+            else:
+                alias = (self.dialect.table_qname(aliased), self.dialect.quote_ident(ent.__name__))
+            self.table_alias[ent] = alias
+            return alias
+
+
+cdef visit_list(PostgreQueryCompiler qc, list items):
+    cdef list res = []
+    for x in items:
+        res.append(qc.visit(x))
+    return res
 
 
 cdef compile_binary(PostgreQueryCompiler qc, BinaryExpression expr, str op):
