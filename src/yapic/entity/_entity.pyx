@@ -12,6 +12,10 @@ from ._factory cimport Factory, get_type_hints, new_instance_from_forward, is_fo
 from ._expression cimport Visitor
 
 
+cdef class NOTSET:
+    pass
+
+
 cdef class EntityType(type):
     def __cinit__(self, *args, **kwargs):
         # XXX: DONT REMOVE
@@ -292,14 +296,14 @@ cdef class EntityAttributeImpl:
     cpdef object clone(self):
         raise NotImplementedError()
 
-    cdef PyObject* state_set(self, PyObject* current, PyObject* value):
+    cdef object state_set(self, object initial, object current, object value):
         return value
 
-    cdef PyObject* state_get(self, PyObject* current):
-        return current
-
-    # cdef object state_del(self, PyObject*& current):
-    #     raise NotImplementedError()
+    cdef object state_get_dirty(self, object initial, object current):
+        if initial != current:
+            return current
+        else:
+            return NOTSET
 
 
 # cdef class EntityAliasExpression(Expression):
@@ -462,6 +466,21 @@ cdef class FieldState:
         return "<RelationState>"
 
 
+cdef inline state_set_value(PyObject* initial, PyObject* current, EntityAttribute attr, object value):
+    cdef int idx = attr._index_
+    cdef PyObject* iv = PyTuple_GET_ITEM(<object>initial, idx)
+    cdef PyObject* cv = PyTuple_GET_ITEM(<object>current, idx)
+
+    if iv is NULL:
+        iv = <PyObject*>NOTSET
+    if cv is NULL:
+        cv = <PyObject*>NOTSET
+
+    nv = (<EntityAttributeImpl>attr._impl_).state_set(<object>iv, <object>cv, value)
+    Py_INCREF(<object>nv)
+    PyTuple_SET_ITEM(<object>current, idx, <object>nv)
+
+
 @cython.final
 @cython.freelist(1000)
 cdef class EntityState:
@@ -472,65 +491,92 @@ cdef class EntityState:
         return state
 
     def __cinit__(self, EntityType entity, tuple initial_data=None):
-        self.data = PyTuple_New(len(entity.__attrs__))
+        cdef int length = len(entity.__attrs__)
+        self.initial = PyTuple_New(length)
+        self.current = PyTuple_New(length)
         self.field_count = len(entity.__fields__)
 
     cdef object update(self, EntityType entity, dict data, bint is_initial):
         cdef EntityAttribute attr
+        cdef PyObject* current = <PyObject*>self.initial if is_initial else <PyObject*>self.current
+        cdef PyObject* initial = <PyObject*>self.initial
 
         for k, v in data.items():
             attr = getattr(entity, k)
-            self.set_value(attr, v)
+            state_set_value(initial, current, attr, v)
 
     cdef bint set_value(self, EntityAttribute attr, object value):
-        cdef int index = attr._index_
-        cdef PyObject* data = <PyObject*>self.data
-        cdef EntityAttributeImpl impl = <EntityAttributeImpl>attr._impl_
-        cdef PyObject* current = PyTuple_GET_ITEM(<object>data, index)
-        cdef PyObject* newValue = impl.state_set(current, <PyObject*>value)
-
-        Py_XINCREF(newValue)
-        Py_XDECREF(current)
-        PyTuple_SET_ITEM(<object>data, index, <object>newValue)
+        state_set_value(<PyObject*>self.initial, <PyObject*>self.current, attr, value)
+        return 1
 
     cdef object get_value(self, EntityAttribute attr):
-        cdef int index = attr._index_
-        cdef PyObject* data = <PyObject*>self.data
-        cdef PyObject* current = PyTuple_GET_ITEM(<object>data, index)
-        cdef EntityAttributeImpl impl = <EntityAttributeImpl>attr._impl_
-        return <object>impl.state_get(current)
+        cdef PyObject* initial = <PyObject*>self.initial
+        cdef PyObject* current = <PyObject*>self.current
+        cdef PyObject* cv = PyTuple_GET_ITEM(<object>current, attr._index_)
+
+        if cv is NULL:
+            cv = PyTuple_GET_ITEM(<object>initial, attr._index_)
+        if cv is NULL:
+            return NOTSET
+        else:
+            return <object>cv
 
     cdef void del_value(self, EntityAttribute attr):
-        cdef int index = attr._index_
-        cdef PyObject* data = <PyObject*>self.data
-        cdef PyObject* current = PyTuple_GET_ITEM(<object>data, index)
-
-        Py_XDECREF(current)
-        PyTuple_SET_ITEM(<object>data, index, <object>NULL)
+        cdef PyObject* current = <PyObject*>self.current
+        cdef PyObject* cv = PyTuple_GET_ITEM(<object>current, attr._index_)
+        Py_XDECREF(cv)
+        PyTuple_SET_ITEM(<object>current, attr._index_, <object>NULL)
 
     cdef list data_for_insert(self, EntityType entity):
+        cdef int idx
         cdef list res = []
-        cdef PyObject* data = <PyObject*>self.data
+        cdef PyObject* initial = <PyObject*>self.initial
+        cdef PyObject* current = <PyObject*>self.current
         cdef PyObject* cv
-        cdef EntityAttribute field
-        cdef EntityAttributeImpl impl
+        cdef EntityAttribute attr
 
-        for field in entity.__fields__:
-            cv = PyTuple_GET_ITEM(<object>data, field._index_)
-            cv = (<EntityAttributeImpl>field._impl_).state_get(cv)
+        for attr in entity.__attrs__:
+            idx = attr._index_
+            cv = PyTuple_GET_ITEM(<object>current, idx)
+            if cv is NULL or cv is <PyObject*>NOTSET:
+                cv = PyTuple_GET_ITEM(<object>initial, idx)
+            if cv is NULL or cv is <PyObject*>NOTSET:
+                if not attr.get_ext(PrimaryKey):
+                    cv = <PyObject*>(attr._default_)
+                else:
+                    continue
 
-            if field.get_ext(PrimaryKey) and cv is NULL:
-                continue
-
-            if cv is NULL:
-                cv = <PyObject*>field._default_
-
-            res.append((field, <object>cv))
+            res.append((attr, <object>cv))
 
         return res
 
     cdef list data_for_update(self, EntityType entity):
-        pass
+        cdef int idx
+        cdef list res = []
+        cdef PyObject* initial = <PyObject*>self.initial
+        cdef PyObject* current = <PyObject*>self.current
+        cdef PyObject* iv
+        cdef PyObject* cv
+        cdef EntityAttribute attr
+
+        for attr in entity.__attrs__:
+            idx = attr._index_
+
+            iv = PyTuple_GET_ITEM(<object>initial, idx)
+            if iv is NULL:
+                iv = <PyObject*>NOTSET
+
+            cv = PyTuple_GET_ITEM(<object>current, idx)
+            if cv is NULL:
+                cv = <PyObject*>NOTSET
+
+            nv = (<EntityAttributeImpl>attr._impl_).state_get_dirty(<object>iv, <object>cv)
+            if nv is NOTSET:
+                continue
+
+            res.append((attr, <object>cv))
+
+        return res
 
 
     cpdef reset(self):

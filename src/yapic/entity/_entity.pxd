@@ -4,6 +4,10 @@ from cpython.object cimport PyObject
 from ._expression cimport AliasExpression, Expression
 
 
+cdef class NOTSET:
+    pass
+
+
 cdef class EntityType(type):
     cdef readonly tuple __attrs__
     cdef readonly tuple __fields__
@@ -51,8 +55,8 @@ cdef class EntityAttributeImpl:
     cpdef init(self, EntityType entity)
     cpdef object clone(self)
 
-    cdef PyObject* state_set(self, PyObject* current, PyObject* value)
-    cdef PyObject* state_get(self, PyObject* current)
+    cdef object state_set(self, object initial, object current, object value)
+    cdef object state_get_dirty(self, object initial, object current)
     # cdef object state_del(self, PyObject** current)
 
 
@@ -83,7 +87,8 @@ cdef class FieldState:
 @cython.final
 @cython.freelist(1000)
 cdef class EntityState:
-    cdef tuple data
+    cdef tuple initial
+    cdef tuple current
     cdef int field_count
 
     @staticmethod

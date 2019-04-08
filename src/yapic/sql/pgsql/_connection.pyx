@@ -1,4 +1,5 @@
 from yapic.entity._entity cimport EntityType, EntityBase, EntityAttribute
+from yapic.entity._field cimport Field
 
 from .._connection cimport Connection
 
@@ -29,10 +30,11 @@ cdef class PostgreConnection(Connection):
         subst = []
         i = 1
         for attr, value in entity.__state__.data_for_insert(ent):
-            fields.append(self.dialect.quote_ident(attr._name_))
-            values.append(value)
-            subst.append(f"${i}")
-            i += 1
+            if isinstance(attr, Field):
+                fields.append(self.dialect.quote_ident(attr._name_))
+                values.append(value)
+                subst.append(f"${i}")
+                i += 1
 
         q = [
             "INSERT INTO ", self.dialect.table_qname(ent),
