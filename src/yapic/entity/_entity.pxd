@@ -5,8 +5,9 @@ from ._expression cimport AliasExpression, Expression
 
 
 cdef class EntityType(type):
+    cdef readonly tuple __attrs__
     cdef readonly tuple __fields__
-    cdef readonly tuple __relations__
+    # cdef readonly tuple __relations__
     cdef PyObject* meta
     cdef object __weakref__
 
@@ -17,8 +18,9 @@ cpdef EntityType get_alias_target(EntityType o)
 
 
 cdef class EntityBase:
-    cdef readonly FieldState __fstate__
-    cdef readonly object __rstate__
+    # cdef readonly FieldState __fstate__
+    # cdef readonly object __rstate__
+    cdef readonly EntityState __state__
 
 
 cdef class EntityAttribute(Expression):
@@ -26,7 +28,7 @@ cdef class EntityAttribute(Expression):
     cdef str _attr_name_in_class
     cdef readonly int _index_
     cdef readonly str _name_
-    cdef readonly str _initial_
+    cdef readonly object _default_
     cdef readonly EntityType _entity_
     cdef readonly list _exts_
 
@@ -48,6 +50,11 @@ cdef class EntityAttributeImpl:
     cdef bint inited
     cpdef init(self, EntityType entity)
     cpdef object clone(self)
+
+    cdef PyObject* state_set(self, PyObject* current, PyObject* value)
+    cdef PyObject* state_get(self, PyObject* current)
+    # cdef object state_del(self, PyObject** current)
+
 
 
 # cdef class EntityAliasExpression(Expression):
@@ -71,3 +78,28 @@ cdef class FieldState:
     cdef void del_value(self, int index)
 
     cpdef reset(self)
+
+
+@cython.final
+@cython.freelist(1000)
+cdef class EntityState:
+    cdef tuple data
+    cdef int field_count
+
+    @staticmethod
+    cdef EntityState create_from_dict(EntityType entity, dict data)
+
+    cdef object update(self, EntityType entity, dict data, bint is_initial)
+
+    cdef bint set_value(self, EntityAttribute attr, object value)
+    cdef object get_value(self, EntityAttribute attr)
+    cdef void del_value(self, EntityAttribute attr)
+
+    cdef list data_for_insert(self, EntityType entity)
+    cdef list data_for_update(self, EntityType entity)
+
+    cpdef reset(self)
+
+
+cdef class EntityStateValue:
+    pass

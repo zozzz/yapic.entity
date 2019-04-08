@@ -8,24 +8,24 @@ from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeIm
 from ._expression cimport Expression, Visitor
 from ._field cimport Field, ForeignKey, collect_foreign_keys
 from ._factory cimport Factory, ForwardDecl, new_instance_from_forward, is_forward_decl
-from ._entity_replacer cimport replace_entity
+from ._visitors cimport replace_entity
 from ._error cimport JoinError
 
 
 cdef class Relation(EntityAttribute):
-    def __get__(self, instance, owner):
-        if instance is None:
-            return self
-        elif isinstance(instance, EntityBase):
-            return (<EntityBase>instance).__rstate__.get_value(self.index)
-        else:
-            raise TypeError("Instance must be 'None' or 'EntityBase'")
+    # def __get__(self, instance, owner):
+    #     if instance is None:
+    #         return self
+    #     elif isinstance(instance, EntityBase):
+    #         return (<EntityBase>instance).__rstate__.get_value(self.index)
+    #     else:
+    #         raise TypeError("Instance must be 'None' or 'EntityBase'")
 
-    def __set__(self, EntityBase instance, value):
-        instance.__rstate__.set_value(self.index, value)
+    # def __set__(self, EntityBase instance, value):
+    #     instance.__rstate__.set_value(self.index, value)
 
-    def __delete__(self, EntityBase instance):
-        instance.__rstate__.del_value(self.index)
+    # def __delete__(self, EntityBase instance):
+    #     instance.__rstate__.del_value(self.index)
 
     def __getattr__(self, name):
         cdef EntityType joined = self._impl_.joined
@@ -83,6 +83,18 @@ cdef class RelationImpl(EntityAttributeImpl):
 
     cpdef object clone(self):
         return type(self)(self.joined, self.value_store_t)
+
+    cdef PyObject* state_set(self, PyObject* current, PyObject* value):
+        if current is NULL:
+            factory = self.value_store_factory.invoke()
+            current = <PyObject*>(<object>factory)
+        if current is not NULL:
+            (<ValueStore>current).set_value(<object>value)
+        Py_XINCREF(<object>current)
+        return current
+
+    cdef PyObject* state_get(self, PyObject* current):
+        return current
 
 
 cdef class ManyToOne(RelationImpl):

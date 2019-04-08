@@ -1,7 +1,7 @@
 
 
 from yapic.entity._query cimport Query
-from yapic.entity._entity cimport EntityType
+from yapic.entity._entity cimport EntityType, EntityBase
 
 from ._query_context cimport QueryContext
 from ._dialect cimport Dialect
@@ -28,6 +28,15 @@ cdef class Connection:
         )
 
     async def create_entity(self, EntityType ent, *, drop=False):
+        raise NotImplementedError()
+
+    async def insert(self, EntityBase entity):
+        raise NotImplementedError()
+
+    async def update(self, EntityBase entity):
+        raise NotImplementedError()
+
+    async def delete(self, EntityBase entity):
         raise NotImplementedError()
 
 

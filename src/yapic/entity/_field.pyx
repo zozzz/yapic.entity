@@ -10,7 +10,7 @@ from ._factory cimport ForwardDecl, get_type_hints, new_instance, new_instance_f
 
 cdef class Field(EntityAttribute):
     def __cinit__(self, impl = None, *, name = None, default = None, size = None, nullable = None):
-        self._initial_ = default
+        self._default_ = default
         self._name_ = name
 
         if size is not None:
@@ -32,23 +32,19 @@ cdef class Field(EntityAttribute):
             self.min_size = -1
             self.max_size = -1
 
-    @property
-    def default(self):
-        return self._initial_
+    # def __get__(self, instance, owner):
+    #     if instance is None:
+    #         return self
+    #     elif isinstance(instance, EntityBase):
+    #         return (<EntityBase>instance).__fstate__.get_value(self._index_)
+    #     else:
+    #         raise TypeError("Instance must be 'None' or 'EntityBase'")
 
-    def __get__(self, instance, owner):
-        if instance is None:
-            return self
-        elif isinstance(instance, EntityBase):
-            return (<EntityBase>instance).__fstate__.get_value(self._index_)
-        else:
-            raise TypeError("Instance must be 'None' or 'EntityBase'")
+    # def __set__(self, EntityBase instance, value):
+    #     instance.__fstate__.set_value(self._index_, value)
 
-    def __set__(self, EntityBase instance, value):
-        instance.__fstate__.set_value(self._index_, value)
-
-    def __delete__(self, EntityBase instance):
-        instance.__fstate__.del_value(self._index_)
+    # def __delete__(self, EntityBase instance):
+    #     instance.__fstate__.del_value(self._index_)
 
     cdef bind(self, EntityType entity):
         EntityAttribute.bind(self, entity)
@@ -56,12 +52,12 @@ cdef class Field(EntityAttribute):
             if self.get_ext(PrimaryKey):
                 self.nullable = False
             else:
-                self.nullable = bool(self._initial_ is None)
+                self.nullable = bool(self._default_ is None)
 
     cpdef clone(self):
         cdef EntityAttribute res = Field(self._impl_,
             name=self._name_,
-            default=self._initial_,
+            default=self._default_,
             size=(self.min_size, self.max_size),
             nullable=self.nullable)
         res._exts_ = self.clone_exts(res)

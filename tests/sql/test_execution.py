@@ -34,3 +34,8 @@ async def test_ddl(conn):
     await conn.create_entity(Address, drop=True)
     await conn.create_entity(User, drop=True)
     await conn.create_entity(User2, drop=True)
+
+
+async def test_insert(conn):
+    u = User(name="Jhon Doe")
+    await conn.insert(u)

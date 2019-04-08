@@ -52,7 +52,7 @@ async def pgsql(pgsql_docker):
         try:
             connection = await asyncpg.connect(user="root", password="root", database="root", host="127.0.0.1")
             yield connection
-        except ConnectionDoesNotExistError:
+        except (ConnectionDoesNotExistError, ConnectionRefusedError):
             await asyncio.sleep(1)
         else:
             await connection.close()

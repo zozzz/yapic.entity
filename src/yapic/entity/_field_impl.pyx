@@ -14,7 +14,7 @@ cdef class FieldImpl(EntityAttributeImpl):
         pass
 
     cpdef bint eq(self, a, b):
-        return self.write(a) == self.write(b)
+        return a == b
 
 
 cdef class StorageType:
@@ -70,9 +70,6 @@ cdef class IntImpl(FieldImpl):
 
     cpdef write(self, value):
         return str(int(value)).encode("utf-8")
-
-    cpdef bint eq(self, a, b):
-        return a == b
 
     def __repr__(self):
         return "Int"

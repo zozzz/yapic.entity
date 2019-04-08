@@ -7,15 +7,15 @@
             "./libs/yapic.core/src/yapic/core/include"
         ],
         "language": "c++",
-        "name": "yapic.entity._entity_replacer",
+        "name": "yapic.entity._visitors",
         "sources": [
-            "src/yapic/entity\\_entity_replacer.pyx"
+            "src/yapic/entity\\_visitors.pyx"
         ],
         "undef_macros": [
             "_DEBUG"
         ]
     },
-    "module_name": "yapic.entity._entity_replacer"
+    "module_name": "yapic.entity._visitors"
 }
 END: Cython Metadata */
 
@@ -618,8 +618,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__yapic__entity___entity_replacer
-#define __PYX_HAVE_API__yapic__entity___entity_replacer
+#define __PYX_HAVE__yapic__entity___visitors
+#define __PYX_HAVE_API__yapic__entity___visitors
 /* Early includes */
 #include <string.h>
 #include <stdio.h>
@@ -831,8 +831,8 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "src\\yapic\\entity\\_entity_replacer.pyx",
-  "src\\yapic\\entity\\_entity_replacer.pxd",
+  "src\\yapic\\entity\\_visitors.pyx",
+  "src\\yapic\\entity\\_visitors.pxd",
   "src\\yapic\\entity\\_expression.pxd",
   "type.pxd",
   "src\\yapic\\entity\\_entity.pxd",
@@ -855,6 +855,8 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute;
 struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt;
 struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl;
 struct __pyx_obj_5yapic_6entity_7_entity_FieldState;
+struct __pyx_obj_5yapic_6entity_7_entity_EntityState;
+struct __pyx_obj_5yapic_6entity_7_entity_EntityStateValue;
 struct __pyx_obj_5yapic_6entity_11_field_impl_FieldImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_StorageType;
 struct __pyx_obj_5yapic_6entity_11_field_impl_StringImpl;
@@ -865,7 +867,9 @@ struct __pyx_obj_5yapic_6entity_6_field_FieldExtension;
 struct __pyx_obj_5yapic_6entity_6_field_PrimaryKey;
 struct __pyx_obj_5yapic_6entity_6_field_Index;
 struct __pyx_obj_5yapic_6entity_6_field_ForeignKey;
-struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer;
+struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase;
+struct __pyx_obj_5yapic_6entity_9_visitors_EntityReplacer;
+struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner;
 
 /* "_expression.pxd":4
  * 
@@ -982,33 +986,32 @@ struct __pyx_obj_5yapic_6entity_11_expression_DirectionExpression {
  * 
  * 
  * cdef class EntityType(type):             # <<<<<<<<<<<<<<
+ *     cdef readonly tuple __attrs__
  *     cdef readonly tuple __fields__
- *     cdef readonly tuple __relations__
  */
 struct __pyx_obj_5yapic_6entity_7_entity_EntityType {
   PyHeapTypeObject __pyx_base;
+  PyObject *__attrs__;
   PyObject *__fields__;
-  PyObject *__relations__;
   PyObject *meta;
   PyObject *__weakref__;
 };
 
 
-/* "_entity.pxd":19
+/* "_entity.pxd":20
  * 
  * 
  * cdef class EntityBase:             # <<<<<<<<<<<<<<
- *     cdef readonly FieldState __fstate__
- *     cdef readonly object __rstate__
+ *     # cdef readonly FieldState __fstate__
+ *     # cdef readonly object __rstate__
  */
 struct __pyx_obj_5yapic_6entity_7_entity_EntityBase {
   PyObject_HEAD
-  struct __pyx_obj_5yapic_6entity_7_entity_FieldState *__fstate__;
-  PyObject *__rstate__;
+  struct __pyx_obj_5yapic_6entity_7_entity_EntityState *__state__;
 };
 
 
-/* "_entity.pxd":24
+/* "_entity.pxd":26
  * 
  * 
  * cdef class EntityAttribute(Expression):             # <<<<<<<<<<<<<<
@@ -1021,13 +1024,13 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute {
   PyObject *_attr_name_in_class;
   int _index_;
   PyObject *_name_;
-  PyObject *_initial_;
+  PyObject *_default_;
   struct __pyx_obj_5yapic_6entity_7_entity_EntityType *_entity_;
   PyObject *_exts_;
 };
 
 
-/* "_entity.pxd":39
+/* "_entity.pxd":41
  * 
  * 
  * cdef class EntityAttributeExt:             # <<<<<<<<<<<<<<
@@ -1042,7 +1045,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt {
 };
 
 
-/* "_entity.pxd":47
+/* "_entity.pxd":49
  * 
  * 
  * cdef class EntityAttributeImpl:             # <<<<<<<<<<<<<<
@@ -1056,7 +1059,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl {
 };
 
 
-/* "_entity.pxd":63
+/* "_entity.pxd":70
  * @cython.final
  * @cython.freelist(1000)
  * cdef class FieldState:             # <<<<<<<<<<<<<<
@@ -1070,6 +1073,32 @@ struct __pyx_obj_5yapic_6entity_7_entity_FieldState {
   PyObject *data;
   PyObject *dirty;
   int is_dirty;
+};
+
+
+/* "_entity.pxd":85
+ * @cython.final
+ * @cython.freelist(1000)
+ * cdef class EntityState:             # <<<<<<<<<<<<<<
+ *     cdef tuple data
+ *     cdef int field_count
+ */
+struct __pyx_obj_5yapic_6entity_7_entity_EntityState {
+  PyObject_HEAD
+  struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *__pyx_vtab;
+  PyObject *data;
+  int field_count;
+};
+
+
+/* "_entity.pxd":104
+ * 
+ * 
+ * cdef class EntityStateValue:             # <<<<<<<<<<<<<<
+ *     pass
+ */
+struct __pyx_obj_5yapic_6entity_7_entity_EntityStateValue {
+  PyObject_HEAD
 };
 
 
@@ -1205,17 +1234,44 @@ struct __pyx_obj_5yapic_6entity_6_field_ForeignKey {
 };
 
 
-/* "yapic/entity/_entity_replacer.pxd":5
+/* "yapic/entity/_visitors.pxd":5
  * 
  * 
- * cdef class EntityReplacer(Visitor):             # <<<<<<<<<<<<<<
+ * cdef class ReplacerBase(Visitor):             # <<<<<<<<<<<<<<
+ *     pass
+ * 
+ */
+struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase {
+  struct __pyx_obj_5yapic_6entity_11_expression_Visitor __pyx_base;
+};
+
+
+/* "yapic/entity/_visitors.pxd":9
+ * 
+ * 
+ * cdef class EntityReplacer(ReplacerBase):             # <<<<<<<<<<<<<<
  *     cdef EntityType what
  *     cdef EntityType to
  */
-struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer {
-  struct __pyx_obj_5yapic_6entity_11_expression_Visitor __pyx_base;
+struct __pyx_obj_5yapic_6entity_9_visitors_EntityReplacer {
+  struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase __pyx_base;
   struct __pyx_obj_5yapic_6entity_7_entity_EntityType *what;
   struct __pyx_obj_5yapic_6entity_7_entity_EntityType *to;
+};
+
+
+/* "yapic/entity/_visitors.pxd":18
+ * 
+ * 
+ * cdef class FieldAssigner(ReplacerBase):             # <<<<<<<<<<<<<<
+ *     cdef EntityType where_t
+ *     cdef EntityBase where_o
+ */
+struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner {
+  struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase __pyx_base;
+  struct __pyx_obj_5yapic_6entity_7_entity_EntityType *where_t;
+  struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *where_o;
+  PyObject *data;
 };
 
 
@@ -1336,7 +1392,7 @@ struct __pyx_vtabstruct_5yapic_6entity_11_expression_DirectionExpression {
 static struct __pyx_vtabstruct_5yapic_6entity_11_expression_DirectionExpression *__pyx_vtabptr_5yapic_6entity_11_expression_DirectionExpression;
 
 
-/* "_entity.pxd":24
+/* "_entity.pxd":26
  * 
  * 
  * cdef class EntityAttribute(Expression):             # <<<<<<<<<<<<<<
@@ -1354,7 +1410,7 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute {
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute *__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttribute;
 
 
-/* "_entity.pxd":39
+/* "_entity.pxd":41
  * 
  * 
  * cdef class EntityAttributeExt:             # <<<<<<<<<<<<<<
@@ -1369,7 +1425,7 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt {
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt *__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt;
 
 
-/* "_entity.pxd":47
+/* "_entity.pxd":49
  * 
  * 
  * cdef class EntityAttributeImpl:             # <<<<<<<<<<<<<<
@@ -1380,11 +1436,13 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt *__pyx
 struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl {
   PyObject *(*init)(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
   PyObject *(*clone)(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl *, int __pyx_skip_dispatch);
+  PyObject *(*state_set)(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl *, PyObject *, PyObject *);
+  PyObject *(*state_get)(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl *, PyObject *);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl *__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeImpl;
 
 
-/* "_entity.pxd":63
+/* "_entity.pxd":70
  * @cython.final
  * @cython.freelist(1000)
  * cdef class FieldState:             # <<<<<<<<<<<<<<
@@ -1399,6 +1457,27 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_FieldState {
   PyObject *(*reset)(struct __pyx_obj_5yapic_6entity_7_entity_FieldState *, int __pyx_skip_dispatch);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_FieldState *__pyx_vtabptr_5yapic_6entity_7_entity_FieldState;
+
+
+/* "_entity.pxd":85
+ * @cython.final
+ * @cython.freelist(1000)
+ * cdef class EntityState:             # <<<<<<<<<<<<<<
+ *     cdef tuple data
+ *     cdef int field_count
+ */
+
+struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState {
+  struct __pyx_obj_5yapic_6entity_7_entity_EntityState *(*create_from_dict)(struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, PyObject *);
+  PyObject *(*update)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, PyObject *, int);
+  int (*set_value)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *, PyObject *);
+  PyObject *(*get_value)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *);
+  void (*del_value)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *);
+  PyObject *(*data_for_insert)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *);
+  PyObject *(*data_for_update)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *);
+  PyObject *(*reset)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, int __pyx_skip_dispatch);
+};
+static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *__pyx_vtabptr_5yapic_6entity_7_entity_EntityState;
 
 
 /* "_field_impl.pxd":5
@@ -1545,18 +1624,46 @@ struct __pyx_vtabstruct_5yapic_6entity_6_field_ForeignKey {
 static struct __pyx_vtabstruct_5yapic_6entity_6_field_ForeignKey *__pyx_vtabptr_5yapic_6entity_6_field_ForeignKey;
 
 
-/* "yapic/entity/_entity_replacer.pyx":6
+/* "yapic/entity/_visitors.pyx":6
  * 
  * 
- * cdef class EntityReplacer(Visitor):             # <<<<<<<<<<<<<<
+ * cdef class ReplacerBase(Visitor):             # <<<<<<<<<<<<<<
+ *     def visit_binary(self, BinaryExpression expr):
+ *         return expr.op(self.visit(expr.left), self.visit(expr.right))
+ */
+
+struct __pyx_vtabstruct_5yapic_6entity_9_visitors_ReplacerBase {
+  struct __pyx_vtabstruct_5yapic_6entity_11_expression_Visitor __pyx_base;
+};
+static struct __pyx_vtabstruct_5yapic_6entity_9_visitors_ReplacerBase *__pyx_vtabptr_5yapic_6entity_9_visitors_ReplacerBase;
+
+
+/* "yapic/entity/_visitors.pyx":29
+ * 
+ * 
+ * cdef class EntityReplacer(ReplacerBase):             # <<<<<<<<<<<<<<
  *     def __cinit__(self, EntityType what, EntityType to):
  *         self.what = what
  */
 
-struct __pyx_vtabstruct_5yapic_6entity_16_entity_replacer_EntityReplacer {
-  struct __pyx_vtabstruct_5yapic_6entity_11_expression_Visitor __pyx_base;
+struct __pyx_vtabstruct_5yapic_6entity_9_visitors_EntityReplacer {
+  struct __pyx_vtabstruct_5yapic_6entity_9_visitors_ReplacerBase __pyx_base;
 };
-static struct __pyx_vtabstruct_5yapic_6entity_16_entity_replacer_EntityReplacer *__pyx_vtabptr_5yapic_6entity_16_entity_replacer_EntityReplacer;
+static struct __pyx_vtabstruct_5yapic_6entity_9_visitors_EntityReplacer *__pyx_vtabptr_5yapic_6entity_9_visitors_EntityReplacer;
+
+
+/* "yapic/entity/_visitors.pyx":42
+ * 
+ * 
+ * cdef class FieldAssigner(ReplacerBase):             # <<<<<<<<<<<<<<
+ *     def __cinit__(self, EntityType where_t, EntityBase where_o, dict data):
+ *         self.where_t = where_t
+ */
+
+struct __pyx_vtabstruct_5yapic_6entity_9_visitors_FieldAssigner {
+  struct __pyx_vtabstruct_5yapic_6entity_9_visitors_ReplacerBase __pyx_base;
+};
+static struct __pyx_vtabstruct_5yapic_6entity_9_visitors_FieldAssigner *__pyx_vtabptr_5yapic_6entity_9_visitors_FieldAssigner;
 
 /* --- Runtime support code (head) --- */
 /* Refnanny.proto */
@@ -1622,17 +1729,15 @@ static struct __pyx_vtabstruct_5yapic_6entity_16_entity_replacer_EntityReplacer 
 #define __Pyx_CLEAR(r)    do { PyObject* tmp = ((PyObject*)(r)); r = NULL; __Pyx_DECREF(tmp);} while(0)
 #define __Pyx_XCLEAR(r)   do { if((r) != NULL) {PyObject* tmp = ((PyObject*)(r)); r = NULL; __Pyx_DECREF(tmp);}} while(0)
 
-/* RaiseArgTupleInvalid.proto */
-static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
-    Py_ssize_t num_min, Py_ssize_t num_max, Py_ssize_t num_found);
+/* PyObjectGetAttrStr.proto */
+#if CYTHON_USE_TYPE_SLOTS
+static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject* attr_name);
+#else
+#define __Pyx_PyObject_GetAttrStr(o,n) PyObject_GetAttr(o,n)
+#endif
 
-/* RaiseDoubleKeywords.proto */
-static void __Pyx_RaiseDoubleKeywordsError(const char* func_name, PyObject* kw_name);
-
-/* ParseKeywords.proto */
-static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
-    PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
-    const char* function_name);
+/* GetBuiltinName.proto */
+static PyObject *__Pyx_GetBuiltinName(PyObject *name);
 
 /* ArgTypeTest.proto */
 #define __Pyx_ArgTypeTest(obj, type, none_allowed, name, exact)\
@@ -1688,13 +1793,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject
 /* PyObjectCallOneArg.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
 
-/* PyObjectGetAttrStr.proto */
-#if CYTHON_USE_TYPE_SLOTS
-static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject* attr_name);
-#else
-#define __Pyx_PyObject_GetAttrStr(o,n) PyObject_GetAttr(o,n)
-#endif
-
 /* PyObjectCallNoArg.proto */
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func);
@@ -1702,8 +1800,77 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func);
 #define __Pyx_PyObject_CallNoArg(func) __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL)
 #endif
 
+/* RaiseArgTupleInvalid.proto */
+static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
+    Py_ssize_t num_min, Py_ssize_t num_max, Py_ssize_t num_found);
+
+/* RaiseDoubleKeywords.proto */
+static void __Pyx_RaiseDoubleKeywordsError(const char* func_name, PyObject* kw_name);
+
+/* ParseKeywords.proto */
+static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
+    PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
+    const char* function_name);
+
 /* GetAttr.proto */
 static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *, PyObject *);
+
+/* DictGetItem.proto */
+#if PY_MAJOR_VERSION >= 3 && !CYTHON_COMPILING_IN_PYPY
+static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key);
+#define __Pyx_PyObject_Dict_GetItem(obj, name)\
+    (likely(PyDict_CheckExact(obj)) ?\
+     __Pyx_PyDict_GetItem(obj, name) : PyObject_GetItem(obj, name))
+#else
+#define __Pyx_PyDict_GetItem(d, key) PyObject_GetItem(d, key)
+#define __Pyx_PyObject_Dict_GetItem(obj, name)  PyObject_GetItem(obj, name)
+#endif
+
+/* ExtTypeTest.proto */
+static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
+
+/* GetTopmostException.proto */
+#if CYTHON_USE_EXC_INFO_STACK
+static _PyErr_StackItem * __Pyx_PyErr_GetTopmostException(PyThreadState *tstate);
+#endif
+
+/* PyThreadStateGet.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
+#define __Pyx_PyThreadState_assign  __pyx_tstate = __Pyx_PyThreadState_Current;
+#define __Pyx_PyErr_Occurred()  __pyx_tstate->curexc_type
+#else
+#define __Pyx_PyThreadState_declare
+#define __Pyx_PyThreadState_assign
+#define __Pyx_PyErr_Occurred()  PyErr_Occurred()
+#endif
+
+/* SaveResetException.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_ExceptionSave(type, value, tb)  __Pyx__ExceptionSave(__pyx_tstate, type, value, tb)
+static CYTHON_INLINE void __Pyx__ExceptionSave(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
+#define __Pyx_ExceptionReset(type, value, tb)  __Pyx__ExceptionReset(__pyx_tstate, type, value, tb)
+static CYTHON_INLINE void __Pyx__ExceptionReset(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb);
+#else
+#define __Pyx_ExceptionSave(type, value, tb)   PyErr_GetExcInfo(type, value, tb)
+#define __Pyx_ExceptionReset(type, value, tb)  PyErr_SetExcInfo(type, value, tb)
+#endif
+
+/* PyErrExceptionMatches.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_PyErr_ExceptionMatches(err) __Pyx_PyErr_ExceptionMatchesInState(__pyx_tstate, err)
+static CYTHON_INLINE int __Pyx_PyErr_ExceptionMatchesInState(PyThreadState* tstate, PyObject* err);
+#else
+#define __Pyx_PyErr_ExceptionMatches(err)  PyErr_ExceptionMatches(err)
+#endif
+
+/* GetException.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_GetException(type, value, tb)  __Pyx__GetException(__pyx_tstate, type, value, tb)
+static int __Pyx__GetException(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
+#else
+static int __Pyx_GetException(PyObject **type, PyObject **value, PyObject **tb);
+#endif
 
 /* CallNextTpDealloc.proto */
 static void __Pyx_call_next_tp_dealloc(PyObject* obj, destructor current_tp_dealloc);
@@ -1769,17 +1936,6 @@ static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UIN
 #define __PYX_GET_DICT_VERSION(dict)  (0)
 #define __PYX_UPDATE_DICT_CACHE(dict, value, cache_var, version_var)
 #define __PYX_PY_DICT_LOOKUP_IF_MODIFIED(VAR, DICT, LOOKUP)  (VAR) = (LOOKUP);
-#endif
-
-/* PyThreadStateGet.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
-#define __Pyx_PyThreadState_assign  __pyx_tstate = __Pyx_PyThreadState_Current;
-#define __Pyx_PyErr_Occurred()  __pyx_tstate->curexc_type
-#else
-#define __Pyx_PyThreadState_declare
-#define __Pyx_PyThreadState_assign
-#define __Pyx_PyErr_Occurred()  PyErr_Occurred()
 #endif
 
 /* PyErrFetchRestore.proto */
@@ -1894,6 +2050,8 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_EntityAttribute = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeImpl = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_FieldState = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_EntityState = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_EntityStateValue = 0;
 
 /* Module declarations from 'yapic.entity._field_impl' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_FieldImpl = 0;
@@ -1909,16 +2067,20 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_6_field_PrimaryKey = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_field_Index = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_field_ForeignKey = 0;
 
-/* Module declarations from 'yapic.entity._entity_replacer' */
-static PyTypeObject *__pyx_ptype_5yapic_6entity_16_entity_replacer_EntityReplacer = 0;
-#define __Pyx_MODULE_NAME "yapic.entity._entity_replacer"
-extern int __pyx_module_is_main_yapic__entity___entity_replacer;
-int __pyx_module_is_main_yapic__entity___entity_replacer = 0;
+/* Module declarations from 'yapic.entity._visitors' */
+static PyTypeObject *__pyx_ptype_5yapic_6entity_9_visitors_ReplacerBase = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_9_visitors_EntityReplacer = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_9_visitors_FieldAssigner = 0;
+#define __Pyx_MODULE_NAME "yapic.entity._visitors"
+extern int __pyx_module_is_main_yapic__entity___visitors;
+int __pyx_module_is_main_yapic__entity___visitors = 0;
 
-/* Implementation of 'yapic.entity._entity_replacer' */
+/* Implementation of 'yapic.entity._visitors' */
+static PyObject *__pyx_builtin_KeyError;
 static const char __pyx_k_to[] = "to";
 static const char __pyx_k_asc[] = "asc";
 static const char __pyx_k_cast[] = "cast";
+static const char __pyx_k_data[] = "data";
 static const char __pyx_k_desc[] = "desc";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
@@ -1926,14 +2088,23 @@ static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_type[] = "type";
 static const char __pyx_k_what[] = "what";
 static const char __pyx_k_alias[] = "alias";
+static const char __pyx_k_where_o[] = "where_o";
+static const char __pyx_k_where_t[] = "where_t";
+static const char __pyx_k_KeyError[] = "KeyError";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
+static const char __pyx_k_ReplacerBase[] = "ReplacerBase";
+static const char __pyx_k_FieldAssigner[] = "FieldAssigner";
 static const char __pyx_k_EntityReplacer[] = "EntityReplacer";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static PyObject *__pyx_n_s_EntityReplacer;
+static PyObject *__pyx_n_s_FieldAssigner;
+static PyObject *__pyx_n_s_KeyError;
+static PyObject *__pyx_n_s_ReplacerBase;
 static PyObject *__pyx_n_s_alias;
 static PyObject *__pyx_n_s_asc;
 static PyObject *__pyx_n_s_cast;
 static PyObject *__pyx_n_s_cline_in_traceback;
+static PyObject *__pyx_n_s_data;
 static PyObject *__pyx_n_s_desc;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_name;
@@ -1942,27 +2113,645 @@ static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_to;
 static PyObject *__pyx_n_s_type;
 static PyObject *__pyx_n_s_what;
-static int __pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer___cinit__(struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_what, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_to); /* proto */
-static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_2visit_binary(struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *__pyx_v_expr); /* proto */
-static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_4visit_unary(struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_UnaryExpression *__pyx_v_expr); /* proto */
-static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_6visit_direction(struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_DirectionExpression *__pyx_v_expr); /* proto */
-static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_8visit_alias(struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_AliasExpression *__pyx_v_expr); /* proto */
-static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_10visit_cast(struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_CastExpression *__pyx_v_expr); /* proto */
-static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_12visit_field(struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *__pyx_v_self, struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_expr); /* proto */
-static PyObject *__pyx_tp_new_5yapic_6entity_16_entity_replacer_EntityReplacer(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_n_s_where_o;
+static PyObject *__pyx_n_s_where_t;
+static PyObject *__pyx_pf_5yapic_6entity_9_visitors_12ReplacerBase_visit_binary(struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *__pyx_v_expr); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_9_visitors_12ReplacerBase_2visit_unary(struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_UnaryExpression *__pyx_v_expr); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_9_visitors_12ReplacerBase_4visit_direction(struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_DirectionExpression *__pyx_v_expr); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_9_visitors_12ReplacerBase_6visit_alias(struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_AliasExpression *__pyx_v_expr); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_9_visitors_12ReplacerBase_8visit_cast(struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_CastExpression *__pyx_v_expr); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_9_visitors_12ReplacerBase_10visit_field(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *__pyx_v_self, PyObject *__pyx_v_expr); /* proto */
+static int __pyx_pf_5yapic_6entity_9_visitors_14EntityReplacer___cinit__(struct __pyx_obj_5yapic_6entity_9_visitors_EntityReplacer *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_what, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_to); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_9_visitors_14EntityReplacer_2visit_field(struct __pyx_obj_5yapic_6entity_9_visitors_EntityReplacer *__pyx_v_self, struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_expr); /* proto */
+static int __pyx_pf_5yapic_6entity_9_visitors_13FieldAssigner___cinit__(struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_where_t, struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *__pyx_v_where_o, PyObject *__pyx_v_data); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_9_visitors_13FieldAssigner_2visit_binary(struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *__pyx_v_expr); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_9_visitors_13FieldAssigner_4visit_field(struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner *__pyx_v_self, struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_expr); /* proto */
+static PyObject *__pyx_tp_new_5yapic_6entity_9_visitors_ReplacerBase(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_5yapic_6entity_9_visitors_EntityReplacer(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_5yapic_6entity_9_visitors_FieldAssigner(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 /* Late includes */
 
-/* "yapic/entity/_entity_replacer.pyx":7
+/* "yapic/entity/_visitors.pyx":7
  * 
- * cdef class EntityReplacer(Visitor):
+ * cdef class ReplacerBase(Visitor):
+ *     def visit_binary(self, BinaryExpression expr):             # <<<<<<<<<<<<<<
+ *         return expr.op(self.visit(expr.left), self.visit(expr.right))
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5yapic_6entity_9_visitors_12ReplacerBase_1visit_binary(PyObject *__pyx_v_self, PyObject *__pyx_v_expr); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_9_visitors_12ReplacerBase_1visit_binary(PyObject *__pyx_v_self, PyObject *__pyx_v_expr) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("visit_binary (wrapper)", 0);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_expr), __pyx_ptype_5yapic_6entity_11_expression_BinaryExpression, 1, "expr", 0))) __PYX_ERR(0, 7, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5yapic_6entity_9_visitors_12ReplacerBase_visit_binary(((struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *)__pyx_v_expr));
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5yapic_6entity_9_visitors_12ReplacerBase_visit_binary(struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *__pyx_v_expr) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  int __pyx_t_6;
+  PyObject *__pyx_t_7 = NULL;
+  __Pyx_RefNannySetupContext("visit_binary", 0);
+
+  /* "yapic/entity/_visitors.pyx":8
+ * cdef class ReplacerBase(Visitor):
+ *     def visit_binary(self, BinaryExpression expr):
+ *         return expr.op(self.visit(expr.left), self.visit(expr.right))             # <<<<<<<<<<<<<<
+ * 
+ *     def visit_unary(self, UnaryExpression expr):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = ((PyObject *)__pyx_v_expr->left);
+  __Pyx_INCREF(__pyx_t_2);
+  __pyx_t_3 = ((struct __pyx_vtabstruct_5yapic_6entity_9_visitors_ReplacerBase *)__pyx_v_self->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_2), 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = ((PyObject *)__pyx_v_expr->right);
+  __Pyx_INCREF(__pyx_t_2);
+  __pyx_t_4 = ((struct __pyx_vtabstruct_5yapic_6entity_9_visitors_ReplacerBase *)__pyx_v_self->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_2), 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_INCREF(__pyx_v_expr->op);
+  __pyx_t_2 = __pyx_v_expr->op; __pyx_t_5 = NULL;
+  __pyx_t_6 = 0;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_5)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_5);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+      __pyx_t_6 = 1;
+    }
+  }
+  #if CYTHON_FAST_PYCALL
+  if (PyFunction_Check(__pyx_t_2)) {
+    PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_3, __pyx_t_4};
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  } else
+  #endif
+  #if CYTHON_FAST_PYCCALL
+  if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
+    PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_3, __pyx_t_4};
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  } else
+  #endif
+  {
+    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 8, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    if (__pyx_t_5) {
+      __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
+    }
+    __Pyx_GIVEREF(__pyx_t_3);
+    PyTuple_SET_ITEM(__pyx_t_7, 0+__pyx_t_6, __pyx_t_3);
+    __Pyx_GIVEREF(__pyx_t_4);
+    PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_t_4);
+    __pyx_t_3 = 0;
+    __pyx_t_4 = 0;
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "yapic/entity/_visitors.pyx":7
+ * 
+ * cdef class ReplacerBase(Visitor):
+ *     def visit_binary(self, BinaryExpression expr):             # <<<<<<<<<<<<<<
+ *         return expr.op(self.visit(expr.left), self.visit(expr.right))
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_AddTraceback("yapic.entity._visitors.ReplacerBase.visit_binary", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "yapic/entity/_visitors.pyx":10
+ *         return expr.op(self.visit(expr.left), self.visit(expr.right))
+ * 
+ *     def visit_unary(self, UnaryExpression expr):             # <<<<<<<<<<<<<<
+ *         return expr.op(self.visit(expr.expr))
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5yapic_6entity_9_visitors_12ReplacerBase_3visit_unary(PyObject *__pyx_v_self, PyObject *__pyx_v_expr); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_9_visitors_12ReplacerBase_3visit_unary(PyObject *__pyx_v_self, PyObject *__pyx_v_expr) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("visit_unary (wrapper)", 0);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_expr), __pyx_ptype_5yapic_6entity_11_expression_UnaryExpression, 1, "expr", 0))) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5yapic_6entity_9_visitors_12ReplacerBase_2visit_unary(((struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_UnaryExpression *)__pyx_v_expr));
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5yapic_6entity_9_visitors_12ReplacerBase_2visit_unary(struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_UnaryExpression *__pyx_v_expr) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  __Pyx_RefNannySetupContext("visit_unary", 0);
+
+  /* "yapic/entity/_visitors.pyx":11
+ * 
+ *     def visit_unary(self, UnaryExpression expr):
+ *         return expr.op(self.visit(expr.expr))             # <<<<<<<<<<<<<<
+ * 
+ *     def visit_direction(self, DirectionExpression expr):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = ((PyObject *)__pyx_v_expr->expr);
+  __Pyx_INCREF(__pyx_t_2);
+  __pyx_t_3 = ((struct __pyx_vtabstruct_5yapic_6entity_9_visitors_ReplacerBase *)__pyx_v_self->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_2), 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_INCREF(__pyx_v_expr->op);
+  __pyx_t_2 = __pyx_v_expr->op; __pyx_t_4 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_4)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "yapic/entity/_visitors.pyx":10
+ *         return expr.op(self.visit(expr.left), self.visit(expr.right))
+ * 
+ *     def visit_unary(self, UnaryExpression expr):             # <<<<<<<<<<<<<<
+ *         return expr.op(self.visit(expr.expr))
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_AddTraceback("yapic.entity._visitors.ReplacerBase.visit_unary", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "yapic/entity/_visitors.pyx":13
+ *         return expr.op(self.visit(expr.expr))
+ * 
+ *     def visit_direction(self, DirectionExpression expr):             # <<<<<<<<<<<<<<
+ *         if expr.is_asc:
+ *             return self.visit(expr.expr).asc()
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5yapic_6entity_9_visitors_12ReplacerBase_5visit_direction(PyObject *__pyx_v_self, PyObject *__pyx_v_expr); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_9_visitors_12ReplacerBase_5visit_direction(PyObject *__pyx_v_self, PyObject *__pyx_v_expr) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("visit_direction (wrapper)", 0);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_expr), __pyx_ptype_5yapic_6entity_11_expression_DirectionExpression, 1, "expr", 0))) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5yapic_6entity_9_visitors_12ReplacerBase_4visit_direction(((struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_DirectionExpression *)__pyx_v_expr));
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5yapic_6entity_9_visitors_12ReplacerBase_4visit_direction(struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_DirectionExpression *__pyx_v_expr) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  __Pyx_RefNannySetupContext("visit_direction", 0);
+
+  /* "yapic/entity/_visitors.pyx":14
+ * 
+ *     def visit_direction(self, DirectionExpression expr):
+ *         if expr.is_asc:             # <<<<<<<<<<<<<<
+ *             return self.visit(expr.expr).asc()
+ *         else:
+ */
+  __pyx_t_1 = (__pyx_v_expr->is_asc != 0);
+  if (__pyx_t_1) {
+
+    /* "yapic/entity/_visitors.pyx":15
+ *     def visit_direction(self, DirectionExpression expr):
+ *         if expr.is_asc:
+ *             return self.visit(expr.expr).asc()             # <<<<<<<<<<<<<<
+ *         else:
+ *             return self.visit(expr.expr).desc()
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_3 = ((PyObject *)__pyx_v_expr->expr);
+    __Pyx_INCREF(__pyx_t_3);
+    __pyx_t_4 = ((struct __pyx_vtabstruct_5yapic_6entity_9_visitors_ReplacerBase *)__pyx_v_self->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_3), 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 15, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_asc); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 15, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_4 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+      if (likely(__pyx_t_4)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+        __Pyx_INCREF(__pyx_t_4);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_3, function);
+      }
+    }
+    __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
+    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 15, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_r = __pyx_t_2;
+    __pyx_t_2 = 0;
+    goto __pyx_L0;
+
+    /* "yapic/entity/_visitors.pyx":14
+ * 
+ *     def visit_direction(self, DirectionExpression expr):
+ *         if expr.is_asc:             # <<<<<<<<<<<<<<
+ *             return self.visit(expr.expr).asc()
+ *         else:
+ */
+  }
+
+  /* "yapic/entity/_visitors.pyx":17
+ *             return self.visit(expr.expr).asc()
+ *         else:
+ *             return self.visit(expr.expr).desc()             # <<<<<<<<<<<<<<
+ * 
+ *     def visit_alias(self, AliasExpression expr):
+ */
+  /*else*/ {
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_3 = ((PyObject *)__pyx_v_expr->expr);
+    __Pyx_INCREF(__pyx_t_3);
+    __pyx_t_4 = ((struct __pyx_vtabstruct_5yapic_6entity_9_visitors_ReplacerBase *)__pyx_v_self->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_3), 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 17, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_desc); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 17, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_4 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+      if (likely(__pyx_t_4)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+        __Pyx_INCREF(__pyx_t_4);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_3, function);
+      }
+    }
+    __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
+    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 17, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_r = __pyx_t_2;
+    __pyx_t_2 = 0;
+    goto __pyx_L0;
+  }
+
+  /* "yapic/entity/_visitors.pyx":13
+ *         return expr.op(self.visit(expr.expr))
+ * 
+ *     def visit_direction(self, DirectionExpression expr):             # <<<<<<<<<<<<<<
+ *         if expr.is_asc:
+ *             return self.visit(expr.expr).asc()
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_AddTraceback("yapic.entity._visitors.ReplacerBase.visit_direction", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "yapic/entity/_visitors.pyx":19
+ *             return self.visit(expr.expr).desc()
+ * 
+ *     def visit_alias(self, AliasExpression expr):             # <<<<<<<<<<<<<<
+ *         return self.visit(expr.expr).alias(expr.value)
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5yapic_6entity_9_visitors_12ReplacerBase_7visit_alias(PyObject *__pyx_v_self, PyObject *__pyx_v_expr); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_9_visitors_12ReplacerBase_7visit_alias(PyObject *__pyx_v_self, PyObject *__pyx_v_expr) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("visit_alias (wrapper)", 0);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_expr), __pyx_ptype_5yapic_6entity_11_expression_AliasExpression, 1, "expr", 0))) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5yapic_6entity_9_visitors_12ReplacerBase_6visit_alias(((struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_AliasExpression *)__pyx_v_expr));
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5yapic_6entity_9_visitors_12ReplacerBase_6visit_alias(struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_AliasExpression *__pyx_v_expr) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  __Pyx_RefNannySetupContext("visit_alias", 0);
+
+  /* "yapic/entity/_visitors.pyx":20
+ * 
+ *     def visit_alias(self, AliasExpression expr):
+ *         return self.visit(expr.expr).alias(expr.value)             # <<<<<<<<<<<<<<
+ * 
+ *     def visit_cast(self, CastExpression expr):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = ((PyObject *)__pyx_v_expr->expr);
+  __Pyx_INCREF(__pyx_t_2);
+  __pyx_t_3 = ((struct __pyx_vtabstruct_5yapic_6entity_9_visitors_ReplacerBase *)__pyx_v_self->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_2), 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_alias); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_v_expr->value) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_expr->value);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "yapic/entity/_visitors.pyx":19
+ *             return self.visit(expr.expr).desc()
+ * 
+ *     def visit_alias(self, AliasExpression expr):             # <<<<<<<<<<<<<<
+ *         return self.visit(expr.expr).alias(expr.value)
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("yapic.entity._visitors.ReplacerBase.visit_alias", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "yapic/entity/_visitors.pyx":22
+ *         return self.visit(expr.expr).alias(expr.value)
+ * 
+ *     def visit_cast(self, CastExpression expr):             # <<<<<<<<<<<<<<
+ *         return self.visit(expr.expr).cast(expr.type)
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5yapic_6entity_9_visitors_12ReplacerBase_9visit_cast(PyObject *__pyx_v_self, PyObject *__pyx_v_expr); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_9_visitors_12ReplacerBase_9visit_cast(PyObject *__pyx_v_self, PyObject *__pyx_v_expr) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("visit_cast (wrapper)", 0);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_expr), __pyx_ptype_5yapic_6entity_11_expression_CastExpression, 1, "expr", 0))) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5yapic_6entity_9_visitors_12ReplacerBase_8visit_cast(((struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_CastExpression *)__pyx_v_expr));
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5yapic_6entity_9_visitors_12ReplacerBase_8visit_cast(struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_CastExpression *__pyx_v_expr) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  __Pyx_RefNannySetupContext("visit_cast", 0);
+
+  /* "yapic/entity/_visitors.pyx":23
+ * 
+ *     def visit_cast(self, CastExpression expr):
+ *         return self.visit(expr.expr).cast(expr.type)             # <<<<<<<<<<<<<<
+ * 
+ *     def visit_field(self, expr):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = ((PyObject *)__pyx_v_expr->expr);
+  __Pyx_INCREF(__pyx_t_2);
+  __pyx_t_3 = ((struct __pyx_vtabstruct_5yapic_6entity_9_visitors_ReplacerBase *)__pyx_v_self->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_2), 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_cast); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_expr), __pyx_n_s_type); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_4)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "yapic/entity/_visitors.pyx":22
+ *         return self.visit(expr.expr).alias(expr.value)
+ * 
+ *     def visit_cast(self, CastExpression expr):             # <<<<<<<<<<<<<<
+ *         return self.visit(expr.expr).cast(expr.type)
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_AddTraceback("yapic.entity._visitors.ReplacerBase.visit_cast", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "yapic/entity/_visitors.pyx":25
+ *         return self.visit(expr.expr).cast(expr.type)
+ * 
+ *     def visit_field(self, expr):             # <<<<<<<<<<<<<<
+ *         return expr
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5yapic_6entity_9_visitors_12ReplacerBase_11visit_field(PyObject *__pyx_v_self, PyObject *__pyx_v_expr); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_9_visitors_12ReplacerBase_11visit_field(PyObject *__pyx_v_self, PyObject *__pyx_v_expr) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("visit_field (wrapper)", 0);
+  __pyx_r = __pyx_pf_5yapic_6entity_9_visitors_12ReplacerBase_10visit_field(((struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *)__pyx_v_self), ((PyObject *)__pyx_v_expr));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5yapic_6entity_9_visitors_12ReplacerBase_10visit_field(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *__pyx_v_self, PyObject *__pyx_v_expr) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("visit_field", 0);
+
+  /* "yapic/entity/_visitors.pyx":26
+ * 
+ *     def visit_field(self, expr):
+ *         return expr             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_expr);
+  __pyx_r = __pyx_v_expr;
+  goto __pyx_L0;
+
+  /* "yapic/entity/_visitors.pyx":25
+ *         return self.visit(expr.expr).cast(expr.type)
+ * 
+ *     def visit_field(self, expr):             # <<<<<<<<<<<<<<
+ *         return expr
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "yapic/entity/_visitors.pyx":30
+ * 
+ * cdef class EntityReplacer(ReplacerBase):
  *     def __cinit__(self, EntityType what, EntityType to):             # <<<<<<<<<<<<<<
  *         self.what = what
  *         self.to = to
  */
 
 /* Python wrapper */
-static int __pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static int __pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static int __pyx_pw_5yapic_6entity_9_visitors_14EntityReplacer_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_5yapic_6entity_9_visitors_14EntityReplacer_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_what = 0;
   struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_to = 0;
   int __pyx_r;
@@ -1991,11 +2780,11 @@ static int __pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_1__cinit_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_to)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, 1); __PYX_ERR(0, 7, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, 1); __PYX_ERR(0, 30, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 7, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 30, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -2008,15 +2797,15 @@ static int __pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_1__cinit_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 7, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 30, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("yapic.entity._entity_replacer.EntityReplacer.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("yapic.entity._visitors.EntityReplacer.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_what), __pyx_ptype_5yapic_6entity_7_entity_EntityType, 1, "what", 0))) __PYX_ERR(0, 7, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_to), __pyx_ptype_5yapic_6entity_7_entity_EntityType, 1, "to", 0))) __PYX_ERR(0, 7, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer___cinit__(((struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *)__pyx_v_self), __pyx_v_what, __pyx_v_to);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_what), __pyx_ptype_5yapic_6entity_7_entity_EntityType, 1, "what", 0))) __PYX_ERR(0, 30, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_to), __pyx_ptype_5yapic_6entity_7_entity_EntityType, 1, "to", 0))) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5yapic_6entity_9_visitors_14EntityReplacer___cinit__(((struct __pyx_obj_5yapic_6entity_9_visitors_EntityReplacer *)__pyx_v_self), __pyx_v_what, __pyx_v_to);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2027,13 +2816,13 @@ static int __pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_1__cinit_
   return __pyx_r;
 }
 
-static int __pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer___cinit__(struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_what, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_to) {
+static int __pyx_pf_5yapic_6entity_9_visitors_14EntityReplacer___cinit__(struct __pyx_obj_5yapic_6entity_9_visitors_EntityReplacer *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_what, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_to) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "yapic/entity/_entity_replacer.pyx":8
- * cdef class EntityReplacer(Visitor):
+  /* "yapic/entity/_visitors.pyx":31
+ * cdef class EntityReplacer(ReplacerBase):
  *     def __cinit__(self, EntityType what, EntityType to):
  *         self.what = what             # <<<<<<<<<<<<<<
  *         self.to = to
@@ -2045,12 +2834,12 @@ static int __pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer___cinit__
   __Pyx_DECREF(((PyObject *)__pyx_v_self->what));
   __pyx_v_self->what = __pyx_v_what;
 
-  /* "yapic/entity/_entity_replacer.pyx":9
+  /* "yapic/entity/_visitors.pyx":32
  *     def __cinit__(self, EntityType what, EntityType to):
  *         self.what = what
  *         self.to = to             # <<<<<<<<<<<<<<
  * 
- *     def visit_binary(self, BinaryExpression expr):
+ *     def visit_field(self, Field expr):
  */
   __Pyx_INCREF(((PyObject *)__pyx_v_to));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_to));
@@ -2058,9 +2847,9 @@ static int __pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer___cinit__
   __Pyx_DECREF(((PyObject *)__pyx_v_self->to));
   __pyx_v_self->to = __pyx_v_to;
 
-  /* "yapic/entity/_entity_replacer.pyx":7
+  /* "yapic/entity/_visitors.pyx":30
  * 
- * cdef class EntityReplacer(Visitor):
+ * cdef class EntityReplacer(ReplacerBase):
  *     def __cinit__(self, EntityType what, EntityType to):             # <<<<<<<<<<<<<<
  *         self.what = what
  *         self.to = to
@@ -2072,565 +2861,8 @@ static int __pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer___cinit__
   return __pyx_r;
 }
 
-/* "yapic/entity/_entity_replacer.pyx":11
+/* "yapic/entity/_visitors.pyx":34
  *         self.to = to
- * 
- *     def visit_binary(self, BinaryExpression expr):             # <<<<<<<<<<<<<<
- *         return expr.op(self.visit(expr.left), self.visit(expr.right))
- * 
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_3visit_binary(PyObject *__pyx_v_self, PyObject *__pyx_v_expr); /*proto*/
-static PyObject *__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_3visit_binary(PyObject *__pyx_v_self, PyObject *__pyx_v_expr) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("visit_binary (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_expr), __pyx_ptype_5yapic_6entity_11_expression_BinaryExpression, 1, "expr", 0))) __PYX_ERR(0, 11, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_2visit_binary(((struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *)__pyx_v_expr));
-
-  /* function exit code */
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_2visit_binary(struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *__pyx_v_expr) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  int __pyx_t_6;
-  PyObject *__pyx_t_7 = NULL;
-  __Pyx_RefNannySetupContext("visit_binary", 0);
-
-  /* "yapic/entity/_entity_replacer.pyx":12
- * 
- *     def visit_binary(self, BinaryExpression expr):
- *         return expr.op(self.visit(expr.left), self.visit(expr.right))             # <<<<<<<<<<<<<<
- * 
- *     def visit_unary(self, UnaryExpression expr):
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = ((PyObject *)__pyx_v_expr->left);
-  __Pyx_INCREF(__pyx_t_2);
-  __pyx_t_3 = ((struct __pyx_vtabstruct_5yapic_6entity_16_entity_replacer_EntityReplacer *)__pyx_v_self->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_2), 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 12, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = ((PyObject *)__pyx_v_expr->right);
-  __Pyx_INCREF(__pyx_t_2);
-  __pyx_t_4 = ((struct __pyx_vtabstruct_5yapic_6entity_16_entity_replacer_EntityReplacer *)__pyx_v_self->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_2), 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 12, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_INCREF(__pyx_v_expr->op);
-  __pyx_t_2 = __pyx_v_expr->op; __pyx_t_5 = NULL;
-  __pyx_t_6 = 0;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_5)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_5);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-      __pyx_t_6 = 1;
-    }
-  }
-  #if CYTHON_FAST_PYCALL
-  if (PyFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_3, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  } else
-  #endif
-  #if CYTHON_FAST_PYCCALL
-  if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_3, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  } else
-  #endif
-  {
-    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 12, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    if (__pyx_t_5) {
-      __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
-    }
-    __Pyx_GIVEREF(__pyx_t_3);
-    PyTuple_SET_ITEM(__pyx_t_7, 0+__pyx_t_6, __pyx_t_3);
-    __Pyx_GIVEREF(__pyx_t_4);
-    PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_t_4);
-    __pyx_t_3 = 0;
-    __pyx_t_4 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
-
-  /* "yapic/entity/_entity_replacer.pyx":11
- *         self.to = to
- * 
- *     def visit_binary(self, BinaryExpression expr):             # <<<<<<<<<<<<<<
- *         return expr.op(self.visit(expr.left), self.visit(expr.right))
- * 
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("yapic.entity._entity_replacer.EntityReplacer.visit_binary", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "yapic/entity/_entity_replacer.pyx":14
- *         return expr.op(self.visit(expr.left), self.visit(expr.right))
- * 
- *     def visit_unary(self, UnaryExpression expr):             # <<<<<<<<<<<<<<
- *         return expr.op(self.visit(expr.expr))
- * 
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_5visit_unary(PyObject *__pyx_v_self, PyObject *__pyx_v_expr); /*proto*/
-static PyObject *__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_5visit_unary(PyObject *__pyx_v_self, PyObject *__pyx_v_expr) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("visit_unary (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_expr), __pyx_ptype_5yapic_6entity_11_expression_UnaryExpression, 1, "expr", 0))) __PYX_ERR(0, 14, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_4visit_unary(((struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_UnaryExpression *)__pyx_v_expr));
-
-  /* function exit code */
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_4visit_unary(struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_UnaryExpression *__pyx_v_expr) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  __Pyx_RefNannySetupContext("visit_unary", 0);
-
-  /* "yapic/entity/_entity_replacer.pyx":15
- * 
- *     def visit_unary(self, UnaryExpression expr):
- *         return expr.op(self.visit(expr.expr))             # <<<<<<<<<<<<<<
- * 
- *     def visit_direction(self, DirectionExpression expr):
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = ((PyObject *)__pyx_v_expr->expr);
-  __Pyx_INCREF(__pyx_t_2);
-  __pyx_t_3 = ((struct __pyx_vtabstruct_5yapic_6entity_16_entity_replacer_EntityReplacer *)__pyx_v_self->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_2), 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 15, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_INCREF(__pyx_v_expr->op);
-  __pyx_t_2 = __pyx_v_expr->op; __pyx_t_4 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
-
-  /* "yapic/entity/_entity_replacer.pyx":14
- *         return expr.op(self.visit(expr.left), self.visit(expr.right))
- * 
- *     def visit_unary(self, UnaryExpression expr):             # <<<<<<<<<<<<<<
- *         return expr.op(self.visit(expr.expr))
- * 
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("yapic.entity._entity_replacer.EntityReplacer.visit_unary", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "yapic/entity/_entity_replacer.pyx":17
- *         return expr.op(self.visit(expr.expr))
- * 
- *     def visit_direction(self, DirectionExpression expr):             # <<<<<<<<<<<<<<
- *         if expr.is_asc:
- *             return self.visit(expr.expr).asc()
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_7visit_direction(PyObject *__pyx_v_self, PyObject *__pyx_v_expr); /*proto*/
-static PyObject *__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_7visit_direction(PyObject *__pyx_v_self, PyObject *__pyx_v_expr) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("visit_direction (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_expr), __pyx_ptype_5yapic_6entity_11_expression_DirectionExpression, 1, "expr", 0))) __PYX_ERR(0, 17, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_6visit_direction(((struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_DirectionExpression *)__pyx_v_expr));
-
-  /* function exit code */
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_6visit_direction(struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_DirectionExpression *__pyx_v_expr) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  __Pyx_RefNannySetupContext("visit_direction", 0);
-
-  /* "yapic/entity/_entity_replacer.pyx":18
- * 
- *     def visit_direction(self, DirectionExpression expr):
- *         if expr.is_asc:             # <<<<<<<<<<<<<<
- *             return self.visit(expr.expr).asc()
- *         else:
- */
-  __pyx_t_1 = (__pyx_v_expr->is_asc != 0);
-  if (__pyx_t_1) {
-
-    /* "yapic/entity/_entity_replacer.pyx":19
- *     def visit_direction(self, DirectionExpression expr):
- *         if expr.is_asc:
- *             return self.visit(expr.expr).asc()             # <<<<<<<<<<<<<<
- *         else:
- *             return self.visit(expr.expr).desc()
- */
-    __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = ((PyObject *)__pyx_v_expr->expr);
-    __Pyx_INCREF(__pyx_t_3);
-    __pyx_t_4 = ((struct __pyx_vtabstruct_5yapic_6entity_16_entity_replacer_EntityReplacer *)__pyx_v_self->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_3), 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 19, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_asc); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 19, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
-      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-      if (likely(__pyx_t_4)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-        __Pyx_INCREF(__pyx_t_4);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_3, function);
-      }
-    }
-    __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
-    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_r = __pyx_t_2;
-    __pyx_t_2 = 0;
-    goto __pyx_L0;
-
-    /* "yapic/entity/_entity_replacer.pyx":18
- * 
- *     def visit_direction(self, DirectionExpression expr):
- *         if expr.is_asc:             # <<<<<<<<<<<<<<
- *             return self.visit(expr.expr).asc()
- *         else:
- */
-  }
-
-  /* "yapic/entity/_entity_replacer.pyx":21
- *             return self.visit(expr.expr).asc()
- *         else:
- *             return self.visit(expr.expr).desc()             # <<<<<<<<<<<<<<
- * 
- *     def visit_alias(self, AliasExpression expr):
- */
-  /*else*/ {
-    __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = ((PyObject *)__pyx_v_expr->expr);
-    __Pyx_INCREF(__pyx_t_3);
-    __pyx_t_4 = ((struct __pyx_vtabstruct_5yapic_6entity_16_entity_replacer_EntityReplacer *)__pyx_v_self->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_3), 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 21, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_desc); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 21, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
-      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-      if (likely(__pyx_t_4)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-        __Pyx_INCREF(__pyx_t_4);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_3, function);
-      }
-    }
-    __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
-    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 21, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_r = __pyx_t_2;
-    __pyx_t_2 = 0;
-    goto __pyx_L0;
-  }
-
-  /* "yapic/entity/_entity_replacer.pyx":17
- *         return expr.op(self.visit(expr.expr))
- * 
- *     def visit_direction(self, DirectionExpression expr):             # <<<<<<<<<<<<<<
- *         if expr.is_asc:
- *             return self.visit(expr.expr).asc()
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("yapic.entity._entity_replacer.EntityReplacer.visit_direction", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "yapic/entity/_entity_replacer.pyx":23
- *             return self.visit(expr.expr).desc()
- * 
- *     def visit_alias(self, AliasExpression expr):             # <<<<<<<<<<<<<<
- *         return self.visit(expr.expr).alias(expr.value)
- * 
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_9visit_alias(PyObject *__pyx_v_self, PyObject *__pyx_v_expr); /*proto*/
-static PyObject *__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_9visit_alias(PyObject *__pyx_v_self, PyObject *__pyx_v_expr) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("visit_alias (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_expr), __pyx_ptype_5yapic_6entity_11_expression_AliasExpression, 1, "expr", 0))) __PYX_ERR(0, 23, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_8visit_alias(((struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_AliasExpression *)__pyx_v_expr));
-
-  /* function exit code */
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_8visit_alias(struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_AliasExpression *__pyx_v_expr) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  __Pyx_RefNannySetupContext("visit_alias", 0);
-
-  /* "yapic/entity/_entity_replacer.pyx":24
- * 
- *     def visit_alias(self, AliasExpression expr):
- *         return self.visit(expr.expr).alias(expr.value)             # <<<<<<<<<<<<<<
- * 
- *     def visit_cast(self, CastExpression expr):
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = ((PyObject *)__pyx_v_expr->expr);
-  __Pyx_INCREF(__pyx_t_2);
-  __pyx_t_3 = ((struct __pyx_vtabstruct_5yapic_6entity_16_entity_replacer_EntityReplacer *)__pyx_v_self->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_2), 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 24, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_alias); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_3);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_v_expr->value) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_expr->value);
-  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
-
-  /* "yapic/entity/_entity_replacer.pyx":23
- *             return self.visit(expr.expr).desc()
- * 
- *     def visit_alias(self, AliasExpression expr):             # <<<<<<<<<<<<<<
- *         return self.visit(expr.expr).alias(expr.value)
- * 
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("yapic.entity._entity_replacer.EntityReplacer.visit_alias", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "yapic/entity/_entity_replacer.pyx":26
- *         return self.visit(expr.expr).alias(expr.value)
- * 
- *     def visit_cast(self, CastExpression expr):             # <<<<<<<<<<<<<<
- *         return self.visit(expr.expr).cast(expr.type)
- * 
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_11visit_cast(PyObject *__pyx_v_self, PyObject *__pyx_v_expr); /*proto*/
-static PyObject *__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_11visit_cast(PyObject *__pyx_v_self, PyObject *__pyx_v_expr) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("visit_cast (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_expr), __pyx_ptype_5yapic_6entity_11_expression_CastExpression, 1, "expr", 0))) __PYX_ERR(0, 26, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_10visit_cast(((struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_CastExpression *)__pyx_v_expr));
-
-  /* function exit code */
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_10visit_cast(struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_CastExpression *__pyx_v_expr) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  __Pyx_RefNannySetupContext("visit_cast", 0);
-
-  /* "yapic/entity/_entity_replacer.pyx":27
- * 
- *     def visit_cast(self, CastExpression expr):
- *         return self.visit(expr.expr).cast(expr.type)             # <<<<<<<<<<<<<<
- * 
- *     def visit_field(self, Field expr):
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = ((PyObject *)__pyx_v_expr->expr);
-  __Pyx_INCREF(__pyx_t_2);
-  __pyx_t_3 = ((struct __pyx_vtabstruct_5yapic_6entity_16_entity_replacer_EntityReplacer *)__pyx_v_self->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_2), 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 27, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_cast); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_expr), __pyx_n_s_type); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 27, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
-
-  /* "yapic/entity/_entity_replacer.pyx":26
- *         return self.visit(expr.expr).alias(expr.value)
- * 
- *     def visit_cast(self, CastExpression expr):             # <<<<<<<<<<<<<<
- *         return self.visit(expr.expr).cast(expr.type)
- * 
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("yapic.entity._entity_replacer.EntityReplacer.visit_cast", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "yapic/entity/_entity_replacer.pyx":29
- *         return self.visit(expr.expr).cast(expr.type)
  * 
  *     def visit_field(self, Field expr):             # <<<<<<<<<<<<<<
  *         cdef EntityType fent = expr._entity_
@@ -2638,13 +2870,13 @@ static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_10v
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_13visit_field(PyObject *__pyx_v_self, PyObject *__pyx_v_expr); /*proto*/
-static PyObject *__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_13visit_field(PyObject *__pyx_v_self, PyObject *__pyx_v_expr) {
+static PyObject *__pyx_pw_5yapic_6entity_9_visitors_14EntityReplacer_3visit_field(PyObject *__pyx_v_self, PyObject *__pyx_v_expr); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_9_visitors_14EntityReplacer_3visit_field(PyObject *__pyx_v_self, PyObject *__pyx_v_expr) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("visit_field (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_expr), __pyx_ptype_5yapic_6entity_6_field_Field, 1, "expr", 0))) __PYX_ERR(0, 29, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_12visit_field(((struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_6_field_Field *)__pyx_v_expr));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_expr), __pyx_ptype_5yapic_6entity_6_field_Field, 1, "expr", 0))) __PYX_ERR(0, 34, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5yapic_6entity_9_visitors_14EntityReplacer_2visit_field(((struct __pyx_obj_5yapic_6entity_9_visitors_EntityReplacer *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_6_field_Field *)__pyx_v_expr));
 
   /* function exit code */
   goto __pyx_L0;
@@ -2655,7 +2887,7 @@ static PyObject *__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_13v
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_12visit_field(struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *__pyx_v_self, struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_expr) {
+static PyObject *__pyx_pf_5yapic_6entity_9_visitors_14EntityReplacer_2visit_field(struct __pyx_obj_5yapic_6entity_9_visitors_EntityReplacer *__pyx_v_self, struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_expr) {
   struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_fent = 0;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -2666,7 +2898,7 @@ static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_12v
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("visit_field", 0);
 
-  /* "yapic/entity/_entity_replacer.pyx":30
+  /* "yapic/entity/_visitors.pyx":35
  * 
  *     def visit_field(self, Field expr):
  *         cdef EntityType fent = expr._entity_             # <<<<<<<<<<<<<<
@@ -2678,7 +2910,7 @@ static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_12v
   __pyx_v_fent = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/entity/_entity_replacer.pyx":31
+  /* "yapic/entity/_visitors.pyx":36
  *     def visit_field(self, Field expr):
  *         cdef EntityType fent = expr._entity_
  *         if fent is self.what:             # <<<<<<<<<<<<<<
@@ -2689,7 +2921,7 @@ static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_12v
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (__pyx_t_3) {
 
-    /* "yapic/entity/_entity_replacer.pyx":32
+    /* "yapic/entity/_visitors.pyx":37
  *         cdef EntityType fent = expr._entity_
  *         if fent is self.what:
  *             return getattr(self.to, expr._attr_name_in_class)             # <<<<<<<<<<<<<<
@@ -2701,7 +2933,7 @@ static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_12v
     __Pyx_INCREF(__pyx_t_1);
     __pyx_t_4 = __pyx_v_expr->__pyx_base._attr_name_in_class;
     __Pyx_INCREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_GetAttr(__pyx_t_1, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 32, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_GetAttr(__pyx_t_1, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 37, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -2709,7 +2941,7 @@ static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_12v
     __pyx_t_5 = 0;
     goto __pyx_L0;
 
-    /* "yapic/entity/_entity_replacer.pyx":31
+    /* "yapic/entity/_visitors.pyx":36
  *     def visit_field(self, Field expr):
  *         cdef EntityType fent = expr._entity_
  *         if fent is self.what:             # <<<<<<<<<<<<<<
@@ -2718,10 +2950,12 @@ static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_12v
  */
   }
 
-  /* "yapic/entity/_entity_replacer.pyx":34
+  /* "yapic/entity/_visitors.pyx":39
  *             return getattr(self.to, expr._attr_name_in_class)
  *         else:
  *             return expr             # <<<<<<<<<<<<<<
+ * 
+ * 
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
@@ -2730,8 +2964,8 @@ static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_12v
     goto __pyx_L0;
   }
 
-  /* "yapic/entity/_entity_replacer.pyx":29
- *         return self.visit(expr.expr).cast(expr.type)
+  /* "yapic/entity/_visitors.pyx":34
+ *         self.to = to
  * 
  *     def visit_field(self, Field expr):             # <<<<<<<<<<<<<<
  *         cdef EntityType fent = expr._entity_
@@ -2743,7 +2977,7 @@ static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_12v
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("yapic.entity._entity_replacer.EntityReplacer.visit_field", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("yapic.entity._visitors.EntityReplacer.visit_field", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF((PyObject *)__pyx_v_fent);
@@ -2752,27 +2986,793 @@ static PyObject *__pyx_pf_5yapic_6entity_16_entity_replacer_14EntityReplacer_12v
   return __pyx_r;
 }
 
-/* "yapic/entity/_entity_replacer.pxd":10
+/* "yapic/entity/_visitors.pyx":43
+ * 
+ * cdef class FieldAssigner(ReplacerBase):
+ *     def __cinit__(self, EntityType where_t, EntityBase where_o, dict data):             # <<<<<<<<<<<<<<
+ *         self.where_t = where_t
+ *         self.where_o = where_o
+ */
+
+/* Python wrapper */
+static int __pyx_pw_5yapic_6entity_9_visitors_13FieldAssigner_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_5yapic_6entity_9_visitors_13FieldAssigner_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_where_t = 0;
+  struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *__pyx_v_where_o = 0;
+  PyObject *__pyx_v_data = 0;
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_where_t,&__pyx_n_s_where_o,&__pyx_n_s_data,0};
+    PyObject* values[3] = {0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_where_t)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_where_o)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 1); __PYX_ERR(0, 43, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  2:
+        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_data)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 2); __PYX_ERR(0, 43, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 43, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+    }
+    __pyx_v_where_t = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)values[0]);
+    __pyx_v_where_o = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *)values[1]);
+    __pyx_v_data = ((PyObject*)values[2]);
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 43, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("yapic.entity._visitors.FieldAssigner.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return -1;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_where_t), __pyx_ptype_5yapic_6entity_7_entity_EntityType, 1, "where_t", 0))) __PYX_ERR(0, 43, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_where_o), __pyx_ptype_5yapic_6entity_7_entity_EntityBase, 1, "where_o", 0))) __PYX_ERR(0, 43, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_data), (&PyDict_Type), 1, "data", 1))) __PYX_ERR(0, 43, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5yapic_6entity_9_visitors_13FieldAssigner___cinit__(((struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner *)__pyx_v_self), __pyx_v_where_t, __pyx_v_where_o, __pyx_v_data);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = -1;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_5yapic_6entity_9_visitors_13FieldAssigner___cinit__(struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_where_t, struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *__pyx_v_where_o, PyObject *__pyx_v_data) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__", 0);
+
+  /* "yapic/entity/_visitors.pyx":44
+ * cdef class FieldAssigner(ReplacerBase):
+ *     def __cinit__(self, EntityType where_t, EntityBase where_o, dict data):
+ *         self.where_t = where_t             # <<<<<<<<<<<<<<
+ *         self.where_o = where_o
+ *         self.data = data
+ */
+  __Pyx_INCREF(((PyObject *)__pyx_v_where_t));
+  __Pyx_GIVEREF(((PyObject *)__pyx_v_where_t));
+  __Pyx_GOTREF(__pyx_v_self->where_t);
+  __Pyx_DECREF(((PyObject *)__pyx_v_self->where_t));
+  __pyx_v_self->where_t = __pyx_v_where_t;
+
+  /* "yapic/entity/_visitors.pyx":45
+ *     def __cinit__(self, EntityType where_t, EntityBase where_o, dict data):
+ *         self.where_t = where_t
+ *         self.where_o = where_o             # <<<<<<<<<<<<<<
+ *         self.data = data
+ * 
+ */
+  __Pyx_INCREF(((PyObject *)__pyx_v_where_o));
+  __Pyx_GIVEREF(((PyObject *)__pyx_v_where_o));
+  __Pyx_GOTREF(__pyx_v_self->where_o);
+  __Pyx_DECREF(((PyObject *)__pyx_v_self->where_o));
+  __pyx_v_self->where_o = __pyx_v_where_o;
+
+  /* "yapic/entity/_visitors.pyx":46
+ *         self.where_t = where_t
+ *         self.where_o = where_o
+ *         self.data = data             # <<<<<<<<<<<<<<
+ * 
+ *     def visit_binary(self, BinaryExpression expr):
+ */
+  __Pyx_INCREF(__pyx_v_data);
+  __Pyx_GIVEREF(__pyx_v_data);
+  __Pyx_GOTREF(__pyx_v_self->data);
+  __Pyx_DECREF(__pyx_v_self->data);
+  __pyx_v_self->data = __pyx_v_data;
+
+  /* "yapic/entity/_visitors.pyx":43
+ * 
+ * cdef class FieldAssigner(ReplacerBase):
+ *     def __cinit__(self, EntityType where_t, EntityBase where_o, dict data):             # <<<<<<<<<<<<<<
+ *         self.where_t = where_t
+ *         self.where_o = where_o
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "yapic/entity/_visitors.pyx":48
+ *         self.data = data
+ * 
+ *     def visit_binary(self, BinaryExpression expr):             # <<<<<<<<<<<<<<
+ *         left = self.visit(expr.left)
+ *         right = self.visit(expr.right)
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5yapic_6entity_9_visitors_13FieldAssigner_3visit_binary(PyObject *__pyx_v_self, PyObject *__pyx_v_expr); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_9_visitors_13FieldAssigner_3visit_binary(PyObject *__pyx_v_self, PyObject *__pyx_v_expr) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("visit_binary (wrapper)", 0);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_expr), __pyx_ptype_5yapic_6entity_11_expression_BinaryExpression, 1, "expr", 0))) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5yapic_6entity_9_visitors_13FieldAssigner_2visit_binary(((struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *)__pyx_v_expr));
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5yapic_6entity_9_visitors_13FieldAssigner_2visit_binary(struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *__pyx_v_expr) {
+  PyObject *__pyx_v_left = NULL;
+  PyObject *__pyx_v_right = NULL;
+  struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *__pyx_v_attr = 0;
+  PyObject *__pyx_v_value = 0;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  int __pyx_t_3;
+  int __pyx_t_4;
+  int __pyx_t_5;
+  PyObject *__pyx_t_6 = NULL;
+  int __pyx_t_7;
+  PyObject *__pyx_t_8 = NULL;
+  __Pyx_RefNannySetupContext("visit_binary", 0);
+
+  /* "yapic/entity/_visitors.pyx":49
+ * 
+ *     def visit_binary(self, BinaryExpression expr):
+ *         left = self.visit(expr.left)             # <<<<<<<<<<<<<<
+ *         right = self.visit(expr.right)
+ *         cdef EntityAttribute attr
+ */
+  __pyx_t_1 = ((PyObject *)__pyx_v_expr->left);
+  __Pyx_INCREF(__pyx_t_1);
+  __pyx_t_2 = ((struct __pyx_vtabstruct_5yapic_6entity_9_visitors_FieldAssigner *)__pyx_v_self->__pyx_base.__pyx_base.__pyx_vtab)->__pyx_base.__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_1), 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_left = __pyx_t_2;
+  __pyx_t_2 = 0;
+
+  /* "yapic/entity/_visitors.pyx":50
+ *     def visit_binary(self, BinaryExpression expr):
+ *         left = self.visit(expr.left)
+ *         right = self.visit(expr.right)             # <<<<<<<<<<<<<<
+ *         cdef EntityAttribute attr
+ *         cdef object value
+ */
+  __pyx_t_2 = ((PyObject *)__pyx_v_expr->right);
+  __Pyx_INCREF(__pyx_t_2);
+  __pyx_t_1 = ((struct __pyx_vtabstruct_5yapic_6entity_9_visitors_FieldAssigner *)__pyx_v_self->__pyx_base.__pyx_base.__pyx_vtab)->__pyx_base.__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_2), 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_right = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "yapic/entity/_visitors.pyx":54
+ *         cdef object value
+ * 
+ *         if not isinstance(left, Expression) or not isinstance(right, Expression):             # <<<<<<<<<<<<<<
+ *             if isinstance(left, EntityAttribute):
+ *                 attr = <EntityAttribute>left
+ */
+  __pyx_t_4 = __Pyx_TypeCheck(__pyx_v_left, __pyx_ptype_5yapic_6entity_11_expression_Expression); 
+  __pyx_t_5 = ((!(__pyx_t_4 != 0)) != 0);
+  if (!__pyx_t_5) {
+  } else {
+    __pyx_t_3 = __pyx_t_5;
+    goto __pyx_L4_bool_binop_done;
+  }
+  __pyx_t_5 = __Pyx_TypeCheck(__pyx_v_right, __pyx_ptype_5yapic_6entity_11_expression_Expression); 
+  __pyx_t_4 = ((!(__pyx_t_5 != 0)) != 0);
+  __pyx_t_3 = __pyx_t_4;
+  __pyx_L4_bool_binop_done:;
+  if (__pyx_t_3) {
+
+    /* "yapic/entity/_visitors.pyx":55
+ * 
+ *         if not isinstance(left, Expression) or not isinstance(right, Expression):
+ *             if isinstance(left, EntityAttribute):             # <<<<<<<<<<<<<<
+ *                 attr = <EntityAttribute>left
+ *                 value = right
+ */
+    __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_left, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute); 
+    __pyx_t_4 = (__pyx_t_3 != 0);
+    if (__pyx_t_4) {
+
+      /* "yapic/entity/_visitors.pyx":56
+ *         if not isinstance(left, Expression) or not isinstance(right, Expression):
+ *             if isinstance(left, EntityAttribute):
+ *                 attr = <EntityAttribute>left             # <<<<<<<<<<<<<<
+ *                 value = right
+ *             elif isinstance(right, EntityAttribute):
+ */
+      __pyx_t_1 = __pyx_v_left;
+      __Pyx_INCREF(__pyx_t_1);
+      __pyx_v_attr = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *)__pyx_t_1);
+      __pyx_t_1 = 0;
+
+      /* "yapic/entity/_visitors.pyx":57
+ *             if isinstance(left, EntityAttribute):
+ *                 attr = <EntityAttribute>left
+ *                 value = right             # <<<<<<<<<<<<<<
+ *             elif isinstance(right, EntityAttribute):
+ *                 attr = <EntityAttribute>right
+ */
+      __Pyx_INCREF(__pyx_v_right);
+      __pyx_v_value = __pyx_v_right;
+
+      /* "yapic/entity/_visitors.pyx":55
+ * 
+ *         if not isinstance(left, Expression) or not isinstance(right, Expression):
+ *             if isinstance(left, EntityAttribute):             # <<<<<<<<<<<<<<
+ *                 attr = <EntityAttribute>left
+ *                 value = right
+ */
+      goto __pyx_L6;
+    }
+
+    /* "yapic/entity/_visitors.pyx":58
+ *                 attr = <EntityAttribute>left
+ *                 value = right
+ *             elif isinstance(right, EntityAttribute):             # <<<<<<<<<<<<<<
+ *                 attr = <EntityAttribute>right
+ *                 value = left
+ */
+    __pyx_t_4 = __Pyx_TypeCheck(__pyx_v_right, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute); 
+    __pyx_t_3 = (__pyx_t_4 != 0);
+    if (__pyx_t_3) {
+
+      /* "yapic/entity/_visitors.pyx":59
+ *                 value = right
+ *             elif isinstance(right, EntityAttribute):
+ *                 attr = <EntityAttribute>right             # <<<<<<<<<<<<<<
+ *                 value = left
+ *             else:
+ */
+      __pyx_t_1 = __pyx_v_right;
+      __Pyx_INCREF(__pyx_t_1);
+      __pyx_v_attr = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *)__pyx_t_1);
+      __pyx_t_1 = 0;
+
+      /* "yapic/entity/_visitors.pyx":60
+ *             elif isinstance(right, EntityAttribute):
+ *                 attr = <EntityAttribute>right
+ *                 value = left             # <<<<<<<<<<<<<<
+ *             else:
+ *                 return expr.op(left, right)
+ */
+      __Pyx_INCREF(__pyx_v_left);
+      __pyx_v_value = __pyx_v_left;
+
+      /* "yapic/entity/_visitors.pyx":58
+ *                 attr = <EntityAttribute>left
+ *                 value = right
+ *             elif isinstance(right, EntityAttribute):             # <<<<<<<<<<<<<<
+ *                 attr = <EntityAttribute>right
+ *                 value = left
+ */
+      goto __pyx_L6;
+    }
+
+    /* "yapic/entity/_visitors.pyx":62
+ *                 value = left
+ *             else:
+ *                 return expr.op(left, right)             # <<<<<<<<<<<<<<
+ * 
+ *             if attr._entity_ is self.where_t:
+ */
+    /*else*/ {
+      __Pyx_XDECREF(__pyx_r);
+      __Pyx_INCREF(__pyx_v_expr->op);
+      __pyx_t_2 = __pyx_v_expr->op; __pyx_t_6 = NULL;
+      __pyx_t_7 = 0;
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+        __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_2);
+        if (likely(__pyx_t_6)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+          __Pyx_INCREF(__pyx_t_6);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_2, function);
+          __pyx_t_7 = 1;
+        }
+      }
+      #if CYTHON_FAST_PYCALL
+      if (PyFunction_Check(__pyx_t_2)) {
+        PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_v_left, __pyx_v_right};
+        __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __Pyx_GOTREF(__pyx_t_1);
+      } else
+      #endif
+      #if CYTHON_FAST_PYCCALL
+      if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
+        PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_v_left, __pyx_v_right};
+        __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __Pyx_GOTREF(__pyx_t_1);
+      } else
+      #endif
+      {
+        __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 62, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_8);
+        if (__pyx_t_6) {
+          __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6); __pyx_t_6 = NULL;
+        }
+        __Pyx_INCREF(__pyx_v_left);
+        __Pyx_GIVEREF(__pyx_v_left);
+        PyTuple_SET_ITEM(__pyx_t_8, 0+__pyx_t_7, __pyx_v_left);
+        __Pyx_INCREF(__pyx_v_right);
+        __Pyx_GIVEREF(__pyx_v_right);
+        PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_7, __pyx_v_right);
+        __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+      }
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_r = __pyx_t_1;
+      __pyx_t_1 = 0;
+      goto __pyx_L0;
+    }
+    __pyx_L6:;
+
+    /* "yapic/entity/_visitors.pyx":64
+ *                 return expr.op(left, right)
+ * 
+ *             if attr._entity_ is self.where_t:             # <<<<<<<<<<<<<<
+ *                 self.where_o.__state__.set_value(attr, value)
+ *             else:
+ */
+    __pyx_t_3 = (__pyx_v_attr->_entity_ == __pyx_v_self->where_t);
+    __pyx_t_4 = (__pyx_t_3 != 0);
+    if (__pyx_t_4) {
+
+      /* "yapic/entity/_visitors.pyx":65
+ * 
+ *             if attr._entity_ is self.where_t:
+ *                 self.where_o.__state__.set_value(attr, value)             # <<<<<<<<<<<<<<
+ *             else:
+ *                 return expr.op(left, right)
+ */
+      (void)(((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *)__pyx_v_self->where_o->__state__->__pyx_vtab)->set_value(__pyx_v_self->where_o->__state__, __pyx_v_attr, __pyx_v_value));
+
+      /* "yapic/entity/_visitors.pyx":64
+ *                 return expr.op(left, right)
+ * 
+ *             if attr._entity_ is self.where_t:             # <<<<<<<<<<<<<<
+ *                 self.where_o.__state__.set_value(attr, value)
+ *             else:
+ */
+      goto __pyx_L7;
+    }
+
+    /* "yapic/entity/_visitors.pyx":67
+ *                 self.where_o.__state__.set_value(attr, value)
+ *             else:
+ *                 return expr.op(left, right)             # <<<<<<<<<<<<<<
+ *         else:
+ *             return expr.op(left, right)
+ */
+    /*else*/ {
+      __Pyx_XDECREF(__pyx_r);
+      __Pyx_INCREF(__pyx_v_expr->op);
+      __pyx_t_2 = __pyx_v_expr->op; __pyx_t_8 = NULL;
+      __pyx_t_7 = 0;
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+        __pyx_t_8 = PyMethod_GET_SELF(__pyx_t_2);
+        if (likely(__pyx_t_8)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+          __Pyx_INCREF(__pyx_t_8);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_2, function);
+          __pyx_t_7 = 1;
+        }
+      }
+      #if CYTHON_FAST_PYCALL
+      if (PyFunction_Check(__pyx_t_2)) {
+        PyObject *__pyx_temp[3] = {__pyx_t_8, __pyx_v_left, __pyx_v_right};
+        __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
+        __Pyx_GOTREF(__pyx_t_1);
+      } else
+      #endif
+      #if CYTHON_FAST_PYCCALL
+      if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
+        PyObject *__pyx_temp[3] = {__pyx_t_8, __pyx_v_left, __pyx_v_right};
+        __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
+        __Pyx_GOTREF(__pyx_t_1);
+      } else
+      #endif
+      {
+        __pyx_t_6 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 67, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        if (__pyx_t_8) {
+          __Pyx_GIVEREF(__pyx_t_8); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_8); __pyx_t_8 = NULL;
+        }
+        __Pyx_INCREF(__pyx_v_left);
+        __Pyx_GIVEREF(__pyx_v_left);
+        PyTuple_SET_ITEM(__pyx_t_6, 0+__pyx_t_7, __pyx_v_left);
+        __Pyx_INCREF(__pyx_v_right);
+        __Pyx_GIVEREF(__pyx_v_right);
+        PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_7, __pyx_v_right);
+        __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      }
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_r = __pyx_t_1;
+      __pyx_t_1 = 0;
+      goto __pyx_L0;
+    }
+    __pyx_L7:;
+
+    /* "yapic/entity/_visitors.pyx":54
+ *         cdef object value
+ * 
+ *         if not isinstance(left, Expression) or not isinstance(right, Expression):             # <<<<<<<<<<<<<<
+ *             if isinstance(left, EntityAttribute):
+ *                 attr = <EntityAttribute>left
+ */
+    goto __pyx_L3;
+  }
+
+  /* "yapic/entity/_visitors.pyx":69
+ *                 return expr.op(left, right)
+ *         else:
+ *             return expr.op(left, right)             # <<<<<<<<<<<<<<
+ * 
+ *     def visit_field(self, Field expr):
+ */
+  /*else*/ {
+    __Pyx_XDECREF(__pyx_r);
+    __Pyx_INCREF(__pyx_v_expr->op);
+    __pyx_t_2 = __pyx_v_expr->op; __pyx_t_6 = NULL;
+    __pyx_t_7 = 0;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_2);
+      if (likely(__pyx_t_6)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+        __Pyx_INCREF(__pyx_t_6);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_2, function);
+        __pyx_t_7 = 1;
+      }
+    }
+    #if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(__pyx_t_2)) {
+      PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_v_left, __pyx_v_right};
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __Pyx_GOTREF(__pyx_t_1);
+    } else
+    #endif
+    #if CYTHON_FAST_PYCCALL
+    if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
+      PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_v_left, __pyx_v_right};
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __Pyx_GOTREF(__pyx_t_1);
+    } else
+    #endif
+    {
+      __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 69, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      if (__pyx_t_6) {
+        __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6); __pyx_t_6 = NULL;
+      }
+      __Pyx_INCREF(__pyx_v_left);
+      __Pyx_GIVEREF(__pyx_v_left);
+      PyTuple_SET_ITEM(__pyx_t_8, 0+__pyx_t_7, __pyx_v_left);
+      __Pyx_INCREF(__pyx_v_right);
+      __Pyx_GIVEREF(__pyx_v_right);
+      PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_7, __pyx_v_right);
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    }
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_r = __pyx_t_1;
+    __pyx_t_1 = 0;
+    goto __pyx_L0;
+  }
+  __pyx_L3:;
+
+  /* "yapic/entity/_visitors.pyx":48
+ *         self.data = data
+ * 
+ *     def visit_binary(self, BinaryExpression expr):             # <<<<<<<<<<<<<<
+ *         left = self.visit(expr.left)
+ *         right = self.visit(expr.right)
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_8);
+  __Pyx_AddTraceback("yapic.entity._visitors.FieldAssigner.visit_binary", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_left);
+  __Pyx_XDECREF(__pyx_v_right);
+  __Pyx_XDECREF((PyObject *)__pyx_v_attr);
+  __Pyx_XDECREF(__pyx_v_value);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "yapic/entity/_visitors.pyx":71
+ *             return expr.op(left, right)
+ * 
+ *     def visit_field(self, Field expr):             # <<<<<<<<<<<<<<
+ *         cdef EntityType ent = expr._entity_
+ *         cdef EntityBase data
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5yapic_6entity_9_visitors_13FieldAssigner_5visit_field(PyObject *__pyx_v_self, PyObject *__pyx_v_expr); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_9_visitors_13FieldAssigner_5visit_field(PyObject *__pyx_v_self, PyObject *__pyx_v_expr) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("visit_field (wrapper)", 0);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_expr), __pyx_ptype_5yapic_6entity_6_field_Field, 1, "expr", 0))) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5yapic_6entity_9_visitors_13FieldAssigner_4visit_field(((struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_6_field_Field *)__pyx_v_expr));
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5yapic_6entity_9_visitors_13FieldAssigner_4visit_field(struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner *__pyx_v_self, struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_expr) {
+  struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_ent = 0;
+  struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *__pyx_v_data = 0;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  int __pyx_t_5;
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *__pyx_t_7 = NULL;
+  __Pyx_RefNannySetupContext("visit_field", 0);
+
+  /* "yapic/entity/_visitors.pyx":72
+ * 
+ *     def visit_field(self, Field expr):
+ *         cdef EntityType ent = expr._entity_             # <<<<<<<<<<<<<<
+ *         cdef EntityBase data
+ * 
+ */
+  __pyx_t_1 = ((PyObject *)__pyx_v_expr->__pyx_base._entity_);
+  __Pyx_INCREF(__pyx_t_1);
+  __pyx_v_ent = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "yapic/entity/_visitors.pyx":75
+ *         cdef EntityBase data
+ * 
+ *         try:             # <<<<<<<<<<<<<<
+ *             data = self.data[ent]
+ *         except KeyError:
+ */
+  {
+    __Pyx_PyThreadState_declare
+    __Pyx_PyThreadState_assign
+    __Pyx_ExceptionSave(&__pyx_t_2, &__pyx_t_3, &__pyx_t_4);
+    __Pyx_XGOTREF(__pyx_t_2);
+    __Pyx_XGOTREF(__pyx_t_3);
+    __Pyx_XGOTREF(__pyx_t_4);
+    /*try:*/ {
+
+      /* "yapic/entity/_visitors.pyx":76
+ * 
+ *         try:
+ *             data = self.data[ent]             # <<<<<<<<<<<<<<
+ *         except KeyError:
+ *             return expr
+ */
+      if (unlikely(__pyx_v_self->data == Py_None)) {
+        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+        __PYX_ERR(0, 76, __pyx_L3_error)
+      }
+      __pyx_t_1 = __Pyx_PyDict_GetItem(__pyx_v_self->data, ((PyObject *)__pyx_v_ent)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L3_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5yapic_6entity_7_entity_EntityBase))))) __PYX_ERR(0, 76, __pyx_L3_error)
+      __pyx_v_data = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *)__pyx_t_1);
+      __pyx_t_1 = 0;
+
+      /* "yapic/entity/_visitors.pyx":75
+ *         cdef EntityBase data
+ * 
+ *         try:             # <<<<<<<<<<<<<<
+ *             data = self.data[ent]
+ *         except KeyError:
+ */
+    }
+
+    /* "yapic/entity/_visitors.pyx":80
+ *             return expr
+ *         else:
+ *             return data.__state__.get_value(expr)             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+    /*else:*/ {
+      __Pyx_XDECREF(__pyx_r);
+      __pyx_t_1 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *)__pyx_v_data->__state__->__pyx_vtab)->get_value(__pyx_v_data->__state__, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *)__pyx_v_expr)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 80, __pyx_L5_except_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __pyx_r = __pyx_t_1;
+      __pyx_t_1 = 0;
+      goto __pyx_L6_except_return;
+    }
+    __pyx_L3_error:;
+    __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+    /* "yapic/entity/_visitors.pyx":77
+ *         try:
+ *             data = self.data[ent]
+ *         except KeyError:             # <<<<<<<<<<<<<<
+ *             return expr
+ *         else:
+ */
+    __pyx_t_5 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_KeyError);
+    if (__pyx_t_5) {
+      __Pyx_AddTraceback("yapic.entity._visitors.FieldAssigner.visit_field", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      if (__Pyx_GetException(&__pyx_t_1, &__pyx_t_6, &__pyx_t_7) < 0) __PYX_ERR(0, 77, __pyx_L5_except_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_GOTREF(__pyx_t_6);
+      __Pyx_GOTREF(__pyx_t_7);
+
+      /* "yapic/entity/_visitors.pyx":78
+ *             data = self.data[ent]
+ *         except KeyError:
+ *             return expr             # <<<<<<<<<<<<<<
+ *         else:
+ *             return data.__state__.get_value(expr)
+ */
+      __Pyx_XDECREF(__pyx_r);
+      __Pyx_INCREF(((PyObject *)__pyx_v_expr));
+      __pyx_r = ((PyObject *)__pyx_v_expr);
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      goto __pyx_L6_except_return;
+    }
+    goto __pyx_L5_except_error;
+    __pyx_L5_except_error:;
+
+    /* "yapic/entity/_visitors.pyx":75
+ *         cdef EntityBase data
+ * 
+ *         try:             # <<<<<<<<<<<<<<
+ *             data = self.data[ent]
+ *         except KeyError:
+ */
+    __Pyx_XGIVEREF(__pyx_t_2);
+    __Pyx_XGIVEREF(__pyx_t_3);
+    __Pyx_XGIVEREF(__pyx_t_4);
+    __Pyx_ExceptionReset(__pyx_t_2, __pyx_t_3, __pyx_t_4);
+    goto __pyx_L1_error;
+    __pyx_L6_except_return:;
+    __Pyx_XGIVEREF(__pyx_t_2);
+    __Pyx_XGIVEREF(__pyx_t_3);
+    __Pyx_XGIVEREF(__pyx_t_4);
+    __Pyx_ExceptionReset(__pyx_t_2, __pyx_t_3, __pyx_t_4);
+    goto __pyx_L0;
+  }
+
+  /* "yapic/entity/_visitors.pyx":71
+ *             return expr.op(left, right)
+ * 
+ *     def visit_field(self, Field expr):             # <<<<<<<<<<<<<<
+ *         cdef EntityType ent = expr._entity_
+ *         cdef EntityBase data
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_AddTraceback("yapic.entity._visitors.FieldAssigner.visit_field", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF((PyObject *)__pyx_v_ent);
+  __Pyx_XDECREF((PyObject *)__pyx_v_data);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "yapic/entity/_visitors.pxd":14
  * 
  * 
  * cdef inline replace_entity(Expression expr, EntityType what, EntityType to):             # <<<<<<<<<<<<<<
  *     return EntityReplacer(what, to).visit(expr)
+ * 
  */
 
-static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_16_entity_replacer_replace_entity(struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_v_expr, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_what, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_to) {
+static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_9_visitors_replace_entity(struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_v_expr, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_what, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_to) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("replace_entity", 0);
 
-  /* "yapic/entity/_entity_replacer.pxd":11
+  /* "yapic/entity/_visitors.pxd":15
  * 
  * cdef inline replace_entity(Expression expr, EntityType what, EntityType to):
  *     return EntityReplacer(what, to).visit(expr)             # <<<<<<<<<<<<<<
+ * 
+ * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 11, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_what));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_what));
@@ -2780,53 +3780,260 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_16_entity_replacer_replace
   __Pyx_INCREF(((PyObject *)__pyx_v_to));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_to));
   PyTuple_SET_ITEM(__pyx_t_1, 1, ((PyObject *)__pyx_v_to));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_16_entity_replacer_EntityReplacer), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 11, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_9_visitors_EntityReplacer), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = ((struct __pyx_vtabstruct_5yapic_6entity_16_entity_replacer_EntityReplacer *)((struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *)__pyx_t_2)->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_t_2), __pyx_v_expr, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 11, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_5yapic_6entity_9_visitors_EntityReplacer *)((struct __pyx_obj_5yapic_6entity_9_visitors_EntityReplacer *)__pyx_t_2)->__pyx_base.__pyx_base.__pyx_vtab)->__pyx_base.__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_t_2), __pyx_v_expr, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "yapic/entity/_entity_replacer.pxd":10
+  /* "yapic/entity/_visitors.pxd":14
  * 
  * 
  * cdef inline replace_entity(Expression expr, EntityType what, EntityType to):             # <<<<<<<<<<<<<<
  *     return EntityReplacer(what, to).visit(expr)
+ * 
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("yapic.entity._entity_replacer.replace_entity", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("yapic.entity._visitors.replace_entity", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static struct __pyx_vtabstruct_5yapic_6entity_16_entity_replacer_EntityReplacer __pyx_vtable_5yapic_6entity_16_entity_replacer_EntityReplacer;
 
-static PyObject *__pyx_tp_new_5yapic_6entity_16_entity_replacer_EntityReplacer(PyTypeObject *t, PyObject *a, PyObject *k) {
-  struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *p;
+/* "yapic/entity/_visitors.pxd":24
+ * 
+ * 
+ * cdef inline assign_field(EntityBase into, Expression expr, list values):             # <<<<<<<<<<<<<<
+ *     cdef dict data = {}
+ *     for r in values:
+ */
+
+static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_9_visitors_assign_field(struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *__pyx_v_into, struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_v_expr, PyObject *__pyx_v_values) {
+  PyObject *__pyx_v_data = 0;
+  PyObject *__pyx_v_r = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  Py_ssize_t __pyx_t_2;
+  PyObject *__pyx_t_3 = NULL;
+  __Pyx_RefNannySetupContext("assign_field", 0);
+
+  /* "yapic/entity/_visitors.pxd":25
+ * 
+ * cdef inline assign_field(EntityBase into, Expression expr, list values):
+ *     cdef dict data = {}             # <<<<<<<<<<<<<<
+ *     for r in values:
+ *         data[type(r)] = r
+ */
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 25, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_data = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "yapic/entity/_visitors.pxd":26
+ * cdef inline assign_field(EntityBase into, Expression expr, list values):
+ *     cdef dict data = {}
+ *     for r in values:             # <<<<<<<<<<<<<<
+ *         data[type(r)] = r
+ *     FieldAssigner(type(into), into, data).visit(expr)
+ */
+  if (unlikely(__pyx_v_values == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
+    __PYX_ERR(1, 26, __pyx_L1_error)
+  }
+  __pyx_t_1 = __pyx_v_values; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
+  for (;;) {
+    if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
+    #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(1, 26, __pyx_L1_error)
+    #else
+    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 26, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    #endif
+    __Pyx_XDECREF_SET(__pyx_v_r, __pyx_t_3);
+    __pyx_t_3 = 0;
+
+    /* "yapic/entity/_visitors.pxd":27
+ *     cdef dict data = {}
+ *     for r in values:
+ *         data[type(r)] = r             # <<<<<<<<<<<<<<
+ *     FieldAssigner(type(into), into, data).visit(expr)
+ */
+    if (unlikely(PyDict_SetItem(__pyx_v_data, ((PyObject *)Py_TYPE(__pyx_v_r)), __pyx_v_r) < 0)) __PYX_ERR(1, 27, __pyx_L1_error)
+
+    /* "yapic/entity/_visitors.pxd":26
+ * cdef inline assign_field(EntityBase into, Expression expr, list values):
+ *     cdef dict data = {}
+ *     for r in values:             # <<<<<<<<<<<<<<
+ *         data[type(r)] = r
+ *     FieldAssigner(type(into), into, data).visit(expr)
+ */
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "yapic/entity/_visitors.pxd":28
+ *     for r in values:
+ *         data[type(r)] = r
+ *     FieldAssigner(type(into), into, data).visit(expr)             # <<<<<<<<<<<<<<
+ */
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 28, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_INCREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_into))));
+  __Pyx_GIVEREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_into))));
+  PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_into))));
+  __Pyx_INCREF(((PyObject *)__pyx_v_into));
+  __Pyx_GIVEREF(((PyObject *)__pyx_v_into));
+  PyTuple_SET_ITEM(__pyx_t_1, 1, ((PyObject *)__pyx_v_into));
+  __Pyx_INCREF(__pyx_v_data);
+  __Pyx_GIVEREF(__pyx_v_data);
+  PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_v_data);
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_9_visitors_FieldAssigner), __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 28, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = ((struct __pyx_vtabstruct_5yapic_6entity_9_visitors_FieldAssigner *)((struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner *)__pyx_t_3)->__pyx_base.__pyx_base.__pyx_vtab)->__pyx_base.__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_t_3), __pyx_v_expr, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 28, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "yapic/entity/_visitors.pxd":24
+ * 
+ * 
+ * cdef inline assign_field(EntityBase into, Expression expr, list values):             # <<<<<<<<<<<<<<
+ *     cdef dict data = {}
+ *     for r in values:
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("yapic.entity._visitors.assign_field", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_data);
+  __Pyx_XDECREF(__pyx_v_r);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+static struct __pyx_vtabstruct_5yapic_6entity_9_visitors_ReplacerBase __pyx_vtable_5yapic_6entity_9_visitors_ReplacerBase;
+
+static PyObject *__pyx_tp_new_5yapic_6entity_9_visitors_ReplacerBase(PyTypeObject *t, PyObject *a, PyObject *k) {
+  struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *p;
   PyObject *o = __pyx_ptype_5yapic_6entity_11_expression_Visitor->tp_new(t, a, k);
   if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *)o);
-  p->__pyx_base.__pyx_vtab = (struct __pyx_vtabstruct_5yapic_6entity_11_expression_Visitor*)__pyx_vtabptr_5yapic_6entity_16_entity_replacer_EntityReplacer;
+  p = ((struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase *)o);
+  p->__pyx_base.__pyx_vtab = (struct __pyx_vtabstruct_5yapic_6entity_11_expression_Visitor*)__pyx_vtabptr_5yapic_6entity_9_visitors_ReplacerBase;
+  return o;
+}
+
+static void __pyx_tp_dealloc_5yapic_6entity_9_visitors_ReplacerBase(PyObject *o) {
+  #if CYTHON_USE_TP_FINALIZE
+  if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
+    if (PyObject_CallFinalizerFromDealloc(o)) return;
+  }
+  #endif
+  if (likely(__pyx_ptype_5yapic_6entity_11_expression_Visitor)) __pyx_ptype_5yapic_6entity_11_expression_Visitor->tp_dealloc(o); else __Pyx_call_next_tp_dealloc(o, __pyx_tp_dealloc_5yapic_6entity_9_visitors_ReplacerBase);
+}
+
+static PyMethodDef __pyx_methods_5yapic_6entity_9_visitors_ReplacerBase[] = {
+  {"visit_binary", (PyCFunction)__pyx_pw_5yapic_6entity_9_visitors_12ReplacerBase_1visit_binary, METH_O, 0},
+  {"visit_unary", (PyCFunction)__pyx_pw_5yapic_6entity_9_visitors_12ReplacerBase_3visit_unary, METH_O, 0},
+  {"visit_direction", (PyCFunction)__pyx_pw_5yapic_6entity_9_visitors_12ReplacerBase_5visit_direction, METH_O, 0},
+  {"visit_alias", (PyCFunction)__pyx_pw_5yapic_6entity_9_visitors_12ReplacerBase_7visit_alias, METH_O, 0},
+  {"visit_cast", (PyCFunction)__pyx_pw_5yapic_6entity_9_visitors_12ReplacerBase_9visit_cast, METH_O, 0},
+  {"visit_field", (PyCFunction)__pyx_pw_5yapic_6entity_9_visitors_12ReplacerBase_11visit_field, METH_O, 0},
+  {0, 0, 0, 0}
+};
+
+static PyTypeObject __pyx_type_5yapic_6entity_9_visitors_ReplacerBase = {
+  PyVarObject_HEAD_INIT(0, 0)
+  "yapic.entity._visitors.ReplacerBase", /*tp_name*/
+  sizeof(struct __pyx_obj_5yapic_6entity_9_visitors_ReplacerBase), /*tp_basicsize*/
+  0, /*tp_itemsize*/
+  __pyx_tp_dealloc_5yapic_6entity_9_visitors_ReplacerBase, /*tp_dealloc*/
+  0, /*tp_print*/
+  0, /*tp_getattr*/
+  0, /*tp_setattr*/
+  #if PY_MAJOR_VERSION < 3
+  0, /*tp_compare*/
+  #endif
+  #if PY_MAJOR_VERSION >= 3
+  0, /*tp_as_async*/
+  #endif
+  0, /*tp_repr*/
+  0, /*tp_as_number*/
+  0, /*tp_as_sequence*/
+  0, /*tp_as_mapping*/
+  0, /*tp_hash*/
+  0, /*tp_call*/
+  0, /*tp_str*/
+  0, /*tp_getattro*/
+  0, /*tp_setattro*/
+  0, /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE, /*tp_flags*/
+  0, /*tp_doc*/
+  0, /*tp_traverse*/
+  0, /*tp_clear*/
+  0, /*tp_richcompare*/
+  0, /*tp_weaklistoffset*/
+  0, /*tp_iter*/
+  0, /*tp_iternext*/
+  __pyx_methods_5yapic_6entity_9_visitors_ReplacerBase, /*tp_methods*/
+  0, /*tp_members*/
+  0, /*tp_getset*/
+  0, /*tp_base*/
+  0, /*tp_dict*/
+  0, /*tp_descr_get*/
+  0, /*tp_descr_set*/
+  0, /*tp_dictoffset*/
+  0, /*tp_init*/
+  0, /*tp_alloc*/
+  __pyx_tp_new_5yapic_6entity_9_visitors_ReplacerBase, /*tp_new*/
+  0, /*tp_free*/
+  0, /*tp_is_gc*/
+  0, /*tp_bases*/
+  0, /*tp_mro*/
+  0, /*tp_cache*/
+  0, /*tp_subclasses*/
+  0, /*tp_weaklist*/
+  0, /*tp_del*/
+  0, /*tp_version_tag*/
+  #if PY_VERSION_HEX >= 0x030400a1
+  0, /*tp_finalize*/
+  #endif
+};
+static struct __pyx_vtabstruct_5yapic_6entity_9_visitors_EntityReplacer __pyx_vtable_5yapic_6entity_9_visitors_EntityReplacer;
+
+static PyObject *__pyx_tp_new_5yapic_6entity_9_visitors_EntityReplacer(PyTypeObject *t, PyObject *a, PyObject *k) {
+  struct __pyx_obj_5yapic_6entity_9_visitors_EntityReplacer *p;
+  PyObject *o = __pyx_tp_new_5yapic_6entity_9_visitors_ReplacerBase(t, a, k);
+  if (unlikely(!o)) return 0;
+  p = ((struct __pyx_obj_5yapic_6entity_9_visitors_EntityReplacer *)o);
+  p->__pyx_base.__pyx_base.__pyx_vtab = (struct __pyx_vtabstruct_5yapic_6entity_11_expression_Visitor*)__pyx_vtabptr_5yapic_6entity_9_visitors_EntityReplacer;
   p->what = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)Py_None); Py_INCREF(Py_None);
   p->to = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)Py_None); Py_INCREF(Py_None);
-  if (unlikely(__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_1__cinit__(o, a, k) < 0)) goto bad;
+  if (unlikely(__pyx_pw_5yapic_6entity_9_visitors_14EntityReplacer_1__cinit__(o, a, k) < 0)) goto bad;
   return o;
   bad:
   Py_DECREF(o); o = 0;
   return NULL;
 }
 
-static void __pyx_tp_dealloc_5yapic_6entity_16_entity_replacer_EntityReplacer(PyObject *o) {
-  struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *p = (struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *)o;
+static void __pyx_tp_dealloc_5yapic_6entity_9_visitors_EntityReplacer(PyObject *o) {
+  struct __pyx_obj_5yapic_6entity_9_visitors_EntityReplacer *p = (struct __pyx_obj_5yapic_6entity_9_visitors_EntityReplacer *)o;
   #if CYTHON_USE_TP_FINALIZE
   if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && !_PyGC_FINALIZED(o)) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
@@ -2839,13 +4046,13 @@ static void __pyx_tp_dealloc_5yapic_6entity_16_entity_replacer_EntityReplacer(Py
   if (PyType_IS_GC(Py_TYPE(o)->tp_base))
   #endif
   PyObject_GC_Track(o);
-  if (likely(__pyx_ptype_5yapic_6entity_11_expression_Visitor)) __pyx_ptype_5yapic_6entity_11_expression_Visitor->tp_dealloc(o); else __Pyx_call_next_tp_dealloc(o, __pyx_tp_dealloc_5yapic_6entity_16_entity_replacer_EntityReplacer);
+  __pyx_tp_dealloc_5yapic_6entity_9_visitors_ReplacerBase(o);
 }
 
-static int __pyx_tp_traverse_5yapic_6entity_16_entity_replacer_EntityReplacer(PyObject *o, visitproc v, void *a) {
+static int __pyx_tp_traverse_5yapic_6entity_9_visitors_EntityReplacer(PyObject *o, visitproc v, void *a) {
   int e;
-  struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *p = (struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *)o;
-  e = ((likely(__pyx_ptype_5yapic_6entity_11_expression_Visitor)) ? ((__pyx_ptype_5yapic_6entity_11_expression_Visitor->tp_traverse) ? __pyx_ptype_5yapic_6entity_11_expression_Visitor->tp_traverse(o, v, a) : 0) : __Pyx_call_next_tp_traverse(o, v, a, __pyx_tp_traverse_5yapic_6entity_16_entity_replacer_EntityReplacer)); if (e) return e;
+  struct __pyx_obj_5yapic_6entity_9_visitors_EntityReplacer *p = (struct __pyx_obj_5yapic_6entity_9_visitors_EntityReplacer *)o;
+  e = ((likely(__pyx_ptype_5yapic_6entity_9_visitors_ReplacerBase)) ? ((__pyx_ptype_5yapic_6entity_9_visitors_ReplacerBase->tp_traverse) ? __pyx_ptype_5yapic_6entity_9_visitors_ReplacerBase->tp_traverse(o, v, a) : 0) : __Pyx_call_next_tp_traverse(o, v, a, __pyx_tp_traverse_5yapic_6entity_9_visitors_EntityReplacer)); if (e) return e;
   if (p->what) {
     e = (*v)(((PyObject *)p->what), a); if (e) return e;
   }
@@ -2855,10 +4062,10 @@ static int __pyx_tp_traverse_5yapic_6entity_16_entity_replacer_EntityReplacer(Py
   return 0;
 }
 
-static int __pyx_tp_clear_5yapic_6entity_16_entity_replacer_EntityReplacer(PyObject *o) {
+static int __pyx_tp_clear_5yapic_6entity_9_visitors_EntityReplacer(PyObject *o) {
   PyObject* tmp;
-  struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *p = (struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer *)o;
-  if (likely(__pyx_ptype_5yapic_6entity_11_expression_Visitor)) { if (__pyx_ptype_5yapic_6entity_11_expression_Visitor->tp_clear) __pyx_ptype_5yapic_6entity_11_expression_Visitor->tp_clear(o); } else __Pyx_call_next_tp_clear(o, __pyx_tp_clear_5yapic_6entity_16_entity_replacer_EntityReplacer);
+  struct __pyx_obj_5yapic_6entity_9_visitors_EntityReplacer *p = (struct __pyx_obj_5yapic_6entity_9_visitors_EntityReplacer *)o;
+  if (likely(__pyx_ptype_5yapic_6entity_9_visitors_ReplacerBase)) { if (__pyx_ptype_5yapic_6entity_9_visitors_ReplacerBase->tp_clear) __pyx_ptype_5yapic_6entity_9_visitors_ReplacerBase->tp_clear(o); } else __Pyx_call_next_tp_clear(o, __pyx_tp_clear_5yapic_6entity_9_visitors_EntityReplacer);
   tmp = ((PyObject*)p->what);
   p->what = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
@@ -2868,22 +4075,17 @@ static int __pyx_tp_clear_5yapic_6entity_16_entity_replacer_EntityReplacer(PyObj
   return 0;
 }
 
-static PyMethodDef __pyx_methods_5yapic_6entity_16_entity_replacer_EntityReplacer[] = {
-  {"visit_binary", (PyCFunction)__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_3visit_binary, METH_O, 0},
-  {"visit_unary", (PyCFunction)__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_5visit_unary, METH_O, 0},
-  {"visit_direction", (PyCFunction)__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_7visit_direction, METH_O, 0},
-  {"visit_alias", (PyCFunction)__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_9visit_alias, METH_O, 0},
-  {"visit_cast", (PyCFunction)__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_11visit_cast, METH_O, 0},
-  {"visit_field", (PyCFunction)__pyx_pw_5yapic_6entity_16_entity_replacer_14EntityReplacer_13visit_field, METH_O, 0},
+static PyMethodDef __pyx_methods_5yapic_6entity_9_visitors_EntityReplacer[] = {
+  {"visit_field", (PyCFunction)__pyx_pw_5yapic_6entity_9_visitors_14EntityReplacer_3visit_field, METH_O, 0},
   {0, 0, 0, 0}
 };
 
-static PyTypeObject __pyx_type_5yapic_6entity_16_entity_replacer_EntityReplacer = {
+static PyTypeObject __pyx_type_5yapic_6entity_9_visitors_EntityReplacer = {
   PyVarObject_HEAD_INIT(0, 0)
-  "yapic.entity._entity_replacer.EntityReplacer", /*tp_name*/
-  sizeof(struct __pyx_obj_5yapic_6entity_16_entity_replacer_EntityReplacer), /*tp_basicsize*/
+  "yapic.entity._visitors.EntityReplacer", /*tp_name*/
+  sizeof(struct __pyx_obj_5yapic_6entity_9_visitors_EntityReplacer), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5yapic_6entity_16_entity_replacer_EntityReplacer, /*tp_dealloc*/
+  __pyx_tp_dealloc_5yapic_6entity_9_visitors_EntityReplacer, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -2905,13 +4107,13 @@ static PyTypeObject __pyx_type_5yapic_6entity_16_entity_replacer_EntityReplacer 
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
   0, /*tp_doc*/
-  __pyx_tp_traverse_5yapic_6entity_16_entity_replacer_EntityReplacer, /*tp_traverse*/
-  __pyx_tp_clear_5yapic_6entity_16_entity_replacer_EntityReplacer, /*tp_clear*/
+  __pyx_tp_traverse_5yapic_6entity_9_visitors_EntityReplacer, /*tp_traverse*/
+  __pyx_tp_clear_5yapic_6entity_9_visitors_EntityReplacer, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
   0, /*tp_iternext*/
-  __pyx_methods_5yapic_6entity_16_entity_replacer_EntityReplacer, /*tp_methods*/
+  __pyx_methods_5yapic_6entity_9_visitors_EntityReplacer, /*tp_methods*/
   0, /*tp_members*/
   0, /*tp_getset*/
   0, /*tp_base*/
@@ -2921,7 +4123,138 @@ static PyTypeObject __pyx_type_5yapic_6entity_16_entity_replacer_EntityReplacer 
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_5yapic_6entity_16_entity_replacer_EntityReplacer, /*tp_new*/
+  __pyx_tp_new_5yapic_6entity_9_visitors_EntityReplacer, /*tp_new*/
+  0, /*tp_free*/
+  0, /*tp_is_gc*/
+  0, /*tp_bases*/
+  0, /*tp_mro*/
+  0, /*tp_cache*/
+  0, /*tp_subclasses*/
+  0, /*tp_weaklist*/
+  0, /*tp_del*/
+  0, /*tp_version_tag*/
+  #if PY_VERSION_HEX >= 0x030400a1
+  0, /*tp_finalize*/
+  #endif
+};
+static struct __pyx_vtabstruct_5yapic_6entity_9_visitors_FieldAssigner __pyx_vtable_5yapic_6entity_9_visitors_FieldAssigner;
+
+static PyObject *__pyx_tp_new_5yapic_6entity_9_visitors_FieldAssigner(PyTypeObject *t, PyObject *a, PyObject *k) {
+  struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner *p;
+  PyObject *o = __pyx_tp_new_5yapic_6entity_9_visitors_ReplacerBase(t, a, k);
+  if (unlikely(!o)) return 0;
+  p = ((struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner *)o);
+  p->__pyx_base.__pyx_base.__pyx_vtab = (struct __pyx_vtabstruct_5yapic_6entity_11_expression_Visitor*)__pyx_vtabptr_5yapic_6entity_9_visitors_FieldAssigner;
+  p->where_t = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)Py_None); Py_INCREF(Py_None);
+  p->where_o = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *)Py_None); Py_INCREF(Py_None);
+  p->data = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  if (unlikely(__pyx_pw_5yapic_6entity_9_visitors_13FieldAssigner_1__cinit__(o, a, k) < 0)) goto bad;
+  return o;
+  bad:
+  Py_DECREF(o); o = 0;
+  return NULL;
+}
+
+static void __pyx_tp_dealloc_5yapic_6entity_9_visitors_FieldAssigner(PyObject *o) {
+  struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner *p = (struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner *)o;
+  #if CYTHON_USE_TP_FINALIZE
+  if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && !_PyGC_FINALIZED(o)) {
+    if (PyObject_CallFinalizerFromDealloc(o)) return;
+  }
+  #endif
+  PyObject_GC_UnTrack(o);
+  Py_CLEAR(p->where_t);
+  Py_CLEAR(p->where_o);
+  Py_CLEAR(p->data);
+  #if CYTHON_USE_TYPE_SLOTS
+  if (PyType_IS_GC(Py_TYPE(o)->tp_base))
+  #endif
+  PyObject_GC_Track(o);
+  __pyx_tp_dealloc_5yapic_6entity_9_visitors_ReplacerBase(o);
+}
+
+static int __pyx_tp_traverse_5yapic_6entity_9_visitors_FieldAssigner(PyObject *o, visitproc v, void *a) {
+  int e;
+  struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner *p = (struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner *)o;
+  e = ((likely(__pyx_ptype_5yapic_6entity_9_visitors_ReplacerBase)) ? ((__pyx_ptype_5yapic_6entity_9_visitors_ReplacerBase->tp_traverse) ? __pyx_ptype_5yapic_6entity_9_visitors_ReplacerBase->tp_traverse(o, v, a) : 0) : __Pyx_call_next_tp_traverse(o, v, a, __pyx_tp_traverse_5yapic_6entity_9_visitors_FieldAssigner)); if (e) return e;
+  if (p->where_t) {
+    e = (*v)(((PyObject *)p->where_t), a); if (e) return e;
+  }
+  if (p->where_o) {
+    e = (*v)(((PyObject *)p->where_o), a); if (e) return e;
+  }
+  if (p->data) {
+    e = (*v)(p->data, a); if (e) return e;
+  }
+  return 0;
+}
+
+static int __pyx_tp_clear_5yapic_6entity_9_visitors_FieldAssigner(PyObject *o) {
+  PyObject* tmp;
+  struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner *p = (struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner *)o;
+  if (likely(__pyx_ptype_5yapic_6entity_9_visitors_ReplacerBase)) { if (__pyx_ptype_5yapic_6entity_9_visitors_ReplacerBase->tp_clear) __pyx_ptype_5yapic_6entity_9_visitors_ReplacerBase->tp_clear(o); } else __Pyx_call_next_tp_clear(o, __pyx_tp_clear_5yapic_6entity_9_visitors_FieldAssigner);
+  tmp = ((PyObject*)p->where_t);
+  p->where_t = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)Py_None); Py_INCREF(Py_None);
+  Py_XDECREF(tmp);
+  tmp = ((PyObject*)p->where_o);
+  p->where_o = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *)Py_None); Py_INCREF(Py_None);
+  Py_XDECREF(tmp);
+  tmp = ((PyObject*)p->data);
+  p->data = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  Py_XDECREF(tmp);
+  return 0;
+}
+
+static PyMethodDef __pyx_methods_5yapic_6entity_9_visitors_FieldAssigner[] = {
+  {"visit_binary", (PyCFunction)__pyx_pw_5yapic_6entity_9_visitors_13FieldAssigner_3visit_binary, METH_O, 0},
+  {"visit_field", (PyCFunction)__pyx_pw_5yapic_6entity_9_visitors_13FieldAssigner_5visit_field, METH_O, 0},
+  {0, 0, 0, 0}
+};
+
+static PyTypeObject __pyx_type_5yapic_6entity_9_visitors_FieldAssigner = {
+  PyVarObject_HEAD_INIT(0, 0)
+  "yapic.entity._visitors.FieldAssigner", /*tp_name*/
+  sizeof(struct __pyx_obj_5yapic_6entity_9_visitors_FieldAssigner), /*tp_basicsize*/
+  0, /*tp_itemsize*/
+  __pyx_tp_dealloc_5yapic_6entity_9_visitors_FieldAssigner, /*tp_dealloc*/
+  0, /*tp_print*/
+  0, /*tp_getattr*/
+  0, /*tp_setattr*/
+  #if PY_MAJOR_VERSION < 3
+  0, /*tp_compare*/
+  #endif
+  #if PY_MAJOR_VERSION >= 3
+  0, /*tp_as_async*/
+  #endif
+  0, /*tp_repr*/
+  0, /*tp_as_number*/
+  0, /*tp_as_sequence*/
+  0, /*tp_as_mapping*/
+  0, /*tp_hash*/
+  0, /*tp_call*/
+  0, /*tp_str*/
+  0, /*tp_getattro*/
+  0, /*tp_setattro*/
+  0, /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
+  0, /*tp_doc*/
+  __pyx_tp_traverse_5yapic_6entity_9_visitors_FieldAssigner, /*tp_traverse*/
+  __pyx_tp_clear_5yapic_6entity_9_visitors_FieldAssigner, /*tp_clear*/
+  0, /*tp_richcompare*/
+  0, /*tp_weaklistoffset*/
+  0, /*tp_iter*/
+  0, /*tp_iternext*/
+  __pyx_methods_5yapic_6entity_9_visitors_FieldAssigner, /*tp_methods*/
+  0, /*tp_members*/
+  0, /*tp_getset*/
+  0, /*tp_base*/
+  0, /*tp_dict*/
+  0, /*tp_descr_get*/
+  0, /*tp_descr_set*/
+  0, /*tp_dictoffset*/
+  0, /*tp_init*/
+  0, /*tp_alloc*/
+  __pyx_tp_new_5yapic_6entity_9_visitors_FieldAssigner, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -2943,17 +4276,17 @@ static PyMethodDef __pyx_methods[] = {
 #if PY_MAJOR_VERSION >= 3
 #if CYTHON_PEP489_MULTI_PHASE_INIT
 static PyObject* __pyx_pymod_create(PyObject *spec, PyModuleDef *def); /*proto*/
-static int __pyx_pymod_exec__entity_replacer(PyObject* module); /*proto*/
+static int __pyx_pymod_exec__visitors(PyObject* module); /*proto*/
 static PyModuleDef_Slot __pyx_moduledef_slots[] = {
   {Py_mod_create, (void*)__pyx_pymod_create},
-  {Py_mod_exec, (void*)__pyx_pymod_exec__entity_replacer},
+  {Py_mod_exec, (void*)__pyx_pymod_exec__visitors},
   {0, NULL}
 };
 #endif
 
 static struct PyModuleDef __pyx_moduledef = {
     PyModuleDef_HEAD_INIT,
-    "_entity_replacer",
+    "_visitors",
     0, /* m_doc */
   #if CYTHON_PEP489_MULTI_PHASE_INIT
     0, /* m_size */
@@ -2983,10 +4316,14 @@ static struct PyModuleDef __pyx_moduledef = {
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_EntityReplacer, __pyx_k_EntityReplacer, sizeof(__pyx_k_EntityReplacer), 0, 0, 1, 1},
+  {&__pyx_n_s_FieldAssigner, __pyx_k_FieldAssigner, sizeof(__pyx_k_FieldAssigner), 0, 0, 1, 1},
+  {&__pyx_n_s_KeyError, __pyx_k_KeyError, sizeof(__pyx_k_KeyError), 0, 0, 1, 1},
+  {&__pyx_n_s_ReplacerBase, __pyx_k_ReplacerBase, sizeof(__pyx_k_ReplacerBase), 0, 0, 1, 1},
   {&__pyx_n_s_alias, __pyx_k_alias, sizeof(__pyx_k_alias), 0, 0, 1, 1},
   {&__pyx_n_s_asc, __pyx_k_asc, sizeof(__pyx_k_asc), 0, 0, 1, 1},
   {&__pyx_n_s_cast, __pyx_k_cast, sizeof(__pyx_k_cast), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
+  {&__pyx_n_s_data, __pyx_k_data, sizeof(__pyx_k_data), 0, 0, 1, 1},
   {&__pyx_n_s_desc, __pyx_k_desc, sizeof(__pyx_k_desc), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
@@ -2995,10 +4332,15 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_to, __pyx_k_to, sizeof(__pyx_k_to), 0, 0, 1, 1},
   {&__pyx_n_s_type, __pyx_k_type, sizeof(__pyx_k_type), 0, 0, 1, 1},
   {&__pyx_n_s_what, __pyx_k_what, sizeof(__pyx_k_what), 0, 0, 1, 1},
+  {&__pyx_n_s_where_o, __pyx_k_where_o, sizeof(__pyx_k_where_o), 0, 0, 1, 1},
+  {&__pyx_n_s_where_t, __pyx_k_where_t, sizeof(__pyx_k_where_t), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
+  __pyx_builtin_KeyError = __Pyx_GetBuiltinName(__pyx_n_s_KeyError); if (!__pyx_builtin_KeyError) __PYX_ERR(0, 77, __pyx_L1_error)
   return 0;
+  __pyx_L1_error:;
+  return -1;
 }
 
 static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
@@ -3057,17 +4399,39 @@ static int __Pyx_modinit_type_init_code(void) {
   __pyx_ptype_5yapic_6entity_11_expression_Visitor = __Pyx_ImportType(__pyx_t_1, "yapic.entity._expression", "Visitor", sizeof(struct __pyx_obj_5yapic_6entity_11_expression_Visitor), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_6entity_11_expression_Visitor) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_11_expression_Visitor = (struct __pyx_vtabstruct_5yapic_6entity_11_expression_Visitor*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_expression_Visitor->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_expression_Visitor)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_16_entity_replacer_EntityReplacer = &__pyx_vtable_5yapic_6entity_16_entity_replacer_EntityReplacer;
-  __pyx_vtable_5yapic_6entity_16_entity_replacer_EntityReplacer.__pyx_base = *__pyx_vtabptr_5yapic_6entity_11_expression_Visitor;
-  __pyx_type_5yapic_6entity_16_entity_replacer_EntityReplacer.tp_base = __pyx_ptype_5yapic_6entity_11_expression_Visitor;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_16_entity_replacer_EntityReplacer) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
-  __pyx_type_5yapic_6entity_16_entity_replacer_EntityReplacer.tp_print = 0;
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_16_entity_replacer_EntityReplacer.tp_dictoffset && __pyx_type_5yapic_6entity_16_entity_replacer_EntityReplacer.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_5yapic_6entity_16_entity_replacer_EntityReplacer.tp_getattro = __Pyx_PyObject_GenericGetAttr;
+  __pyx_vtabptr_5yapic_6entity_9_visitors_ReplacerBase = &__pyx_vtable_5yapic_6entity_9_visitors_ReplacerBase;
+  __pyx_vtable_5yapic_6entity_9_visitors_ReplacerBase.__pyx_base = *__pyx_vtabptr_5yapic_6entity_11_expression_Visitor;
+  __pyx_type_5yapic_6entity_9_visitors_ReplacerBase.tp_base = __pyx_ptype_5yapic_6entity_11_expression_Visitor;
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_9_visitors_ReplacerBase) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  __pyx_type_5yapic_6entity_9_visitors_ReplacerBase.tp_print = 0;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_9_visitors_ReplacerBase.tp_dictoffset && __pyx_type_5yapic_6entity_9_visitors_ReplacerBase.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_5yapic_6entity_9_visitors_ReplacerBase.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_16_entity_replacer_EntityReplacer.tp_dict, __pyx_vtabptr_5yapic_6entity_16_entity_replacer_EntityReplacer) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_EntityReplacer, (PyObject *)&__pyx_type_5yapic_6entity_16_entity_replacer_EntityReplacer) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
-  __pyx_ptype_5yapic_6entity_16_entity_replacer_EntityReplacer = &__pyx_type_5yapic_6entity_16_entity_replacer_EntityReplacer;
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_9_visitors_ReplacerBase.tp_dict, __pyx_vtabptr_5yapic_6entity_9_visitors_ReplacerBase) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ReplacerBase, (PyObject *)&__pyx_type_5yapic_6entity_9_visitors_ReplacerBase) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_9_visitors_ReplacerBase = &__pyx_type_5yapic_6entity_9_visitors_ReplacerBase;
+  __pyx_vtabptr_5yapic_6entity_9_visitors_EntityReplacer = &__pyx_vtable_5yapic_6entity_9_visitors_EntityReplacer;
+  __pyx_vtable_5yapic_6entity_9_visitors_EntityReplacer.__pyx_base = *__pyx_vtabptr_5yapic_6entity_9_visitors_ReplacerBase;
+  __pyx_type_5yapic_6entity_9_visitors_EntityReplacer.tp_base = __pyx_ptype_5yapic_6entity_9_visitors_ReplacerBase;
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_9_visitors_EntityReplacer) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_type_5yapic_6entity_9_visitors_EntityReplacer.tp_print = 0;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_9_visitors_EntityReplacer.tp_dictoffset && __pyx_type_5yapic_6entity_9_visitors_EntityReplacer.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_5yapic_6entity_9_visitors_EntityReplacer.tp_getattro = __Pyx_PyObject_GenericGetAttr;
+  }
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_9_visitors_EntityReplacer.tp_dict, __pyx_vtabptr_5yapic_6entity_9_visitors_EntityReplacer) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_EntityReplacer, (PyObject *)&__pyx_type_5yapic_6entity_9_visitors_EntityReplacer) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_9_visitors_EntityReplacer = &__pyx_type_5yapic_6entity_9_visitors_EntityReplacer;
+  __pyx_vtabptr_5yapic_6entity_9_visitors_FieldAssigner = &__pyx_vtable_5yapic_6entity_9_visitors_FieldAssigner;
+  __pyx_vtable_5yapic_6entity_9_visitors_FieldAssigner.__pyx_base = *__pyx_vtabptr_5yapic_6entity_9_visitors_ReplacerBase;
+  __pyx_type_5yapic_6entity_9_visitors_FieldAssigner.tp_base = __pyx_ptype_5yapic_6entity_9_visitors_ReplacerBase;
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_9_visitors_FieldAssigner) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_type_5yapic_6entity_9_visitors_FieldAssigner.tp_print = 0;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_9_visitors_FieldAssigner.tp_dictoffset && __pyx_type_5yapic_6entity_9_visitors_FieldAssigner.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_5yapic_6entity_9_visitors_FieldAssigner.tp_getattro = __Pyx_PyObject_GenericGetAttr;
+  }
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_9_visitors_FieldAssigner.tp_dict, __pyx_vtabptr_5yapic_6entity_9_visitors_FieldAssigner) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_FieldAssigner, (PyObject *)&__pyx_type_5yapic_6entity_9_visitors_FieldAssigner) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_9_visitors_FieldAssigner = &__pyx_type_5yapic_6entity_9_visitors_FieldAssigner;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;
@@ -3122,19 +4486,24 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_5yapic_6entity_7_entity_EntityType = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityType", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityType), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_6entity_7_entity_EntityType) __PYX_ERR(4, 7, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_EntityBase = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityBase", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityBase), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityBase) __PYX_ERR(4, 19, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityBase) __PYX_ERR(4, 20, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityAttribute", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttribute) __PYX_ERR(4, 24, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttribute = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttribute->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttribute)) __PYX_ERR(4, 24, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttribute) __PYX_ERR(4, 26, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttribute = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttribute->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttribute)) __PYX_ERR(4, 26, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityAttributeExt", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt) __PYX_ERR(4, 39, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt)) __PYX_ERR(4, 39, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt) __PYX_ERR(4, 41, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt)) __PYX_ERR(4, 41, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityAttributeImpl", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeImpl) __PYX_ERR(4, 47, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeImpl = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeImpl)) __PYX_ERR(4, 47, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeImpl) __PYX_ERR(4, 49, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeImpl = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeImpl)) __PYX_ERR(4, 49, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_FieldState = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "FieldState", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_FieldState), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_FieldState) __PYX_ERR(4, 63, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_7_entity_FieldState = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_FieldState*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_FieldState->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_FieldState)) __PYX_ERR(4, 63, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_FieldState) __PYX_ERR(4, 70, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_FieldState = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_FieldState*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_FieldState->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_FieldState)) __PYX_ERR(4, 70, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_7_entity_EntityState = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityState", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityState), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityState) __PYX_ERR(4, 85, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_EntityState = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityState->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityState)) __PYX_ERR(4, 85, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_7_entity_EntityStateValue = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityStateValue", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityStateValue), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityStateValue) __PYX_ERR(4, 104, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("yapic.entity._field_impl"); if (unlikely(!__pyx_t_1)) __PYX_ERR(5, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -3213,11 +4582,11 @@ static int __Pyx_modinit_function_import_code(void) {
 
 
 #if PY_MAJOR_VERSION < 3
-__Pyx_PyMODINIT_FUNC init_entity_replacer(void) CYTHON_SMALL_CODE; /*proto*/
-__Pyx_PyMODINIT_FUNC init_entity_replacer(void)
+__Pyx_PyMODINIT_FUNC init_visitors(void) CYTHON_SMALL_CODE; /*proto*/
+__Pyx_PyMODINIT_FUNC init_visitors(void)
 #else
-__Pyx_PyMODINIT_FUNC PyInit__entity_replacer(void) CYTHON_SMALL_CODE; /*proto*/
-__Pyx_PyMODINIT_FUNC PyInit__entity_replacer(void)
+__Pyx_PyMODINIT_FUNC PyInit__visitors(void) CYTHON_SMALL_CODE; /*proto*/
+__Pyx_PyMODINIT_FUNC PyInit__visitors(void)
 #if CYTHON_PEP489_MULTI_PHASE_INIT
 {
   return PyModuleDef_Init(&__pyx_moduledef);
@@ -3284,7 +4653,7 @@ bad:
 }
 
 
-static CYTHON_SMALL_CODE int __pyx_pymod_exec__entity_replacer(PyObject *__pyx_pyinit_module)
+static CYTHON_SMALL_CODE int __pyx_pymod_exec__visitors(PyObject *__pyx_pyinit_module)
 #endif
 #endif
 {
@@ -3293,7 +4662,7 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec__entity_replacer(PyObject *__pyx_p
   #if CYTHON_PEP489_MULTI_PHASE_INIT
   if (__pyx_m) {
     if (__pyx_m == __pyx_pyinit_module) return 0;
-    PyErr_SetString(PyExc_RuntimeError, "Module '_entity_replacer' has already been imported. Re-initialisation is not supported.");
+    PyErr_SetString(PyExc_RuntimeError, "Module '_visitors' has already been imported. Re-initialisation is not supported.");
     return -1;
   }
   #elif PY_MAJOR_VERSION >= 3
@@ -3308,7 +4677,7 @@ if (!__Pyx_RefNanny) {
       Py_FatalError("failed to import 'refnanny' module");
 }
 #endif
-  __Pyx_RefNannySetupContext("__Pyx_PyMODINIT_FUNC PyInit__entity_replacer(void)", 0);
+  __Pyx_RefNannySetupContext("__Pyx_PyMODINIT_FUNC PyInit__visitors(void)", 0);
   if (__Pyx_check_binary_version() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #ifdef __Pxy_PyFrame_Initialize_Offsets
   __Pxy_PyFrame_Initialize_Offsets();
@@ -3347,7 +4716,7 @@ if (!__Pyx_RefNanny) {
   Py_INCREF(__pyx_m);
   #else
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("_entity_replacer", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("_visitors", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
@@ -3366,14 +4735,14 @@ if (!__Pyx_RefNanny) {
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_yapic__entity___entity_replacer) {
+  if (__pyx_module_is_main_yapic__entity___visitors) {
     if (PyObject_SetAttr(__pyx_m, __pyx_n_s_name, __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "yapic.entity._entity_replacer")) {
-      if (unlikely(PyDict_SetItemString(modules, "yapic.entity._entity_replacer", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "yapic.entity._visitors")) {
+      if (unlikely(PyDict_SetItemString(modules, "yapic.entity._visitors", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -3394,9 +4763,9 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "yapic/entity/_entity_replacer.pyx":1
+  /* "yapic/entity/_visitors.pyx":1
  * from ._expression cimport Expression, Visitor, BinaryExpression, UnaryExpression, DirectionExpression, AliasExpression, CastExpression             # <<<<<<<<<<<<<<
- * from ._entity cimport EntityType
+ * from ._entity cimport EntityType, EntityAttribute
  * from ._field cimport Field
  */
   __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -3404,11 +4773,12 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "yapic/entity/_entity_replacer.pxd":10
+  /* "yapic/entity/_visitors.pxd":24
  * 
  * 
- * cdef inline replace_entity(Expression expr, EntityType what, EntityType to):             # <<<<<<<<<<<<<<
- *     return EntityReplacer(what, to).visit(expr)
+ * cdef inline assign_field(EntityBase into, Expression expr, list values):             # <<<<<<<<<<<<<<
+ *     cdef dict data = {}
+ *     for r in values:
  */
 
   /*--- Wrapped vars code ---*/
@@ -3418,11 +4788,11 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_1);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init yapic.entity._entity_replacer", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init yapic.entity._visitors", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_CLEAR(__pyx_m);
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init yapic.entity._entity_replacer");
+    PyErr_SetString(PyExc_ImportError, "init yapic.entity._visitors");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -3453,146 +4823,32 @@ end:
 }
 #endif
 
-/* RaiseArgTupleInvalid */
-static void __Pyx_RaiseArgtupleInvalid(
-    const char* func_name,
-    int exact,
-    Py_ssize_t num_min,
-    Py_ssize_t num_max,
-    Py_ssize_t num_found)
-{
-    Py_ssize_t num_expected;
-    const char *more_or_less;
-    if (num_found < num_min) {
-        num_expected = num_min;
-        more_or_less = "at least";
-    } else {
-        num_expected = num_max;
-        more_or_less = "at most";
-    }
-    if (exact) {
-        more_or_less = "exactly";
-    }
-    PyErr_Format(PyExc_TypeError,
-                 "%.200s() takes %.8s %" CYTHON_FORMAT_SSIZE_T "d positional argument%.1s (%" CYTHON_FORMAT_SSIZE_T "d given)",
-                 func_name, more_or_less, num_expected,
-                 (num_expected == 1) ? "" : "s", num_found);
+/* PyObjectGetAttrStr */
+#if CYTHON_USE_TYPE_SLOTS
+static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject* attr_name) {
+    PyTypeObject* tp = Py_TYPE(obj);
+    if (likely(tp->tp_getattro))
+        return tp->tp_getattro(obj, attr_name);
+#if PY_MAJOR_VERSION < 3
+    if (likely(tp->tp_getattr))
+        return tp->tp_getattr(obj, PyString_AS_STRING(attr_name));
+#endif
+    return PyObject_GetAttr(obj, attr_name);
 }
+#endif
 
-/* RaiseDoubleKeywords */
-static void __Pyx_RaiseDoubleKeywordsError(
-    const char* func_name,
-    PyObject* kw_name)
-{
-    PyErr_Format(PyExc_TypeError,
-        #if PY_MAJOR_VERSION >= 3
-        "%s() got multiple values for keyword argument '%U'", func_name, kw_name);
-        #else
-        "%s() got multiple values for keyword argument '%s'", func_name,
-        PyString_AsString(kw_name));
-        #endif
-}
-
-/* ParseKeywords */
-static int __Pyx_ParseOptionalKeywords(
-    PyObject *kwds,
-    PyObject **argnames[],
-    PyObject *kwds2,
-    PyObject *values[],
-    Py_ssize_t num_pos_args,
-    const char* function_name)
-{
-    PyObject *key = 0, *value = 0;
-    Py_ssize_t pos = 0;
-    PyObject*** name;
-    PyObject*** first_kw_arg = argnames + num_pos_args;
-    while (PyDict_Next(kwds, &pos, &key, &value)) {
-        name = first_kw_arg;
-        while (*name && (**name != key)) name++;
-        if (*name) {
-            values[name-argnames] = value;
-            continue;
-        }
-        name = first_kw_arg;
-        #if PY_MAJOR_VERSION < 3
-        if (likely(PyString_CheckExact(key)) || likely(PyString_Check(key))) {
-            while (*name) {
-                if ((CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**name) == PyString_GET_SIZE(key))
-                        && _PyString_Eq(**name, key)) {
-                    values[name-argnames] = value;
-                    break;
-                }
-                name++;
-            }
-            if (*name) continue;
-            else {
-                PyObject*** argname = argnames;
-                while (argname != first_kw_arg) {
-                    if ((**argname == key) || (
-                            (CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**argname) == PyString_GET_SIZE(key))
-                             && _PyString_Eq(**argname, key))) {
-                        goto arg_passed_twice;
-                    }
-                    argname++;
-                }
-            }
-        } else
-        #endif
-        if (likely(PyUnicode_Check(key))) {
-            while (*name) {
-                int cmp = (**name == key) ? 0 :
-                #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
-                    (PyUnicode_GET_SIZE(**name) != PyUnicode_GET_SIZE(key)) ? 1 :
-                #endif
-                    PyUnicode_Compare(**name, key);
-                if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
-                if (cmp == 0) {
-                    values[name-argnames] = value;
-                    break;
-                }
-                name++;
-            }
-            if (*name) continue;
-            else {
-                PyObject*** argname = argnames;
-                while (argname != first_kw_arg) {
-                    int cmp = (**argname == key) ? 0 :
-                    #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
-                        (PyUnicode_GET_SIZE(**argname) != PyUnicode_GET_SIZE(key)) ? 1 :
-                    #endif
-                        PyUnicode_Compare(**argname, key);
-                    if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
-                    if (cmp == 0) goto arg_passed_twice;
-                    argname++;
-                }
-            }
-        } else
-            goto invalid_keyword_type;
-        if (kwds2) {
-            if (unlikely(PyDict_SetItem(kwds2, key, value))) goto bad;
-        } else {
-            goto invalid_keyword;
-        }
+/* GetBuiltinName */
+static PyObject *__Pyx_GetBuiltinName(PyObject *name) {
+    PyObject* result = __Pyx_PyObject_GetAttrStr(__pyx_b, name);
+    if (unlikely(!result)) {
+        PyErr_Format(PyExc_NameError,
+#if PY_MAJOR_VERSION >= 3
+            "name '%U' is not defined", name);
+#else
+            "name '%.200s' is not defined", PyString_AS_STRING(name));
+#endif
     }
-    return 0;
-arg_passed_twice:
-    __Pyx_RaiseDoubleKeywordsError(function_name, key);
-    goto bad;
-invalid_keyword_type:
-    PyErr_Format(PyExc_TypeError,
-        "%.200s() keywords must be strings", function_name);
-    goto bad;
-invalid_keyword:
-    PyErr_Format(PyExc_TypeError,
-    #if PY_MAJOR_VERSION < 3
-        "%.200s() got an unexpected keyword argument '%.200s'",
-        function_name, PyString_AsString(key));
-    #else
-        "%s() got an unexpected keyword argument '%U'",
-        function_name, key);
-    #endif
-bad:
-    return -1;
+    return result;
 }
 
 /* ArgTypeTest */
@@ -3867,20 +5123,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObjec
 }
 #endif
 
-/* PyObjectGetAttrStr */
-#if CYTHON_USE_TYPE_SLOTS
-static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject* attr_name) {
-    PyTypeObject* tp = Py_TYPE(obj);
-    if (likely(tp->tp_getattro))
-        return tp->tp_getattro(obj, attr_name);
-#if PY_MAJOR_VERSION < 3
-    if (likely(tp->tp_getattr))
-        return tp->tp_getattr(obj, PyString_AS_STRING(attr_name));
-#endif
-    return PyObject_GetAttr(obj, attr_name);
-}
-#endif
-
 /* PyObjectCallNoArg */
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
@@ -3903,6 +5145,148 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
 }
 #endif
 
+/* RaiseArgTupleInvalid */
+static void __Pyx_RaiseArgtupleInvalid(
+    const char* func_name,
+    int exact,
+    Py_ssize_t num_min,
+    Py_ssize_t num_max,
+    Py_ssize_t num_found)
+{
+    Py_ssize_t num_expected;
+    const char *more_or_less;
+    if (num_found < num_min) {
+        num_expected = num_min;
+        more_or_less = "at least";
+    } else {
+        num_expected = num_max;
+        more_or_less = "at most";
+    }
+    if (exact) {
+        more_or_less = "exactly";
+    }
+    PyErr_Format(PyExc_TypeError,
+                 "%.200s() takes %.8s %" CYTHON_FORMAT_SSIZE_T "d positional argument%.1s (%" CYTHON_FORMAT_SSIZE_T "d given)",
+                 func_name, more_or_less, num_expected,
+                 (num_expected == 1) ? "" : "s", num_found);
+}
+
+/* RaiseDoubleKeywords */
+static void __Pyx_RaiseDoubleKeywordsError(
+    const char* func_name,
+    PyObject* kw_name)
+{
+    PyErr_Format(PyExc_TypeError,
+        #if PY_MAJOR_VERSION >= 3
+        "%s() got multiple values for keyword argument '%U'", func_name, kw_name);
+        #else
+        "%s() got multiple values for keyword argument '%s'", func_name,
+        PyString_AsString(kw_name));
+        #endif
+}
+
+/* ParseKeywords */
+static int __Pyx_ParseOptionalKeywords(
+    PyObject *kwds,
+    PyObject **argnames[],
+    PyObject *kwds2,
+    PyObject *values[],
+    Py_ssize_t num_pos_args,
+    const char* function_name)
+{
+    PyObject *key = 0, *value = 0;
+    Py_ssize_t pos = 0;
+    PyObject*** name;
+    PyObject*** first_kw_arg = argnames + num_pos_args;
+    while (PyDict_Next(kwds, &pos, &key, &value)) {
+        name = first_kw_arg;
+        while (*name && (**name != key)) name++;
+        if (*name) {
+            values[name-argnames] = value;
+            continue;
+        }
+        name = first_kw_arg;
+        #if PY_MAJOR_VERSION < 3
+        if (likely(PyString_CheckExact(key)) || likely(PyString_Check(key))) {
+            while (*name) {
+                if ((CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**name) == PyString_GET_SIZE(key))
+                        && _PyString_Eq(**name, key)) {
+                    values[name-argnames] = value;
+                    break;
+                }
+                name++;
+            }
+            if (*name) continue;
+            else {
+                PyObject*** argname = argnames;
+                while (argname != first_kw_arg) {
+                    if ((**argname == key) || (
+                            (CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**argname) == PyString_GET_SIZE(key))
+                             && _PyString_Eq(**argname, key))) {
+                        goto arg_passed_twice;
+                    }
+                    argname++;
+                }
+            }
+        } else
+        #endif
+        if (likely(PyUnicode_Check(key))) {
+            while (*name) {
+                int cmp = (**name == key) ? 0 :
+                #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
+                    (PyUnicode_GET_SIZE(**name) != PyUnicode_GET_SIZE(key)) ? 1 :
+                #endif
+                    PyUnicode_Compare(**name, key);
+                if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
+                if (cmp == 0) {
+                    values[name-argnames] = value;
+                    break;
+                }
+                name++;
+            }
+            if (*name) continue;
+            else {
+                PyObject*** argname = argnames;
+                while (argname != first_kw_arg) {
+                    int cmp = (**argname == key) ? 0 :
+                    #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
+                        (PyUnicode_GET_SIZE(**argname) != PyUnicode_GET_SIZE(key)) ? 1 :
+                    #endif
+                        PyUnicode_Compare(**argname, key);
+                    if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
+                    if (cmp == 0) goto arg_passed_twice;
+                    argname++;
+                }
+            }
+        } else
+            goto invalid_keyword_type;
+        if (kwds2) {
+            if (unlikely(PyDict_SetItem(kwds2, key, value))) goto bad;
+        } else {
+            goto invalid_keyword;
+        }
+    }
+    return 0;
+arg_passed_twice:
+    __Pyx_RaiseDoubleKeywordsError(function_name, key);
+    goto bad;
+invalid_keyword_type:
+    PyErr_Format(PyExc_TypeError,
+        "%.200s() keywords must be strings", function_name);
+    goto bad;
+invalid_keyword:
+    PyErr_Format(PyExc_TypeError,
+    #if PY_MAJOR_VERSION < 3
+        "%.200s() got an unexpected keyword argument '%.200s'",
+        function_name, PyString_AsString(key));
+    #else
+        "%s() got an unexpected keyword argument '%U'",
+        function_name, key);
+    #endif
+bad:
+    return -1;
+}
+
 /* GetAttr */
 static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *o, PyObject *n) {
 #if CYTHON_USE_TYPE_SLOTS
@@ -3914,6 +5298,198 @@ static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *o, PyObject *n) {
         return __Pyx_PyObject_GetAttrStr(o, n);
 #endif
     return PyObject_GetAttr(o, n);
+}
+
+/* DictGetItem */
+#if PY_MAJOR_VERSION >= 3 && !CYTHON_COMPILING_IN_PYPY
+static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key) {
+    PyObject *value;
+    value = PyDict_GetItemWithError(d, key);
+    if (unlikely(!value)) {
+        if (!PyErr_Occurred()) {
+            if (unlikely(PyTuple_Check(key))) {
+                PyObject* args = PyTuple_Pack(1, key);
+                if (likely(args)) {
+                    PyErr_SetObject(PyExc_KeyError, args);
+                    Py_DECREF(args);
+                }
+            } else {
+                PyErr_SetObject(PyExc_KeyError, key);
+            }
+        }
+        return NULL;
+    }
+    Py_INCREF(value);
+    return value;
+}
+#endif
+
+/* ExtTypeTest */
+static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
+    if (unlikely(!type)) {
+        PyErr_SetString(PyExc_SystemError, "Missing type object");
+        return 0;
+    }
+    if (likely(__Pyx_TypeCheck(obj, type)))
+        return 1;
+    PyErr_Format(PyExc_TypeError, "Cannot convert %.200s to %.200s",
+                 Py_TYPE(obj)->tp_name, type->tp_name);
+    return 0;
+}
+
+/* GetTopmostException */
+#if CYTHON_USE_EXC_INFO_STACK
+static _PyErr_StackItem *
+__Pyx_PyErr_GetTopmostException(PyThreadState *tstate)
+{
+    _PyErr_StackItem *exc_info = tstate->exc_info;
+    while ((exc_info->exc_type == NULL || exc_info->exc_type == Py_None) &&
+           exc_info->previous_item != NULL)
+    {
+        exc_info = exc_info->previous_item;
+    }
+    return exc_info;
+}
+#endif
+
+/* SaveResetException */
+#if CYTHON_FAST_THREAD_STATE
+static CYTHON_INLINE void __Pyx__ExceptionSave(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
+    #if CYTHON_USE_EXC_INFO_STACK
+    _PyErr_StackItem *exc_info = __Pyx_PyErr_GetTopmostException(tstate);
+    *type = exc_info->exc_type;
+    *value = exc_info->exc_value;
+    *tb = exc_info->exc_traceback;
+    #else
+    *type = tstate->exc_type;
+    *value = tstate->exc_value;
+    *tb = tstate->exc_traceback;
+    #endif
+    Py_XINCREF(*type);
+    Py_XINCREF(*value);
+    Py_XINCREF(*tb);
+}
+static CYTHON_INLINE void __Pyx__ExceptionReset(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    #if CYTHON_USE_EXC_INFO_STACK
+    _PyErr_StackItem *exc_info = tstate->exc_info;
+    tmp_type = exc_info->exc_type;
+    tmp_value = exc_info->exc_value;
+    tmp_tb = exc_info->exc_traceback;
+    exc_info->exc_type = type;
+    exc_info->exc_value = value;
+    exc_info->exc_traceback = tb;
+    #else
+    tmp_type = tstate->exc_type;
+    tmp_value = tstate->exc_value;
+    tmp_tb = tstate->exc_traceback;
+    tstate->exc_type = type;
+    tstate->exc_value = value;
+    tstate->exc_traceback = tb;
+    #endif
+    Py_XDECREF(tmp_type);
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(tmp_tb);
+}
+#endif
+
+/* PyErrExceptionMatches */
+#if CYTHON_FAST_THREAD_STATE
+static int __Pyx_PyErr_ExceptionMatchesTuple(PyObject *exc_type, PyObject *tuple) {
+    Py_ssize_t i, n;
+    n = PyTuple_GET_SIZE(tuple);
+#if PY_MAJOR_VERSION >= 3
+    for (i=0; i<n; i++) {
+        if (exc_type == PyTuple_GET_ITEM(tuple, i)) return 1;
+    }
+#endif
+    for (i=0; i<n; i++) {
+        if (__Pyx_PyErr_GivenExceptionMatches(exc_type, PyTuple_GET_ITEM(tuple, i))) return 1;
+    }
+    return 0;
+}
+static CYTHON_INLINE int __Pyx_PyErr_ExceptionMatchesInState(PyThreadState* tstate, PyObject* err) {
+    PyObject *exc_type = tstate->curexc_type;
+    if (exc_type == err) return 1;
+    if (unlikely(!exc_type)) return 0;
+    if (unlikely(PyTuple_Check(err)))
+        return __Pyx_PyErr_ExceptionMatchesTuple(exc_type, err);
+    return __Pyx_PyErr_GivenExceptionMatches(exc_type, err);
+}
+#endif
+
+/* GetException */
+#if CYTHON_FAST_THREAD_STATE
+static int __Pyx__GetException(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb)
+#else
+static int __Pyx_GetException(PyObject **type, PyObject **value, PyObject **tb)
+#endif
+{
+    PyObject *local_type, *local_value, *local_tb;
+#if CYTHON_FAST_THREAD_STATE
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    local_type = tstate->curexc_type;
+    local_value = tstate->curexc_value;
+    local_tb = tstate->curexc_traceback;
+    tstate->curexc_type = 0;
+    tstate->curexc_value = 0;
+    tstate->curexc_traceback = 0;
+#else
+    PyErr_Fetch(&local_type, &local_value, &local_tb);
+#endif
+    PyErr_NormalizeException(&local_type, &local_value, &local_tb);
+#if CYTHON_FAST_THREAD_STATE
+    if (unlikely(tstate->curexc_type))
+#else
+    if (unlikely(PyErr_Occurred()))
+#endif
+        goto bad;
+    #if PY_MAJOR_VERSION >= 3
+    if (local_tb) {
+        if (unlikely(PyException_SetTraceback(local_value, local_tb) < 0))
+            goto bad;
+    }
+    #endif
+    Py_XINCREF(local_tb);
+    Py_XINCREF(local_type);
+    Py_XINCREF(local_value);
+    *type = local_type;
+    *value = local_value;
+    *tb = local_tb;
+#if CYTHON_FAST_THREAD_STATE
+    #if CYTHON_USE_EXC_INFO_STACK
+    {
+        _PyErr_StackItem *exc_info = tstate->exc_info;
+        tmp_type = exc_info->exc_type;
+        tmp_value = exc_info->exc_value;
+        tmp_tb = exc_info->exc_traceback;
+        exc_info->exc_type = local_type;
+        exc_info->exc_value = local_value;
+        exc_info->exc_traceback = local_tb;
+    }
+    #else
+    tmp_type = tstate->exc_type;
+    tmp_value = tstate->exc_value;
+    tmp_tb = tstate->exc_traceback;
+    tstate->exc_type = local_type;
+    tstate->exc_value = local_value;
+    tstate->exc_traceback = local_tb;
+    #endif
+    Py_XDECREF(tmp_type);
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(tmp_tb);
+#else
+    PyErr_SetExcInfo(local_type, local_value, local_tb);
+#endif
+    return 0;
+bad:
+    *type = 0;
+    *value = 0;
+    *tb = 0;
+    Py_XDECREF(local_type);
+    Py_XDECREF(local_value);
+    Py_XDECREF(local_tb);
+    return -1;
 }
 
 /* CallNextTpDealloc */

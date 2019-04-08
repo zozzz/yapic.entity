@@ -6,7 +6,7 @@ from cpython.object cimport PyObject
 from cpython.ref cimport Py_DECREF, Py_INCREF, Py_XDECREF, Py_XINCREF
 from cpython.tuple cimport PyTuple_SetItem, PyTuple_GetItem, PyTuple_New, PyTuple_GET_SIZE, PyTuple_SET_ITEM, PyTuple_GET_ITEM, PyTuple_Pack
 
-from ._field cimport Field
+from ._field cimport Field, PrimaryKey
 from ._relation cimport Relation, RelationState
 from ._factory cimport Factory, get_type_hints, new_instance_from_forward, is_forward_decl
 from ._expression cimport Visitor
@@ -17,8 +17,9 @@ cdef class EntityType(type):
         # XXX: DONT REMOVE
         (name, bases, attrs) = args
 
+
         cdef list fields = []
-        cdef list relations = []
+        cdef list __attrs__ = []
 
         cdef Factory factory
         cdef EntityAttribute attr
@@ -39,10 +40,15 @@ cdef class EntityType(type):
                     attr = (<EntityAttribute>v).clone()
                     attr._attr_name_in_class = k
 
-                    if isinstance(v, Field):
+                    if isinstance(attr, Field):
                         fields.append(attr)
-                    elif isinstance(v, Relation):
-                        relations.append(attr)
+                    else:
+                        __attrs__.append(attr)
+
+                    # if isinstance(v, Field):
+                    #     fields.append(attr)
+                    # elif isinstance(v, Relation):
+                    #     relations.append(attr)
 
                     setattr(self, k, attr)
         else:
@@ -67,23 +73,29 @@ cdef class EntityType(type):
                         if not attr._name_:
                             attr._name_ = name
 
+                        # if isinstance(attr, Field):
+                        #     fields.append(attr)
+                        # elif isinstance(attr, Relation):
+                        #     relations.append(attr)
                         if isinstance(attr, Field):
                             fields.append(attr)
-                        elif isinstance(attr, Relation):
-                            relations.append(attr)
+                        else:
+                            __attrs__.append(attr)
 
                         setattr(self, name, attr)
 
         self.__fields__ = tuple(fields)
-        self.__relations__ = tuple(relations)
 
         for i, attr in enumerate(fields):
             attr._index_ = i
             attr.bind(self)
 
-        for i, attr in enumerate(relations):
+        for attr in __attrs__:
+            i += 1
             attr._index_ = i
             attr.bind(self)
+
+        self.__attrs__ = tuple(fields + __attrs__)
 
     def __init__(self, *args, **kwargs):
         type.__init__(self, *args)
@@ -152,7 +164,7 @@ cdef EntityAttribute init_attribute(EntityAttribute by_type, object value):
 
         return by_type
     else:
-        by_type._initial_ = value
+        by_type._default_ = value
         return by_type
 
 
@@ -177,6 +189,20 @@ cdef class EntityAttribute(Expression):
             other.attr = self
         self._exts_.append(other)
         return self
+
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+        elif isinstance(instance, EntityBase):
+            return (<EntityBase>instance).__state__.get_value(self)
+        else:
+            raise TypeError("Instance must be 'None' or 'EntityBase'")
+
+    def __set__(self, EntityBase instance, value):
+        instance.__state__.set_value(self, value)
+
+    def __delete__(self, EntityBase instance):
+        instance.__state__.del_value(self)
 
     @property
     def _impl_(self):
@@ -265,6 +291,15 @@ cdef class EntityAttributeImpl:
 
     cpdef object clone(self):
         raise NotImplementedError()
+
+    cdef PyObject* state_set(self, PyObject* current, PyObject* value):
+        return value
+
+    cdef PyObject* state_get(self, PyObject* current):
+        return current
+
+    # cdef object state_del(self, PyObject*& current):
+    #     raise NotImplementedError()
 
 
 # cdef class EntityAliasExpression(Expression):
@@ -427,15 +462,108 @@ cdef class FieldState:
         return "<RelationState>"
 
 
-cdef class EntityBase:
-    def __cinit__(self):
-        cdef EntityType model = type(self)
-        cdef tuple fields = <tuple>model.__fields__
-        cdef tuple fdata = PyTuple_New(PyTuple_GET_SIZE(fields))
-        self.__fstate__ = FieldState(fields, fdata)
+@cython.final
+@cython.freelist(1000)
+cdef class EntityState:
+    @staticmethod
+    cdef EntityState create_from_dict(EntityType entity, dict data):
+        state = EntityState(entity)
+        state.update(entity, data, True)
+        return state
 
-        cdef tuple relations = <tuple>model.__relations__
-        self.__rstate__ = RelationState(relations)
+    def __cinit__(self, EntityType entity, tuple initial_data=None):
+        self.data = PyTuple_New(len(entity.__attrs__))
+        self.field_count = len(entity.__fields__)
+
+    cdef object update(self, EntityType entity, dict data, bint is_initial):
+        cdef EntityAttribute attr
+
+        for k, v in data.items():
+            attr = getattr(entity, k)
+            self.set_value(attr, v)
+
+    cdef bint set_value(self, EntityAttribute attr, object value):
+        cdef int index = attr._index_
+        cdef PyObject* data = <PyObject*>self.data
+        cdef EntityAttributeImpl impl = <EntityAttributeImpl>attr._impl_
+        cdef PyObject* current = PyTuple_GET_ITEM(<object>data, index)
+        cdef PyObject* newValue = impl.state_set(current, <PyObject*>value)
+
+        Py_XINCREF(newValue)
+        Py_XDECREF(current)
+        PyTuple_SET_ITEM(<object>data, index, <object>newValue)
+
+    cdef object get_value(self, EntityAttribute attr):
+        cdef int index = attr._index_
+        cdef PyObject* data = <PyObject*>self.data
+        cdef PyObject* current = PyTuple_GET_ITEM(<object>data, index)
+        cdef EntityAttributeImpl impl = <EntityAttributeImpl>attr._impl_
+        return <object>impl.state_get(current)
+
+    cdef void del_value(self, EntityAttribute attr):
+        cdef int index = attr._index_
+        cdef PyObject* data = <PyObject*>self.data
+        cdef PyObject* current = PyTuple_GET_ITEM(<object>data, index)
+
+        Py_XDECREF(current)
+        PyTuple_SET_ITEM(<object>data, index, <object>NULL)
+
+    cdef list data_for_insert(self, EntityType entity):
+        cdef list res = []
+        cdef PyObject* data = <PyObject*>self.data
+        cdef PyObject* cv
+        cdef EntityAttribute field
+        cdef EntityAttributeImpl impl
+
+        for field in entity.__fields__:
+            cv = PyTuple_GET_ITEM(<object>data, field._index_)
+            cv = (<EntityAttributeImpl>field._impl_).state_get(cv)
+
+            if field.get_ext(PrimaryKey) and cv is NULL:
+                continue
+
+            if cv is NULL:
+                cv = <PyObject*>field._default_
+
+            res.append((field, <object>cv))
+
+        return res
+
+    cdef list data_for_update(self, EntityType entity):
+        pass
+
+
+    cpdef reset(self):
+        pass
+
+
+cdef class EntityBase:
+    def __cinit__(self, state=None, **values):
+        cdef EntityType model = type(self)
+
+        if state:
+            if isinstance(state, EntityState):
+                self.__state__ = state
+            elif isinstance(state, dict):
+                self.__state__ = EntityState.create_from_dict(model, state)
+            else:
+                raise TypeError("Unsupported state argumented: %r" % state)
+
+        if values:
+            if not self.__state__:
+                self.__state__ = EntityState.create_from_dict(model, values)
+            else:
+                self.__state__.update(model, values, True)
+
+        if not self.__state__:
+            self.__state__ = EntityState(model)
+
+        # cdef tuple fields = <tuple>model.__fields__
+        # cdef tuple fdata = PyTuple_New(PyTuple_GET_SIZE(fields))
+        # self.__fstate__ = FieldState(fields, fdata)
+
+        # cdef tuple relations = <tuple>model.__relations__
+        # self.__rstate__ = RelationState(relations)
 
     @classmethod
     def __init_subclass__(cls, *, str name=None, **meta):
