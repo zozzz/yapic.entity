@@ -683,10 +683,6 @@ cdef class EntityState:
         Py_INCREF(<object>val)
         PyTuple_SET_ITEM(<object>current, idx, <object>val)
 
-        print(self.initial, self.current)
-
-
-
 
 cdef class EntityBase:
     def __cinit__(self, state=None, **values):
