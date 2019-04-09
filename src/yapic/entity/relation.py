@@ -50,7 +50,7 @@ class OneToMany(Generic[JoinedT, ValueStore], _relation.OneToMany):
     def __new__(cls, *args, **kwargs):
         return _relation.OneToMany.__new__(_relation.OneToMany, *args, **kwargs)
 
-    def __init__(self, joined: JoinedT, value: Type[ValueStore]):
+    def __init__(self, joined: JoinedT, value: ValueStore):
         pass
 
 
@@ -61,7 +61,7 @@ class ManyToOne(Generic[JoinedT, ValueStore], _relation.ManyToOne):
     def __new__(cls, *args, **kwargs):
         return _relation.ManyToOne.__new__(_relation.ManyToOne, *args, **kwargs)
 
-    def __init__(self, joined: JoinedT, value: Type[ValueStore]):
+    def __init__(self, joined: JoinedT, value: ValueStore):
         pass
 
 
@@ -73,7 +73,7 @@ class ManyToMany(Generic[JoinedT, AcrossT, ValueStore], _relation.ManyToMany):
     def __new__(cls, *args, **kwargs):
         return _relation.ManyToMany.__new__(_relation.ManyToMany, *args, **kwargs)
 
-    def __init__(self, joined: JoinedT, value: Type[ValueStore], across: AcrossT):
+    def __init__(self, joined: JoinedT, value: ValueStore, across: AcrossT):
         pass
 
 

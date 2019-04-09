@@ -29,7 +29,7 @@ cdef class PostgreConnection(Connection):
         values = []
         subst = []
         i = 1
-        for attr, value in entity.__state__.data_for_insert(ent):
+        for attr, value in entity.__state__.data_for_insert():
             if isinstance(attr, Field):
                 fields.append(self.dialect.quote_ident(attr._name_))
                 values.append(value)

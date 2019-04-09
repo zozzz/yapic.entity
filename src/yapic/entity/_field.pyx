@@ -119,7 +119,7 @@ cdef class ForeignKey(FieldExtension):
         cdef PyObject* mdict
 
         if not isinstance(self._ref, Field):
-            module = PyImport_Import(self.field.entity.__module__)
+            module = PyImport_Import(self.attr._entity_.__module__)
             mdict = PyModule_GetDict(module)
             self._ref = eval(self._ref, <object>mdict, None)
 
@@ -127,7 +127,7 @@ cdef class ForeignKey(FieldExtension):
                 raise ValueError("Invalid value for ForeignKey field: %r" % self._ref)
             else:
                 if self.name is None:
-                    self.name = compute_fk_name(self.field, self._ref)
+                    self.name = compute_fk_name(self.attr, self._ref)
 
         return self._ref
 

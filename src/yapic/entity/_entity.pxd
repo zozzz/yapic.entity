@@ -11,6 +11,7 @@ cdef class NOTSET:
 cdef class EntityType(type):
     cdef readonly tuple __attrs__
     cdef readonly tuple __fields__
+    cdef readonly tuple __pk__
     # cdef readonly tuple __relations__
     cdef PyObject* meta
     cdef object __weakref__
@@ -55,6 +56,7 @@ cdef class EntityAttributeImpl:
     cpdef init(self, EntityType entity)
     cpdef object clone(self)
 
+    cdef object state_init(self, object initial)
     cdef object state_set(self, object initial, object current, object value)
     cdef object state_get_dirty(self, object initial, object current)
     # cdef object state_del(self, PyObject** current)
@@ -69,24 +71,25 @@ cdef class EntityAttributeImpl:
 #     cdef readonly tuple __relations__
 
 
-@cython.final
-@cython.freelist(1000)
-cdef class FieldState:
-    cdef tuple fields
-    cdef tuple data
-    cdef tuple dirty
-    cdef bint is_dirty
+# @cython.final
+# @cython.freelist(1000)
+# cdef class FieldState:
+#     cdef tuple fields
+#     cdef tuple data
+#     cdef tuple dirty
+#     cdef bint is_dirty
 
-    cdef bint set_value(self, int index, object value)
-    cdef object get_value(self, int index)
-    cdef void del_value(self, int index)
+#     cdef bint set_value(self, int index, object value)
+#     cdef object get_value(self, int index)
+#     cdef void del_value(self, int index)
 
-    cpdef reset(self)
+#     cpdef reset(self)
 
 
 @cython.final
 @cython.freelist(1000)
 cdef class EntityState:
+    cdef EntityType entity
     cdef tuple initial
     cdef tuple current
     cdef int field_count
@@ -94,16 +97,20 @@ cdef class EntityState:
     @staticmethod
     cdef EntityState create_from_dict(EntityType entity, dict data)
 
-    cdef object update(self, EntityType entity, dict data, bint is_initial)
+    cdef object update(self, dict data, bint is_initial)
 
     cdef bint set_value(self, EntityAttribute attr, object value)
     cdef object get_value(self, EntityAttribute attr)
     cdef void del_value(self, EntityAttribute attr)
 
-    cdef list data_for_insert(self, EntityType entity)
-    cdef list data_for_update(self, EntityType entity)
+    cdef list data_for_insert(self)
+    cdef list data_for_update(self)
 
-    cpdef reset(self)
+    cdef object attr_changes(self, EntityAttribute attr)
+    cdef object init_current(self)
+
+    cdef reset_all(self)
+    cdef reset_attr(self, EntityAttribute attr)
 
 
 cdef class EntityStateValue:
