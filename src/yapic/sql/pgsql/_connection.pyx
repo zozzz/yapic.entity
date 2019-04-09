@@ -1,3 +1,5 @@
+import cython
+
 from yapic.entity._entity cimport EntityType, EntityBase, EntityAttribute, EntityState
 from yapic.entity._field cimport Field
 
@@ -21,27 +23,30 @@ cdef class PostgreConnection(Connection):
         ddl = self.dialect.create_ddl_compiler()
         return await self.conn.execute(ddl.compile_entity(ent))
 
-    async def insert(self, EntityBase entity):
+    async def insert(self, EntityBase entity, timeout=None):
         cdef EntityType ent = type(entity)
         cdef EntityAttribute attr
         cdef EntityState state = entity.__state__
+        cdef list data = state.data_for_insert()
+        cdef int data_length = len(data)
+        cdef list fields = []
+        cdef list values = []
+        cdef list subst = []
+        cdef int i
 
-        fields = []
-        values = []
-        subst = []
-        i = 1
-        for attr, value in state.data_for_insert():
+        for i in range(data_length):
+            attr, value = <tuple>data[i]
             if isinstance(attr, Field):
                 fields.append(self.dialect.quote_ident(attr._name_))
                 values.append(value)
-                subst.append(f"${i}")
-                i += 1
+                subst.append(f"${i + 1}")
 
         q = ("INSERT INTO ", self.dialect.table_qname(ent),
              " (", ", ".join(fields), ") VALUES (", ", ".join(subst), ")",
              " RETURNING *")
 
-        res = await self.conn.fetch("".join(q), *values)
+        self.conn._check_open()
+        res = await self.conn._execute("".join(q), values, 0, timeout)
         record = res[0]
 
         for attr in ent.__fields__:
@@ -51,7 +56,7 @@ cdef class PostgreConnection(Connection):
 
         return True
 
-    async def update(self, EntityBase entity):
+    async def update(self, EntityBase entity, timeout=None):
         cdef EntityType ent = type(entity)
         cdef EntityAttribute attr
         cdef EntityState state = entity.__state__
@@ -88,7 +93,8 @@ cdef class PostgreConnection(Connection):
              ", ".join(updates), " WHERE ", " AND ".join(condition),
              " RETURNING ", ", ".join(returns))
 
-        res = await self.conn.fetch("".join(q), *values)
+        self.conn._check_open()
+        res = await self.conn._execute("".join(q), values, 0, timeout)
         record = res[0]
 
         for i, attr in enumerate(fields):
@@ -98,7 +104,7 @@ cdef class PostgreConnection(Connection):
 
         return True
 
-    async def delete(self, EntityBase entity):
+    async def delete(self, EntityBase entity, timeout=None):
         cdef EntityType ent = type(entity)
         cdef tuple pk = entity.__pk__
 
@@ -115,5 +121,6 @@ cdef class PostgreConnection(Connection):
         q = ("DELETE FROM ", self.dialect.table_qname(ent),
              " WHERE ", " AND ".join(condition))
 
-        res = await self.conn.execute("".join(q), *values)
+        self.conn._check_open()
+        _, res, _ = await self.conn._execute("".join(q), values, 0, timeout, True)
         return res and int(res[7:]) > 0
