@@ -7,7 +7,6 @@ from ._entity cimport EntityType
 cdef class Query(Expression):
     cdef readonly list from_clause
     cdef readonly list columns
-    cdef readonly list entity_columns
     cdef readonly list where_clause
     cdef readonly list orders
     cdef readonly list groups

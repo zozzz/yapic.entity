@@ -32,13 +32,23 @@ cdef class Query(Expression):
             self.columns = []
 
         for col in columns:
-            if isinstance(col, EntityType):
-                if self.entity_columns is None:
-                    self.entity_columns = []
-                self.entity_columns.append((len(self.columns), col))
-            elif isinstance(col, Field) or isinstance(col, AliasExpression):
-                self.columns.append(col)
-            elif isinstance(col, RawExpression):
+
+            # if isinstance(col, EntityType):
+            #     # if self.entity_columns is None:
+            #     #     self.entity_columns = []
+            #     # self.entity_columns.append((len(self.columns), col))
+            #     self.columns.append()
+            # elif isinstance(col, Field) or isinstance(col, AliasExpression):
+            #     self.columns.append(col)
+            # elif isinstance(col, RawExpression):
+            #     self.columns.append(col)
+            # else:
+            #     raise ValueError("Invalid value for column: %r" % col)
+
+            if isinstance(col, EntityType) \
+                    or isinstance(col, Field) \
+                    or isinstance(col, AliasExpression) \
+                    or isinstance(col, RawExpression):
                 self.columns.append(col)
             else:
                 raise ValueError("Invalid value for column: %r" % col)
@@ -186,7 +196,7 @@ cdef class Query(Expression):
 
         if self.from_clause: q.from_clause = list(self.from_clause)
         if self.columns: q.columns = list(self.columns)
-        if self.entity_columns: q.entity_columns = list(self.entity_columns)
+        # if self.entity_columns: q.entity_columns = list(self.entity_columns)
         if self.where_clause: q.where_clause = list(self.where_clause)
         if self.orders: q.orders = list(self.orders)
         if self.groups: q.groups = list(self.groups)
@@ -255,6 +265,13 @@ cdef class QueryFinalizer(Visitor):
     def visit_field(self, expr):
         pass
 
+    def visit_const(self, expr):
+        pass
+
+    def visit_query(self, expr):
+        # TODO: ...
+        pass
+
     def visit_alias(self, AliasExpression expr):
         self.visit(expr.expr)
 
@@ -269,10 +286,6 @@ cdef class QueryFinalizer(Visitor):
         self.q.join(expr.relation)
 
     def auto_join(self, *expr_list):
-        if self.q.entity_columns:
-            for pos, ent in self.q.entity_columns:
-                self.q.join(ent)
-
         if self.q.columns: self._visit_list(self.q.columns)
         if self.q.where_clause: self._visit_list(self.q.where_clause)
         if self.q.orders: self._visit_list(self.q.orders)
@@ -282,7 +295,10 @@ cdef class QueryFinalizer(Visitor):
 
     def _visit_list(self, expr_list):
         for expr in expr_list:
-            self.visit(expr)
+            if isinstance(expr, EntityType):
+                self.q.join(expr)
+            else:
+                self.visit(expr)
 
     @contextmanager
     def _replace_visitor(self, name, v):

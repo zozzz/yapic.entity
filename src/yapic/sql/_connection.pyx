@@ -39,6 +39,9 @@ cdef class Connection:
     async def delete(self, EntityBase entity):
         raise NotImplementedError()
 
+    async def save(self, EntityBase entity):
+        raise NotImplementedError()
+
 
 cpdef wrap_connection(conn, dialect):
     if isinstance(dialect, str):

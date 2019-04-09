@@ -242,11 +242,12 @@ def test_join_entity_across():
     assert params == ("address", )
 
 
-@pytest.mark.skip(reason="deferred")
+# @pytest.mark.skip(reason="deferred")
 def test_auto_join_relation():
     q = Query().select_from(User).where(User.tags.value == "nice")
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == 'SELECT * FROM "User" "t0" INNER JOIN "Address" "t1" ON "t0"."address_id" = "t1"."id"'
+    assert sql == 'SELECT * FROM "User" "t0" INNER JOIN "UserTags" "t1" ON "t1"."user_id" = "t0"."id" INNER JOIN "Tag" "t2" ON "t1"."tag_id" = "t2"."id" WHERE "t2"."value" = $1'
+    assert params == ("nice", )
 
 
 binary_operator_cases = [

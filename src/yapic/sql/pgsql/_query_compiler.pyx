@@ -14,6 +14,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         self.parent = parent
 
     cpdef compile_select(self, Query query):
+        query = query.finalize()
         self.parts = ["SELECT"]
         self.table_alias = self.parent.table_alias if self.parent else {}
         self.params = self.parent.params if self.parent else []

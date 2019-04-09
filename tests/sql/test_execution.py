@@ -1,6 +1,6 @@
 import pytest
 from yapic.sql import wrap_connection
-from yapic.entity import Entity, Serial, Int, String, ForeignKey, One
+from yapic.entity import Entity, Serial, Int, String, ForeignKey, One, Query
 
 pytestmark = pytest.mark.asyncio
 
@@ -36,6 +36,24 @@ async def test_ddl(conn):
     await conn.create_entity(User2, drop=True)
 
 
-async def test_insert(conn):
+async def test_basic_insert_update(conn):
     u = User(name="Jhon Doe")
-    await conn.insert(u)
+
+    assert await conn.insert(u) is True
+    assert u.id == 1
+    assert u.name == "Jhon Doe"
+    assert u.__state__.changes() == {}
+
+    u.name = "New Name"
+    assert await conn.update(u) is True
+    assert u.id == 1
+    assert u.name == "New Name"
+    assert u.__state__.changes() == {}
+
+    assert await conn.delete(u) is True
+
+
+# async def test_update(conn):
+#     q = Query().select_from(User).where(User.id == 1)
+#     u = await conn.select(q).first()
+#     await conn.update(u)
