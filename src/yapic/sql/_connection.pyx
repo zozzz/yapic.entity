@@ -4,6 +4,7 @@ from yapic.entity._query cimport Query
 from yapic.entity._entity cimport EntityType, EntityBase
 
 from ._query_context cimport QueryContext
+from ._query_compiler cimport QueryCompiler
 from ._dialect cimport Dialect
 
 
@@ -19,12 +20,14 @@ cdef class Connection:
         # self.executemany = self.conn.executemany
         # self.cursor = self.conn.cursor
 
-    cpdef select(self, Query q, prefetch, timeout):
-        qc = self.dialect.create_query_compiler()
+    def select(self, Query q, *, prefetch=None, timeout=None):
+        cdef QueryCompiler qc = self.dialect.create_query_compiler()
         sql, params = qc.compile_select(q)
 
         return QueryContext(
-            self.conn.cursor(sql, *params, prefetch=prefetch, timeout=timeout)
+            self,
+            self.conn.cursor(sql, *params, prefetch=prefetch, timeout=timeout),
+            qc.select
         )
 
     async def create_entity(self, EntityType ent, *, drop=False):

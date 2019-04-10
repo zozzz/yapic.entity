@@ -1331,11 +1331,12 @@ struct __pyx_obj_5yapic_3sql_8_dialect_Dialect {
  * 
  * cdef class QueryCompiler(Visitor):             # <<<<<<<<<<<<<<
  *     cdef readonly Dialect dialect
- * 
+ *     cdef readonly list select
  */
 struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler {
   struct __pyx_obj_5yapic_6entity_11_expression_Visitor __pyx_base;
   struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *dialect;
+  PyObject *select;
 };
 
 
@@ -2163,6 +2164,7 @@ static PyObject *__pyx_n_s_test;
 static int __pyx_pf_5yapic_3sql_15_query_compiler_13QueryCompiler___cinit__(struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler *__pyx_v_self, struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *__pyx_v_dialect); /* proto */
 static PyObject *__pyx_pf_5yapic_3sql_15_query_compiler_13QueryCompiler_2compile_select(struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_6_query_Query *__pyx_v_query); /* proto */
 static PyObject *__pyx_pf_5yapic_3sql_15_query_compiler_13QueryCompiler_7dialect___get__(struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5yapic_3sql_15_query_compiler_13QueryCompiler_6select___get__(struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_5yapic_3sql_15_query_compiler_QueryCompiler(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 /* Late includes */
 
@@ -2171,7 +2173,7 @@ static PyObject *__pyx_tp_new_5yapic_3sql_15_query_compiler_QueryCompiler(PyType
  * cdef class QueryCompiler:
  *     def __cinit__(self, Dialect dialect):             # <<<<<<<<<<<<<<
  *         self.dialect = dialect
- * 
+ *         self.select = []
  */
 
 /* Python wrapper */
@@ -2232,14 +2234,15 @@ static int __pyx_pw_5yapic_3sql_15_query_compiler_13QueryCompiler_1__cinit__(PyO
 static int __pyx_pf_5yapic_3sql_15_query_compiler_13QueryCompiler___cinit__(struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler *__pyx_v_self, struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *__pyx_v_dialect) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
   /* "yapic/sql/_query_compiler.pyx":8
  * cdef class QueryCompiler:
  *     def __cinit__(self, Dialect dialect):
  *         self.dialect = dialect             # <<<<<<<<<<<<<<
+ *         self.select = []
  * 
- *     cpdef compile_select(self, Query query):
  */
   __Pyx_INCREF(((PyObject *)__pyx_v_dialect));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_dialect));
@@ -2247,22 +2250,43 @@ static int __pyx_pf_5yapic_3sql_15_query_compiler_13QueryCompiler___cinit__(stru
   __Pyx_DECREF(((PyObject *)__pyx_v_self->dialect));
   __pyx_v_self->dialect = __pyx_v_dialect;
 
+  /* "yapic/sql/_query_compiler.pyx":9
+ *     def __cinit__(self, Dialect dialect):
+ *         self.dialect = dialect
+ *         self.select = []             # <<<<<<<<<<<<<<
+ * 
+ *     cpdef compile_select(self, Query query):
+ */
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 9, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_1);
+  __Pyx_GOTREF(__pyx_v_self->select);
+  __Pyx_DECREF(__pyx_v_self->select);
+  __pyx_v_self->select = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
   /* "yapic/sql/_query_compiler.pyx":7
  * 
  * cdef class QueryCompiler:
  *     def __cinit__(self, Dialect dialect):             # <<<<<<<<<<<<<<
  *         self.dialect = dialect
- * 
+ *         self.select = []
  */
 
   /* function exit code */
   __pyx_r = 0;
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("yapic.sql._query_compiler.QueryCompiler.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "yapic/sql/_query_compiler.pyx":10
- *         self.dialect = dialect
+/* "yapic/sql/_query_compiler.pyx":11
+ *         self.select = []
  * 
  *     cpdef compile_select(self, Query query):             # <<<<<<<<<<<<<<
  *         raise NotImplementedError()
@@ -2286,7 +2310,7 @@ static PyObject *__pyx_f_5yapic_3sql_15_query_compiler_13QueryCompiler_compile_s
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_compile_select); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 10, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_compile_select); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_3sql_15_query_compiler_13QueryCompiler_3compile_select)) {
         __Pyx_XDECREF(__pyx_r);
@@ -2303,7 +2327,7 @@ static PyObject *__pyx_f_5yapic_3sql_15_query_compiler_13QueryCompiler_compile_s
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, ((PyObject *)__pyx_v_query)) : __Pyx_PyObject_CallOneArg(__pyx_t_3, ((PyObject *)__pyx_v_query));
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 11, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -2324,19 +2348,19 @@ static PyObject *__pyx_f_5yapic_3sql_15_query_compiler_13QueryCompiler_compile_s
     #endif
   }
 
-  /* "yapic/sql/_query_compiler.pyx":11
+  /* "yapic/sql/_query_compiler.pyx":12
  * 
  *     cpdef compile_select(self, Query query):
  *         raise NotImplementedError()             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_builtin_NotImplementedError); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_builtin_NotImplementedError); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_ERR(0, 11, __pyx_L1_error)
+  __PYX_ERR(0, 12, __pyx_L1_error)
 
-  /* "yapic/sql/_query_compiler.pyx":10
- *         self.dialect = dialect
+  /* "yapic/sql/_query_compiler.pyx":11
+ *         self.select = []
  * 
  *     cpdef compile_select(self, Query query):             # <<<<<<<<<<<<<<
  *         raise NotImplementedError()
@@ -2362,7 +2386,7 @@ static PyObject *__pyx_pw_5yapic_3sql_15_query_compiler_13QueryCompiler_3compile
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("compile_select (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_query), __pyx_ptype_5yapic_6entity_6_query_Query, 1, "query", 0))) __PYX_ERR(0, 10, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_query), __pyx_ptype_5yapic_6entity_6_query_Query, 1, "query", 0))) __PYX_ERR(0, 11, __pyx_L1_error)
   __pyx_r = __pyx_pf_5yapic_3sql_15_query_compiler_13QueryCompiler_2compile_select(((struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_6_query_Query *)__pyx_v_query));
 
   /* function exit code */
@@ -2380,7 +2404,7 @@ static PyObject *__pyx_pf_5yapic_3sql_15_query_compiler_13QueryCompiler_2compile
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("compile_select", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_3sql_15_query_compiler_13QueryCompiler_compile_select(__pyx_v_self, __pyx_v_query, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_3sql_15_query_compiler_13QueryCompiler_compile_select(__pyx_v_self, __pyx_v_query, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2401,8 +2425,8 @@ static PyObject *__pyx_pf_5yapic_3sql_15_query_compiler_13QueryCompiler_2compile
  * 
  * cdef class QueryCompiler(Visitor):
  *     cdef readonly Dialect dialect             # <<<<<<<<<<<<<<
+ *     cdef readonly list select
  * 
- *     cpdef compile_select(self, Query query)
  */
 
 /* Python wrapper */
@@ -2433,6 +2457,43 @@ static PyObject *__pyx_pf_5yapic_3sql_15_query_compiler_13QueryCompiler_7dialect
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
+
+/* "yapic/sql/_query_compiler.pxd":9
+ * cdef class QueryCompiler(Visitor):
+ *     cdef readonly Dialect dialect
+ *     cdef readonly list select             # <<<<<<<<<<<<<<
+ * 
+ *     cpdef compile_select(self, Query query)
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5yapic_3sql_15_query_compiler_13QueryCompiler_6select_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5yapic_3sql_15_query_compiler_13QueryCompiler_6select_1__get__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_5yapic_3sql_15_query_compiler_13QueryCompiler_6select___get__(((struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5yapic_3sql_15_query_compiler_13QueryCompiler_6select___get__(struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_self->select);
+  __pyx_r = __pyx_v_self->select;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
 static struct __pyx_vtabstruct_5yapic_3sql_15_query_compiler_QueryCompiler __pyx_vtable_5yapic_3sql_15_query_compiler_QueryCompiler;
 
 static PyObject *__pyx_tp_new_5yapic_3sql_15_query_compiler_QueryCompiler(PyTypeObject *t, PyObject *a, PyObject *k) {
@@ -2442,6 +2503,7 @@ static PyObject *__pyx_tp_new_5yapic_3sql_15_query_compiler_QueryCompiler(PyType
   p = ((struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler *)o);
   p->__pyx_base.__pyx_vtab = (struct __pyx_vtabstruct_5yapic_6entity_11_expression_Visitor*)__pyx_vtabptr_5yapic_3sql_15_query_compiler_QueryCompiler;
   p->dialect = ((struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *)Py_None); Py_INCREF(Py_None);
+  p->select = ((PyObject*)Py_None); Py_INCREF(Py_None);
   if (unlikely(__pyx_pw_5yapic_3sql_15_query_compiler_13QueryCompiler_1__cinit__(o, a, k) < 0)) goto bad;
   return o;
   bad:
@@ -2458,6 +2520,7 @@ static void __pyx_tp_dealloc_5yapic_3sql_15_query_compiler_QueryCompiler(PyObjec
   #endif
   PyObject_GC_UnTrack(o);
   Py_CLEAR(p->dialect);
+  Py_CLEAR(p->select);
   #if CYTHON_USE_TYPE_SLOTS
   if (PyType_IS_GC(Py_TYPE(o)->tp_base))
   #endif
@@ -2472,6 +2535,9 @@ static int __pyx_tp_traverse_5yapic_3sql_15_query_compiler_QueryCompiler(PyObjec
   if (p->dialect) {
     e = (*v)(((PyObject *)p->dialect), a); if (e) return e;
   }
+  if (p->select) {
+    e = (*v)(p->select, a); if (e) return e;
+  }
   return 0;
 }
 
@@ -2482,11 +2548,18 @@ static int __pyx_tp_clear_5yapic_3sql_15_query_compiler_QueryCompiler(PyObject *
   tmp = ((PyObject*)p->dialect);
   p->dialect = ((struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
+  tmp = ((PyObject*)p->select);
+  p->select = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  Py_XDECREF(tmp);
   return 0;
 }
 
 static PyObject *__pyx_getprop_5yapic_3sql_15_query_compiler_13QueryCompiler_dialect(PyObject *o, CYTHON_UNUSED void *x) {
   return __pyx_pw_5yapic_3sql_15_query_compiler_13QueryCompiler_7dialect_1__get__(o);
+}
+
+static PyObject *__pyx_getprop_5yapic_3sql_15_query_compiler_13QueryCompiler_select(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_5yapic_3sql_15_query_compiler_13QueryCompiler_6select_1__get__(o);
 }
 
 static PyMethodDef __pyx_methods_5yapic_3sql_15_query_compiler_QueryCompiler[] = {
@@ -2496,6 +2569,7 @@ static PyMethodDef __pyx_methods_5yapic_3sql_15_query_compiler_QueryCompiler[] =
 
 static struct PyGetSetDef __pyx_getsets_5yapic_3sql_15_query_compiler_QueryCompiler[] = {
   {(char *)"dialect", __pyx_getprop_5yapic_3sql_15_query_compiler_13QueryCompiler_dialect, 0, (char *)0, 0},
+  {(char *)"select", __pyx_getprop_5yapic_3sql_15_query_compiler_13QueryCompiler_select, 0, (char *)0, 0},
   {0, 0, 0, 0, 0}
 };
 
@@ -2615,7 +2689,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_NotImplementedError = __Pyx_GetBuiltinName(__pyx_n_s_NotImplementedError); if (!__pyx_builtin_NotImplementedError) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_builtin_NotImplementedError = __Pyx_GetBuiltinName(__pyx_n_s_NotImplementedError); if (!__pyx_builtin_NotImplementedError) __PYX_ERR(0, 12, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;

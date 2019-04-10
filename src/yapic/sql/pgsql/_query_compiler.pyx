@@ -19,6 +19,9 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         self.table_alias = self.parent.table_alias if self.parent else {}
         self.params = self.parent.params if self.parent else []
 
+        self.collect_select = False
+        self.select = []
+
         from_ = self.visit_from_clause(query.from_clause)
         if query.joins:
             join = self.visit_joins(query.joins)
@@ -29,9 +32,9 @@ cdef class PostgreQueryCompiler(QueryCompiler):
             self.parts.append(" ".join(query.prefixes))
 
         if query.columns:
-            self.parts.append(", ".join(visit_list(self, query.columns)))
+            self.parts.append(", ".join(self.visit_columns(query.columns)))
         else:
-            self.parts.append("*")
+            self.parts.append(", ".join(self.visit_columns(query.entities.keys())))
 
         self.parts.append("FROM")
         self.parts.append(from_)
@@ -88,6 +91,19 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
         return " ".join(result)
 
+    def visit_columns(self, columns):
+        self.collect_select = True
+        result = []
+
+        for col in columns:
+            if isinstance(col, EntityType):
+                self.select.append(col)
+                result.append(f"{self.table_alias[col][1]}.*")
+            else:
+                result.append(self.visit(col))
+
+        self.collect_select = False
+        return result
 
     def visit_field(self, field):
         try:
@@ -95,6 +111,9 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         except KeyError:
             raise RuntimeError("Entity is missing from query: %r" % field._entity_)
             # tbl = self.dialect.table_qname(field._entity_)
+        if self.collect_select is True:
+            self.select.append(field)
+
         return f'{tbl}.{self.dialect.quote_ident(field._name_)}'
 
     def visit_binary_eq(self, expr):

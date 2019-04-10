@@ -53,7 +53,21 @@ async def test_basic_insert_update(conn):
     assert await conn.delete(u) is True
 
 
-# async def test_update(conn):
-#     q = Query().select_from(User).where(User.id == 1)
-#     u = await conn.select(q).first()
-#     await conn.update(u)
+async def test_select(conn):
+    u = User(id=1, name="Jhon Doe")
+
+    assert await conn.insert(u) is True
+
+    q = Query().select_from(User).where(User.id == 1)
+
+    u = await conn.select(q).first()
+    assert u.id == 1
+    assert u.name == "Jhon Doe"
+
+    u.name = "New Name"
+    await conn.update(u)
+    assert u.name == "New Name"
+
+    u2 = await conn.select(q).first()
+    assert u2.id == 1
+    assert u2.name == "New Name"

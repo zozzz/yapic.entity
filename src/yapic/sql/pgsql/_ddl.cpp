@@ -1296,11 +1296,12 @@ struct __pyx_obj_5yapic_6entity_6_query_QueryFinalizer {
  * 
  * cdef class QueryCompiler(Visitor):             # <<<<<<<<<<<<<<
  *     cdef readonly Dialect dialect
- * 
+ *     cdef readonly list select
  */
 struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler {
   struct __pyx_obj_5yapic_6entity_11_expression_Visitor __pyx_base;
   struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *dialect;
+  PyObject *select;
 };
 
 
@@ -1751,7 +1752,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_6_query_QueryFinalizer *__pyx_vtab
  * 
  * cdef class QueryCompiler(Visitor):             # <<<<<<<<<<<<<<
  *     cdef readonly Dialect dialect
- * 
+ *     cdef readonly list select
  */
 
 struct __pyx_vtabstruct_5yapic_3sql_15_query_compiler_QueryCompiler {

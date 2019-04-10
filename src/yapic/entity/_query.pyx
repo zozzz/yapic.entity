@@ -154,9 +154,8 @@ cdef class Query(Expression):
                 cross_condition = (<ManyToMany>impl).across_join_expr
                 cross_what = (<ManyToMany>impl).across
 
-                if cross_what not in self.entities:
+                if cross_what not in self.joins:
                     self.joins[cross_what] = (cross_what, cross_condition, "INNER")
-                    self._add_entity(cross_what)
 
                 condition = impl.join_expr
                 what = impl.joined
@@ -164,11 +163,9 @@ cdef class Query(Expression):
                 condition = impl.join_expr
                 what = impl.joined
 
-            if what not in self.entities:
-                self.joins[what] = (what, condition, type)
-                self._add_entity(what)
+            self.joins[what] = (what, condition, type)
+            self._add_entity(what)
 
-        # print(self.joins)
         return self
 
     def limit(self, int count):
@@ -206,6 +203,7 @@ cdef class Query(Expression):
         if self.suffixes: q.suffixes = list(self.suffixes)
         if self.joins: q.joins = dict(self.joins)
         if self.range: q.range = slice(self.range.start, self.range.stop, self.range.step)
+        if self.entities: q.entities = dict(self.entities)
 
         return q
 

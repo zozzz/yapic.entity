@@ -1325,11 +1325,12 @@ struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect {
  * 
  * cdef class QueryCompiler(Visitor):             # <<<<<<<<<<<<<<
  *     cdef readonly Dialect dialect
- * 
+ *     cdef readonly list select
  */
 struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler {
   struct __pyx_obj_5yapic_6entity_11_expression_Visitor __pyx_base;
   struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *dialect;
+  PyObject *select;
 };
 
 
@@ -1355,7 +1356,6 @@ struct __pyx_obj_5yapic_3sql_8_dialect_Dialect {
  */
 struct __pyx_obj_5yapic_3sql_11_connection_Connection {
   PyObject_HEAD
-  struct __pyx_vtabstruct_5yapic_3sql_11_connection_Connection *__pyx_vtab;
   PyObject *conn;
   struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *dialect;
 };
@@ -1875,7 +1875,7 @@ static struct __pyx_vtabstruct_5yapic_3sql_4_ddl_DDLCompiler *__pyx_vtabptr_5yap
  * 
  * cdef class QueryCompiler(Visitor):             # <<<<<<<<<<<<<<
  *     cdef readonly Dialect dialect
- * 
+ *     cdef readonly list select
  */
 
 struct __pyx_vtabstruct_5yapic_3sql_15_query_compiler_QueryCompiler {
@@ -1901,34 +1901,6 @@ struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect {
   PyObject *(*table_qname)(struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
 };
 static struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *__pyx_vtabptr_5yapic_3sql_8_dialect_Dialect;
-
-
-/* "_connection.pxd":7
- * 
- * 
- * cdef class Connection:             # <<<<<<<<<<<<<<
- *     cdef readonly object conn
- *     cdef readonly Dialect dialect
- */
-
-struct __pyx_vtabstruct_5yapic_3sql_11_connection_Connection {
-  PyObject *(*select)(struct __pyx_obj_5yapic_3sql_11_connection_Connection *, struct __pyx_obj_5yapic_6entity_6_query_Query *, PyObject *, PyObject *, int __pyx_skip_dispatch);
-};
-static struct __pyx_vtabstruct_5yapic_3sql_11_connection_Connection *__pyx_vtabptr_5yapic_3sql_11_connection_Connection;
-
-
-/* "yapic/sql/pgsql/_connection.pyx":9
- * 
- * 
- * cdef class PostgreConnection(Connection):             # <<<<<<<<<<<<<<
- *     async def create_entity(self, EntityType ent, *, drop=False):
- *         try:
- */
-
-struct __pyx_vtabstruct_5yapic_3sql_5pgsql_11_connection_PostgreConnection {
-  struct __pyx_vtabstruct_5yapic_3sql_11_connection_Connection __pyx_base;
-};
-static struct __pyx_vtabstruct_5yapic_3sql_5pgsql_11_connection_PostgreConnection *__pyx_vtabptr_5yapic_3sql_5pgsql_11_connection_PostgreConnection;
 
 /* --- Runtime support code (head) --- */
 /* Refnanny.proto */
@@ -2408,9 +2380,6 @@ enum __Pyx_ImportType_CheckSize {
 static PyTypeObject *__Pyx_ImportType(PyObject* module, const char *module_name, const char *class_name, size_t size, enum __Pyx_ImportType_CheckSize check_size);
 #endif
 
-/* GetVTable.proto */
-static void* __Pyx_GetVtable(PyObject *dict);
-
 /* PyObject_GenericGetAttr.proto */
 #if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
 static PyObject* __Pyx_PyObject_GenericGetAttr(PyObject* obj, PyObject* attr_name);
@@ -2418,8 +2387,8 @@ static PyObject* __Pyx_PyObject_GenericGetAttr(PyObject* obj, PyObject* attr_nam
 #define __Pyx_PyObject_GenericGetAttr PyObject_GenericGetAttr
 #endif
 
-/* SetVTable.proto */
-static int __Pyx_SetVtable(PyObject *dict, void *vtable);
+/* GetVTable.proto */
+static void* __Pyx_GetVtable(PyObject *dict);
 
 /* PyDictVersioning.proto */
 #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
@@ -5437,14 +5406,10 @@ static PyObject *__pyx_gb_5yapic_3sql_5pgsql_11_connection_17PostgreConnection_1
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static struct __pyx_vtabstruct_5yapic_3sql_5pgsql_11_connection_PostgreConnection __pyx_vtable_5yapic_3sql_5pgsql_11_connection_PostgreConnection;
 
 static PyObject *__pyx_tp_new_5yapic_3sql_5pgsql_11_connection_PostgreConnection(PyTypeObject *t, PyObject *a, PyObject *k) {
-  struct __pyx_obj_5yapic_3sql_5pgsql_11_connection_PostgreConnection *p;
   PyObject *o = __pyx_ptype_5yapic_3sql_11_connection_Connection->tp_new(t, a, k);
   if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_5yapic_3sql_5pgsql_11_connection_PostgreConnection *)o);
-  p->__pyx_base.__pyx_vtab = (struct __pyx_vtabstruct_5yapic_3sql_11_connection_Connection*)__pyx_vtabptr_5yapic_3sql_5pgsql_11_connection_PostgreConnection;
   return o;
 }
 
@@ -6306,16 +6271,12 @@ static int __Pyx_modinit_type_init_code(void) {
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_5yapic_3sql_11_connection_Connection = __Pyx_ImportType(__pyx_t_1, "yapic.sql._connection", "Connection", sizeof(struct __pyx_obj_5yapic_3sql_11_connection_Connection), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_3sql_11_connection_Connection) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_3sql_11_connection_Connection = (struct __pyx_vtabstruct_5yapic_3sql_11_connection_Connection*)__Pyx_GetVtable(__pyx_ptype_5yapic_3sql_11_connection_Connection->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_3sql_11_connection_Connection)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_3sql_5pgsql_11_connection_PostgreConnection = &__pyx_vtable_5yapic_3sql_5pgsql_11_connection_PostgreConnection;
-  __pyx_vtable_5yapic_3sql_5pgsql_11_connection_PostgreConnection.__pyx_base = *__pyx_vtabptr_5yapic_3sql_11_connection_Connection;
   __pyx_type_5yapic_3sql_5pgsql_11_connection_PostgreConnection.tp_base = __pyx_ptype_5yapic_3sql_11_connection_Connection;
   if (PyType_Ready(&__pyx_type_5yapic_3sql_5pgsql_11_connection_PostgreConnection) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
   __pyx_type_5yapic_3sql_5pgsql_11_connection_PostgreConnection.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_3sql_5pgsql_11_connection_PostgreConnection.tp_dictoffset && __pyx_type_5yapic_3sql_5pgsql_11_connection_PostgreConnection.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_3sql_5pgsql_11_connection_PostgreConnection.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_3sql_5pgsql_11_connection_PostgreConnection.tp_dict, __pyx_vtabptr_5yapic_3sql_5pgsql_11_connection_PostgreConnection) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
   if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PostgreConnection, (PyObject *)&__pyx_type_5yapic_3sql_5pgsql_11_connection_PostgreConnection) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
   __pyx_ptype_5yapic_3sql_5pgsql_11_connection_PostgreConnection = &__pyx_type_5yapic_3sql_5pgsql_11_connection_PostgreConnection;
   if (PyType_Ready(&__pyx_type_5yapic_3sql_5pgsql_11_connection___pyx_scope_struct__create_entity) < 0) __PYX_ERR(0, 10, __pyx_L1_error)
@@ -9798,6 +9759,16 @@ bad:
 }
 #endif
 
+/* PyObject_GenericGetAttr */
+#if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
+static PyObject* __Pyx_PyObject_GenericGetAttr(PyObject* obj, PyObject* attr_name) {
+    if (unlikely(Py_TYPE(obj)->tp_dictoffset)) {
+        return PyObject_GenericGetAttr(obj, attr_name);
+    }
+    return __Pyx_PyObject_GenericGetAttrNoDict(obj, attr_name);
+}
+#endif
+
 /* GetVTable */
 static void* __Pyx_GetVtable(PyObject *dict) {
     void* ptr;
@@ -9816,34 +9787,6 @@ static void* __Pyx_GetVtable(PyObject *dict) {
 bad:
     Py_XDECREF(ob);
     return NULL;
-}
-
-/* PyObject_GenericGetAttr */
-#if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
-static PyObject* __Pyx_PyObject_GenericGetAttr(PyObject* obj, PyObject* attr_name) {
-    if (unlikely(Py_TYPE(obj)->tp_dictoffset)) {
-        return PyObject_GenericGetAttr(obj, attr_name);
-    }
-    return __Pyx_PyObject_GenericGetAttrNoDict(obj, attr_name);
-}
-#endif
-
-/* SetVTable */
-static int __Pyx_SetVtable(PyObject *dict, void *vtable) {
-#if PY_VERSION_HEX >= 0x02070000
-    PyObject *ob = PyCapsule_New(vtable, 0, 0);
-#else
-    PyObject *ob = PyCObject_FromVoidPtr(vtable, 0);
-#endif
-    if (!ob)
-        goto bad;
-    if (PyDict_SetItem(dict, __pyx_n_s_pyx_vtable, ob) < 0)
-        goto bad;
-    Py_DECREF(ob);
-    return 0;
-bad:
-    Py_XDECREF(ob);
-    return -1;
 }
 
 /* PyDictVersioning */
