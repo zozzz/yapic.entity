@@ -1,4 +1,6 @@
-from .pgsql._dialect import PostgreDialect
-from .pgsql._ddl import PostgreDLLCompiler
-from .pgsql._query_compiler import PostgreQueryCompiler
-from ._connection import wrap_connection
+from yapic.entity import *  # noqa
+from .pgsql._dialect import PostgreDialect  # noqa
+from .pgsql._ddl import PostgreDLLCompiler  # noqa
+from .pgsql._query_compiler import PostgreQueryCompiler  # noqa
+from ._connection import wrap_connection  # noqa
+from ._entity import Entity  # noqa

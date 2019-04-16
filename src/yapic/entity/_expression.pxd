@@ -47,6 +47,15 @@ cdef class DirectionExpression(Expression):
     cdef readonly bint is_asc
 
 
+cdef class CallExpression(Expression):
+    cdef readonly Expression callable
+    cdef readonly tuple args
+
+
+cdef class RawExpression(Expression):
+    cdef readonly str expr
+
+
 cpdef direction(Expression expr, str dir)
-# cpdef alias(object obj, str alias)
+cpdef raw(str expr)
 

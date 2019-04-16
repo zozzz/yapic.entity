@@ -55,6 +55,7 @@ cdef class Expression:
     def __pos__(self): return UnaryExpression(self, operator.__pos__)
     def __pow__(self, other, modulo): return BinaryExpression(self, other, operator.__pow__)
     def __abs__(self): return UnaryExpression(self, operator.__abs__)
+    def __call__(self, *args): return CallExpression(self, args)
     def in_(self, *values):
         if len(values) == 1 and (isinstance(values[0], list) or isinstance(values[0], tuple)):
             values = values[0]
@@ -142,6 +143,29 @@ cdef class DirectionExpression(Expression):
         return DirectionExpression(self.expr, False)
 
 
+cdef class CallExpression(Expression):
+    def __cinit__(self, Expression callable, args):
+        self.callable = callable
+        self.args = tuple(map(coerce_expression, args))
+
+    def __repr__(self):
+        return "<Call %s( %s )>" % (self.callable, self.args)
+
+    cpdef visit(self, Visitor visitor):
+        return visitor.visit_call(self)
+
+
+cdef class RawExpression(Expression):
+    def __cinit__(self, str expr):
+        self.expr = expr
+
+    def __repr__(self):
+        return "<RAW %r>" % (self.expr)
+
+    cpdef visit(self, Visitor visitor):
+        return visitor.visit_raw(self)
+
+
 cdef class AliasExpression(Expression):
     def __cinit__(self, Expression expr, str alias):
         self.expr = expr
@@ -215,3 +239,15 @@ def in_(expr, value):
 
 cpdef direction(Expression expr, str dir):
     return DirectionExpression(expr, str(dir).lower() == "asc")
+
+cpdef raw(str expr):
+    return RawExpression(expr)
+
+
+cdef class RawIdFactory:
+    def __getattribute__(self, name):
+        return RawExpression(name)
+
+
+func = RawIdFactory()
+const = RawIdFactory()

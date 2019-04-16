@@ -1,6 +1,6 @@
 from enum import Enum, Flag
 
-from yapic.entity import Entity, Int, Serial, String, Choice, Field, PrimaryKey, ForeignKey
+from yapic.entity import Entity, Int, Serial, String, Choice, Field, PrimaryKey, ForeignKey, Date, DateTime, DateTimeTz, Bool, func
 from yapic.sql import PostgreDialect
 
 dialect = PostgreDialect()
@@ -138,4 +138,28 @@ def test_fk():
   "id_x" INT,
   CONSTRAINT "fk_B__id_a-A__id" FOREIGN KEY ("id_a") REFERENCES "A" ("id"),
   CONSTRAINT "fk_B__id_x-y__id" FOREIGN KEY ("id_x") REFERENCES "x_schema"."y" ("id")
+);"""
+
+
+def test_date():
+    class A(Entity):
+        date: Date
+        date_time: DateTime
+        date_time_tz: DateTimeTz = func.now()
+
+    result = ddl.compile_entity(A)
+    assert result == """CREATE TABLE "A" (
+  "date" DATE,
+  "date_time" TIMESTAMP,
+  "date_time_tz" TIMESTAMPTZ NOT NULL DEFAULT now()
+);"""
+
+
+def test_bool():
+    class A(Entity):
+        is_active: Bool = True
+
+    result = ddl.compile_entity(A)
+    assert result == """CREATE TABLE "A" (
+  "is_active" BOOLEAN NOT NULL DEFAULT 1
 );"""

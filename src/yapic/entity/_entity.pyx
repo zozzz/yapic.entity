@@ -284,11 +284,12 @@ cdef class EntityAttributeExt:
             return self
 
     cpdef object bind(self, EntityAttribute attr):
-        if self.attr is not None:
-            if self.attr is not attr:
-                raise RuntimeError("Can't rebind entity attribute extension")
-            else:
-                return
+        # TODO: handle error, only if after bind is called
+        # if self.attr is not None:
+        #     if self.attr is not attr:
+        #         raise RuntimeError("Can't rebind entity attribute extension")
+        #     else:
+        #         return
         self.attr = attr
 
     cpdef object clone(self):

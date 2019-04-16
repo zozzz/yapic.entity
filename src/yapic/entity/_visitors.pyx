@@ -1,4 +1,4 @@
-from ._expression cimport Expression, Visitor, BinaryExpression, UnaryExpression, DirectionExpression, AliasExpression, CastExpression
+from ._expression cimport Expression, Visitor, BinaryExpression, UnaryExpression, DirectionExpression, AliasExpression, CastExpression, CallExpression, RawExpression
 from ._entity cimport EntityType, EntityAttribute
 from ._field cimport Field
 
@@ -21,6 +21,12 @@ cdef class ReplacerBase(Visitor):
 
     def visit_cast(self, CastExpression expr):
         return self.visit(expr.expr).cast(expr.type)
+
+    def visit_call(self, CallExpression expr):
+        return self.visit(expr.callable)(*[self.visit(a) for a in expr.args])
+
+    def visit_raw(self, RawExpression expr):
+        return expr
 
     def visit_field(self, expr):
         return expr

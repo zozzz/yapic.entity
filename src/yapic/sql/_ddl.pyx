@@ -1,6 +1,7 @@
 from yapic.entity._entity cimport EntityType
 from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, collect_foreign_keys
 from yapic.entity._field_impl cimport StorageType
+from yapic.entity._expression cimport Expression
 
 from ._dialect cimport Dialect
 
@@ -55,6 +56,13 @@ cdef class DDLCompiler:
 
         if not field.nullable:
             res += " NOT NULL"
+
+        if field._default_ is not None:
+            if isinstance(field._default_, Expression):
+                qc = self.dialect.create_query_compiler()
+                res += f" DEFAULT {qc.visit(field._default_)}"
+            else:
+                res += f" DEFAULT {field._default_}"
 
         return res
 

@@ -1,7 +1,7 @@
 # from hashids import Hashids
 
 from yapic.entity._field cimport Field, PrimaryKey, ForeignKey
-from yapic.entity._field_impl cimport IntImpl, StringImpl, ChoiceImpl
+from yapic.entity._field_impl cimport IntImpl, StringImpl, ChoiceImpl, BoolImpl, DateImpl, DateTimeImpl, DateTimeTzImpl
 
 from .._ddl cimport DDLCompiler
 
@@ -14,6 +14,14 @@ cdef class PostgreDLLCompiler(DDLCompiler):
             return self._int_type(field, <IntImpl>impl)
         elif isinstance(impl, StringImpl):
             return self._string_type(field, <StringImpl>impl)
+        elif isinstance(impl, BoolImpl):
+            return self._bool_type(field, <BoolImpl>impl)
+        elif isinstance(impl, DateImpl):
+            return self._date_type(field, <DateImpl>impl)
+        elif isinstance(impl, DateTimeImpl):
+            return self._date_time_type(field, <DateTimeImpl>impl)
+        elif isinstance(impl, DateTimeTzImpl):
+            return self._date_time_tz_type(field, <DateTimeTzImpl>impl)
         elif isinstance(impl, ChoiceImpl):
             return self._choice_type(field, <ChoiceImpl>impl)
 
@@ -25,7 +33,6 @@ cdef class PostgreDLLCompiler(DDLCompiler):
 
         return PostgreType("INT" if field.max_size <= 0 else f"INT{field.max_size}")
 
-
     cdef _string_type(self, Field field, StringImpl impl):
         if field.min_size >= 0 and field.max_size > 0:
             if field.min_size == field.max_size:
@@ -34,7 +41,17 @@ cdef class PostgreDLLCompiler(DDLCompiler):
                 return PostgreType("VARCHAR(%s)" % field.max_size)
         return PostgreType("TEXT")
 
+    def _bool_type(self, Field field, BoolImpl impl):
+        return PostgreType("BOOLEAN")
 
+    def _date_type(self, Field field, DateImpl impl):
+        return PostgreType("DATE")
+
+    def _date_time_type(self, Field field, DateTimeImpl impl):
+        return PostgreType("TIMESTAMP")
+
+    def _date_time_tz_type(self, Field field, DateTimeTzImpl impl):
+        return PostgreType("TIMESTAMPTZ")
 
     cdef _choice_type(self, Field field, ChoiceImpl impl):
         # hashid = Hashids(min_length=5, salt=impl.enum.__qualname__)

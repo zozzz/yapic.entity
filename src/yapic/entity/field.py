@@ -1,13 +1,21 @@
 from typing import Generic, TypeVar, Union, Optional, List, Tuple, Type, Any
+from datetime import date, datetime
 from enum import Enum
 from ._field import Field as _Field, Index, ForeignKey, PrimaryKey
 from ._field_impl import (
     StringImpl,
     IntImpl,
     ChoiceImpl as _ChoiceImpl,
+    BoolImpl,
+    DateImpl,
+    DateTimeImpl,
+    DateTimeTzImpl,
 )
 
-__all__ = ["Field", "String", "Int", "Serial", "Choice", "PrimaryKey", "Index", "ForeignKey"]
+__all__ = [
+    "Field", "String", "Bool", "Date", "DateTime", "DateTimeTz", "Int", "Serial", "Choice", "PrimaryKey", "Index",
+    "ForeignKey"
+]
 
 Impl = TypeVar("Impl")
 PyType = TypeVar("PyType")
@@ -32,7 +40,11 @@ class Field(Generic[Impl, PyType, RawType], _Field):
         pass
 
 
-String = Field[StringImpl, str, bytes]
+String = Field[StringImpl, str, str]
+Bool = Field[BoolImpl, bool, int]
+Date = Field[DateImpl, date, str]
+DateTime = Field[DateTimeImpl, datetime, str]
+DateTimeTz = Field[DateTimeTzImpl, datetime, str]
 
 
 class Int(Field[IntImpl, int, int]):

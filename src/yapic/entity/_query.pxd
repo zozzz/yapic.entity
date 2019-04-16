@@ -23,12 +23,5 @@ cdef class Query(Expression):
     cdef _add_entity(self, EntityType ent)
 
 
-cdef class RawExpression(Expression):
-    cdef readonly str sql
-
-
-cpdef raw(self, str sql)
-
-
 cdef class QueryFinalizer(Visitor):
     cdef Query q

@@ -2,7 +2,7 @@ from contextlib import contextmanager
 
 from yapic.entity._entity cimport EntityType
 from yapic.entity._field cimport Field
-from yapic.entity._expression cimport Expression, AliasExpression, DirectionExpression, Visitor, BinaryExpression, UnaryExpression, CastExpression
+from yapic.entity._expression cimport Expression, AliasExpression, DirectionExpression, Visitor, BinaryExpression, UnaryExpression, CastExpression, CallExpression, RawExpression
 from yapic.entity._expression import and_
 from yapic.entity._relation cimport Relation, RelationImpl, ManyToMany, determine_join_expr, RelationAttribute
 from yapic.entity._error cimport JoinError
@@ -220,29 +220,6 @@ cdef class Query(Expression):
             self.entities[ent] = f"t{len(self.entities)}"
 
 
-
-cdef class RawExpression(Expression):
-    def __cinit__(self, str sql):
-        self.sql = sql
-
-    def __hash__(self):
-        return hash(self.sql)
-
-    def __eq__(self, other):
-        if isinstance(other, RawExpression):
-            return (<RawExpression>other).sql == self.sql
-        return False
-
-    def __ne__(self, other):
-        if isinstance(other, RawExpression):
-            return (<RawExpression>other).sql == self.sql
-        return False
-
-
-cpdef raw(self, str sql):
-    return RawExpression(sql)
-
-
 cdef class QueryFinalizer(Visitor):
     def __cinit__(self, Query q):
         self.q = q
@@ -259,6 +236,14 @@ cdef class QueryFinalizer(Visitor):
 
     def visit_direction(self, DirectionExpression expr):
         self.visit(expr.expr)
+
+    def visit_call(self, CallExpression expr):
+        self.visit(expr.callable)
+        for a in expr.args:
+            self.visit(a)
+
+    def visit_raw(self, expr):
+        pass
 
     def visit_field(self, expr):
         pass

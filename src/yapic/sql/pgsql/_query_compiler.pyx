@@ -2,7 +2,17 @@ import operator
 
 from yapic.entity._entity cimport EntityType, get_alias_target
 from yapic.entity._query cimport Query
-from yapic.entity._expression cimport BinaryExpression, UnaryExpression, ConstExpression, CastExpression, DirectionExpression, AliasExpression
+from yapic.entity._expression cimport (
+    Expression,
+    Visitor,
+    BinaryExpression,
+    UnaryExpression,
+    ConstExpression,
+    CastExpression,
+    DirectionExpression,
+    AliasExpression,
+    CallExpression,
+    RawExpression)
 from yapic.entity._expression import and_
 from yapic.entity._relation cimport RelationAttribute
 
@@ -234,6 +244,15 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
     def visit_relation_attribute(self, RelationAttribute expr):
         return self.visit(expr.attr)
+
+    def visit_call(self, CallExpression expr):
+        args = []
+        for a in expr.args:
+            args.append(self.visit(a))
+        return f"{self.visit(expr.callable)}({', '.join(args)})"
+
+    def visit_raw(self, RawExpression expr):
+        return expr.expr
 
     def _add_entity_alias(self, EntityType ent):
         try:
