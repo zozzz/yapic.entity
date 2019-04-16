@@ -4,7 +4,7 @@ from cpython.weakref cimport PyWeakref_NewRef, PyWeakref_GetObject
 from cpython.module cimport PyImport_Import, PyModule_GetDict
 
 from ._expression cimport Expression, Visitor
-from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeExt
+from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeExt, EntityAttributeImpl
 from ._factory cimport ForwardDecl, get_type_hints, new_instance, new_instance_from_forward, is_forward_decl
 
 
@@ -12,6 +12,7 @@ cdef class Field(EntityAttribute):
     def __cinit__(self, impl = None, *, name = None, default = None, size = None, nullable = None):
         self._default_ = default
         self._name_ = name
+        self.type_cache = {}
 
         if size is not None:
             if isinstance(size, list) or isinstance(size, tuple):
@@ -61,11 +62,20 @@ cdef class Field(EntityAttribute):
             size=(self.min_size, self.max_size),
             nullable=self.nullable)
         res._exts_ = self.clone_exts(res)
+        (<Field>res).type_cache = self.type_cache
         return res
 
-    cdef bint values_is_eq(self, object a, object b):
-        # TODO: ...
-        return a == b
+    # cdef bint values_is_eq(self, object a, object b):
+    #     # TODO: ...
+    #     return a == b
+
+    cpdef StorageType get_type(self, StorageTypeFactory factory):
+        try:
+            return self.type_cache[factory]
+        except KeyError:
+            type = factory.create(self)
+            self.type_cache[factory] = type
+            return type
 
     def __repr__(self):
         if self._entity_:
@@ -84,6 +94,24 @@ cdef class Field(EntityAttribute):
 
 cdef class FieldExtension(EntityAttributeExt):
     pass
+
+
+cdef class FieldImpl(EntityAttributeImpl):
+    cpdef init(self, EntityType entity):
+        pass
+
+
+cdef class StorageType:
+    cpdef object encode(self, object value):
+        raise NotImplementedError()
+
+    cpdef object decode(self, object value):
+        raise NotImplementedError()
+
+
+cdef class StorageTypeFactory:
+    cpdef StorageType create(self, Field field):
+        raise NotImplementedError()
 
 
 cdef class PrimaryKey(FieldExtension):

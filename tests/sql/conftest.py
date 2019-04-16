@@ -4,7 +4,7 @@ import docker
 import json
 import asyncpg
 import asyncio
-from asyncpg.exceptions import OperatorInterventionError
+from asyncpg.exceptions import OperatorInterventionError, PostgresConnectionError
 from docker import APIClient
 from docker.errors import ImageNotFound, NotFound
 
@@ -52,7 +52,7 @@ async def pgsql(pgsql_docker):
         try:
             connection = await asyncpg.connect(user="root", password="root", database="root", host="127.0.0.1")
             yield connection
-        except OperatorInterventionError:
+        except (OperatorInterventionError, PostgresConnectionError):
             await asyncio.sleep(1)
         else:
             await connection.close()

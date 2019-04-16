@@ -1,6 +1,5 @@
 from yapic.entity._entity cimport EntityType
-from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, collect_foreign_keys
-from yapic.entity._field_impl cimport StorageType
+from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, collect_foreign_keys, StorageType
 from yapic.entity._expression cimport Expression
 
 from ._dialect cimport Dialect
@@ -39,15 +38,15 @@ cdef class DDLCompiler:
         return "".join(table_parts)
 
     def compile_field(self, Field field, bint is_last, list requirements):
-        cdef StorageType type = self.gues_type(field)
+        cdef StorageType type = self.dialect.get_field_type(field)
         if type is None:
             raise ValueError("Cannot determine the sql type of %r" % field)
 
-        req = type.requirements()
-        if req:
-            if not isinstance(req, str):
-                raise TypeError("StorageType.requirements must returns with str or None")
-            requirements.append(req)
+        # req = type.requirements()
+        # if req is not None:
+        #     if not isinstance(req, str):
+        #         raise TypeError("StorageType.requirements must returns with str or None")
+        #     requirements.append(req)
 
         cdef str res = f"{self.dialect.quote_ident(field._name_)} {type.name}"
 
@@ -62,7 +61,7 @@ cdef class DDLCompiler:
                 qc = self.dialect.create_query_compiler()
                 res += f" DEFAULT {qc.visit(field._default_)}"
             else:
-                res += f" DEFAULT {field._default_}"
+                res += f" DEFAULT {self.dialect.quote_value(type.encode(field._default_))}"
 
         return res
 
@@ -93,6 +92,3 @@ cdef class DDLCompiler:
             res += ")"
 
             yield res
-
-    cpdef StorageType guess_type(self, Field field):
-        raise NotImplementedError()

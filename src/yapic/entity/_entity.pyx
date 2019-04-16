@@ -9,7 +9,7 @@ from cpython.tuple cimport PyTuple_SetItem, PyTuple_GetItem, PyTuple_New, PyTupl
 from ._field cimport Field, PrimaryKey
 from ._relation cimport Relation
 from ._factory cimport Factory, get_type_hints, new_instance_from_forward, is_forward_decl
-from ._expression cimport Visitor
+from ._expression cimport Visitor, Expression
 
 
 cdef class NOTSET:
@@ -577,8 +577,9 @@ cdef class EntityState:
             if cv is <PyObject*>NOTSET:
                 if not attr.get_ext(PrimaryKey):
                     cv = <PyObject*>(attr._default_)
-                else:
-                    continue
+                    if not isinstance(<object>cv, Expression) and callable(<object>cv):
+                        res.append((attr, (<object>cv)()))
+                continue
 
             res.append((attr, <object>cv))
 

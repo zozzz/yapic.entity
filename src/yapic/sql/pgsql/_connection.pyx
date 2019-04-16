@@ -36,6 +36,7 @@ cdef class PostgreConnection(Connection):
 
         for i in range(data_length):
             attr, value = <tuple>data[i]
+            print(attr, value)
             if isinstance(attr, Field):
                 fields.append(self.dialect.quote_ident(attr._name_))
                 values.append(value)

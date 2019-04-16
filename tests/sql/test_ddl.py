@@ -161,5 +161,5 @@ def test_bool():
 
     result = ddl.compile_entity(A)
     assert result == """CREATE TABLE "A" (
-  "is_active" BOOLEAN NOT NULL DEFAULT 1
+  "is_active" BOOLEAN NOT NULL DEFAULT TRUE
 );"""

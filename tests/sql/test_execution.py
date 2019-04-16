@@ -1,6 +1,6 @@
 import pytest
 from yapic.sql import wrap_connection
-from yapic.entity import Entity, Serial, Int, String, ForeignKey, One, Query
+from yapic.entity import Entity, Serial, Int, String, Date, DateTime, DateTimeTz, Bool, ForeignKey, One, Query, func
 
 pytestmark = pytest.mark.asyncio
 
@@ -18,8 +18,14 @@ class Address(Entity):
 class User(Entity):
     id: Serial
     name: String
+
     address_id: Int = ForeignKey(Address.id)
     address: One[Address]
+
+    is_active: Bool = True
+    birth_date: Date
+    created_time: DateTimeTz = func.now()
+    updated_time: DateTimeTz
 
 
 class User2(Entity, schema="private", name="User"):

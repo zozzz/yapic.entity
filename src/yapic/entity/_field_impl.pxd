@@ -1,16 +1,5 @@
 from ._entity cimport EntityAttributeImpl
-from ._field cimport Field
-
-
-cdef class FieldImpl(EntityAttributeImpl):
-    cpdef object read(self, value)
-    cpdef object write(self, value)
-    cpdef bint eq(self, a, b)
-
-
-cdef class StorageType:
-    cdef readonly name
-    cpdef requirements(self)
+from ._field cimport Field, FieldImpl
 
 
 cdef class StringImpl(FieldImpl):

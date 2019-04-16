@@ -1,4 +1,5 @@
 from yapic.entity._entity cimport EntityType
+from yapic.entity._expression cimport RawExpression
 
 from .._dialect cimport Dialect
 from .._ddl cimport DDLCompiler
@@ -6,9 +7,12 @@ from .._query_compiler cimport QueryCompiler
 
 from ._ddl cimport PostgreDLLCompiler
 from ._query_compiler cimport PostgreQueryCompiler
-
+from ._type_factory cimport PostgreTypeFactory
 
 cdef class PostgreDialect(Dialect):
+    def __cinit__(self):
+        self.type_factory = PostgreTypeFactory()
+
     cpdef DDLCompiler create_ddl_compiler(self):
         return PostgreDLLCompiler(self)
 
@@ -19,9 +23,8 @@ cdef class PostgreDialect(Dialect):
         ident = ident.replace('"', '""')
         return f'"{ident}"'
 
-    cpdef str quote_value(self, object value):
-        value = str(value).replace('"', '""')
-        return f"'{value}'"
+    cpdef object quote_value(self, object value):
+        return (<PostgreTypeFactory>self.type_factory).quote_value(value)
 
     cpdef str table_qname(self, EntityType entity):
         if "schema" in entity.__meta__:
