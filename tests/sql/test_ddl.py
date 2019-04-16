@@ -157,7 +157,7 @@ def test_date():
 
 def test_bool():
     class A(Entity):
-        is_active: Bool = True
+        is_active: Bool = 1
 
     result = ddl.compile_entity(A)
     assert result == """CREATE TABLE "A" (
