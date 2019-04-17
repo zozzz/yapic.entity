@@ -2,6 +2,7 @@ import cython
 from cpython.object cimport PyObject
 
 from ._expression cimport AliasExpression, Expression
+from ._registry cimport Registry
 
 
 cdef class NOTSET:
@@ -12,19 +13,16 @@ cdef class EntityType(type):
     cdef readonly tuple __attrs__
     cdef readonly tuple __fields__
     cdef readonly tuple __pk__
-    # cdef readonly tuple __relations__
+    cdef PyObject* registry
     cdef PyObject* meta
     cdef object __weakref__
 
-    # cpdef __clone__(self, dict meta)
 
 cpdef bint is_entity_alias(object o)
 cpdef EntityType get_alias_target(EntityType o)
 
 
 cdef class EntityBase:
-    # cdef readonly FieldState __fstate__
-    # cdef readonly object __rstate__
     cdef readonly EntityState __state__
 
 
@@ -59,31 +57,6 @@ cdef class EntityAttributeImpl:
     cdef object state_init(self, object initial)
     cdef object state_set(self, object initial, object current, object value)
     cdef object state_get_dirty(self, object initial, object current)
-    # cdef object state_del(self, PyObject** current)
-
-
-
-# cdef class EntityAliasExpression(Expression):
-#     cdef readonly EntityType entity
-#     cdef readonly str value
-
-#     cdef readonly tuple __fields__
-#     cdef readonly tuple __relations__
-
-
-# @cython.final
-# @cython.freelist(1000)
-# cdef class FieldState:
-#     cdef tuple fields
-#     cdef tuple data
-#     cdef tuple dirty
-#     cdef bint is_dirty
-
-#     cdef bint set_value(self, int index, object value)
-#     cdef object get_value(self, int index)
-#     cdef void del_value(self, int index)
-
-#     cpdef reset(self)
 
 
 @cython.final
@@ -113,5 +86,5 @@ cdef class EntityState:
     cdef reset_attr(self, EntityAttribute attr)
 
 
-cdef class EntityStateValue:
-    pass
+# cdef class EntityStateValue:
+#     pass

@@ -1,6 +1,6 @@
 import pytest
-from yapic.sql import wrap_connection
-from yapic.entity import Entity, Serial, Int, String, Date, DateTime, DateTimeTz, Bool, ForeignKey, One, Query, func
+from yapic.sql import wrap_connection, Entity
+from yapic.entity import Serial, Int, String, Date, DateTime, DateTimeTz, Bool, ForeignKey, One, Query, func
 
 pytestmark = pytest.mark.asyncio
 

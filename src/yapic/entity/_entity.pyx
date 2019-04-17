@@ -10,10 +10,14 @@ from ._field cimport Field, PrimaryKey
 from ._relation cimport Relation
 from ._factory cimport Factory, get_type_hints, new_instance_from_forward, is_forward_decl
 from ._expression cimport Visitor, Expression
+from ._registry cimport Registry
 
 
 cdef class NOTSET:
     pass
+
+
+REGISTRY = Registry()
 
 
 cdef class EntityType(type):
@@ -113,6 +117,10 @@ cdef class EntityType(type):
     def __meta__(self):
         return <object>self.meta
 
+    @property
+    def __registry__(self):
+        return <object>self.registry
+
     @staticmethod
     def __prepare__(*args, **kwargs):
         scope = type.__prepare__(*args, **kwargs)
@@ -128,6 +136,10 @@ cdef class EntityType(type):
 
         aliased = get_alias_target(self)
         return EntityType(alias, (aliased,), {}, name=alias, schema=None, is_alias=True)
+
+    def __dealloc__(self):
+        Py_XDECREF(self.meta)
+        Py_XDECREF(self.registry)
 
 
 cpdef bint is_entity_alias(object o):
@@ -716,15 +728,40 @@ cdef class EntityBase:
         # self.__rstate__ = RelationState(relations)
 
     @classmethod
-    def __init_subclass__(cls, *, str name=None, **meta):
+    def __init_subclass__(cls, *, str name=None, Registry registry=None, bint _root=False, **meta):
         cdef EntityType ent = cls
+        cdef EntityType parent
+
         if name is not None:
-            cls.__name__ = name
+            ent.__name__ = name
 
         meta_dict = dict(meta)
         Py_XDECREF(ent.meta)
         ent.meta = <PyObject*>(<object>meta_dict)
         Py_XINCREF(ent.meta)
+
+        if registry is not None:
+            Py_XDECREF(ent.registry)
+            ent.registry = <PyObject*>(<object>registry)
+            Py_XINCREF(ent.registry)
+        else:
+            length = len(cls.__mro__)
+            for i in range(1, length - 2):
+                parent = cls.__mro__[i]
+
+                if parent.registry is not NULL:
+                    Py_XDECREF(ent.registry)
+                    ent.registry = parent.registry
+                    Py_XINCREF(ent.registry)
+                    break
+
+        if _root is False:
+            cls.__register__()
+
+    @classmethod
+    def __register__(cls):
+        (<Registry>cls.__registry__).register(cls.__name__, cls)
+
 
     @property
     def __pk__(self):
@@ -751,6 +788,6 @@ cdef class EntityBase:
         else:
             return ()
 
-class Entity(EntityBase, metaclass=EntityType):
+class Entity(EntityBase, metaclass=EntityType, registry=REGISTRY, _root=True):
     def __repr__(self):
         return "<%s %r>" % (type(self).__name__, self.__pk__)

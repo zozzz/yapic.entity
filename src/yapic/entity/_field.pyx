@@ -56,13 +56,13 @@ cdef class Field(EntityAttribute):
                 self.nullable = bool(self._default_ is None)
 
     cpdef clone(self):
-        cdef EntityAttribute res = Field(self._impl_,
+        cdef Field res = type(self)(self._impl_,
             name=self._name_,
             default=self._default_,
             size=(self.min_size, self.max_size),
             nullable=self.nullable)
         res._exts_ = self.clone_exts(res)
-        (<Field>res).type_cache = self.type_cache
+        res.type_cache = self.type_cache
         return res
 
     # cdef bint values_is_eq(self, object a, object b):
