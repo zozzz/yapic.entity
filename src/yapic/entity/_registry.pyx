@@ -19,3 +19,15 @@ cdef class Registry:
 
     def __iter__(self):
         return iter(self.entities)
+
+
+class RegistryDiffKind:
+    REMOVED = 1
+    CREATED = 2
+    CHANGED = 3
+
+
+@cython.final
+cdef class RegistryDiff:
+    def __cinit__(self, Registry a, Registry b, object entity_diff):
+        self.changes = []

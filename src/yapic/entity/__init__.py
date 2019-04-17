@@ -1,5 +1,6 @@
-from ._entity import EntityType, Entity
-from .field import *
-from .relation import *
-from ._query import *
-from ._expression import *
+from ._entity import *  # noqa
+from .field import *  # noqa
+from .relation import *  # noqa
+from ._query import *  # noqa
+from ._expression import *  # noqa
+from ._entity_diff import *  # noqa

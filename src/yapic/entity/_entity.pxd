@@ -84,7 +84,3 @@ cdef class EntityState:
 
     cdef reset_all(self)
     cdef reset_attr(self, EntityAttribute attr)
-
-
-# cdef class EntityStateValue:
-#     pass

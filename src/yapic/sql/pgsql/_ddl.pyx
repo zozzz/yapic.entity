@@ -25,12 +25,8 @@ cdef class PostgreDDLReflect(DDLReflect):
                 AND "table_type" = 'BASE TABLE'""")
 
         for schema, table in tables:
-            print(schema, table)
             fields = await self.get_fields(conn, schema, table)
             entity = await self.create_entity(conn, registry, schema, table, fields)
-            print(entity)
-            print(fields)
-
 
     async def create_entity(self, Connection conn, Registry registry, str schema, str table, list fields):
         schema = None if schema == "public" else schema
@@ -108,9 +104,12 @@ cdef class PostgreDDLReflect(DDLReflect):
         field._name_ = record["column_name"]
 
         if skip_default is False and default is not None:
-            if isinstance(default, str):
-                if default[0] == "'" and default.endswith(f"::{data_type}"):
-                    default = default[1:-(len(data_type) + 3)]
+            # if isinstance(default, str):
+            #     if default[0] == "'" and default.endswith(f"::{data_type}"):
+            #         default = default[1:-(len(data_type) + 3)]
+
+            if isinstance(default, str) and "::" in default:
+                default = await conn.conn.fetchval(f"SELECT {default}")
 
             type_impl = conn.dialect.get_field_type(field)
             try:

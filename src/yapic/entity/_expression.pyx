@@ -149,7 +149,10 @@ cdef class CallExpression(Expression):
         self.args = tuple(map(coerce_expression, args))
 
     def __repr__(self):
-        return "<Call %s( %s )>" % (self.callable, self.args)
+        if self.args:
+            return "<Call %s( %s )>" % (self.callable, self.args)
+        else:
+            return "<Call %s()>" % (self.callable)
 
     cpdef visit(self, Visitor visitor):
         return visitor.visit_call(self)

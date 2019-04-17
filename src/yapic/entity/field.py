@@ -49,6 +49,7 @@ DateTimeTz = Field[DateTimeTzImpl, datetime, str]
 
 class Int(Field[IntImpl, int, int]):
     def __new__(cls, *args, **kwargs):
+        kwargs.setdefault("size", 4)
         return Field.__new__(cls, *args, **kwargs)
 
 

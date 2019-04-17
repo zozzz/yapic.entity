@@ -1,5 +1,7 @@
 from yapic.entity._entity cimport EntityType
 from yapic.entity._field cimport Field, StorageTypeFactory, StorageType
+from yapic.entity._expression cimport Expression
+from yapic.entity._entity_diff cimport EntityDiff
 
 from ._ddl cimport DDLCompiler, DDLReflect
 from ._query_compiler cimport QueryCompiler
@@ -15,3 +17,5 @@ cdef class Dialect:
     cpdef object quote_value(self, object value)
     cpdef str table_qname(self, EntityType entity)
     cpdef StorageType get_field_type(self, Field field)
+    cpdef bint expression_eq(self, Expression a, Expression b)
+    cpdef EntityDiff entity_diff(self, EntityType a, EntityType b)

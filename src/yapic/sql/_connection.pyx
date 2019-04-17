@@ -3,7 +3,7 @@
 from yapic.entity._entity cimport EntityType
 from yapic.entity._query cimport Query
 from yapic.entity._entity cimport EntityType, EntityBase
-from yapic.entity._registry cimport Registry
+from yapic.entity._registry cimport Registry, RegistryDiff
 
 from ._query_context cimport QueryContext
 from ._query_compiler cimport QueryCompiler
@@ -53,6 +53,13 @@ cdef class Connection:
         reflect = self.dialect.create_ddl_reflect(base)
         await reflect.get_entities(self, reg)
         return reg
+
+    def registry_diff(self, Registry a, Registry b):
+        return RegistryDiff(a, b, self.dialect.entity_diff)
+
+    async def diff(self, Registry new_reg, EntityType entity_base=Entity):
+        registry = await self.reflect(entity_base)
+        return self.registry_diff(registry, new_reg)
 
 
 cpdef wrap_connection(conn, dialect):

@@ -334,6 +334,12 @@ cdef class EntityAttributeImpl:
         else:
             return NOTSET
 
+    def __eq__(self, other):
+        return type(self) is type(other)
+
+    def __ne__(self, other):
+        return type(self) is not type(other)
+
 
 # cdef class EntityAliasExpression(Expression):
 #     def __cinit__(self, EntityType entity, str alias):

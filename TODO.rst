@@ -1,0 +1,3 @@
+- EntityType.registry = WeakRef
+- Field.entity = WeakRef
+- Extension.attr = WeakRef

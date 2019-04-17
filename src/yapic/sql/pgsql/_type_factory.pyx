@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 
 from yapic.entity._field cimport Field, PrimaryKey, StorageType, StorageTypeFactory
 from yapic.entity._field_impl cimport StringImpl, IntImpl, BoolImpl, DateImpl, DateTimeImpl, DateTimeTzImpl, ChoiceImpl
@@ -146,6 +146,8 @@ cdef class DateType(PostgreType):
         return value.strftime("%Y-%m-%d")
 
     cpdef object decode(self, object value):
+        if isinstance(value, date):
+            return value
         return datetime.strptime(value, "%Y-%m-%d").date()
 
 
@@ -154,6 +156,8 @@ cdef class DateTimeType(PostgreType):
         return value.strftime("%Y-%m-%d %H:%M:%S.%f")
 
     cpdef object decode(self, object value):
+        if isinstance(value, datetime):
+            return value
         return datetime.strptime(value, "%Y-%m-%d %H:%M:%S.%f")
 
 
@@ -164,6 +168,8 @@ cdef class DateTimeTzType(PostgreType):
         return value.strftime("%Y-%m-%d %H:%M:%S.%f%z")
 
     cpdef object decode(self, object value):
+        if isinstance(value, datetime):
+            return value
         return datetime.strptime(value, "%Y-%m-%d %H:%M:%S.%f%z")
 
 

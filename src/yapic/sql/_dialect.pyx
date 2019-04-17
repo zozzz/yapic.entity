@@ -27,3 +27,9 @@ cdef class Dialect:
     cpdef StorageType get_field_type(self, Field field):
         return field.get_type(self.type_factory)
 
+    cpdef bint expression_eq(self, Expression a, Expression b):
+        qc = self.create_query_compiler()
+        return qc.visit(a) == qc.visit(b)
+
+    cpdef EntityDiff entity_diff(self, EntityType a, EntityType b):
+        return EntityDiff(a, b, self.expression_eq)

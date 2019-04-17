@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime
 from yapic.sql import wrap_connection, Entity
-from yapic.entity import Field, Serial, Int, String, Date, DateTime, DateTimeTz, Bool, ForeignKey, One, Query, func
+from yapic.entity import Field, Serial, Int, String, Date, DateTime, DateTimeTz, Bool, ForeignKey, One, Query, func, EntityDiff
 
 pytestmark = pytest.mark.asyncio
 
@@ -115,3 +115,28 @@ async def test_reflect(conn):
     test_field("User", "naive_date", "DateTime", nullable=False, default=datetime(2019, 1, 1, 12, 34, 55))
     test_field("User", "created_time", "DateTimeTz", nullable=False)
     test_field("User", "updated_time", "DateTimeTz", nullable=True)
+
+    diff = EntityDiff(ent_reg["User"], User)
+    assert diff.changes == []
+
+
+async def test_diff(conn):
+    ent_reg = await conn.reflect()
+
+    class User_changed(Entity):
+        id: Serial
+        name_x: String = Field(size=100)
+        bio: String = Field(size=200)
+        fixed_char: String = Field(size=[5, 5])
+
+        address_id: Int = ForeignKey(Address.id)
+        address: One[Address]
+
+        is_active: Bool = True
+        birth_date: String
+        naive_date: DateTimeTz = func.now()
+        created_time: DateTimeTz = func.CURRENT_TIMESTAMP
+        updated_time: DateTimeTz
+
+    diff = conn.dialect.entity_diff(ent_reg["User"], User_changed)
+    print(diff.changes)
