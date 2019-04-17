@@ -92,3 +92,11 @@ cdef class DDLCompiler:
             res += ")"
 
             yield res
+
+
+cdef class DDLReflect:
+    def __cinit__(self, EntityType entity_base):
+        self.entity_base = entity_base
+
+    async def get_entities(self, Connection conn, Registry registry):
+        raise NotImplementedError()

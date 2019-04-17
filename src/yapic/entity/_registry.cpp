@@ -1732,6 +1732,7 @@ static PyObject *__pyx_n_s_weakref;
 static int __pyx_pf_5yapic_6entity_9_registry_8Registry___cinit__(struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_9_registry_8Registry_2register(struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx_v_self, PyObject *__pyx_v_name, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_entity); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_9_registry_8Registry_4__getitem__(struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx_v_self, PyObject *__pyx_v_name); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_9_registry_8Registry_6__iter__(struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_9_registry_8Registry_8entities___get__(struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_5yapic_6entity_9_registry_Registry(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 /* Late includes */
@@ -1983,6 +1984,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_8Registry_2register(struct _
  * 
  *     def __getitem__(self, str name):             # <<<<<<<<<<<<<<
  *         return self.entities[name]
+ * 
  */
 
 /* Python wrapper */
@@ -2013,6 +2015,8 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_8Registry_4__getitem__(struc
  * 
  *     def __getitem__(self, str name):
  *         return self.entities[name]             # <<<<<<<<<<<<<<
+ * 
+ *     def __iter__(self):
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_self->entities, __pyx_v_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 18, __pyx_L1_error)
@@ -2026,12 +2030,74 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_8Registry_4__getitem__(struc
  * 
  *     def __getitem__(self, str name):             # <<<<<<<<<<<<<<
  *         return self.entities[name]
+ * 
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("yapic.entity._registry.Registry.__getitem__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "yapic/entity/_registry.pyx":20
+ *         return self.entities[name]
+ * 
+ *     def __iter__(self):             # <<<<<<<<<<<<<<
+ *         return iter(self.entities)
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5yapic_6entity_9_registry_8Registry_7__iter__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_9_registry_8Registry_7__iter__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__iter__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_5yapic_6entity_9_registry_8Registry_6__iter__(((struct __pyx_obj_5yapic_6entity_9_registry_Registry *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5yapic_6entity_9_registry_8Registry_6__iter__(struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  __Pyx_RefNannySetupContext("__iter__", 0);
+
+  /* "yapic/entity/_registry.pyx":21
+ * 
+ *     def __iter__(self):
+ *         return iter(self.entities)             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __pyx_v_self->entities;
+  __Pyx_INCREF(__pyx_t_1);
+  __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "yapic/entity/_registry.pyx":20
+ *         return self.entities[name]
+ * 
+ *     def __iter__(self):             # <<<<<<<<<<<<<<
+ *         return iter(self.entities)
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("yapic.entity._registry.Registry.__iter__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2188,7 +2254,7 @@ static PyTypeObject __pyx_type_5yapic_6entity_9_registry_Registry = {
   __pyx_tp_clear_5yapic_6entity_9_registry_Registry, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
+  __pyx_pw_5yapic_6entity_9_registry_8Registry_7__iter__, /*tp_iter*/
   0, /*tp_iternext*/
   __pyx_methods_5yapic_6entity_9_registry_Registry, /*tp_methods*/
   0, /*tp_members*/

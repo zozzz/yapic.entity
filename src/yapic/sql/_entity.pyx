@@ -13,7 +13,10 @@ class Entity(_Entity, registry=REGISTRY, _root=True):
         except KeyError:
             name = cls.__name__
         else:
-            name = f"{schema}.{cls.__name__}"
+            if schema is None:
+                name = cls.__name__
+            else:
+                name = f"{schema}.{cls.__name__}"
 
         (<Registry>cls.__registry__).register(name, cls)
 

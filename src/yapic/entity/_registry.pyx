@@ -16,3 +16,6 @@ cdef class Registry:
 
     def __getitem__(self, str name):
         return self.entities[name]
+
+    def __iter__(self):
+        return iter(self.entities)

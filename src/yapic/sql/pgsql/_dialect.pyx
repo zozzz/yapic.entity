@@ -2,10 +2,10 @@ from yapic.entity._entity cimport EntityType
 from yapic.entity._expression cimport RawExpression
 
 from .._dialect cimport Dialect
-from .._ddl cimport DDLCompiler
+from .._ddl cimport DDLCompiler, DDLReflect
 from .._query_compiler cimport QueryCompiler
 
-from ._ddl cimport PostgreDLLCompiler
+from ._ddl cimport PostgreDDLCompiler, PostgreDDLReflect
 from ._query_compiler cimport PostgreQueryCompiler
 from ._type_factory cimport PostgreTypeFactory
 
@@ -14,7 +14,10 @@ cdef class PostgreDialect(Dialect):
         self.type_factory = PostgreTypeFactory()
 
     cpdef DDLCompiler create_ddl_compiler(self):
-        return PostgreDLLCompiler(self)
+        return PostgreDDLCompiler(self)
+
+    cpdef DDLReflect create_ddl_reflect(self, EntityType base):
+        return PostgreDDLReflect(base)
 
     cpdef QueryCompiler create_query_compiler(self):
         return PostgreQueryCompiler(self)

@@ -1,11 +1,14 @@
 
 
+from yapic.entity._entity cimport EntityType
 from yapic.entity._query cimport Query
 from yapic.entity._entity cimport EntityType, EntityBase
+from yapic.entity._registry cimport Registry
 
 from ._query_context cimport QueryContext
 from ._query_compiler cimport QueryCompiler
 from ._dialect cimport Dialect
+from ._entity import Entity
 
 
 cdef class Connection:
@@ -44,6 +47,12 @@ cdef class Connection:
 
     async def save(self, EntityBase entity):
         raise NotImplementedError()
+
+    async def reflect(self, EntityType base=Entity):
+        reg = Registry()
+        reflect = self.dialect.create_ddl_reflect(base)
+        await reflect.get_entities(self, reg)
+        return reg
 
 
 cpdef wrap_connection(conn, dialect):

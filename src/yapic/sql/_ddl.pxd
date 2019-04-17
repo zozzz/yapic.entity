@@ -1,7 +1,9 @@
 from yapic.entity._entity cimport EntityType
 from yapic.entity._field cimport Field
+from yapic.entity._registry cimport Registry
 
 from ._dialect cimport Dialect
+from ._connection cimport Connection
 
 cdef class DDLCompiler:
     cdef readonly Dialect dialect
@@ -11,4 +13,4 @@ cdef class DDLCompiler:
 
 
 cdef class DDLReflect:
-    pass
+    cdef EntityType entity_base

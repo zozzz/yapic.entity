@@ -1,5 +1,8 @@
-from .._ddl cimport DDLCompiler
+from .._ddl cimport DDLCompiler, DDLReflect
 
-cdef class PostgreDLLCompiler(DDLCompiler):
+cdef class PostgreDDLCompiler(DDLCompiler):
     pass
 
+
+cdef class PostgreDDLReflect(DDLReflect):
+    pass

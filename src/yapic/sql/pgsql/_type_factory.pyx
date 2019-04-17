@@ -136,7 +136,9 @@ cdef class BoolType(PostgreType):
         return RawExpression("TRUE" if bool(value) else "FALSE")
 
     cpdef object decode(self, object value):
-        return value
+        if not isinstance(value, str):
+            value = str(value)
+        return value.lower() in ("true", "t", "1", "y", "yes", "on")
 
 
 cdef class DateType(PostgreType):

@@ -26,7 +26,7 @@ cdef class EntityType(type):
         (name, bases, attrs) = args
 
 
-        cdef list fields = []
+        cdef list fields = kwargs.get("__fields__", [])
         cdef list __attrs__ = []
 
         cdef Factory factory
@@ -59,6 +59,10 @@ cdef class EntityType(type):
                     #     relations.append(attr)
 
                     setattr(self, k, attr)
+        elif fields:
+            for attr in fields:
+                attr._attr_name_in_class = attr._name_
+                setattr(self, attr._name_, attr)
         else:
             hints = get_type_hints(self)
 
@@ -736,6 +740,7 @@ cdef class EntityBase:
             ent.__name__ = name
 
         meta_dict = dict(meta)
+        meta_dict.pop("__fields__", None)
         Py_XDECREF(ent.meta)
         ent.meta = <PyObject*>(<object>meta_dict)
         Py_XINCREF(ent.meta)

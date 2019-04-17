@@ -1,12 +1,15 @@
 from yapic.entity._entity cimport EntityType
 from yapic.entity._field cimport Field, StorageType
 
-from ._ddl cimport DDLCompiler
+from ._ddl cimport DDLCompiler, DDLReflect
 from ._query_compiler cimport QueryCompiler
 
 
 cdef class Dialect:
     cpdef DDLCompiler create_ddl_compiler(self):
+        raise NotImplementedError()
+
+    cpdef DDLReflect create_ddl_reflect(self, EntityType base):
         raise NotImplementedError()
 
     cpdef QueryCompiler create_query_compiler(self):
