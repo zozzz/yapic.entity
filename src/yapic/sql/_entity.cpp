@@ -858,6 +858,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt;
 struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl;
 struct __pyx_obj_5yapic_6entity_7_entity_EntityState;
 struct __pyx_obj_5yapic_6entity_9_registry_Registry;
+struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff;
 
 /* "_expression.pxd":4
  * 
@@ -1119,6 +1120,18 @@ struct __pyx_obj_5yapic_6entity_9_registry_Registry {
 };
 
 
+/* "yapic/entity/_registry.pxd":17
+ * 
+ * @cython.final
+ * cdef class RegistryDiff:             # <<<<<<<<<<<<<<
+ *     cdef readonly list changes
+ */
+struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff {
+  PyObject_HEAD
+  PyObject *changes;
+};
+
+
 
 /* "_expression.pxd":4
  * 
@@ -1349,6 +1362,9 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *__pyx_vtabpt
 
 struct __pyx_vtabstruct_5yapic_6entity_9_registry_Registry {
   PyObject *(*__pyx_register)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, PyObject *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
+  PyObject *(*keys)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, int __pyx_skip_dispatch);
+  PyObject *(*values)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, int __pyx_skip_dispatch);
+  PyObject *(*items)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, int __pyx_skip_dispatch);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_9_registry_Registry *__pyx_vtabptr_5yapic_6entity_9_registry_Registry;
 
@@ -1820,6 +1836,7 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_EntityState = 0;
 
 /* Module declarations from 'yapic.entity._registry' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_9_registry_Registry = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_9_registry_RegistryDiff = 0;
 
 /* Module declarations from 'yapic.sql._entity' */
 #define __Pyx_MODULE_NAME "yapic.sql._entity"
@@ -2377,6 +2394,8 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_5yapic_6entity_9_registry_Registry = __Pyx_ImportType(__pyx_t_1, "yapic.entity._registry", "Registry", sizeof(struct __pyx_obj_5yapic_6entity_9_registry_Registry), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_6entity_9_registry_Registry) __PYX_ERR(4, 7, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_9_registry_Registry = (struct __pyx_vtabstruct_5yapic_6entity_9_registry_Registry*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_9_registry_Registry->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_9_registry_Registry)) __PYX_ERR(4, 7, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_9_registry_RegistryDiff = __Pyx_ImportType(__pyx_t_1, "yapic.entity._registry", "RegistryDiff", sizeof(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_9_registry_RegistryDiff) __PYX_ERR(4, 17, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

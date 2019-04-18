@@ -185,16 +185,25 @@ cdef dict collect_foreign_keys(EntityType entity):
     cdef ForeignKey fkInFks
 
     for field in entity.__fields__:
-        fk = <ForeignKey>field.get_ext(ForeignKey)
-        if fk is not None:
-            referenced = fk.ref
-
-            if fk.name in fks:
-                for fkInFks in fks[fk.name]:
-                    if fkInFks.ref._entity_ != referenced._entity_:
-                        raise ValueError("Can't use fields from different entities in the same foreign key")
-                fks[fk.name].append(fk)
+        for ext in field._exts_:
+            if isinstance(ext, ForeignKey):
+                fk = <ForeignKey>ext
             else:
-                fks[fk.name] = [fk]
+                continue
+
+            if fk is not None:
+                referenced = fk.ref
+
+                if fk.name in fks:
+                    for fkInFks in fks[fk.name]:
+                        if fkInFks.ref._entity_ != referenced._entity_:
+                            raise ValueError("Can't use fields from different entities in the same foreign key")
+                        elif fk.on_update != fkInFks.on_update:
+                            raise ValueError("Can't use different 'on_update' value in the same foreign key")
+                        elif fk.on_delete != fkInFks.on_delete:
+                            raise ValueError("Can't use different 'on_delete' value in the same foreign key")
+                    fks[fk.name].append(fk)
+                else:
+                    fks[fk.name] = [fk]
 
     return fks

@@ -28,6 +28,9 @@ cdef class PostgreDDLReflect(DDLReflect):
             fields = await self.get_fields(conn, schema, table)
             entity = await self.create_entity(conn, registry, schema, table, fields)
 
+        for schema, table in tables:
+            fks = await self.update_foreign_keys(conn, schema, table, registry)
+
     async def create_entity(self, Connection conn, Registry registry, str schema, str table, list fields):
         schema = None if schema == "public" else schema
         class ReflectedEntity(self.entity_base, registry=registry, __fields__=fields, name=table, schema=schema):
@@ -47,6 +50,32 @@ cdef class PostgreDDLReflect(DDLReflect):
                 AND "tc"."table_name" = '{table}'
             """)
         return [row[0] for row in rows]
+
+    async def get_foreign_keys(self, Connection conn, str schema, str table):
+        return await conn.conn.fetch(f"""
+            SELECT
+                "tc"."constraint_name",
+                "ccu"."table_schema",
+                "ccu"."table_name",
+                "ccu"."column_name",
+                "kcu"."column_name" as "field_name",
+                "rc"."update_rule",
+                "rc"."delete_rule"
+            FROM "information_schema"."table_constraints" "tc"
+                INNER JOIN "information_schema"."key_column_usage" "kcu"
+                    ON "tc"."constraint_name" = "kcu"."constraint_name"
+                    AND "tc"."constraint_schema" = "kcu"."constraint_schema"
+                INNER JOIN "information_schema"."constraint_column_usage" "ccu"
+                    ON "ccu"."constraint_name" = "tc"."constraint_name"
+                    AND "ccu"."constraint_schema" = "tc"."constraint_schema"
+                INNER JOIN "information_schema"."referential_constraints" "rc"
+                    ON "rc"."constraint_name" = "tc"."constraint_name"
+                    AND "rc"."constraint_schema" = "tc"."constraint_schema"
+            WHERE "tc"."constraint_type" = 'FOREIGN KEY'
+                AND "tc"."table_schema" = '{schema}'
+                AND "tc"."table_name" = '{table}'
+            ORDER BY "kcu"."ordinal_position"
+            """)
 
     async def get_fields(self, Connection conn, str schema, str table):
         fields = await conn.conn.fetch(f"""
@@ -121,6 +150,25 @@ cdef class PostgreDDLReflect(DDLReflect):
             field // PrimaryKey()
 
         return field
+
+    async def update_foreign_keys(self, Connection conn, str schema, str table, Registry registry):
+        fks = await self.get_foreign_keys(conn, schema, table)
+
+        entity = registry[f"{schema}.{table}" if schema != "public" else table]
+
+        for fk_desc in fks:
+            field = getattr(entity, fk_desc["field_name"])
+
+            if fk_desc["table_schema"] == "public":
+                ref_entity = registry[fk_desc["table_name"]]
+            else:
+                ref_entity = registry[f"{fk_desc['table_schema']}.{fk_desc['table_name']}"]
+
+            field // ForeignKey(getattr(ref_entity, fk_desc["column_name"]),
+                name=fk_desc["constraint_name"],
+                on_update=fk_desc["update_rule"],
+                on_delete=fk_desc["delete_rule"])
+
 
 
 

@@ -1,6 +1,7 @@
 
 
 from yapic.entity._entity cimport EntityType
+from yapic.entity._entity_diff cimport EntityDiff
 from yapic.entity._query cimport Query
 from yapic.entity._entity cimport EntityType, EntityBase
 from yapic.entity._registry cimport Registry, RegistryDiff
@@ -55,7 +56,10 @@ cdef class Connection:
         return reg
 
     def registry_diff(self, Registry a, Registry b):
-        return RegistryDiff(a, b, self.dialect.entity_diff)
+        return RegistryDiff(a, b, self.__entity_diff)
+
+    def __entity_diff(self, a, b):
+        return self.dialect.entity_diff(a, b)
 
     async def diff(self, Registry new_reg, EntityType entity_base=Entity):
         registry = await self.reflect(entity_base)

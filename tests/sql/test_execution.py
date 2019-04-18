@@ -1,7 +1,8 @@
 import pytest
 from datetime import datetime
-from yapic.sql import wrap_connection, Entity
-from yapic.entity import Field, Serial, Int, String, Date, DateTime, DateTimeTz, Bool, ForeignKey, One, Query, func, EntityDiff
+from yapic.sql import wrap_connection, Entity, sync
+from yapic.entity import (Field, Serial, Int, String, Date, DateTime, DateTimeTz, Bool, ForeignKey, One, Query, func,
+                          EntityDiff, Registry)
 
 pytestmark = pytest.mark.asyncio
 
@@ -121,9 +122,9 @@ async def test_reflect(conn):
 
 
 async def test_diff(conn):
-    ent_reg = await conn.reflect()
+    new_reg = Registry()
 
-    class User_changed(Entity):
+    class User(Entity, registry=new_reg):
         id: Serial
         name_x: String = Field(size=100)
         bio: String = Field(size=200)
@@ -138,5 +139,21 @@ async def test_diff(conn):
         created_time: DateTimeTz = func.CURRENT_TIMESTAMP
         updated_time: DateTimeTz
 
-    diff = conn.dialect.entity_diff(ent_reg["User"], User_changed)
-    print(diff.changes)
+    # diff = conn.dialect.entity_diff(ent_reg["User"], User_changed)
+    # print(diff.changes)
+    result = await sync(conn, new_reg)
+    assert result == """DROP TABLE "Address" CASCADE;
+DROP TABLE "private"."User" CASCADE;
+ALTER TABLE "User"
+  DROP COLUMN "name",
+  ADD COLUMN "name_x" VARCHAR(100),
+  ALTER COLUMN "bio" TYPE VARCHAR(200),
+  ALTER COLUMN "birth_date" TYPE TEXT,
+  ALTER COLUMN "naive_date" TYPE TIMESTAMPTZ,
+  ALTER COLUMN "naive_date" SET DEFAULT now(),
+  ALTER COLUMN "created_time" SET DEFAULT CURRENT_TIMESTAMP;"""
+
+    await conn.conn.execute(result)
+
+    result = await sync(conn, new_reg)
+    assert bool(result) is False

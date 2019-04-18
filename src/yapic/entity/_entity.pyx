@@ -43,22 +43,17 @@ cdef class EntityType(type):
         if is_alias:
             aliased = <EntityType>bases[0]
 
-            for k, v in aliased.__dict__.items():
+            for v in aliased.__attrs__:
                 if isinstance(v, EntityAttribute):
                     attr = (<EntityAttribute>v).clone()
-                    attr._attr_name_in_class = k
+                    attr._attr_name_in_class = (<EntityAttribute>v)._attr_name_in_class
 
                     if isinstance(attr, Field):
                         fields.append(attr)
                     else:
                         __attrs__.append(attr)
 
-                    # if isinstance(v, Field):
-                    #     fields.append(attr)
-                    # elif isinstance(v, Relation):
-                    #     relations.append(attr)
-
-                    setattr(self, k, attr)
+                    setattr(self, attr._attr_name_in_class, attr)
         elif fields:
             for attr in fields:
                 attr._attr_name_in_class = attr._name_
@@ -179,9 +174,9 @@ cdef EntityAttribute init_attribute(EntityAttribute by_type, object value):
         ext = <EntityAttributeExt>value
 
         if ext.attr:
-            by_type._exts_ = ext.attr._exts_
+            by_type._exts_.extend(ext.attr._exts_)
         else:
-            by_type._exts_ = [ext]
+            by_type._exts_.append(ext)
             by_type._exts_.extend(ext._tmp)
 
         for ext in by_type._exts_:

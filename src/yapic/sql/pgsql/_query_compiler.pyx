@@ -108,7 +108,10 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         for col in columns:
             if isinstance(col, EntityType):
                 self.select.append(col)
-                result.append(f"{self.table_alias[col][1]}.*")
+
+                tbl = self.table_alias[col][1]
+                for field in (<EntityType>col).__fields__:
+                    result.append(f"{tbl}.{self.dialect.quote_ident(field._name_)}")
             else:
                 result.append(self.visit(col))
 

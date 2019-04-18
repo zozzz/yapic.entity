@@ -4,3 +4,4 @@ from .relation import *  # noqa
 from ._query import *  # noqa
 from ._expression import *  # noqa
 from ._entity_diff import *  # noqa
+from ._registry import *  # noqa

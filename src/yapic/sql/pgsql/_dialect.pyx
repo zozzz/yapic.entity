@@ -30,7 +30,12 @@ cdef class PostgreDialect(Dialect):
         return (<PostgreTypeFactory>self.type_factory).quote_value(value)
 
     cpdef str table_qname(self, EntityType entity):
-        if "schema" in entity.__meta__:
-            return f"{self.quote_ident(entity.__meta__['schema'])}.{self.quote_ident(entity.__name__)}"
+        try:
+            schema = entity.__meta__["schema"]
+        except KeyError:
+            schema = None
+
+        if schema is not None:
+            return f"{self.quote_ident(schema)}.{self.quote_ident(entity.__name__)}"
         else:
             return self.quote_ident(entity.__name__)

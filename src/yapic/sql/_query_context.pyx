@@ -70,6 +70,9 @@ cdef class QueryContext:
 
         for i in range(length):
             col = PyList_GET_ITEM(<object>columns, i)
+
+            print(i, <object>col)
+
             if isinstance(<object>col, EntityType):
                 fc = len((<EntityType>col).__fields__)
                 entity = create_entity(<EntityType>col, row, c, c + fc)

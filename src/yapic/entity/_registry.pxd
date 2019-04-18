@@ -8,7 +8,9 @@ cdef class Registry:
     cdef readonly object entities
 
     cpdef object register(self, str name, EntityType entity)
-
+    cpdef keys(self)
+    cpdef values(self)
+    cpdef items(self)
 
 
 @cython.final

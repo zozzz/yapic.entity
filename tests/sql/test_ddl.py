@@ -1,6 +1,6 @@
 from enum import Enum, Flag
 
-from yapic.entity import Entity, Int, Serial, String, Choice, Field, PrimaryKey, ForeignKey, Date, DateTime, DateTimeTz, Bool, func
+from yapic.entity import Entity, Int, Serial, String, Choice, Field, PrimaryKey, ForeignKey, Date, DateTime, DateTimeTz, Bool, func, const
 from yapic.sql import PostgreDialect
 
 dialect = PostgreDialect()
@@ -64,20 +64,23 @@ def test_int():
 
     result = ddl.compile_entity(Pk_small)
     assert result == """CREATE TABLE "Pk_small" (
-  "id" SERIAL2 PRIMARY KEY NOT NULL,
-  "id2" SERIAL2 PRIMARY KEY NOT NULL
+  "id" SERIAL2 NOT NULL,
+  "id2" SERIAL2 NOT NULL,
+  PRIMARY KEY("id", "id2")
 );"""
 
     result = ddl.compile_entity(Pk_medium)
     assert result == """CREATE TABLE "Pk_medium" (
-  "id" SERIAL4 PRIMARY KEY NOT NULL,
-  "id2" SERIAL4 PRIMARY KEY NOT NULL
+  "id" SERIAL4 NOT NULL,
+  "id2" SERIAL4 NOT NULL,
+  PRIMARY KEY("id", "id2")
 );"""
 
     result = ddl.compile_entity(Pk_large)
     assert result == """CREATE TABLE "Pk_large" (
-  "id" SERIAL8 PRIMARY KEY NOT NULL,
-  "id2" SERIAL8 PRIMARY KEY NOT NULL
+  "id" SERIAL8 NOT NULL,
+  "id2" SERIAL8 NOT NULL,
+  PRIMARY KEY("id", "id2")
 );"""
 
 
@@ -90,10 +93,11 @@ def test_string():
 
     result = ddl.compile_entity(A)
     assert result == """CREATE TABLE "A" (
-  "id" CHAR(10) PRIMARY KEY NOT NULL,
+  "id" CHAR(10) NOT NULL,
   "name" VARCHAR(50),
   "email" VARCHAR(50),
-  "description" TEXT
+  "description" TEXT,
+  PRIMARY KEY("id")
 );"""
 
 
@@ -108,58 +112,73 @@ def test_enum():
         GREEN = 2
         BLUE = 4
 
-    class A(Entity):
+    class A2(Entity):
         mood: Choice[Mood]
         colors: Choice[Color]
 
-    result = ddl.compile_entity(A)
-    assert result == """CREATE TABLE "A" (
+    result = ddl.compile_entity(A2)
+    assert result == """CREATE TABLE "A2" (
   "mood" VARCHAR(5) CHECK("mood" IN ('sad', 'ok', 'happy')),
   "colors" BIT(3)
 );"""
 
 
 def test_fk():
-    class A(Entity):
+    class A3(Entity):
         id: Serial
 
     class X(Entity, schema="x_schema", name="y"):
         id: Serial
 
+    class Z(Entity):
+        id1: Serial
+        id2: Serial
+
     class B(Entity):
-        id: Serial
-        id_a: Int = ForeignKey(A.id)
+        id: Serial = ForeignKey(Z.id1, name="composite_fk")
+        id_a: Int = ForeignKey(A3.id) // ForeignKey(Z.id2, name="composite_fk")
         id_x: Int = ForeignKey(X.id)
+
+    result = ddl.compile_entity(Z)
+    assert result == """CREATE TABLE "Z" (
+  "id1" SERIAL4 NOT NULL,
+  "id2" SERIAL4 NOT NULL,
+  PRIMARY KEY("id1", "id2")
+);"""
 
     result = ddl.compile_entity(B)
     assert result == """CREATE TABLE "B" (
-  "id" SERIAL PRIMARY KEY NOT NULL,
-  "id_a" INT,
-  "id_x" INT,
-  CONSTRAINT "fk_B__id_a-A__id" FOREIGN KEY ("id_a") REFERENCES "A" ("id"),
-  CONSTRAINT "fk_B__id_x-y__id" FOREIGN KEY ("id_x") REFERENCES "x_schema"."y" ("id")
+  "id" SERIAL4 NOT NULL,
+  "id_a" INT4,
+  "id_x" INT4,
+  PRIMARY KEY("id"),
+  CONSTRAINT "composite_fk" FOREIGN KEY ("id", "id_a") REFERENCES "Z" ("id1", "id2") ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT "fk_B__id_a-A3__id" FOREIGN KEY ("id_a") REFERENCES "A3" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT "fk_B__id_x-y__id" FOREIGN KEY ("id_x") REFERENCES "x_schema"."y" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
 );"""
 
 
 def test_date():
-    class A(Entity):
+    class A4(Entity):
         date: Date
         date_time: DateTime
         date_time_tz: DateTimeTz = func.now()
+        date_time_tz2: DateTimeTz = const.CURRENT_TIMESTAMP
 
-    result = ddl.compile_entity(A)
-    assert result == """CREATE TABLE "A" (
+    result = ddl.compile_entity(A4)
+    assert result == """CREATE TABLE "A4" (
   "date" DATE,
   "date_time" TIMESTAMP,
-  "date_time_tz" TIMESTAMPTZ NOT NULL DEFAULT now()
+  "date_time_tz" TIMESTAMPTZ NOT NULL DEFAULT now(),
+  "date_time_tz2" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );"""
 
 
 def test_bool():
-    class A(Entity):
+    class A5(Entity):
         is_active: Bool = 1
 
-    result = ddl.compile_entity(A)
-    assert result == """CREATE TABLE "A" (
+    result = ddl.compile_entity(A5)
+    assert result == """CREATE TABLE "A5" (
   "is_active" BOOLEAN NOT NULL DEFAULT TRUE
 );"""
