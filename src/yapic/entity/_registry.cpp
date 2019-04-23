@@ -1122,10 +1122,13 @@ struct __pyx_obj_5yapic_6entity_9_registry_Registry {
  * 
  * @cython.final
  * cdef class RegistryDiff:             # <<<<<<<<<<<<<<
- *     cdef readonly list changes
+ *     cdef readonly Registry a
+ *     cdef readonly Registry b
  */
 struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff {
   PyObject_HEAD
+  struct __pyx_obj_5yapic_6entity_9_registry_Registry *a;
+  struct __pyx_obj_5yapic_6entity_9_registry_Registry *b;
   PyObject *changes;
 };
 
@@ -1896,6 +1899,8 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
 static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_2__bool__(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_self); /* proto */
 static Py_ssize_t __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_4__len__(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_6__iter__(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_1a___get__(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_1b___get__(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_7changes___get__(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_5yapic_6entity_9_registry_Registry(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5yapic_6entity_9_registry_RegistryDiff(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -2626,8 +2631,8 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_8Registry_8entities___get__(
  * @cython.final
  * cdef class RegistryDiff:
  *     def __cinit__(self, Registry a, Registry b, object entity_diff):             # <<<<<<<<<<<<<<
- *         self.changes = []
- * 
+ *         self.a = a
+ *         self.b = b
  */
 
 /* Python wrapper */
@@ -2733,11 +2738,37 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
   /* "yapic/entity/_registry.pyx":43
  * cdef class RegistryDiff:
  *     def __cinit__(self, Registry a, Registry b, object entity_diff):
+ *         self.a = a             # <<<<<<<<<<<<<<
+ *         self.b = b
+ *         self.changes = []
+ */
+  __Pyx_INCREF(((PyObject *)__pyx_v_a));
+  __Pyx_GIVEREF(((PyObject *)__pyx_v_a));
+  __Pyx_GOTREF(__pyx_v_self->a);
+  __Pyx_DECREF(((PyObject *)__pyx_v_self->a));
+  __pyx_v_self->a = __pyx_v_a;
+
+  /* "yapic/entity/_registry.pyx":44
+ *     def __cinit__(self, Registry a, Registry b, object entity_diff):
+ *         self.a = a
+ *         self.b = b             # <<<<<<<<<<<<<<
+ *         self.changes = []
+ * 
+ */
+  __Pyx_INCREF(((PyObject *)__pyx_v_b));
+  __Pyx_GIVEREF(((PyObject *)__pyx_v_b));
+  __Pyx_GOTREF(__pyx_v_self->b);
+  __Pyx_DECREF(((PyObject *)__pyx_v_self->b));
+  __pyx_v_self->b = __pyx_v_b;
+
+  /* "yapic/entity/_registry.pyx":45
+ *         self.a = a
+ *         self.b = b
  *         self.changes = []             # <<<<<<<<<<<<<<
  * 
  *         a_names = set(a.keys())
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->changes);
@@ -2745,69 +2776,69 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
   __pyx_v_self->changes = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/entity/_registry.pyx":45
+  /* "yapic/entity/_registry.pyx":47
  *         self.changes = []
  * 
  *         a_names = set(a.keys())             # <<<<<<<<<<<<<<
  *         b_names = set(b.keys())
  * 
  */
-  __pyx_t_1 = __pyx_f_5yapic_6entity_9_registry_8Registry_keys(__pyx_v_a, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_9_registry_8Registry_keys(__pyx_v_a, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PySet_New(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_t_2 = PySet_New(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_a_names = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "yapic/entity/_registry.pyx":46
+  /* "yapic/entity/_registry.pyx":48
  * 
  *         a_names = set(a.keys())
  *         b_names = set(b.keys())             # <<<<<<<<<<<<<<
  * 
  *         for removed in sorted(a_names - b_names):
  */
-  __pyx_t_2 = __pyx_f_5yapic_6entity_9_registry_8Registry_keys(__pyx_v_b, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_5yapic_6entity_9_registry_8Registry_keys(__pyx_v_b, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = PySet_New(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_t_1 = PySet_New(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_b_names = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/entity/_registry.pyx":48
+  /* "yapic/entity/_registry.pyx":50
  *         b_names = set(b.keys())
  * 
  *         for removed in sorted(a_names - b_names):             # <<<<<<<<<<<<<<
  *             self.changes.append((RegistryDiffKind.REMOVED, a[removed]))
  * 
  */
-  __pyx_t_2 = PyNumber_Subtract(__pyx_v_a_names, __pyx_v_b_names); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_Subtract(__pyx_v_a_names, __pyx_v_b_names); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PySequence_List(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_3 = PySequence_List(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_1 = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_4 = PyList_Sort(__pyx_t_1); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_4 = PyList_Sort(__pyx_t_1); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 50, __pyx_L1_error)
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 48, __pyx_L1_error)
+    __PYX_ERR(0, 50, __pyx_L1_error)
   }
   __pyx_t_3 = __pyx_t_1; __Pyx_INCREF(__pyx_t_3); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
     if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_3)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_1 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 48, __pyx_L1_error)
+    __pyx_t_1 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 50, __pyx_L1_error)
     #else
-    __pyx_t_1 = PySequence_ITEM(__pyx_t_3, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
+    __pyx_t_1 = PySequence_ITEM(__pyx_t_3, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     #endif
     __Pyx_XDECREF_SET(__pyx_v_removed, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "yapic/entity/_registry.pyx":49
+    /* "yapic/entity/_registry.pyx":51
  * 
  *         for removed in sorted(a_names - b_names):
  *             self.changes.append((RegistryDiffKind.REMOVED, a[removed]))             # <<<<<<<<<<<<<<
@@ -2816,16 +2847,16 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
  */
     if (unlikely(__pyx_v_self->changes == Py_None)) {
       PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
-      __PYX_ERR(0, 49, __pyx_L1_error)
+      __PYX_ERR(0, 51, __pyx_L1_error)
     }
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_REMOVED); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_REMOVED); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 51, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_v_removed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_v_removed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 49, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 51, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_GIVEREF(__pyx_t_2);
     PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_2);
@@ -2833,10 +2864,10 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
     PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_1);
     __pyx_t_2 = 0;
     __pyx_t_1 = 0;
-    __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_self->changes, __pyx_t_6); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 49, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_self->changes, __pyx_t_6); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 51, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "yapic/entity/_registry.pyx":48
+    /* "yapic/entity/_registry.pyx":50
  *         b_names = set(b.keys())
  * 
  *         for removed in sorted(a_names - b_names):             # <<<<<<<<<<<<<<
@@ -2846,39 +2877,39 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "yapic/entity/_registry.pyx":51
+  /* "yapic/entity/_registry.pyx":53
  *             self.changes.append((RegistryDiffKind.REMOVED, a[removed]))
  * 
  *         for created in sorted(b_names - a_names):             # <<<<<<<<<<<<<<
  *             self.changes.append((RegistryDiffKind.CREATED, b[created]))
  * 
  */
-  __pyx_t_6 = PyNumber_Subtract(__pyx_v_b_names, __pyx_v_a_names); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_6 = PyNumber_Subtract(__pyx_v_b_names, __pyx_v_a_names); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_1 = PySequence_List(__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_1 = PySequence_List(__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_3 = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_4 = PyList_Sort(__pyx_t_3); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_4 = PyList_Sort(__pyx_t_3); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 53, __pyx_L1_error)
   if (unlikely(__pyx_t_3 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 51, __pyx_L1_error)
+    __PYX_ERR(0, 53, __pyx_L1_error)
   }
   __pyx_t_1 = __pyx_t_3; __Pyx_INCREF(__pyx_t_1); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   for (;;) {
     if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_1)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_3); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 51, __pyx_L1_error)
+    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_3); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 53, __pyx_L1_error)
     #else
-    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 51, __pyx_L1_error)
+    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 53, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     #endif
     __Pyx_XDECREF_SET(__pyx_v_created, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "yapic/entity/_registry.pyx":52
+    /* "yapic/entity/_registry.pyx":54
  * 
  *         for created in sorted(b_names - a_names):
  *             self.changes.append((RegistryDiffKind.CREATED, b[created]))             # <<<<<<<<<<<<<<
@@ -2887,16 +2918,16 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
  */
     if (unlikely(__pyx_v_self->changes == Py_None)) {
       PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
-      __PYX_ERR(0, 52, __pyx_L1_error)
+      __PYX_ERR(0, 54, __pyx_L1_error)
     }
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 52, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 54, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_CREATED); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 52, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_CREATED); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 54, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_b), __pyx_v_created); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 52, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_b), __pyx_v_created); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 54, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
+    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_GIVEREF(__pyx_t_6);
     PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_6);
@@ -2904,10 +2935,10 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
     PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_3);
     __pyx_t_6 = 0;
     __pyx_t_3 = 0;
-    __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_self->changes, __pyx_t_2); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 52, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_self->changes, __pyx_t_2); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 54, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "yapic/entity/_registry.pyx":51
+    /* "yapic/entity/_registry.pyx":53
  *             self.changes.append((RegistryDiffKind.REMOVED, a[removed]))
  * 
  *         for created in sorted(b_names - a_names):             # <<<<<<<<<<<<<<
@@ -2917,48 +2948,48 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "yapic/entity/_registry.pyx":54
+  /* "yapic/entity/_registry.pyx":56
  *             self.changes.append((RegistryDiffKind.CREATED, b[created]))
  * 
  *         for maybe_changed in sorted(a_names & b_names):             # <<<<<<<<<<<<<<
  *             diff = entity_diff(a[maybe_changed], b[maybe_changed])
  *             if diff:
  */
-  __pyx_t_2 = PyNumber_And(__pyx_v_a_names, __pyx_v_b_names); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_And(__pyx_v_a_names, __pyx_v_b_names); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PySequence_List(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_3 = PySequence_List(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_1 = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_4 = PyList_Sort(__pyx_t_1); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_4 = PyList_Sort(__pyx_t_1); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 56, __pyx_L1_error)
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 54, __pyx_L1_error)
+    __PYX_ERR(0, 56, __pyx_L1_error)
   }
   __pyx_t_3 = __pyx_t_1; __Pyx_INCREF(__pyx_t_3); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
     if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_3)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_1 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 54, __pyx_L1_error)
+    __pyx_t_1 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 56, __pyx_L1_error)
     #else
-    __pyx_t_1 = PySequence_ITEM(__pyx_t_3, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
+    __pyx_t_1 = PySequence_ITEM(__pyx_t_3, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 56, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     #endif
     __Pyx_XDECREF_SET(__pyx_v_maybe_changed, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "yapic/entity/_registry.pyx":55
+    /* "yapic/entity/_registry.pyx":57
  * 
  *         for maybe_changed in sorted(a_names & b_names):
  *             diff = entity_diff(a[maybe_changed], b[maybe_changed])             # <<<<<<<<<<<<<<
  *             if diff:
  *                 self.changes.append((RegistryDiffKind.CHANGED, diff))
  */
-    __pyx_t_2 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_v_maybe_changed); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_v_maybe_changed); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_6 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_b), __pyx_v_maybe_changed); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_b), __pyx_v_maybe_changed); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 57, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_INCREF(__pyx_v_entity_diff);
     __pyx_t_7 = __pyx_v_entity_diff; __pyx_t_8 = NULL;
@@ -2976,7 +3007,7 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_7)) {
       PyObject *__pyx_temp[3] = {__pyx_t_8, __pyx_t_2, __pyx_t_6};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -2986,7 +3017,7 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_7)) {
       PyObject *__pyx_temp[3] = {__pyx_t_8, __pyx_t_2, __pyx_t_6};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -2994,7 +3025,7 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
     } else
     #endif
     {
-      __pyx_t_10 = PyTuple_New(2+__pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 55, __pyx_L1_error)
+      __pyx_t_10 = PyTuple_New(2+__pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 57, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       if (__pyx_t_8) {
         __Pyx_GIVEREF(__pyx_t_8); PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_8); __pyx_t_8 = NULL;
@@ -3005,7 +3036,7 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
       PyTuple_SET_ITEM(__pyx_t_10, 1+__pyx_t_9, __pyx_t_6);
       __pyx_t_2 = 0;
       __pyx_t_6 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_10, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_10, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     }
@@ -3013,17 +3044,17 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
     __Pyx_XDECREF_SET(__pyx_v_diff, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "yapic/entity/_registry.pyx":56
+    /* "yapic/entity/_registry.pyx":58
  *         for maybe_changed in sorted(a_names & b_names):
  *             diff = entity_diff(a[maybe_changed], b[maybe_changed])
  *             if diff:             # <<<<<<<<<<<<<<
  *                 self.changes.append((RegistryDiffKind.CHANGED, diff))
  * 
  */
-    __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_v_diff); if (unlikely(__pyx_t_11 < 0)) __PYX_ERR(0, 56, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_v_diff); if (unlikely(__pyx_t_11 < 0)) __PYX_ERR(0, 58, __pyx_L1_error)
     if (__pyx_t_11) {
 
-      /* "yapic/entity/_registry.pyx":57
+      /* "yapic/entity/_registry.pyx":59
  *             diff = entity_diff(a[maybe_changed], b[maybe_changed])
  *             if diff:
  *                 self.changes.append((RegistryDiffKind.CHANGED, diff))             # <<<<<<<<<<<<<<
@@ -3032,14 +3063,14 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
  */
       if (unlikely(__pyx_v_self->changes == Py_None)) {
         PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
-        __PYX_ERR(0, 57, __pyx_L1_error)
+        __PYX_ERR(0, 59, __pyx_L1_error)
       }
-      __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_CHANGED); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 57, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_CHANGED); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 59, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
+      __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_GIVEREF(__pyx_t_7);
       PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_7);
@@ -3047,10 +3078,10 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
       __Pyx_GIVEREF(__pyx_v_diff);
       PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_diff);
       __pyx_t_7 = 0;
-      __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_self->changes, __pyx_t_1); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 57, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_self->changes, __pyx_t_1); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 59, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "yapic/entity/_registry.pyx":56
+      /* "yapic/entity/_registry.pyx":58
  *         for maybe_changed in sorted(a_names & b_names):
  *             diff = entity_diff(a[maybe_changed], b[maybe_changed])
  *             if diff:             # <<<<<<<<<<<<<<
@@ -3059,7 +3090,7 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
  */
     }
 
-    /* "yapic/entity/_registry.pyx":54
+    /* "yapic/entity/_registry.pyx":56
  *             self.changes.append((RegistryDiffKind.CREATED, b[created]))
  * 
  *         for maybe_changed in sorted(a_names & b_names):             # <<<<<<<<<<<<<<
@@ -3073,8 +3104,8 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
  * @cython.final
  * cdef class RegistryDiff:
  *     def __cinit__(self, Registry a, Registry b, object entity_diff):             # <<<<<<<<<<<<<<
- *         self.changes = []
- * 
+ *         self.a = a
+ *         self.b = b
  */
 
   /* function exit code */
@@ -3101,7 +3132,7 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
   return __pyx_r;
 }
 
-/* "yapic/entity/_registry.pyx":59
+/* "yapic/entity/_registry.pyx":61
  *                 self.changes.append((RegistryDiffKind.CHANGED, diff))
  * 
  *     def __bool__(self):             # <<<<<<<<<<<<<<
@@ -3129,7 +3160,7 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_2__bool__(struct __
   Py_ssize_t __pyx_t_2;
   __Pyx_RefNannySetupContext("__bool__", 0);
 
-  /* "yapic/entity/_registry.pyx":60
+  /* "yapic/entity/_registry.pyx":62
  * 
  *     def __bool__(self):
  *         return len(self.changes) > 0             # <<<<<<<<<<<<<<
@@ -3140,14 +3171,14 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_2__bool__(struct __
   __Pyx_INCREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 60, __pyx_L1_error)
+    __PYX_ERR(0, 62, __pyx_L1_error)
   }
-  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 62, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = (__pyx_t_2 > 0);
   goto __pyx_L0;
 
-  /* "yapic/entity/_registry.pyx":59
+  /* "yapic/entity/_registry.pyx":61
  *                 self.changes.append((RegistryDiffKind.CHANGED, diff))
  * 
  *     def __bool__(self):             # <<<<<<<<<<<<<<
@@ -3165,7 +3196,7 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_2__bool__(struct __
   return __pyx_r;
 }
 
-/* "yapic/entity/_registry.pyx":62
+/* "yapic/entity/_registry.pyx":64
  *         return len(self.changes) > 0
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -3193,7 +3224,7 @@ static Py_ssize_t __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_4__len__(str
   Py_ssize_t __pyx_t_2;
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "yapic/entity/_registry.pyx":63
+  /* "yapic/entity/_registry.pyx":65
  * 
  *     def __len__(self):
  *         return len(self.changes)             # <<<<<<<<<<<<<<
@@ -3204,14 +3235,14 @@ static Py_ssize_t __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_4__len__(str
   __Pyx_INCREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 63, __pyx_L1_error)
+    __PYX_ERR(0, 65, __pyx_L1_error)
   }
-  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 65, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   goto __pyx_L0;
 
-  /* "yapic/entity/_registry.pyx":62
+  /* "yapic/entity/_registry.pyx":64
  *         return len(self.changes) > 0
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -3229,7 +3260,7 @@ static Py_ssize_t __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_4__len__(str
   return __pyx_r;
 }
 
-/* "yapic/entity/_registry.pyx":65
+/* "yapic/entity/_registry.pyx":67
  *         return len(self.changes)
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -3256,7 +3287,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_6__iter__(str
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__iter__", 0);
 
-  /* "yapic/entity/_registry.pyx":66
+  /* "yapic/entity/_registry.pyx":68
  * 
  *     def __iter__(self):
  *         return iter(self.changes)             # <<<<<<<<<<<<<<
@@ -3264,14 +3295,14 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_6__iter__(str
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __pyx_v_self->changes;
   __Pyx_INCREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 66, __pyx_L1_error)
+  __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "yapic/entity/_registry.pyx":65
+  /* "yapic/entity/_registry.pyx":67
  *         return len(self.changes)
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -3293,6 +3324,80 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_6__iter__(str
 /* "yapic/entity/_registry.pxd":18
  * @cython.final
  * cdef class RegistryDiff:
+ *     cdef readonly Registry a             # <<<<<<<<<<<<<<
+ *     cdef readonly Registry b
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5yapic_6entity_9_registry_12RegistryDiff_1a_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_9_registry_12RegistryDiff_1a_1__get__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_1a___get__(((struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_1a___get__(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(((PyObject *)__pyx_v_self->a));
+  __pyx_r = ((PyObject *)__pyx_v_self->a);
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "yapic/entity/_registry.pxd":19
+ * cdef class RegistryDiff:
+ *     cdef readonly Registry a
+ *     cdef readonly Registry b             # <<<<<<<<<<<<<<
+ * 
+ *     cdef readonly list changes
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5yapic_6entity_9_registry_12RegistryDiff_1b_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_9_registry_12RegistryDiff_1b_1__get__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_1b___get__(((struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_1b___get__(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(((PyObject *)__pyx_v_self->b));
+  __pyx_r = ((PyObject *)__pyx_v_self->b);
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "yapic/entity/_registry.pxd":21
+ *     cdef readonly Registry b
+ * 
  *     cdef readonly list changes             # <<<<<<<<<<<<<<
  */
 
@@ -3473,6 +3578,8 @@ static PyObject *__pyx_tp_new_5yapic_6entity_9_registry_RegistryDiff(PyTypeObjec
   o = (*t->tp_alloc)(t, 0);
   if (unlikely(!o)) return 0;
   p = ((struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *)o);
+  p->a = ((struct __pyx_obj_5yapic_6entity_9_registry_Registry *)Py_None); Py_INCREF(Py_None);
+  p->b = ((struct __pyx_obj_5yapic_6entity_9_registry_Registry *)Py_None); Py_INCREF(Py_None);
   p->changes = ((PyObject*)Py_None); Py_INCREF(Py_None);
   if (unlikely(__pyx_pw_5yapic_6entity_9_registry_12RegistryDiff_1__cinit__(o, a, k) < 0)) goto bad;
   return o;
@@ -3484,6 +3591,8 @@ static PyObject *__pyx_tp_new_5yapic_6entity_9_registry_RegistryDiff(PyTypeObjec
 static void __pyx_tp_dealloc_5yapic_6entity_9_registry_RegistryDiff(PyObject *o) {
   struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *p = (struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *)o;
   PyObject_GC_UnTrack(o);
+  Py_CLEAR(p->a);
+  Py_CLEAR(p->b);
   Py_CLEAR(p->changes);
   (*Py_TYPE(o)->tp_free)(o);
 }
@@ -3491,6 +3600,12 @@ static void __pyx_tp_dealloc_5yapic_6entity_9_registry_RegistryDiff(PyObject *o)
 static int __pyx_tp_traverse_5yapic_6entity_9_registry_RegistryDiff(PyObject *o, visitproc v, void *a) {
   int e;
   struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *p = (struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *)o;
+  if (p->a) {
+    e = (*v)(((PyObject *)p->a), a); if (e) return e;
+  }
+  if (p->b) {
+    e = (*v)(((PyObject *)p->b), a); if (e) return e;
+  }
   if (p->changes) {
     e = (*v)(p->changes, a); if (e) return e;
   }
@@ -3500,10 +3615,24 @@ static int __pyx_tp_traverse_5yapic_6entity_9_registry_RegistryDiff(PyObject *o,
 static int __pyx_tp_clear_5yapic_6entity_9_registry_RegistryDiff(PyObject *o) {
   PyObject* tmp;
   struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *p = (struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *)o;
+  tmp = ((PyObject*)p->a);
+  p->a = ((struct __pyx_obj_5yapic_6entity_9_registry_Registry *)Py_None); Py_INCREF(Py_None);
+  Py_XDECREF(tmp);
+  tmp = ((PyObject*)p->b);
+  p->b = ((struct __pyx_obj_5yapic_6entity_9_registry_Registry *)Py_None); Py_INCREF(Py_None);
+  Py_XDECREF(tmp);
   tmp = ((PyObject*)p->changes);
   p->changes = ((PyObject*)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   return 0;
+}
+
+static PyObject *__pyx_getprop_5yapic_6entity_9_registry_12RegistryDiff_a(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_5yapic_6entity_9_registry_12RegistryDiff_1a_1__get__(o);
+}
+
+static PyObject *__pyx_getprop_5yapic_6entity_9_registry_12RegistryDiff_b(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_5yapic_6entity_9_registry_12RegistryDiff_1b_1__get__(o);
 }
 
 static PyObject *__pyx_getprop_5yapic_6entity_9_registry_12RegistryDiff_changes(PyObject *o, CYTHON_UNUSED void *x) {
@@ -3515,6 +3644,8 @@ static PyMethodDef __pyx_methods_5yapic_6entity_9_registry_RegistryDiff[] = {
 };
 
 static struct PyGetSetDef __pyx_getsets_5yapic_6entity_9_registry_RegistryDiff[] = {
+  {(char *)"a", __pyx_getprop_5yapic_6entity_9_registry_12RegistryDiff_a, 0, (char *)0, 0},
+  {(char *)"b", __pyx_getprop_5yapic_6entity_9_registry_12RegistryDiff_b, 0, (char *)0, 0},
   {(char *)"changes", __pyx_getprop_5yapic_6entity_9_registry_12RegistryDiff_changes, 0, (char *)0, 0},
   {0, 0, 0, 0, 0}
 };

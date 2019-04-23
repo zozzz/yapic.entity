@@ -103,6 +103,7 @@ cdef class DDLCompiler:
 
     def compile_registry_diff(self, RegistryDiff diff):
         lines = []
+        schemas_created = {ent.__meta__.get("schema", "public") for ent in diff.a.values()}
 
         # TODO: entity dependency order
 
@@ -110,6 +111,11 @@ cdef class DDLCompiler:
             if kind == RegistryDiffKind.REMOVED:
                 lines.append(self.drop_entity(param))
             elif kind == RegistryDiffKind.CREATED:
+                schema = param.__meta__.get("schema", "public")
+                if schema not in schemas_created:
+                    schemas_created.add(schema)
+                    lines.append(f"CREATE SCHEMA IF NOT EXISTS {self.dialect.quote_ident(schema)};")
+
                 lines.append(self.compile_entity(param))
             elif kind == RegistryDiffKind.CHANGED:
                 lines.append(self.compile_entity_diff(param))

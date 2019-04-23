@@ -40,6 +40,8 @@ class RegistryDiffKind(Enum):
 @cython.final
 cdef class RegistryDiff:
     def __cinit__(self, Registry a, Registry b, object entity_diff):
+        self.a = a
+        self.b = b
         self.changes = []
 
         a_names = set(a.keys())

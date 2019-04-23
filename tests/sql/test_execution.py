@@ -139,11 +139,19 @@ async def test_diff(conn):
         created_time: DateTimeTz = func.CURRENT_TIMESTAMP
         updated_time: DateTimeTz
 
+    class NewTable(Entity, registry=new_reg, schema="_private"):
+        id: Serial
+
     # diff = conn.dialect.entity_diff(ent_reg["User"], User_changed)
     # print(diff.changes)
     result = await sync(conn, new_reg)
     assert result == """DROP TABLE "Address" CASCADE;
 DROP TABLE "private"."User" CASCADE;
+CREATE SCHEMA IF NOT EXISTS "_private";
+CREATE TABLE "_private"."NewTable" (
+  "id" SERIAL4 NOT NULL,
+  PRIMARY KEY("id")
+);
 ALTER TABLE "User"
   DROP COLUMN "name",
   ADD COLUMN "name_x" VARCHAR(100),
