@@ -149,7 +149,7 @@ cdef class DDLCompiler:
             type = self.dialect.get_field_type(field)
             if type is None:
                 raise ValueError("Cannot determine the sql type of %r" % field)
-            result.append(f"ALTER COLUMN {col_name} TYPE {type.name}")
+            result.append(f"ALTER COLUMN {col_name} TYPE {type.name} USING {col_name}::{type.name}")
 
         if "nullable" in diff:
             if diff["nullable"]:

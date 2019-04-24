@@ -131,7 +131,7 @@ async def test_diff(conn):
         id: Serial
         name_x: String = Field(size=100)
         bio: String = Field(size=200)
-        fixed_char: String = Field(size=[5, 5])
+        fixed_char: Bytes
         secret: Bytes
 
         address_id: Int = ForeignKey(Address.id)
@@ -146,9 +146,12 @@ async def test_diff(conn):
     class NewTable(Entity, registry=new_reg, schema="_private"):
         id: Serial
 
+    await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
+
     # diff = conn.dialect.entity_diff(ent_reg["User"], User_changed)
     # print(diff.changes)
     result = await sync(conn, new_reg)
+
     assert result == """DROP TABLE "Address" CASCADE;
 DROP TABLE "private"."User" CASCADE;
 CREATE SCHEMA IF NOT EXISTS "_private";
@@ -159,9 +162,10 @@ CREATE TABLE "_private"."NewTable" (
 ALTER TABLE "User"
   DROP COLUMN "name",
   ADD COLUMN "name_x" VARCHAR(100),
-  ALTER COLUMN "bio" TYPE VARCHAR(200),
-  ALTER COLUMN "birth_date" TYPE TEXT,
-  ALTER COLUMN "naive_date" TYPE TIMESTAMPTZ,
+  ALTER COLUMN "bio" TYPE VARCHAR(200) USING "bio"::VARCHAR(200),
+  ALTER COLUMN "fixed_char" TYPE BYTEA USING "fixed_char"::BYTEA,
+  ALTER COLUMN "birth_date" TYPE TEXT USING "birth_date"::TEXT,
+  ALTER COLUMN "naive_date" TYPE TIMESTAMPTZ USING "naive_date"::TIMESTAMPTZ,
   ALTER COLUMN "naive_date" SET DEFAULT now(),
   ALTER COLUMN "created_time" SET DEFAULT CURRENT_TIMESTAMP;"""
 

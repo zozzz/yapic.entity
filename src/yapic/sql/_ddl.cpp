@@ -2567,6 +2567,7 @@ static const char __pyx_k__9[] = " ";
 static const char __pyx_k__10[] = " (";
 static const char __pyx_k__12[] = ";";
 static const char __pyx_k__13[] = "\n  ";
+static const char __pyx_k__14[] = "::";
 static const char __pyx_k_get[] = "get";
 static const char __pyx_k_ref[] = "ref";
 static const char __pyx_k_None[] = "None";
@@ -2581,6 +2582,7 @@ static const char __pyx_k_name[] = "_name_";
 static const char __pyx_k_send[] = "send";
 static const char __pyx_k_size[] = "size";
 static const char __pyx_k_test[] = "__test__";
+static const char __pyx_k_USING[] = " USING ";
 static const char __pyx_k_close[] = "close";
 static const char __pyx_k_field[] = "field";
 static const char __pyx_k_items[] = "items";
@@ -2681,10 +2683,12 @@ static PyObject *__pyx_n_s_RegistryDiffKind;
 static PyObject *__pyx_kp_u_SET_DEFAULT;
 static PyObject *__pyx_kp_u_SET_NOT_NULL;
 static PyObject *__pyx_kp_u_TYPE;
+static PyObject *__pyx_kp_u_USING;
 static PyObject *__pyx_n_s_ValueError;
 static PyObject *__pyx_kp_u__10;
 static PyObject *__pyx_kp_u__12;
 static PyObject *__pyx_kp_u__13;
+static PyObject *__pyx_kp_u__14;
 static PyObject *__pyx_kp_u__2;
 static PyObject *__pyx_kp_u__3;
 static PyObject *__pyx_kp_u__4;
@@ -5529,7 +5533,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
  *             type = self.dialect.get_field_type(field)
  *             if type is None:             # <<<<<<<<<<<<<<
  *                 raise ValueError("Cannot determine the sql type of %r" % field)
- *             result.append(f"ALTER COLUMN {col_name} TYPE {type.name}")
+ *             result.append(f"ALTER COLUMN {col_name} TYPE {type.name} USING {col_name}::{type.name}")
  */
     __pyx_t_3 = (((PyObject *)__pyx_v_type) == Py_None);
     __pyx_t_4 = (__pyx_t_3 != 0);
@@ -5539,7 +5543,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
  *             type = self.dialect.get_field_type(field)
  *             if type is None:
  *                 raise ValueError("Cannot determine the sql type of %r" % field)             # <<<<<<<<<<<<<<
- *             result.append(f"ALTER COLUMN {col_name} TYPE {type.name}")
+ *             result.append(f"ALTER COLUMN {col_name} TYPE {type.name} USING {col_name}::{type.name}")
  * 
  */
       __pyx_t_2 = PyUnicode_Format(__pyx_kp_u_Cannot_determine_the_sql_type_of, ((PyObject *)__pyx_v_field)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 151, __pyx_L1_error)
@@ -5556,18 +5560,18 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
  *             type = self.dialect.get_field_type(field)
  *             if type is None:             # <<<<<<<<<<<<<<
  *                 raise ValueError("Cannot determine the sql type of %r" % field)
- *             result.append(f"ALTER COLUMN {col_name} TYPE {type.name}")
+ *             result.append(f"ALTER COLUMN {col_name} TYPE {type.name} USING {col_name}::{type.name}")
  */
     }
 
     /* "yapic/sql/_ddl.pyx":152
  *             if type is None:
  *                 raise ValueError("Cannot determine the sql type of %r" % field)
- *             result.append(f"ALTER COLUMN {col_name} TYPE {type.name}")             # <<<<<<<<<<<<<<
+ *             result.append(f"ALTER COLUMN {col_name} TYPE {type.name} USING {col_name}::{type.name}")             # <<<<<<<<<<<<<<
  * 
  *         if "nullable" in diff:
  */
-    __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 152, __pyx_L1_error)
+    __pyx_t_1 = PyTuple_New(8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 152, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_6 = 0;
     __pyx_t_7 = 127;
@@ -5593,7 +5597,29 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
     __Pyx_GIVEREF(__pyx_t_2);
     PyTuple_SET_ITEM(__pyx_t_1, 3, __pyx_t_2);
     __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyUnicode_Join(__pyx_t_1, 4, __pyx_t_6, __pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 152, __pyx_L1_error)
+    __Pyx_INCREF(__pyx_kp_u_USING);
+    __pyx_t_6 += 7;
+    __Pyx_GIVEREF(__pyx_kp_u_USING);
+    PyTuple_SET_ITEM(__pyx_t_1, 4, __pyx_kp_u_USING);
+    __pyx_t_2 = __Pyx_PyUnicode_Unicode(__pyx_v_col_name); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 152, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_7 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_2) > __pyx_t_7) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_2) : __pyx_t_7;
+    __pyx_t_6 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_2);
+    __Pyx_GIVEREF(__pyx_t_2);
+    PyTuple_SET_ITEM(__pyx_t_1, 5, __pyx_t_2);
+    __pyx_t_2 = 0;
+    __Pyx_INCREF(__pyx_kp_u__14);
+    __pyx_t_6 += 2;
+    __Pyx_GIVEREF(__pyx_kp_u__14);
+    PyTuple_SET_ITEM(__pyx_t_1, 6, __pyx_kp_u__14);
+    __pyx_t_2 = __Pyx_PyObject_FormatSimple(__pyx_v_type->name, __pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 152, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_7 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_2) > __pyx_t_7) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_2) : __pyx_t_7;
+    __pyx_t_6 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_2);
+    __Pyx_GIVEREF(__pyx_t_2);
+    PyTuple_SET_ITEM(__pyx_t_1, 7, __pyx_t_2);
+    __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_PyUnicode_Join(__pyx_t_1, 8, __pyx_t_6, __pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 152, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_result, __pyx_t_2); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 152, __pyx_L1_error)
@@ -5609,7 +5635,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
   }
 
   /* "yapic/sql/_ddl.pyx":154
- *             result.append(f"ALTER COLUMN {col_name} TYPE {type.name}")
+ *             result.append(f"ALTER COLUMN {col_name} TYPE {type.name} USING {col_name}::{type.name}")
  * 
  *         if "nullable" in diff:             # <<<<<<<<<<<<<<
  *             if diff["nullable"]:
@@ -5718,7 +5744,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
     __pyx_L8:;
 
     /* "yapic/sql/_ddl.pyx":154
- *             result.append(f"ALTER COLUMN {col_name} TYPE {type.name}")
+ *             result.append(f"ALTER COLUMN {col_name} TYPE {type.name} USING {col_name}::{type.name}")
  * 
  *         if "nullable" in diff:             # <<<<<<<<<<<<<<
  *             if diff["nullable"]:
@@ -6900,10 +6926,12 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_SET_DEFAULT, __pyx_k_SET_DEFAULT, sizeof(__pyx_k_SET_DEFAULT), 0, 1, 0, 0},
   {&__pyx_kp_u_SET_NOT_NULL, __pyx_k_SET_NOT_NULL, sizeof(__pyx_k_SET_NOT_NULL), 0, 1, 0, 0},
   {&__pyx_kp_u_TYPE, __pyx_k_TYPE, sizeof(__pyx_k_TYPE), 0, 1, 0, 0},
+  {&__pyx_kp_u_USING, __pyx_k_USING, sizeof(__pyx_k_USING), 0, 1, 0, 0},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
   {&__pyx_kp_u__10, __pyx_k__10, sizeof(__pyx_k__10), 0, 1, 0, 0},
   {&__pyx_kp_u__12, __pyx_k__12, sizeof(__pyx_k__12), 0, 1, 0, 0},
   {&__pyx_kp_u__13, __pyx_k__13, sizeof(__pyx_k__13), 0, 1, 0, 0},
+  {&__pyx_kp_u__14, __pyx_k__14, sizeof(__pyx_k__14), 0, 1, 0, 0},
   {&__pyx_kp_u__2, __pyx_k__2, sizeof(__pyx_k__2), 0, 1, 0, 0},
   {&__pyx_kp_u__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 1, 0, 0},
   {&__pyx_kp_u__4, __pyx_k__4, sizeof(__pyx_k__4), 0, 1, 0, 0},
