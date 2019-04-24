@@ -41,6 +41,7 @@ class Field(Generic[Impl, PyType, RawType], _Field):
 
 
 String = Field[StringImpl, str, str]
+Bytes = Field[BytesImpl, bytes, bytes]
 Bool = Field[BoolImpl, bool, int]
 Date = Field[DateImpl, date, str]
 DateTime = Field[DateTimeImpl, datetime, str]
