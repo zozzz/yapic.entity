@@ -1,7 +1,7 @@
 from datetime import date, datetime
 
 from yapic.entity._field cimport Field, PrimaryKey, StorageType, StorageTypeFactory
-from yapic.entity._field_impl cimport StringImpl, IntImpl, BoolImpl, DateImpl, DateTimeImpl, DateTimeTzImpl, ChoiceImpl
+from yapic.entity._field_impl cimport StringImpl, BytesImpl, IntImpl, BoolImpl, DateImpl, DateTimeImpl, DateTimeTzImpl, ChoiceImpl
 from yapic.entity._expression cimport RawExpression
 
 
@@ -13,6 +13,8 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
             return self.__int_type(field, <IntImpl>impl)
         elif isinstance(impl, StringImpl):
             return self.__string_type(field, <StringImpl>impl)
+        elif isinstance(impl, BytesImpl):
+            return self.__bytes_type(field, <BytesImpl>impl)
         elif isinstance(impl, BoolImpl):
             return self.__bool_type(field, <BoolImpl>impl)
         elif isinstance(impl, DateImpl):
@@ -50,6 +52,9 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
             elif field.max_size <= 4000:
                 return StringType("VARCHAR(%s)" % field.max_size)
         return StringType("TEXT")
+
+    cdef StorageType __bytes_type(self, Field field, BytesImpl impl):
+        return BytesType("BYTEA")
 
     cdef StorageType __bool_type(self, Field field, BoolImpl impl):
         return BoolType("BOOLEAN")
@@ -126,6 +131,16 @@ cdef class StringType(PostgreType):
             return value.decode("UTF-8")
         else:
             return str(value)
+
+    cpdef object decode(self, object value):
+        return value
+
+
+cdef class BytesType(PostgreType):
+    cpdef object encode(self, object value):
+        if not isinstance(value, bytes):
+            raise ValueError("Bytes type only accepts byte strings")
+        return value
 
     cpdef object decode(self, object value):
         return value

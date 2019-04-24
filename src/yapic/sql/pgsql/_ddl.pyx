@@ -3,7 +3,7 @@
 from yapic.entity._entity import Entity
 from yapic.entity._entity cimport EntityType
 from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, StorageType
-from yapic.entity._field_impl cimport IntImpl, StringImpl, ChoiceImpl, BoolImpl, DateImpl, DateTimeImpl, DateTimeTzImpl
+from yapic.entity._field_impl cimport IntImpl, StringImpl, BytesImpl, ChoiceImpl, BoolImpl, DateImpl, DateTimeImpl, DateTimeTzImpl
 from yapic.entity._registry cimport Registry
 from yapic.entity._expression cimport RawExpression
 
@@ -114,6 +114,8 @@ cdef class PostgreDDLReflect(DDLReflect):
                     skip_primary = True
         elif data_type == "text":
             field = Field(StringImpl(), nullable=is_nullable)
+        elif data_type == "bytea":
+            field = Field(BytesImpl(), nullable=is_nullable)
         elif data_type == "character varying":
             field = Field(StringImpl(), size=record["character_maximum_length"], nullable=is_nullable)
         elif data_type == "character":

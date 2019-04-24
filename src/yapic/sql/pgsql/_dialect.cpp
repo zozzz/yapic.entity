@@ -889,6 +889,7 @@ struct __pyx_obj_5yapic_3sql_5pgsql_4_ddl_PostgreDDLCompiler;
 struct __pyx_obj_5yapic_3sql_5pgsql_4_ddl_PostgreDDLReflect;
 struct __pyx_obj_5yapic_3sql_5pgsql_15_query_compiler_PostgreQueryCompiler;
 struct __pyx_obj_5yapic_6entity_11_field_impl_StringImpl;
+struct __pyx_obj_5yapic_6entity_11_field_impl_BytesImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_IntImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_BoolImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_DateImpl;
@@ -1455,6 +1456,18 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_StringImpl {
 /* "yapic/entity/_field_impl.pxd":9
  * 
  * 
+ * cdef class BytesImpl(FieldImpl):             # <<<<<<<<<<<<<<
+ *     pass
+ * 
+ */
+struct __pyx_obj_5yapic_6entity_11_field_impl_BytesImpl {
+  struct __pyx_obj_5yapic_6entity_6_field_FieldImpl __pyx_base;
+};
+
+
+/* "yapic/entity/_field_impl.pxd":13
+ * 
+ * 
  * cdef class IntImpl(FieldImpl):             # <<<<<<<<<<<<<<
  *     pass
  * 
@@ -1464,7 +1477,7 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_IntImpl {
 };
 
 
-/* "yapic/entity/_field_impl.pxd":13
+/* "yapic/entity/_field_impl.pxd":17
  * 
  * 
  * cdef class BoolImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -1476,7 +1489,7 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_BoolImpl {
 };
 
 
-/* "yapic/entity/_field_impl.pxd":17
+/* "yapic/entity/_field_impl.pxd":21
  * 
  * 
  * cdef class DateImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -1488,7 +1501,7 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_DateImpl {
 };
 
 
-/* "yapic/entity/_field_impl.pxd":21
+/* "yapic/entity/_field_impl.pxd":25
  * 
  * 
  * cdef class DateTimeImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -1500,7 +1513,7 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_DateTimeImpl {
 };
 
 
-/* "yapic/entity/_field_impl.pxd":25
+/* "yapic/entity/_field_impl.pxd":29
  * 
  * 
  * cdef class DateTimeTzImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -1512,7 +1525,7 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_DateTimeTzImpl {
 };
 
 
-/* "yapic/entity/_field_impl.pxd":29
+/* "yapic/entity/_field_impl.pxd":33
  * 
  * 
  * cdef class ChoiceImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -1538,7 +1551,7 @@ struct __pyx_obj_5yapic_3sql_5pgsql_13_type_factory_PostgreTypeFactory {
 };
 
 
-/* "_type_factory.pxd":17
+/* "_type_factory.pxd":18
  * 
  * 
  * cdef class PostgreType(StorageType):             # <<<<<<<<<<<<<<
@@ -2013,6 +2026,20 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_StringImpl *__pyx_vt
 /* "yapic/entity/_field_impl.pxd":9
  * 
  * 
+ * cdef class BytesImpl(FieldImpl):             # <<<<<<<<<<<<<<
+ *     pass
+ * 
+ */
+
+struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_BytesImpl {
+  struct __pyx_vtabstruct_5yapic_6entity_6_field_FieldImpl __pyx_base;
+};
+static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_BytesImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_BytesImpl;
+
+
+/* "yapic/entity/_field_impl.pxd":13
+ * 
+ * 
  * cdef class IntImpl(FieldImpl):             # <<<<<<<<<<<<<<
  *     pass
  * 
@@ -2024,7 +2051,7 @@ struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_IntImpl {
 static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_IntImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_IntImpl;
 
 
-/* "yapic/entity/_field_impl.pxd":13
+/* "yapic/entity/_field_impl.pxd":17
  * 
  * 
  * cdef class BoolImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -2038,7 +2065,7 @@ struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_BoolImpl {
 static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_BoolImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_BoolImpl;
 
 
-/* "yapic/entity/_field_impl.pxd":17
+/* "yapic/entity/_field_impl.pxd":21
  * 
  * 
  * cdef class DateImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -2052,7 +2079,7 @@ struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateImpl {
 static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_DateImpl;
 
 
-/* "yapic/entity/_field_impl.pxd":21
+/* "yapic/entity/_field_impl.pxd":25
  * 
  * 
  * cdef class DateTimeImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -2066,7 +2093,7 @@ struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateTimeImpl {
 static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateTimeImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeImpl;
 
 
-/* "yapic/entity/_field_impl.pxd":25
+/* "yapic/entity/_field_impl.pxd":29
  * 
  * 
  * cdef class DateTimeTzImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -2080,7 +2107,7 @@ struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateTimeTzImpl {
 static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateTimeTzImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeTzImpl;
 
 
-/* "yapic/entity/_field_impl.pxd":29
+/* "yapic/entity/_field_impl.pxd":33
  * 
  * 
  * cdef class ChoiceImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -2107,6 +2134,7 @@ struct __pyx_vtabstruct_5yapic_3sql_5pgsql_13_type_factory_PostgreTypeFactory {
   PyObject *(*quote_value)(struct __pyx_obj_5yapic_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, PyObject *);
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___int_type)(struct __pyx_obj_5yapic_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_11_field_impl_IntImpl *);
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___string_type)(struct __pyx_obj_5yapic_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_11_field_impl_StringImpl *);
+  struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___bytes_type)(struct __pyx_obj_5yapic_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_11_field_impl_BytesImpl *);
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___bool_type)(struct __pyx_obj_5yapic_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_11_field_impl_BoolImpl *);
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___date_type)(struct __pyx_obj_5yapic_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_11_field_impl_DateImpl *);
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___date_time_type)(struct __pyx_obj_5yapic_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_11_field_impl_DateTimeImpl *);
@@ -2116,7 +2144,7 @@ struct __pyx_vtabstruct_5yapic_3sql_5pgsql_13_type_factory_PostgreTypeFactory {
 static struct __pyx_vtabstruct_5yapic_3sql_5pgsql_13_type_factory_PostgreTypeFactory *__pyx_vtabptr_5yapic_3sql_5pgsql_13_type_factory_PostgreTypeFactory;
 
 
-/* "_type_factory.pxd":17
+/* "_type_factory.pxd":18
  * 
  * 
  * cdef class PostgreType(StorageType):             # <<<<<<<<<<<<<<
@@ -2583,6 +2611,7 @@ static PyTypeObject *__pyx_ptype_5yapic_3sql_5pgsql_15_query_compiler_PostgreQue
 
 /* Module declarations from 'yapic.entity._field_impl' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_StringImpl = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_BytesImpl = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_IntImpl = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_BoolImpl = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_DateImpl = 0;
@@ -4189,24 +4218,27 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_5yapic_6entity_11_field_impl_StringImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "StringImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_StringImpl), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_6entity_11_field_impl_StringImpl) __PYX_ERR(13, 5, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_11_field_impl_StringImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_StringImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_StringImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_StringImpl)) __PYX_ERR(13, 5, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_11_field_impl_BytesImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "BytesImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_BytesImpl), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_BytesImpl) __PYX_ERR(13, 9, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_BytesImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_BytesImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_BytesImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_BytesImpl)) __PYX_ERR(13, 9, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_IntImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "IntImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_IntImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_field_impl_IntImpl) __PYX_ERR(13, 9, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_field_impl_IntImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_IntImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_IntImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_IntImpl)) __PYX_ERR(13, 9, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_IntImpl) __PYX_ERR(13, 13, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_IntImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_IntImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_IntImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_IntImpl)) __PYX_ERR(13, 13, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_BoolImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "BoolImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_BoolImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_field_impl_BoolImpl) __PYX_ERR(13, 13, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_field_impl_BoolImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_BoolImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_BoolImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_BoolImpl)) __PYX_ERR(13, 13, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_BoolImpl) __PYX_ERR(13, 17, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_BoolImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_BoolImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_BoolImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_BoolImpl)) __PYX_ERR(13, 17, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_DateImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "DateImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_DateImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_field_impl_DateImpl) __PYX_ERR(13, 17, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_field_impl_DateImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_DateImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_DateImpl)) __PYX_ERR(13, 17, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_DateImpl) __PYX_ERR(13, 21, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_DateImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_DateImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_DateImpl)) __PYX_ERR(13, 21, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_DateTimeImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "DateTimeImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_DateTimeImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_field_impl_DateTimeImpl) __PYX_ERR(13, 21, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateTimeImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_DateTimeImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeImpl)) __PYX_ERR(13, 21, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_DateTimeImpl) __PYX_ERR(13, 25, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateTimeImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_DateTimeImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeImpl)) __PYX_ERR(13, 25, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_DateTimeTzImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "DateTimeTzImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_DateTimeTzImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_field_impl_DateTimeTzImpl) __PYX_ERR(13, 25, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeTzImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateTimeTzImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_DateTimeTzImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeTzImpl)) __PYX_ERR(13, 25, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_DateTimeTzImpl) __PYX_ERR(13, 29, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeTzImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateTimeTzImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_DateTimeTzImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeTzImpl)) __PYX_ERR(13, 29, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_ChoiceImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "ChoiceImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_ChoiceImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_field_impl_ChoiceImpl) __PYX_ERR(13, 29, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_field_impl_ChoiceImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_ChoiceImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_ChoiceImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_ChoiceImpl)) __PYX_ERR(13, 29, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_ChoiceImpl) __PYX_ERR(13, 33, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_ChoiceImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_ChoiceImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_ChoiceImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_ChoiceImpl)) __PYX_ERR(13, 33, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("yapic.sql.pgsql._type_factory"); if (unlikely(!__pyx_t_1)) __PYX_ERR(14, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -4214,8 +4246,8 @@ static int __Pyx_modinit_type_import_code(void) {
    if (!__pyx_ptype_5yapic_3sql_5pgsql_13_type_factory_PostgreTypeFactory) __PYX_ERR(14, 5, __pyx_L1_error)
   __pyx_vtabptr_5yapic_3sql_5pgsql_13_type_factory_PostgreTypeFactory = (struct __pyx_vtabstruct_5yapic_3sql_5pgsql_13_type_factory_PostgreTypeFactory*)__Pyx_GetVtable(__pyx_ptype_5yapic_3sql_5pgsql_13_type_factory_PostgreTypeFactory->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_3sql_5pgsql_13_type_factory_PostgreTypeFactory)) __PYX_ERR(14, 5, __pyx_L1_error)
   __pyx_ptype_5yapic_3sql_5pgsql_13_type_factory_PostgreType = __Pyx_ImportType(__pyx_t_1, "yapic.sql.pgsql._type_factory", "PostgreType", sizeof(struct __pyx_obj_5yapic_3sql_5pgsql_13_type_factory_PostgreType), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_3sql_5pgsql_13_type_factory_PostgreType) __PYX_ERR(14, 17, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_3sql_5pgsql_13_type_factory_PostgreType = (struct __pyx_vtabstruct_5yapic_3sql_5pgsql_13_type_factory_PostgreType*)__Pyx_GetVtable(__pyx_ptype_5yapic_3sql_5pgsql_13_type_factory_PostgreType->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_3sql_5pgsql_13_type_factory_PostgreType)) __PYX_ERR(14, 17, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_3sql_5pgsql_13_type_factory_PostgreType) __PYX_ERR(14, 18, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_3sql_5pgsql_13_type_factory_PostgreType = (struct __pyx_vtabstruct_5yapic_3sql_5pgsql_13_type_factory_PostgreType*)__Pyx_GetVtable(__pyx_ptype_5yapic_3sql_5pgsql_13_type_factory_PostgreType->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_3sql_5pgsql_13_type_factory_PostgreType)) __PYX_ERR(14, 18, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;
