@@ -49,7 +49,10 @@ cdef class QueryContext:
         async with ensure_transaction(self.conn.conn):
             cursor = await self.cursor_factory
             row = await cursor.fetchrow(timeout=timeout)
-            return self.convert_row(row)
+            if row is not None:
+                return self.convert_row(row)
+            else:
+                return None
 
     cdef object convert_row(self, object row):
         cdef PyObject* columns = <PyObject*>self.columns
