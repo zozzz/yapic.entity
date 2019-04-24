@@ -118,7 +118,7 @@ cdef inline object create_entity(EntityType ent, object record, int start, int e
     cdef object item
     cdef int c = 0
 
-    if end - start >= state_len:
+    if end - start > state_len:
         raise RuntimeError("Too many columns")
 
     for i in range(start, end):
