@@ -1042,10 +1042,13 @@ struct __pyx_obj_5yapic_6entity_9_registry_Registry {
  * 
  * @cython.final
  * cdef class RegistryDiff:             # <<<<<<<<<<<<<<
- *     cdef readonly list changes
+ *     cdef readonly Registry a
+ *     cdef readonly Registry b
  */
 struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff {
   PyObject_HEAD
+  struct __pyx_obj_5yapic_6entity_9_registry_Registry *a;
+  struct __pyx_obj_5yapic_6entity_9_registry_Registry *b;
   PyObject *changes;
 };
 

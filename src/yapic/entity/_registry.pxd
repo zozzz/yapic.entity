@@ -15,4 +15,7 @@ cdef class Registry:
 
 @cython.final
 cdef class RegistryDiff:
+    cdef readonly Registry a
+    cdef readonly Registry b
+
     cdef readonly list changes
