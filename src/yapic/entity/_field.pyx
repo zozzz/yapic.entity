@@ -62,6 +62,7 @@ cdef class Field(EntityAttribute):
             size=(self.min_size, self.max_size),
             nullable=self.nullable)
         res._exts_ = self.clone_exts(res)
+        res._deps_ = set(self._deps_)
         res.type_cache = self.type_cache
         return res
 
@@ -97,7 +98,7 @@ cdef class FieldExtension(EntityAttributeExt):
 
 
 cdef class FieldImpl(EntityAttributeImpl):
-    cpdef init(self, EntityType entity):
+    cpdef init(self, EntityType entity, EntityAttribute attr):
         pass
 
 
@@ -156,6 +157,7 @@ cdef class ForeignKey(FieldExtension):
             else:
                 if self.name is None:
                     self.name = compute_fk_name(self.attr, self._ref)
+                    self.attr._deps_.add(self._ref._entity_)
 
         return self._ref
 
@@ -164,6 +166,7 @@ cdef class ForeignKey(FieldExtension):
         if self.name is None:
             if isinstance(self._ref, Field):
                 self.name = compute_fk_name(attr, self._ref)
+                attr._deps_.add(self._ref._entity_)
 
     cpdef object clone(self):
         return type(self)(self.ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)

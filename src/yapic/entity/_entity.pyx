@@ -123,6 +123,19 @@ cdef class EntityType(type):
     def __registry__(self):
         return <object>self.registry
 
+    @property
+    def __deps__(self):
+        cdef EntityAttribute attr
+        if self.deps is None:
+            deps = set()
+
+            for attr in self.__attrs__:
+                attr._impl_  # XXX prettier mode, for forcing implementation init
+                deps |= attr._deps_
+
+            self.deps = deps
+        return self.deps
+
     @staticmethod
     def __prepare__(*args, **kwargs):
         scope = type.__prepare__(*args, **kwargs)
@@ -198,6 +211,7 @@ cdef class EntityAttribute(Expression):
         else:
             self._impl = None
         self._exts_ = []
+        self._deps_ = set()
 
         if self._impl is not None \
                 and not is_forward_decl(self._impl) \
@@ -237,7 +251,7 @@ cdef class EntityAttribute(Expression):
             self._impl = new_instance_from_forward(self._impl)
             if isinstance(self._impl, EntityAttributeImpl):
                 try:
-                    (<EntityAttributeImpl>self._impl).init(self._entity_)
+                    (<EntityAttributeImpl>self._impl).init(self._entity_, self)
                     (<EntityAttributeImpl>self._impl).inited = True
                 except Exception as e:
                     raise RuntimeError("Can't init attribute impl, original exception: %s" % e)
@@ -258,7 +272,7 @@ cdef class EntityAttribute(Expression):
             raise RuntimeError("Missing attribute implementation")
 
         if isinstance(self._impl, EntityAttributeImpl) and not (<EntityAttributeImpl>self._impl).inited:
-            (<EntityAttributeImpl>self._impl).init(entity)
+            (<EntityAttributeImpl>self._impl).init(entity, self)
             (<EntityAttributeImpl>self._impl).inited = True
 
     cpdef clone(self):
@@ -314,7 +328,7 @@ cdef class EntityAttributeImpl:
     def __cinit__(self, *args, **kwargs):
         self.inited = False
 
-    cpdef init(self, EntityType entity):
+    cpdef init(self, EntityType entity, EntityAttribute attr):
         raise NotImplementedError()
 
     cpdef object clone(self):
@@ -843,3 +857,17 @@ cdef class EntityBase:
 class Entity(EntityBase, metaclass=EntityType, registry=REGISTRY, _root=True):
     def __repr__(self):
         return "<%s %r>" % (type(self).__name__, self.__pk__)
+
+
+cpdef list entity_deps(EntityType ent):
+    cdef list res = []
+
+    for dep in ent.__deps__:
+        for pre_dep in entity_deps(dep):
+            if pre_dep not in res:
+                res.append(pre_dep)
+
+        if dep not in res:
+            res.append(dep)
+
+    return res

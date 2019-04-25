@@ -15,11 +15,13 @@ cdef class EntityType(type):
     cdef readonly tuple __pk__
     cdef PyObject* registry
     cdef PyObject* meta
+    cdef set deps
     cdef object __weakref__
 
 
 cpdef bint is_entity_alias(object o)
 cpdef EntityType get_alias_target(EntityType o)
+cpdef list entity_deps(EntityType ent)
 
 
 cdef class EntityBase:
@@ -35,6 +37,7 @@ cdef class EntityAttribute(Expression):
     cdef readonly object _default_
     cdef readonly EntityType _entity_
     cdef readonly list _exts_
+    cdef readonly set _deps_
 
     cdef bind(self, EntityType entity)
     cpdef clone(self)
@@ -52,7 +55,7 @@ cdef class EntityAttributeExt:
 
 cdef class EntityAttributeImpl:
     cdef bint inited
-    cpdef init(self, EntityType entity)
+    cpdef init(self, EntityType entity, EntityAttribute attr)
     cpdef object clone(self)
 
     cdef object state_init(self, object initial)

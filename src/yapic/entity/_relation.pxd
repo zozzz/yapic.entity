@@ -21,11 +21,10 @@ cdef class RelationImpl(EntityAttributeImpl):
     cdef readonly ValueStore state_impl
     cdef readonly EntityType joined
     cdef readonly object join_expr
-    cdef readonly list dependency
 
     # cdef object new_value_store(self)
     # cdef void set_value_store_type(self, object t)
-    cdef determine_join_expr(self, EntityType entity)
+    cdef determine_join_expr(self, EntityType entity, Relation attr)
 
 
 cdef class ManyToOne(RelationImpl):

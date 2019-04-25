@@ -27,6 +27,7 @@ cdef class Relation(EntityAttribute):
     cpdef object clone(self):
         cdef EntityAttribute res = type(self)(self._impl_.clone())
         res._exts_ = self.clone_exts(res)
+        res._deps_ = set(self._deps_)
         return res
 
 
@@ -50,10 +51,10 @@ cdef class RelationImpl(EntityAttributeImpl):
         self.joined = joined
         self.state_impl = state_impl
 
-    cpdef init(self, EntityType entity):
-        self.determine_join_expr(entity)
+    cpdef init(self, EntityType entity, EntityAttribute attr):
+        self.determine_join_expr(entity, attr)
 
-    cdef determine_join_expr(self, EntityType entity):
+    cdef determine_join_expr(self, EntityType entity, Relation attr):
         raise NotImplementedError()
 
     cpdef object clone(self):
@@ -85,18 +86,17 @@ cdef class ManyToOne(RelationImpl):
     def __repr__(self):
         return "ManyToOne %r" % self.joined
 
-    cdef determine_join_expr(self, EntityType entity):
+    cdef determine_join_expr(self, EntityType entity, Relation attr):
         self.join_expr = determine_join_expr(entity, self.joined)
-        self.dependency = [self.joined, entity]
+        attr._deps_.add(self.joined)
 
 
 cdef class OneToMany(RelationImpl):
     def __repr__(self):
         return "OneToMany %r" % self.joined
 
-    cdef determine_join_expr(self, EntityType entity):
+    cdef determine_join_expr(self, EntityType entity, Relation attr):
         self.join_expr = determine_join_expr(self.joined, entity)
-        self.dependency = [entity, self.joined]
 
 
 cdef class ManyToMany(RelationImpl):
@@ -106,10 +106,9 @@ cdef class ManyToMany(RelationImpl):
     def __repr__(self):
         return "ManyToMany %r => %r" % (self.across, self.joined)
 
-    cdef determine_join_expr(self, EntityType entity):
+    cdef determine_join_expr(self, EntityType entity, Relation attr):
         self.across_join_expr = determine_join_expr(self.across, entity)
         self.join_expr = determine_join_expr(self.across, self.joined)
-        self.dependency = [self.joined, entity, self.across]
 
     cpdef object clone(self):
         return type(self)(self.joined, self.state_impl, self.across)
