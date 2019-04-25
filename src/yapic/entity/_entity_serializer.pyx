@@ -13,7 +13,7 @@ from ._entity cimport EntityBase, EntityAttribute, EntityState, NOTSET
 @cython.freelist(200)
 cdef class SerializerCtx:
     cdef bint skip_attribute(self, EntityAttribute attr, object value):
-        if attr.get_ext(SkipSerialization):
+        if attr.get_ext(DontSerialize):
             return True
         return value is NOTSET
 
@@ -107,5 +107,5 @@ ItemsView.register(MappingGenerator)
 ItemsView.register(EntitySerializer)
 
 
-cdef class SkipSerialization(EntityAttributeExt):
+cdef class DontSerialize(EntityAttributeExt):
     pass

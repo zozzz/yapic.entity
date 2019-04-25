@@ -1,5 +1,5 @@
 import pytest
-from yapic.entity import Entity, String, Int, Serial, One, Many, SkipSerialization, ForeignKey
+from yapic.entity import Entity, String, Int, Serial, One, Many, DontSerialize, ForeignKey
 from yapic.entity._entity import EntityState
 from yapic.entity._field import FieldExtension, Field
 from yapic import json
@@ -144,7 +144,7 @@ class User4Addr(Entity):
 class User4(Entity):
     id: Serial
     name: String
-    password: String = SkipSerialization()
+    password: String = DontSerialize()
 
     address_id: Int = ForeignKey(User4Addr.id)
     address: One[User4Addr]

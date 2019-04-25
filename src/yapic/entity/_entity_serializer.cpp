@@ -861,7 +861,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl;
 struct __pyx_obj_5yapic_6entity_7_entity_EntityState;
 struct __pyx_obj_5yapic_6entity_18_entity_serializer_SerializerCtx;
 struct __pyx_obj_5yapic_6entity_18_entity_serializer_EntitySerializer;
-struct __pyx_obj_5yapic_6entity_18_entity_serializer_SkipSerialization;
+struct __pyx_obj_5yapic_6entity_18_entity_serializer_DontSerialize;
 struct __pyx_obj_5yapic_6entity_18_entity_serializer_MappingGenerator;
 struct __pyx_obj_5yapic_6entity_18_entity_serializer_SequenceGenerator;
 
@@ -1174,10 +1174,10 @@ struct __pyx_obj_5yapic_6entity_18_entity_serializer_EntitySerializer {
 /* "yapic/entity/_entity_serializer.pxd":23
  * 
  * 
- * cdef class SkipSerialization(EntityAttributeExt):             # <<<<<<<<<<<<<<
+ * cdef class DontSerialize(EntityAttributeExt):             # <<<<<<<<<<<<<<
  *     pass
  */
-struct __pyx_obj_5yapic_6entity_18_entity_serializer_SkipSerialization {
+struct __pyx_obj_5yapic_6entity_18_entity_serializer_DontSerialize {
   struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt __pyx_base;
 };
 
@@ -1454,7 +1454,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *__pyx_vtabpt
  * @cython.freelist(200)
  * cdef class SerializerCtx:             # <<<<<<<<<<<<<<
  *     cdef bint skip_attribute(self, EntityAttribute attr, object value):
- *         if attr.get_ext(SkipSerialization):
+ *         if attr.get_ext(DontSerialize):
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_18_entity_serializer_SerializerCtx {
@@ -1469,14 +1469,14 @@ static struct __pyx_obj_5yapic_6entity_18_entity_serializer_SerializerCtx *__pyx
 /* "yapic/entity/_entity_serializer.pyx":110
  * 
  * 
- * cdef class SkipSerialization(EntityAttributeExt):             # <<<<<<<<<<<<<<
+ * cdef class DontSerialize(EntityAttributeExt):             # <<<<<<<<<<<<<<
  *     pass
  */
 
-struct __pyx_vtabstruct_5yapic_6entity_18_entity_serializer_SkipSerialization {
+struct __pyx_vtabstruct_5yapic_6entity_18_entity_serializer_DontSerialize {
   struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt __pyx_base;
 };
-static struct __pyx_vtabstruct_5yapic_6entity_18_entity_serializer_SkipSerialization *__pyx_vtabptr_5yapic_6entity_18_entity_serializer_SkipSerialization;
+static struct __pyx_vtabstruct_5yapic_6entity_18_entity_serializer_DontSerialize *__pyx_vtabptr_5yapic_6entity_18_entity_serializer_DontSerialize;
 
 /* --- Runtime support code (head) --- */
 /* Refnanny.proto */
@@ -1885,7 +1885,7 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_EntityState = 0;
 /* Module declarations from 'yapic.entity._entity_serializer' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_18_entity_serializer_SerializerCtx = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_18_entity_serializer_EntitySerializer = 0;
-static PyTypeObject *__pyx_ptype_5yapic_6entity_18_entity_serializer_SkipSerialization = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_18_entity_serializer_DontSerialize = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_18_entity_serializer_MappingGenerator = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_18_entity_serializer_SequenceGenerator = 0;
 static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_18_entity_serializer_create_serializable(PyObject *, struct __pyx_obj_5yapic_6entity_18_entity_serializer_SerializerCtx *); /*proto*/
@@ -1908,21 +1908,21 @@ static const char __pyx_k_iterable[] = "iterable";
 static const char __pyx_k_register[] = "register";
 static const char __pyx_k_ItemsView[] = "ItemsView";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
+static const char __pyx_k_DontSerialize[] = "DontSerialize";
 static const char __pyx_k_SerializerCtx[] = "SerializerCtx";
 static const char __pyx_k_StopIteration[] = "StopIteration";
 static const char __pyx_k_collections_abc[] = "collections.abc";
 static const char __pyx_k_EntitySerializer[] = "EntitySerializer";
 static const char __pyx_k_MappingGenerator[] = "MappingGenerator";
 static const char __pyx_k_SequenceGenerator[] = "SequenceGenerator";
-static const char __pyx_k_SkipSerialization[] = "SkipSerialization";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static PyObject *__pyx_kp_u_;
+static PyObject *__pyx_n_s_DontSerialize;
 static PyObject *__pyx_n_s_EntitySerializer;
 static PyObject *__pyx_n_s_ItemsView;
 static PyObject *__pyx_n_s_MappingGenerator;
 static PyObject *__pyx_n_s_SequenceGenerator;
 static PyObject *__pyx_n_s_SerializerCtx;
-static PyObject *__pyx_n_s_SkipSerialization;
 static PyObject *__pyx_n_s_StopIteration;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_collections_abc;
@@ -1951,7 +1951,7 @@ static PyObject *__pyx_pf_5yapic_6entity_18_entity_serializer_17SequenceGenerato
 static PyObject *__pyx_pf_5yapic_6entity_18_entity_serializer_17SequenceGenerator_4__next__(struct __pyx_obj_5yapic_6entity_18_entity_serializer_SequenceGenerator *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_5yapic_6entity_18_entity_serializer_SerializerCtx(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5yapic_6entity_18_entity_serializer_EntitySerializer(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_5yapic_6entity_18_entity_serializer_SkipSerialization(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_5yapic_6entity_18_entity_serializer_DontSerialize(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5yapic_6entity_18_entity_serializer_MappingGenerator(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5yapic_6entity_18_entity_serializer_SequenceGenerator(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 /* Late includes */
@@ -1960,7 +1960,7 @@ static PyObject *__pyx_tp_new_5yapic_6entity_18_entity_serializer_SequenceGenera
  * @cython.freelist(200)
  * cdef class SerializerCtx:
  *     cdef bint skip_attribute(self, EntityAttribute attr, object value):             # <<<<<<<<<<<<<<
- *         if attr.get_ext(SkipSerialization):
+ *         if attr.get_ext(DontSerialize):
  *             return True
  */
 
@@ -1974,11 +1974,11 @@ static int __pyx_f_5yapic_6entity_18_entity_serializer_13SerializerCtx_skip_attr
   /* "yapic/entity/_entity_serializer.pyx":16
  * cdef class SerializerCtx:
  *     cdef bint skip_attribute(self, EntityAttribute attr, object value):
- *         if attr.get_ext(SkipSerialization):             # <<<<<<<<<<<<<<
+ *         if attr.get_ext(DontSerialize):             # <<<<<<<<<<<<<<
  *             return True
  *         return value is NOTSET
  */
-  __pyx_t_1 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute *)__pyx_v_attr->__pyx_base.__pyx_vtab)->get_ext(__pyx_v_attr, ((PyObject *)__pyx_ptype_5yapic_6entity_18_entity_serializer_SkipSerialization), 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute *)__pyx_v_attr->__pyx_base.__pyx_vtab)->get_ext(__pyx_v_attr, ((PyObject *)__pyx_ptype_5yapic_6entity_18_entity_serializer_DontSerialize), 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -1986,7 +1986,7 @@ static int __pyx_f_5yapic_6entity_18_entity_serializer_13SerializerCtx_skip_attr
 
     /* "yapic/entity/_entity_serializer.pyx":17
  *     cdef bint skip_attribute(self, EntityAttribute attr, object value):
- *         if attr.get_ext(SkipSerialization):
+ *         if attr.get_ext(DontSerialize):
  *             return True             # <<<<<<<<<<<<<<
  *         return value is NOTSET
  * 
@@ -1997,14 +1997,14 @@ static int __pyx_f_5yapic_6entity_18_entity_serializer_13SerializerCtx_skip_attr
     /* "yapic/entity/_entity_serializer.pyx":16
  * cdef class SerializerCtx:
  *     cdef bint skip_attribute(self, EntityAttribute attr, object value):
- *         if attr.get_ext(SkipSerialization):             # <<<<<<<<<<<<<<
+ *         if attr.get_ext(DontSerialize):             # <<<<<<<<<<<<<<
  *             return True
  *         return value is NOTSET
  */
   }
 
   /* "yapic/entity/_entity_serializer.pyx":18
- *         if attr.get_ext(SkipSerialization):
+ *         if attr.get_ext(DontSerialize):
  *             return True
  *         return value is NOTSET             # <<<<<<<<<<<<<<
  * 
@@ -2018,7 +2018,7 @@ static int __pyx_f_5yapic_6entity_18_entity_serializer_13SerializerCtx_skip_attr
  * @cython.freelist(200)
  * cdef class SerializerCtx:
  *     cdef bint skip_attribute(self, EntityAttribute attr, object value):             # <<<<<<<<<<<<<<
- *         if attr.get_ext(SkipSerialization):
+ *         if attr.get_ext(DontSerialize):
  *             return True
  */
 
@@ -3655,18 +3655,18 @@ static PyTypeObject __pyx_type_5yapic_6entity_18_entity_serializer_EntitySeriali
   0, /*tp_finalize*/
   #endif
 };
-static struct __pyx_vtabstruct_5yapic_6entity_18_entity_serializer_SkipSerialization __pyx_vtable_5yapic_6entity_18_entity_serializer_SkipSerialization;
+static struct __pyx_vtabstruct_5yapic_6entity_18_entity_serializer_DontSerialize __pyx_vtable_5yapic_6entity_18_entity_serializer_DontSerialize;
 
-static PyObject *__pyx_tp_new_5yapic_6entity_18_entity_serializer_SkipSerialization(PyTypeObject *t, PyObject *a, PyObject *k) {
-  struct __pyx_obj_5yapic_6entity_18_entity_serializer_SkipSerialization *p;
+static PyObject *__pyx_tp_new_5yapic_6entity_18_entity_serializer_DontSerialize(PyTypeObject *t, PyObject *a, PyObject *k) {
+  struct __pyx_obj_5yapic_6entity_18_entity_serializer_DontSerialize *p;
   PyObject *o = __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_new(t, a, k);
   if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_5yapic_6entity_18_entity_serializer_SkipSerialization *)o);
-  p->__pyx_base.__pyx_vtab = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt*)__pyx_vtabptr_5yapic_6entity_18_entity_serializer_SkipSerialization;
+  p = ((struct __pyx_obj_5yapic_6entity_18_entity_serializer_DontSerialize *)o);
+  p->__pyx_base.__pyx_vtab = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt*)__pyx_vtabptr_5yapic_6entity_18_entity_serializer_DontSerialize;
   return o;
 }
 
-static void __pyx_tp_dealloc_5yapic_6entity_18_entity_serializer_SkipSerialization(PyObject *o) {
+static void __pyx_tp_dealloc_5yapic_6entity_18_entity_serializer_DontSerialize(PyObject *o) {
   #if CYTHON_USE_TP_FINALIZE
   if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && !_PyGC_FINALIZED(o)) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
@@ -3674,26 +3674,26 @@ static void __pyx_tp_dealloc_5yapic_6entity_18_entity_serializer_SkipSerializati
   #endif
   PyObject_GC_UnTrack(o);
   PyObject_GC_Track(o);
-  if (likely(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt)) __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_dealloc(o); else __Pyx_call_next_tp_dealloc(o, __pyx_tp_dealloc_5yapic_6entity_18_entity_serializer_SkipSerialization);
+  if (likely(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt)) __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_dealloc(o); else __Pyx_call_next_tp_dealloc(o, __pyx_tp_dealloc_5yapic_6entity_18_entity_serializer_DontSerialize);
 }
 
-static int __pyx_tp_traverse_5yapic_6entity_18_entity_serializer_SkipSerialization(PyObject *o, visitproc v, void *a) {
+static int __pyx_tp_traverse_5yapic_6entity_18_entity_serializer_DontSerialize(PyObject *o, visitproc v, void *a) {
   int e;
-  e = ((likely(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt)) ? ((__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_traverse) ? __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_traverse(o, v, a) : 0) : __Pyx_call_next_tp_traverse(o, v, a, __pyx_tp_traverse_5yapic_6entity_18_entity_serializer_SkipSerialization)); if (e) return e;
+  e = ((likely(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt)) ? ((__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_traverse) ? __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_traverse(o, v, a) : 0) : __Pyx_call_next_tp_traverse(o, v, a, __pyx_tp_traverse_5yapic_6entity_18_entity_serializer_DontSerialize)); if (e) return e;
   return 0;
 }
 
-static int __pyx_tp_clear_5yapic_6entity_18_entity_serializer_SkipSerialization(PyObject *o) {
-  if (likely(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt)) { if (__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_clear) __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_clear(o); } else __Pyx_call_next_tp_clear(o, __pyx_tp_clear_5yapic_6entity_18_entity_serializer_SkipSerialization);
+static int __pyx_tp_clear_5yapic_6entity_18_entity_serializer_DontSerialize(PyObject *o) {
+  if (likely(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt)) { if (__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_clear) __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_clear(o); } else __Pyx_call_next_tp_clear(o, __pyx_tp_clear_5yapic_6entity_18_entity_serializer_DontSerialize);
   return 0;
 }
 
-static PyTypeObject __pyx_type_5yapic_6entity_18_entity_serializer_SkipSerialization = {
+static PyTypeObject __pyx_type_5yapic_6entity_18_entity_serializer_DontSerialize = {
   PyVarObject_HEAD_INIT(0, 0)
-  "yapic.entity._entity_serializer.SkipSerialization", /*tp_name*/
-  sizeof(struct __pyx_obj_5yapic_6entity_18_entity_serializer_SkipSerialization), /*tp_basicsize*/
+  "yapic.entity._entity_serializer.DontSerialize", /*tp_name*/
+  sizeof(struct __pyx_obj_5yapic_6entity_18_entity_serializer_DontSerialize), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5yapic_6entity_18_entity_serializer_SkipSerialization, /*tp_dealloc*/
+  __pyx_tp_dealloc_5yapic_6entity_18_entity_serializer_DontSerialize, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -3715,8 +3715,8 @@ static PyTypeObject __pyx_type_5yapic_6entity_18_entity_serializer_SkipSerializa
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
   0, /*tp_doc*/
-  __pyx_tp_traverse_5yapic_6entity_18_entity_serializer_SkipSerialization, /*tp_traverse*/
-  __pyx_tp_clear_5yapic_6entity_18_entity_serializer_SkipSerialization, /*tp_clear*/
+  __pyx_tp_traverse_5yapic_6entity_18_entity_serializer_DontSerialize, /*tp_traverse*/
+  __pyx_tp_clear_5yapic_6entity_18_entity_serializer_DontSerialize, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
@@ -3731,7 +3731,7 @@ static PyTypeObject __pyx_type_5yapic_6entity_18_entity_serializer_SkipSerializa
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_5yapic_6entity_18_entity_serializer_SkipSerialization, /*tp_new*/
+  __pyx_tp_new_5yapic_6entity_18_entity_serializer_DontSerialize, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -4061,12 +4061,12 @@ static struct PyModuleDef __pyx_moduledef = {
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_, __pyx_k_, sizeof(__pyx_k_), 0, 1, 0, 0},
+  {&__pyx_n_s_DontSerialize, __pyx_k_DontSerialize, sizeof(__pyx_k_DontSerialize), 0, 0, 1, 1},
   {&__pyx_n_s_EntitySerializer, __pyx_k_EntitySerializer, sizeof(__pyx_k_EntitySerializer), 0, 0, 1, 1},
   {&__pyx_n_s_ItemsView, __pyx_k_ItemsView, sizeof(__pyx_k_ItemsView), 0, 0, 1, 1},
   {&__pyx_n_s_MappingGenerator, __pyx_k_MappingGenerator, sizeof(__pyx_k_MappingGenerator), 0, 0, 1, 1},
   {&__pyx_n_s_SequenceGenerator, __pyx_k_SequenceGenerator, sizeof(__pyx_k_SequenceGenerator), 0, 0, 1, 1},
   {&__pyx_n_s_SerializerCtx, __pyx_k_SerializerCtx, sizeof(__pyx_k_SerializerCtx), 0, 0, 1, 1},
-  {&__pyx_n_s_SkipSerialization, __pyx_k_SkipSerialization, sizeof(__pyx_k_SkipSerialization), 0, 0, 1, 1},
   {&__pyx_n_s_StopIteration, __pyx_k_StopIteration, sizeof(__pyx_k_StopIteration), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_collections_abc, __pyx_k_collections_abc, sizeof(__pyx_k_collections_abc), 0, 0, 1, 1},
@@ -4164,17 +4164,17 @@ static int __Pyx_modinit_type_init_code(void) {
   __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityAttributeExt", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_18_entity_serializer_SkipSerialization = &__pyx_vtable_5yapic_6entity_18_entity_serializer_SkipSerialization;
-  __pyx_vtable_5yapic_6entity_18_entity_serializer_SkipSerialization.__pyx_base = *__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt;
-  __pyx_type_5yapic_6entity_18_entity_serializer_SkipSerialization.tp_base = __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_18_entity_serializer_SkipSerialization) < 0) __PYX_ERR(0, 110, __pyx_L1_error)
-  __pyx_type_5yapic_6entity_18_entity_serializer_SkipSerialization.tp_print = 0;
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_18_entity_serializer_SkipSerialization.tp_dictoffset && __pyx_type_5yapic_6entity_18_entity_serializer_SkipSerialization.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_5yapic_6entity_18_entity_serializer_SkipSerialization.tp_getattro = __Pyx_PyObject_GenericGetAttr;
+  __pyx_vtabptr_5yapic_6entity_18_entity_serializer_DontSerialize = &__pyx_vtable_5yapic_6entity_18_entity_serializer_DontSerialize;
+  __pyx_vtable_5yapic_6entity_18_entity_serializer_DontSerialize.__pyx_base = *__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt;
+  __pyx_type_5yapic_6entity_18_entity_serializer_DontSerialize.tp_base = __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt;
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_18_entity_serializer_DontSerialize) < 0) __PYX_ERR(0, 110, __pyx_L1_error)
+  __pyx_type_5yapic_6entity_18_entity_serializer_DontSerialize.tp_print = 0;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_18_entity_serializer_DontSerialize.tp_dictoffset && __pyx_type_5yapic_6entity_18_entity_serializer_DontSerialize.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_5yapic_6entity_18_entity_serializer_DontSerialize.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_18_entity_serializer_SkipSerialization.tp_dict, __pyx_vtabptr_5yapic_6entity_18_entity_serializer_SkipSerialization) < 0) __PYX_ERR(0, 110, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_SkipSerialization, (PyObject *)&__pyx_type_5yapic_6entity_18_entity_serializer_SkipSerialization) < 0) __PYX_ERR(0, 110, __pyx_L1_error)
-  __pyx_ptype_5yapic_6entity_18_entity_serializer_SkipSerialization = &__pyx_type_5yapic_6entity_18_entity_serializer_SkipSerialization;
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_18_entity_serializer_DontSerialize.tp_dict, __pyx_vtabptr_5yapic_6entity_18_entity_serializer_DontSerialize) < 0) __PYX_ERR(0, 110, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DontSerialize, (PyObject *)&__pyx_type_5yapic_6entity_18_entity_serializer_DontSerialize) < 0) __PYX_ERR(0, 110, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_18_entity_serializer_DontSerialize = &__pyx_type_5yapic_6entity_18_entity_serializer_DontSerialize;
   if (PyType_Ready(&__pyx_type_5yapic_6entity_18_entity_serializer_MappingGenerator) < 0) __PYX_ERR(0, 66, __pyx_L1_error)
   __pyx_type_5yapic_6entity_18_entity_serializer_MappingGenerator.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_18_entity_serializer_MappingGenerator.tp_dictoffset && __pyx_type_5yapic_6entity_18_entity_serializer_MappingGenerator.tp_getattro == PyObject_GenericGetAttr)) {

@@ -20,5 +20,5 @@ cdef class EntitySerializer:
     cdef int length
 
 
-cdef class SkipSerialization(EntityAttributeExt):
+cdef class DontSerialize(EntityAttributeExt):
     pass
