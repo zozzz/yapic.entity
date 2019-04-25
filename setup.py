@@ -128,5 +128,5 @@ almafa = setup(
             "auto_pickle": False
         }),
     install_requires=Path(__file__).parent.joinpath("requirements.txt").read_text().splitlines(),
-    tests_require=["pytest", "docker", "pytest-asyncio"],
+    tests_require=["pytest", "docker", "pytest-asyncio", "yapic.json"],
     cmdclass={"test": PyTest})

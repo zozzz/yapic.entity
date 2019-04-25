@@ -1,7 +1,8 @@
 import pytest
-from yapic.entity import Entity, String, Int, SkipSerialization
+from yapic.entity import Entity, String, Int, Serial, One, Many, SkipSerialization, ForeignKey
 from yapic.entity._entity import EntityState
 from yapic.entity._field import FieldExtension, Field
+from yapic import json
 
 
 def test_entity_basics():
@@ -135,12 +136,36 @@ def test_entity_iter():
     assert u.as_dict() == {"id": 1, "name": "Test Elek"}
 
 
+class User4Addr(Entity):
+    id: Serial
+    addr: String
+
+
+class User4(Entity):
+    id: Serial
+    name: String
+    password: String = SkipSerialization()
+
+    address_id: Int = ForeignKey(User4Addr.id)
+    address: One[User4Addr]
+
+    many: Many["User4Many"]
+
+
+class User4Many(Entity):
+    id: Serial
+    many: String
+    parent_id: Int = ForeignKey(User4.id)
+
+
 def test_entity_serialize():
-    class User4(Entity):
-        id: Int
-        name: String
-        password: String = SkipSerialization()
 
     u = User4(id=2, name="User", password="secret")
+    u.address = User4Addr(id=3, addr="ADDRESS 12")
+    u.many.append(User4Many(id=4, parent_id=2))
+    u.many.append(User4Many(id=5, parent_id=2))
+    u.many.append(User4Many(id=6, parent_id=2))
+    u.many.append(User4Many(id=7, parent_id=2))
 
-    assert dict(u.serialize()) == {"id": 2, "name": "User"}
+    serialized = json.dumps(u)
+    assert serialized == """{"id":2,"name":"User","address":{"id":3,"addr":"ADDRESS 12"},"many":[{"id":4,"parent_id":2},{"id":5,"parent_id":2},{"id":6,"parent_id":2},{"id":7,"parent_id":2}]}"""
