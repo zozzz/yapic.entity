@@ -40,7 +40,7 @@ cdef class EntityReplacer(ReplacerBase):
     def visit_field(self, Field expr):
         cdef EntityType fent = expr._entity_
         if fent is self.what:
-            return getattr(self.to, expr._attr_name_in_class)
+            return getattr(self.to, expr._key_)
         else:
             return expr
 

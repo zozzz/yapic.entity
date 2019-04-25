@@ -1,13 +1,13 @@
 {
-    "python.unitTest.pyTestArgs": [
+    "python.testing.pyTestArgs": [
         "-x",
         "-s",
         "tests"
     ],
-    "python.unitTest.unittestEnabled": false,
-    "python.unitTest.nosetestsEnabled": false,
-    "python.unitTest.pyTestEnabled": true,
-    "python.unitTest.pyTestPath": "pytest.py",
+    "python.testing.unittestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.pyTestEnabled": true,
+    "python.testing.pyTestPath": "pytest.py",
     "sqltools.connections": [
         {
             "askForPassword": false,

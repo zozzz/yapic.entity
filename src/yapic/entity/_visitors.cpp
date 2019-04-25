@@ -1074,25 +1074,26 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityType {
  * 
  * cdef class EntityBase:             # <<<<<<<<<<<<<<
  *     cdef readonly EntityState __state__
- * 
+ *     cdef int iter_index
  */
 struct __pyx_obj_5yapic_6entity_7_entity_EntityBase {
   PyObject_HEAD
   struct __pyx_obj_5yapic_6entity_7_entity_EntityState *__state__;
+  int iter_index;
 };
 
 
-/* "_entity.pxd":29
+/* "_entity.pxd":30
  * 
  * 
  * cdef class EntityAttribute(Expression):             # <<<<<<<<<<<<<<
  *     cdef object _impl
- *     cdef str _attr_name_in_class
+ *     cdef readonly str _key_
  */
 struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute {
   struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
   PyObject *_impl;
-  PyObject *_attr_name_in_class;
+  PyObject *_key_;
   int _index_;
   PyObject *_name_;
   PyObject *_default_;
@@ -1101,7 +1102,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute {
 };
 
 
-/* "_entity.pxd":44
+/* "_entity.pxd":45
  * 
  * 
  * cdef class EntityAttributeExt:             # <<<<<<<<<<<<<<
@@ -1116,7 +1117,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt {
 };
 
 
-/* "_entity.pxd":52
+/* "_entity.pxd":53
  * 
  * 
  * cdef class EntityAttributeImpl:             # <<<<<<<<<<<<<<
@@ -1130,7 +1131,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl {
 };
 
 
-/* "_entity.pxd":64
+/* "_entity.pxd":65
  * @cython.final
  * @cython.freelist(1000)
  * cdef class EntityState:             # <<<<<<<<<<<<<<
@@ -1458,12 +1459,12 @@ struct __pyx_vtabstruct_5yapic_6entity_9_registry_Registry {
 static struct __pyx_vtabstruct_5yapic_6entity_9_registry_Registry *__pyx_vtabptr_5yapic_6entity_9_registry_Registry;
 
 
-/* "_entity.pxd":29
+/* "_entity.pxd":30
  * 
  * 
  * cdef class EntityAttribute(Expression):             # <<<<<<<<<<<<<<
  *     cdef object _impl
- *     cdef str _attr_name_in_class
+ *     cdef readonly str _key_
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute {
@@ -1476,7 +1477,7 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute {
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute *__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttribute;
 
 
-/* "_entity.pxd":44
+/* "_entity.pxd":45
  * 
  * 
  * cdef class EntityAttributeExt:             # <<<<<<<<<<<<<<
@@ -1491,7 +1492,7 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt {
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt *__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt;
 
 
-/* "_entity.pxd":52
+/* "_entity.pxd":53
  * 
  * 
  * cdef class EntityAttributeImpl:             # <<<<<<<<<<<<<<
@@ -1509,7 +1510,7 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl {
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl *__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeImpl;
 
 
-/* "_entity.pxd":64
+/* "_entity.pxd":65
  * @cython.final
  * @cython.freelist(1000)
  * cdef class EntityState:             # <<<<<<<<<<<<<<
@@ -3120,7 +3121,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_visitors_14EntityReplacer_2visit_fiel
  *     def visit_field(self, Field expr):
  *         cdef EntityType fent = expr._entity_             # <<<<<<<<<<<<<<
  *         if fent is self.what:
- *             return getattr(self.to, expr._attr_name_in_class)
+ *             return getattr(self.to, expr._key_)
  */
   __pyx_t_1 = ((PyObject *)__pyx_v_expr->__pyx_base._entity_);
   __Pyx_INCREF(__pyx_t_1);
@@ -3131,7 +3132,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_visitors_14EntityReplacer_2visit_fiel
  *     def visit_field(self, Field expr):
  *         cdef EntityType fent = expr._entity_
  *         if fent is self.what:             # <<<<<<<<<<<<<<
- *             return getattr(self.to, expr._attr_name_in_class)
+ *             return getattr(self.to, expr._key_)
  *         else:
  */
   __pyx_t_2 = (__pyx_v_fent == __pyx_v_self->what);
@@ -3141,14 +3142,14 @@ static PyObject *__pyx_pf_5yapic_6entity_9_visitors_14EntityReplacer_2visit_fiel
     /* "yapic/entity/_visitors.pyx":43
  *         cdef EntityType fent = expr._entity_
  *         if fent is self.what:
- *             return getattr(self.to, expr._attr_name_in_class)             # <<<<<<<<<<<<<<
+ *             return getattr(self.to, expr._key_)             # <<<<<<<<<<<<<<
  *         else:
  *             return expr
  */
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_1 = ((PyObject *)__pyx_v_self->to);
     __Pyx_INCREF(__pyx_t_1);
-    __pyx_t_4 = __pyx_v_expr->__pyx_base._attr_name_in_class;
+    __pyx_t_4 = __pyx_v_expr->__pyx_base._key_;
     __Pyx_INCREF(__pyx_t_4);
     __pyx_t_5 = __Pyx_GetAttr(__pyx_t_1, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 43, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
@@ -3162,13 +3163,13 @@ static PyObject *__pyx_pf_5yapic_6entity_9_visitors_14EntityReplacer_2visit_fiel
  *     def visit_field(self, Field expr):
  *         cdef EntityType fent = expr._entity_
  *         if fent is self.what:             # <<<<<<<<<<<<<<
- *             return getattr(self.to, expr._attr_name_in_class)
+ *             return getattr(self.to, expr._key_)
  *         else:
  */
   }
 
   /* "yapic/entity/_visitors.pyx":45
- *             return getattr(self.to, expr._attr_name_in_class)
+ *             return getattr(self.to, expr._key_)
  *         else:
  *             return expr             # <<<<<<<<<<<<<<
  * 
@@ -4723,17 +4724,17 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_5yapic_6entity_7_entity_EntityBase = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityBase", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityBase), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_6entity_7_entity_EntityBase) __PYX_ERR(5, 25, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityAttribute", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttribute) __PYX_ERR(5, 29, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttribute = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttribute->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttribute)) __PYX_ERR(5, 29, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttribute) __PYX_ERR(5, 30, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttribute = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttribute->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttribute)) __PYX_ERR(5, 30, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityAttributeExt", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt) __PYX_ERR(5, 44, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt)) __PYX_ERR(5, 44, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt) __PYX_ERR(5, 45, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt)) __PYX_ERR(5, 45, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityAttributeImpl", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeImpl) __PYX_ERR(5, 52, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeImpl = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeImpl)) __PYX_ERR(5, 52, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeImpl) __PYX_ERR(5, 53, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeImpl = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeImpl)) __PYX_ERR(5, 53, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_EntityState = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityState", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityState), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityState) __PYX_ERR(5, 64, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_7_entity_EntityState = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityState->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityState)) __PYX_ERR(5, 64, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityState) __PYX_ERR(5, 65, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_EntityState = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityState->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityState)) __PYX_ERR(5, 65, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("yapic.entity._field"); if (unlikely(!__pyx_t_1)) __PYX_ERR(6, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);

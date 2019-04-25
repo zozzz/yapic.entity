@@ -24,11 +24,12 @@ cpdef EntityType get_alias_target(EntityType o)
 
 cdef class EntityBase:
     cdef readonly EntityState __state__
+    cdef int iter_index
 
 
 cdef class EntityAttribute(Expression):
     cdef object _impl
-    cdef str _attr_name_in_class
+    cdef readonly str _key_
     cdef readonly int _index_
     cdef readonly str _name_
     cdef readonly object _default_
@@ -84,3 +85,6 @@ cdef class EntityState:
 
     cdef reset_all(self)
     cdef reset_attr(self, EntityAttribute attr)
+
+
+

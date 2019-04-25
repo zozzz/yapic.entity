@@ -2,6 +2,8 @@ import cython
 import random
 import string
 
+from collections.abc import ItemsView
+
 from cpython.object cimport PyObject
 from cpython.ref cimport Py_DECREF, Py_INCREF, Py_XDECREF, Py_XINCREF
 from cpython.tuple cimport PyTuple_SetItem, PyTuple_GetItem, PyTuple_New, PyTuple_GET_SIZE, PyTuple_SET_ITEM, PyTuple_GET_ITEM, PyTuple_Pack
@@ -11,6 +13,7 @@ from ._relation cimport Relation
 from ._factory cimport Factory, get_type_hints, new_instance_from_forward, is_forward_decl
 from ._expression cimport Visitor, Expression
 from ._registry cimport Registry
+from ._entity_serializer import EntitySerializer, SerializerCtx
 
 
 cdef class NOTSET:
@@ -46,17 +49,17 @@ cdef class EntityType(type):
             for v in aliased.__attrs__:
                 if isinstance(v, EntityAttribute):
                     attr = (<EntityAttribute>v).clone()
-                    attr._attr_name_in_class = (<EntityAttribute>v)._attr_name_in_class
+                    attr._key_ = (<EntityAttribute>v)._key_
 
                     if isinstance(attr, Field):
                         fields.append(attr)
                     else:
                         __attrs__.append(attr)
 
-                    setattr(self, attr._attr_name_in_class, attr)
+                    setattr(self, attr._key_, attr)
         elif fields:
             for attr in fields:
-                attr._attr_name_in_class = attr._name_
+                attr._key_ = attr._name_
                 setattr(self, attr._name_, attr)
         else:
             hints = get_type_hints(self)
@@ -76,7 +79,7 @@ cdef class EntityType(type):
 
                     if issubclass(attr_type, EntityAttribute):
                         attr = init_attribute(factory(), value)
-                        attr._attr_name_in_class = name
+                        attr._key_ = name
                         if not attr._name_:
                             attr._name_ = name
 
@@ -704,6 +707,9 @@ cdef class EntityState:
         PyTuple_SET_ITEM(<object>current, idx, <object>val)
 
 
+
+
+
 cdef class EntityBase:
     def __cinit__(self, state=None, **values):
         cdef EntityType model = type(self)
@@ -793,6 +799,46 @@ cdef class EntityBase:
             return res
         else:
             return ()
+
+    def __iter__(self):
+        self.iter_index = 0
+        return self
+
+    def __next__(self):
+        cdef EntityType ent = type(self)
+        cdef EntityAttribute attr
+        cdef int idx = self.iter_index
+
+        if idx < len(ent.__attrs__):
+            self.iter_index += 1
+
+            attr = <EntityAttribute>(<tuple>(ent.__attrs__)[idx])
+            value = self.__state__.get_value(attr)
+
+            if value is NOTSET:
+                return self.__next__()
+            else:
+                return (attr, value)
+        else:
+            raise StopIteration()
+
+    def __json__(self):
+        ctx = SerializerCtx()
+        return EntitySerializer(self, ctx)
+
+    def serialize(self, ctx=None):
+        if ctx is None:
+            ctx = SerializerCtx()
+        return EntitySerializer(self, ctx)
+
+    def as_dict(self):
+        cdef dict res = {}
+
+        for attr, value in self:
+            res[attr._key_] = value
+
+        return res
+
 
 class Entity(EntityBase, metaclass=EntityType, registry=REGISTRY, _root=True):
     def __repr__(self):
