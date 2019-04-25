@@ -95,8 +95,8 @@ cdef class OneToMany(RelationImpl):
         return "OneToMany %r" % self.joined
 
     cdef determine_join_expr(self, EntityType entity):
-        self.join_expr = determine_join_expr(entity, self.joined)
-        self.dependency = [self.joined, entity]
+        self.join_expr = determine_join_expr(self.joined, entity)
+        self.dependency = [entity, self.joined]
 
 
 cdef class ManyToMany(RelationImpl):

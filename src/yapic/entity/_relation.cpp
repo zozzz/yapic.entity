@@ -4708,8 +4708,8 @@ static PyObject *__pyx_pf_5yapic_6entity_9_relation_9OneToMany___repr__(struct _
  *         return "OneToMany %r" % self.joined
  * 
  *     cdef determine_join_expr(self, EntityType entity):             # <<<<<<<<<<<<<<
- *         self.join_expr = determine_join_expr(entity, self.joined)
- *         self.dependency = [self.joined, entity]
+ *         self.join_expr = determine_join_expr(self.joined, entity)
+ *         self.dependency = [entity, self.joined]
  */
 
 static PyObject *__pyx_f_5yapic_6entity_9_relation_9OneToMany_determine_join_expr(struct __pyx_obj_5yapic_6entity_9_relation_OneToMany *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_entity) {
@@ -4722,13 +4722,13 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_9OneToMany_determine_join_exp
   /* "yapic/entity/_relation.pyx":98
  * 
  *     cdef determine_join_expr(self, EntityType entity):
- *         self.join_expr = determine_join_expr(entity, self.joined)             # <<<<<<<<<<<<<<
- *         self.dependency = [self.joined, entity]
+ *         self.join_expr = determine_join_expr(self.joined, entity)             # <<<<<<<<<<<<<<
+ *         self.dependency = [entity, self.joined]
  * 
  */
   __pyx_t_1 = ((PyObject *)__pyx_v_self->__pyx_base.joined);
   __Pyx_INCREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_f_5yapic_6entity_9_relation_determine_join_expr(__pyx_v_entity, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 98, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_5yapic_6entity_9_relation_determine_join_expr(((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_1), __pyx_v_entity); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_GIVEREF(__pyx_t_2);
@@ -4739,19 +4739,19 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_9OneToMany_determine_join_exp
 
   /* "yapic/entity/_relation.pyx":99
  *     cdef determine_join_expr(self, EntityType entity):
- *         self.join_expr = determine_join_expr(entity, self.joined)
- *         self.dependency = [self.joined, entity]             # <<<<<<<<<<<<<<
+ *         self.join_expr = determine_join_expr(self.joined, entity)
+ *         self.dependency = [entity, self.joined]             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __pyx_t_2 = PyList_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 99, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_INCREF(((PyObject *)__pyx_v_self->__pyx_base.joined));
-  __Pyx_GIVEREF(((PyObject *)__pyx_v_self->__pyx_base.joined));
-  PyList_SET_ITEM(__pyx_t_2, 0, ((PyObject *)__pyx_v_self->__pyx_base.joined));
   __Pyx_INCREF(((PyObject *)__pyx_v_entity));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_entity));
-  PyList_SET_ITEM(__pyx_t_2, 1, ((PyObject *)__pyx_v_entity));
+  PyList_SET_ITEM(__pyx_t_2, 0, ((PyObject *)__pyx_v_entity));
+  __Pyx_INCREF(((PyObject *)__pyx_v_self->__pyx_base.joined));
+  __Pyx_GIVEREF(((PyObject *)__pyx_v_self->__pyx_base.joined));
+  PyList_SET_ITEM(__pyx_t_2, 1, ((PyObject *)__pyx_v_self->__pyx_base.joined));
   __Pyx_GIVEREF(__pyx_t_2);
   __Pyx_GOTREF(__pyx_v_self->__pyx_base.dependency);
   __Pyx_DECREF(__pyx_v_self->__pyx_base.dependency);
@@ -4762,8 +4762,8 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_9OneToMany_determine_join_exp
  *         return "OneToMany %r" % self.joined
  * 
  *     cdef determine_join_expr(self, EntityType entity):             # <<<<<<<<<<<<<<
- *         self.join_expr = determine_join_expr(entity, self.joined)
- *         self.dependency = [self.joined, entity]
+ *         self.join_expr = determine_join_expr(self.joined, entity)
+ *         self.dependency = [entity, self.joined]
  */
 
   /* function exit code */
