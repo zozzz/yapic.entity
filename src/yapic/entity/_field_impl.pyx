@@ -9,6 +9,11 @@ cdef class StringImpl(FieldImpl):
         return "String"
 
 
+cdef class BytesImpl(FieldImpl):
+    def __repr__(self):
+        return "Bytes"
+
+
 cdef class ChoiceImpl(FieldImpl):
     def __cinit__(self, enum):
         if not issubclass(enum, Enum):

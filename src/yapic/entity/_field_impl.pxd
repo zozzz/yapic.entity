@@ -6,6 +6,10 @@ cdef class StringImpl(FieldImpl):
     pass
 
 
+cdef class BytesImpl(FieldImpl):
+    pass
+
+
 cdef class IntImpl(FieldImpl):
     pass
 

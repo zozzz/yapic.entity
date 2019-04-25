@@ -4,6 +4,7 @@ from enum import Enum
 from ._field import Field as _Field, Index, ForeignKey, PrimaryKey
 from ._field_impl import (
     StringImpl,
+    BytesImpl,
     IntImpl,
     ChoiceImpl as _ChoiceImpl,
     BoolImpl,
@@ -13,8 +14,8 @@ from ._field_impl import (
 )
 
 __all__ = [
-    "Field", "String", "Bool", "Date", "DateTime", "DateTimeTz", "Int", "Serial", "Choice", "PrimaryKey", "Index",
-    "ForeignKey"
+    "Field", "String", "Bytes", "Bool", "Date", "DateTime", "DateTimeTz", "Int", "Serial", "Choice", "PrimaryKey",
+    "Index", "ForeignKey"
 ]
 
 Impl = TypeVar("Impl")
@@ -41,6 +42,7 @@ class Field(Generic[Impl, PyType, RawType], _Field):
 
 
 String = Field[StringImpl, str, str]
+Bytes = Field[BytesImpl, bytes, bytes]
 Bool = Field[BoolImpl, bool, int]
 Date = Field[DateImpl, date, str]
 DateTime = Field[DateTimeImpl, datetime, str]

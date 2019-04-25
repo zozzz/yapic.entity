@@ -869,6 +869,7 @@ struct __pyx_obj_5yapic_6entity_6_field_PrimaryKey;
 struct __pyx_obj_5yapic_6entity_6_field_Index;
 struct __pyx_obj_5yapic_6entity_6_field_ForeignKey;
 struct __pyx_obj_5yapic_6entity_11_field_impl_StringImpl;
+struct __pyx_obj_5yapic_6entity_11_field_impl_BytesImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_IntImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_BoolImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_DateImpl;
@@ -1275,6 +1276,18 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_StringImpl {
 /* "yapic/entity/_field_impl.pxd":9
  * 
  * 
+ * cdef class BytesImpl(FieldImpl):             # <<<<<<<<<<<<<<
+ *     pass
+ * 
+ */
+struct __pyx_obj_5yapic_6entity_11_field_impl_BytesImpl {
+  struct __pyx_obj_5yapic_6entity_6_field_FieldImpl __pyx_base;
+};
+
+
+/* "yapic/entity/_field_impl.pxd":13
+ * 
+ * 
  * cdef class IntImpl(FieldImpl):             # <<<<<<<<<<<<<<
  *     pass
  * 
@@ -1284,7 +1297,7 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_IntImpl {
 };
 
 
-/* "yapic/entity/_field_impl.pxd":13
+/* "yapic/entity/_field_impl.pxd":17
  * 
  * 
  * cdef class BoolImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -1296,7 +1309,7 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_BoolImpl {
 };
 
 
-/* "yapic/entity/_field_impl.pxd":17
+/* "yapic/entity/_field_impl.pxd":21
  * 
  * 
  * cdef class DateImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -1308,7 +1321,7 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_DateImpl {
 };
 
 
-/* "yapic/entity/_field_impl.pxd":21
+/* "yapic/entity/_field_impl.pxd":25
  * 
  * 
  * cdef class DateTimeImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -1320,7 +1333,7 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_DateTimeImpl {
 };
 
 
-/* "yapic/entity/_field_impl.pxd":25
+/* "yapic/entity/_field_impl.pxd":29
  * 
  * 
  * cdef class DateTimeTzImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -1332,7 +1345,7 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_DateTimeTzImpl {
 };
 
 
-/* "yapic/entity/_field_impl.pxd":29
+/* "yapic/entity/_field_impl.pxd":33
  * 
  * 
  * cdef class ChoiceImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -1711,7 +1724,21 @@ struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_StringImpl {
 static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_StringImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_StringImpl;
 
 
-/* "yapic/entity/_field_impl.pyx":28
+/* "yapic/entity/_field_impl.pyx":12
+ * 
+ * 
+ * cdef class BytesImpl(FieldImpl):             # <<<<<<<<<<<<<<
+ *     def __repr__(self):
+ *         return "Bytes"
+ */
+
+struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_BytesImpl {
+  struct __pyx_vtabstruct_5yapic_6entity_6_field_FieldImpl __pyx_base;
+};
+static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_BytesImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_BytesImpl;
+
+
+/* "yapic/entity/_field_impl.pyx":33
  * 
  * 
  * cdef class IntImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -1725,7 +1752,7 @@ struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_IntImpl {
 static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_IntImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_IntImpl;
 
 
-/* "yapic/entity/_field_impl.pyx":33
+/* "yapic/entity/_field_impl.pyx":38
  * 
  * 
  * cdef class BoolImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -1739,7 +1766,7 @@ struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_BoolImpl {
 static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_BoolImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_BoolImpl;
 
 
-/* "yapic/entity/_field_impl.pyx":38
+/* "yapic/entity/_field_impl.pyx":43
  * 
  * 
  * cdef class DateImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -1753,7 +1780,7 @@ struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateImpl {
 static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_DateImpl;
 
 
-/* "yapic/entity/_field_impl.pyx":43
+/* "yapic/entity/_field_impl.pyx":48
  * 
  * 
  * cdef class DateTimeImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -1767,7 +1794,7 @@ struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateTimeImpl {
 static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateTimeImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeImpl;
 
 
-/* "yapic/entity/_field_impl.pyx":48
+/* "yapic/entity/_field_impl.pyx":53
  * 
  * 
  * cdef class DateTimeTzImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -1781,7 +1808,7 @@ struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateTimeTzImpl {
 static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateTimeTzImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeTzImpl;
 
 
-/* "yapic/entity/_field_impl.pyx":12
+/* "yapic/entity/_field_impl.pyx":17
  * 
  * 
  * cdef class ChoiceImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -2143,6 +2170,7 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_6_field_ForeignKey = 0;
 
 /* Module declarations from 'yapic.entity._field_impl' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_StringImpl = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_BytesImpl = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_IntImpl = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_BoolImpl = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_DateImpl = 0;
@@ -2165,6 +2193,7 @@ static const char __pyx_k_enum[] = "enum";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
 static const char __pyx_k_test[] = "__test__";
+static const char __pyx_k_Bytes[] = "Bytes";
 static const char __pyx_k_value[] = "value";
 static const char __pyx_k_String[] = "String";
 static const char __pyx_k_import[] = "__import__";
@@ -2174,6 +2203,7 @@ static const char __pyx_k_Choice_r[] = "Choice(%r)";
 static const char __pyx_k_DateImpl[] = "DateImpl";
 static const char __pyx_k_DateTime[] = "DateTime";
 static const char __pyx_k_datetime[] = "datetime";
+static const char __pyx_k_BytesImpl[] = "BytesImpl";
 static const char __pyx_k_TypeError[] = "TypeError";
 static const char __pyx_k_ChoiceImpl[] = "ChoiceImpl";
 static const char __pyx_k_DateTimeTz[] = "DateTimeTz";
@@ -2185,6 +2215,8 @@ static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_Choice_type_argument_must_be_a_s[] = "Choice type argument must be a subclass of Enum type";
 static PyObject *__pyx_n_u_Bool;
 static PyObject *__pyx_n_s_BoolImpl;
+static PyObject *__pyx_n_u_Bytes;
+static PyObject *__pyx_n_s_BytesImpl;
 static PyObject *__pyx_n_s_ChoiceImpl;
 static PyObject *__pyx_kp_u_Choice_r;
 static PyObject *__pyx_kp_u_Choice_type_argument_must_be_a_s;
@@ -2212,6 +2244,7 @@ static PyObject *__pyx_n_s_pyx_vtable;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_value;
 static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_10StringImpl___repr__(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_11_field_impl_StringImpl *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_9BytesImpl___repr__(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_11_field_impl_BytesImpl *__pyx_v_self); /* proto */
 static int __pyx_pf_5yapic_6entity_11_field_impl_10ChoiceImpl___cinit__(struct __pyx_obj_5yapic_6entity_11_field_impl_ChoiceImpl *__pyx_v_self, PyObject *__pyx_v_enum); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_10ChoiceImpl_4enum___get__(struct __pyx_obj_5yapic_6entity_11_field_impl_ChoiceImpl *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_10ChoiceImpl_2__repr__(struct __pyx_obj_5yapic_6entity_11_field_impl_ChoiceImpl *__pyx_v_self); /* proto */
@@ -2222,6 +2255,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_8DateImpl___repr__(CYTHON
 static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_12DateTimeImpl___repr__(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_11_field_impl_DateTimeImpl *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_14DateTimeTzImpl___repr__(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_11_field_impl_DateTimeTzImpl *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_5yapic_6entity_11_field_impl_StringImpl(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_5yapic_6entity_11_field_impl_BytesImpl(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5yapic_6entity_11_field_impl_IntImpl(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5yapic_6entity_11_field_impl_BoolImpl(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5yapic_6entity_11_field_impl_DateImpl(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -2286,6 +2320,59 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_10StringImpl___repr__(CYT
 
 /* "yapic/entity/_field_impl.pyx":13
  * 
+ * cdef class BytesImpl(FieldImpl):
+ *     def __repr__(self):             # <<<<<<<<<<<<<<
+ *         return "Bytes"
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5yapic_6entity_11_field_impl_9BytesImpl_1__repr__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_11_field_impl_9BytesImpl_1__repr__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__repr__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_5yapic_6entity_11_field_impl_9BytesImpl___repr__(((struct __pyx_obj_5yapic_6entity_11_field_impl_BytesImpl *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_9BytesImpl___repr__(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_11_field_impl_BytesImpl *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__repr__", 0);
+
+  /* "yapic/entity/_field_impl.pyx":14
+ * cdef class BytesImpl(FieldImpl):
+ *     def __repr__(self):
+ *         return "Bytes"             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_n_u_Bytes);
+  __pyx_r = __pyx_n_u_Bytes;
+  goto __pyx_L0;
+
+  /* "yapic/entity/_field_impl.pyx":13
+ * 
+ * cdef class BytesImpl(FieldImpl):
+ *     def __repr__(self):             # <<<<<<<<<<<<<<
+ *         return "Bytes"
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "yapic/entity/_field_impl.pyx":18
+ * 
  * cdef class ChoiceImpl(FieldImpl):
  *     def __cinit__(self, enum):             # <<<<<<<<<<<<<<
  *         if not issubclass(enum, Enum):
@@ -2318,7 +2405,7 @@ static int __pyx_pw_5yapic_6entity_11_field_impl_10ChoiceImpl_1__cinit__(PyObjec
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 13, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 18, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -2329,7 +2416,7 @@ static int __pyx_pw_5yapic_6entity_11_field_impl_10ChoiceImpl_1__cinit__(PyObjec
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 13, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 18, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("yapic.entity._field_impl.ChoiceImpl.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2350,34 +2437,34 @@ static int __pyx_pf_5yapic_6entity_11_field_impl_10ChoiceImpl___cinit__(struct _
   int __pyx_t_3;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "yapic/entity/_field_impl.pyx":14
+  /* "yapic/entity/_field_impl.pyx":19
  * cdef class ChoiceImpl(FieldImpl):
  *     def __cinit__(self, enum):
  *         if not issubclass(enum, Enum):             # <<<<<<<<<<<<<<
  *             raise TypeError("Choice type argument must be a subclass of Enum type")
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Enum); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Enum); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_IsSubclass(__pyx_v_enum, __pyx_t_1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_t_2 = PyObject_IsSubclass(__pyx_v_enum, __pyx_t_1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = ((!(__pyx_t_2 != 0)) != 0);
   if (unlikely(__pyx_t_3)) {
 
-    /* "yapic/entity/_field_impl.pyx":15
+    /* "yapic/entity/_field_impl.pyx":20
  *     def __cinit__(self, enum):
  *         if not issubclass(enum, Enum):
  *             raise TypeError("Choice type argument must be a subclass of Enum type")             # <<<<<<<<<<<<<<
  * 
  *         self._enum = enum
  */
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 15, __pyx_L1_error)
+    __PYX_ERR(0, 20, __pyx_L1_error)
 
-    /* "yapic/entity/_field_impl.pyx":14
+    /* "yapic/entity/_field_impl.pyx":19
  * cdef class ChoiceImpl(FieldImpl):
  *     def __cinit__(self, enum):
  *         if not issubclass(enum, Enum):             # <<<<<<<<<<<<<<
@@ -2386,7 +2473,7 @@ static int __pyx_pf_5yapic_6entity_11_field_impl_10ChoiceImpl___cinit__(struct _
  */
   }
 
-  /* "yapic/entity/_field_impl.pyx":17
+  /* "yapic/entity/_field_impl.pyx":22
  *             raise TypeError("Choice type argument must be a subclass of Enum type")
  * 
  *         self._enum = enum             # <<<<<<<<<<<<<<
@@ -2399,20 +2486,20 @@ static int __pyx_pf_5yapic_6entity_11_field_impl_10ChoiceImpl___cinit__(struct _
   __Pyx_DECREF(__pyx_v_self->_enum);
   __pyx_v_self->_enum = __pyx_v_enum;
 
-  /* "yapic/entity/_field_impl.pyx":18
+  /* "yapic/entity/_field_impl.pyx":23
  * 
  *         self._enum = enum
  *         self.is_multi = issubclass(enum, Flag)             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Flag); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 18, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Flag); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyObject_IsSubclass(__pyx_v_enum, __pyx_t_1); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_t_3 = PyObject_IsSubclass(__pyx_v_enum, __pyx_t_1); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 23, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->is_multi = __pyx_t_3;
 
-  /* "yapic/entity/_field_impl.pyx":13
+  /* "yapic/entity/_field_impl.pyx":18
  * 
  * cdef class ChoiceImpl(FieldImpl):
  *     def __cinit__(self, enum):             # <<<<<<<<<<<<<<
@@ -2432,7 +2519,7 @@ static int __pyx_pf_5yapic_6entity_11_field_impl_10ChoiceImpl___cinit__(struct _
   return __pyx_r;
 }
 
-/* "yapic/entity/_field_impl.pyx":21
+/* "yapic/entity/_field_impl.pyx":26
  * 
  *     @property
  *     def enum(self):             # <<<<<<<<<<<<<<
@@ -2458,7 +2545,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_10ChoiceImpl_4enum___get_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "yapic/entity/_field_impl.pyx":22
+  /* "yapic/entity/_field_impl.pyx":27
  *     @property
  *     def enum(self):
  *         return self._enum             # <<<<<<<<<<<<<<
@@ -2470,7 +2557,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_10ChoiceImpl_4enum___get_
   __pyx_r = __pyx_v_self->_enum;
   goto __pyx_L0;
 
-  /* "yapic/entity/_field_impl.pyx":21
+  /* "yapic/entity/_field_impl.pyx":26
  * 
  *     @property
  *     def enum(self):             # <<<<<<<<<<<<<<
@@ -2485,7 +2572,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_10ChoiceImpl_4enum___get_
   return __pyx_r;
 }
 
-/* "yapic/entity/_field_impl.pyx":24
+/* "yapic/entity/_field_impl.pyx":29
  *         return self._enum
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -2517,7 +2604,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_10ChoiceImpl_2__repr__(st
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "yapic/entity/_field_impl.pyx":25
+  /* "yapic/entity/_field_impl.pyx":30
  * 
  *     def __repr__(self):
  *         return "Choice(%r)" % [item.value for item in self._enum]             # <<<<<<<<<<<<<<
@@ -2526,32 +2613,32 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_10ChoiceImpl_2__repr__(st
  */
   __Pyx_XDECREF(__pyx_r);
   { /* enter inner scope */
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L5_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_1);
     if (likely(PyList_CheckExact(__pyx_v_self->_enum)) || PyTuple_CheckExact(__pyx_v_self->_enum)) {
       __pyx_t_2 = __pyx_v_self->_enum; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
       __pyx_t_4 = NULL;
     } else {
-      __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_self->_enum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L5_error)
+      __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_self->_enum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 25, __pyx_L5_error)
+      __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 30, __pyx_L5_error)
     }
     for (;;) {
       if (likely(!__pyx_t_4)) {
         if (likely(PyList_CheckExact(__pyx_t_2))) {
           if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_5 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_5); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 25, __pyx_L5_error)
+          __pyx_t_5 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_5); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 30, __pyx_L5_error)
           #else
-          __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 25, __pyx_L5_error)
+          __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 30, __pyx_L5_error)
           __Pyx_GOTREF(__pyx_t_5);
           #endif
         } else {
           if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_5); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 25, __pyx_L5_error)
+          __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_5); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 30, __pyx_L5_error)
           #else
-          __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 25, __pyx_L5_error)
+          __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 30, __pyx_L5_error)
           __Pyx_GOTREF(__pyx_t_5);
           #endif
         }
@@ -2561,7 +2648,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_10ChoiceImpl_2__repr__(st
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 25, __pyx_L5_error)
+            else __PYX_ERR(0, 30, __pyx_L5_error)
           }
           break;
         }
@@ -2569,9 +2656,9 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_10ChoiceImpl_2__repr__(st
       }
       __Pyx_XDECREF_SET(__pyx_7genexpr__pyx_v_item, __pyx_t_5);
       __pyx_t_5 = 0;
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_7genexpr__pyx_v_item, __pyx_n_s_value); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 25, __pyx_L5_error)
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_7genexpr__pyx_v_item, __pyx_n_s_value); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 30, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_5);
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_5))) __PYX_ERR(0, 25, __pyx_L5_error)
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_5))) __PYX_ERR(0, 30, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -2582,14 +2669,14 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_10ChoiceImpl_2__repr__(st
     goto __pyx_L1_error;
     __pyx_L8_exit_scope:;
   } /* exit inner scope */
-  __pyx_t_2 = PyUnicode_Format(__pyx_kp_u_Choice_r, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_t_2 = PyUnicode_Format(__pyx_kp_u_Choice_r, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "yapic/entity/_field_impl.pyx":24
+  /* "yapic/entity/_field_impl.pyx":29
  *         return self._enum
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -2611,7 +2698,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_10ChoiceImpl_2__repr__(st
   return __pyx_r;
 }
 
-/* "yapic/entity/_field_impl.pxd":31
+/* "yapic/entity/_field_impl.pxd":35
  * cdef class ChoiceImpl(FieldImpl):
  *     cdef object _enum
  *     cdef readonly bint is_multi             # <<<<<<<<<<<<<<
@@ -2636,7 +2723,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_10ChoiceImpl_8is_multi___
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->is_multi); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 31, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->is_multi); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2653,7 +2740,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_10ChoiceImpl_8is_multi___
   return __pyx_r;
 }
 
-/* "yapic/entity/_field_impl.pyx":29
+/* "yapic/entity/_field_impl.pyx":34
  * 
  * cdef class IntImpl(FieldImpl):
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -2679,7 +2766,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_7IntImpl___repr__(CYTHON_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "yapic/entity/_field_impl.pyx":30
+  /* "yapic/entity/_field_impl.pyx":35
  * cdef class IntImpl(FieldImpl):
  *     def __repr__(self):
  *         return "Int"             # <<<<<<<<<<<<<<
@@ -2691,7 +2778,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_7IntImpl___repr__(CYTHON_
   __pyx_r = __pyx_n_u_Int;
   goto __pyx_L0;
 
-  /* "yapic/entity/_field_impl.pyx":29
+  /* "yapic/entity/_field_impl.pyx":34
  * 
  * cdef class IntImpl(FieldImpl):
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -2706,7 +2793,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_7IntImpl___repr__(CYTHON_
   return __pyx_r;
 }
 
-/* "yapic/entity/_field_impl.pyx":34
+/* "yapic/entity/_field_impl.pyx":39
  * 
  * cdef class BoolImpl(FieldImpl):
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -2732,7 +2819,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_8BoolImpl___repr__(CYTHON
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "yapic/entity/_field_impl.pyx":35
+  /* "yapic/entity/_field_impl.pyx":40
  * cdef class BoolImpl(FieldImpl):
  *     def __repr__(self):
  *         return "Bool"             # <<<<<<<<<<<<<<
@@ -2744,7 +2831,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_8BoolImpl___repr__(CYTHON
   __pyx_r = __pyx_n_u_Bool;
   goto __pyx_L0;
 
-  /* "yapic/entity/_field_impl.pyx":34
+  /* "yapic/entity/_field_impl.pyx":39
  * 
  * cdef class BoolImpl(FieldImpl):
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -2759,7 +2846,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_8BoolImpl___repr__(CYTHON
   return __pyx_r;
 }
 
-/* "yapic/entity/_field_impl.pyx":39
+/* "yapic/entity/_field_impl.pyx":44
  * 
  * cdef class DateImpl(FieldImpl):
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -2785,7 +2872,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_8DateImpl___repr__(CYTHON
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "yapic/entity/_field_impl.pyx":40
+  /* "yapic/entity/_field_impl.pyx":45
  * cdef class DateImpl(FieldImpl):
  *     def __repr__(self):
  *         return "Date"             # <<<<<<<<<<<<<<
@@ -2797,7 +2884,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_8DateImpl___repr__(CYTHON
   __pyx_r = __pyx_n_u_Date;
   goto __pyx_L0;
 
-  /* "yapic/entity/_field_impl.pyx":39
+  /* "yapic/entity/_field_impl.pyx":44
  * 
  * cdef class DateImpl(FieldImpl):
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -2812,7 +2899,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_8DateImpl___repr__(CYTHON
   return __pyx_r;
 }
 
-/* "yapic/entity/_field_impl.pyx":44
+/* "yapic/entity/_field_impl.pyx":49
  * 
  * cdef class DateTimeImpl(FieldImpl):
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -2838,7 +2925,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_12DateTimeImpl___repr__(C
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "yapic/entity/_field_impl.pyx":45
+  /* "yapic/entity/_field_impl.pyx":50
  * cdef class DateTimeImpl(FieldImpl):
  *     def __repr__(self):
  *         return "DateTime"             # <<<<<<<<<<<<<<
@@ -2850,7 +2937,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_12DateTimeImpl___repr__(C
   __pyx_r = __pyx_n_u_DateTime;
   goto __pyx_L0;
 
-  /* "yapic/entity/_field_impl.pyx":44
+  /* "yapic/entity/_field_impl.pyx":49
  * 
  * cdef class DateTimeImpl(FieldImpl):
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -2865,7 +2952,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_12DateTimeImpl___repr__(C
   return __pyx_r;
 }
 
-/* "yapic/entity/_field_impl.pyx":49
+/* "yapic/entity/_field_impl.pyx":54
  * 
  * cdef class DateTimeTzImpl(FieldImpl):
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -2890,7 +2977,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_14DateTimeTzImpl___repr__
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "yapic/entity/_field_impl.pyx":50
+  /* "yapic/entity/_field_impl.pyx":55
  * cdef class DateTimeTzImpl(FieldImpl):
  *     def __repr__(self):
  *         return "DateTimeTz"             # <<<<<<<<<<<<<<
@@ -2900,7 +2987,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_field_impl_14DateTimeTzImpl___repr__
   __pyx_r = __pyx_n_u_DateTimeTz;
   goto __pyx_L0;
 
-  /* "yapic/entity/_field_impl.pyx":49
+  /* "yapic/entity/_field_impl.pyx":54
  * 
  * cdef class DateTimeTzImpl(FieldImpl):
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -2981,6 +3068,87 @@ static PyTypeObject __pyx_type_5yapic_6entity_11_field_impl_StringImpl = {
   0, /*tp_init*/
   0, /*tp_alloc*/
   __pyx_tp_new_5yapic_6entity_11_field_impl_StringImpl, /*tp_new*/
+  0, /*tp_free*/
+  0, /*tp_is_gc*/
+  0, /*tp_bases*/
+  0, /*tp_mro*/
+  0, /*tp_cache*/
+  0, /*tp_subclasses*/
+  0, /*tp_weaklist*/
+  0, /*tp_del*/
+  0, /*tp_version_tag*/
+  #if PY_VERSION_HEX >= 0x030400a1
+  0, /*tp_finalize*/
+  #endif
+};
+static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_BytesImpl __pyx_vtable_5yapic_6entity_11_field_impl_BytesImpl;
+
+static PyObject *__pyx_tp_new_5yapic_6entity_11_field_impl_BytesImpl(PyTypeObject *t, PyObject *a, PyObject *k) {
+  struct __pyx_obj_5yapic_6entity_11_field_impl_BytesImpl *p;
+  PyObject *o = __pyx_ptype_5yapic_6entity_6_field_FieldImpl->tp_new(t, a, k);
+  if (unlikely(!o)) return 0;
+  p = ((struct __pyx_obj_5yapic_6entity_11_field_impl_BytesImpl *)o);
+  p->__pyx_base.__pyx_base.__pyx_vtab = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl*)__pyx_vtabptr_5yapic_6entity_11_field_impl_BytesImpl;
+  return o;
+}
+
+static void __pyx_tp_dealloc_5yapic_6entity_11_field_impl_BytesImpl(PyObject *o) {
+  #if CYTHON_USE_TP_FINALIZE
+  if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
+    if (PyObject_CallFinalizerFromDealloc(o)) return;
+  }
+  #endif
+  if (likely(__pyx_ptype_5yapic_6entity_6_field_FieldImpl)) __pyx_ptype_5yapic_6entity_6_field_FieldImpl->tp_dealloc(o); else __Pyx_call_next_tp_dealloc(o, __pyx_tp_dealloc_5yapic_6entity_11_field_impl_BytesImpl);
+}
+
+static PyMethodDef __pyx_methods_5yapic_6entity_11_field_impl_BytesImpl[] = {
+  {0, 0, 0, 0}
+};
+
+static PyTypeObject __pyx_type_5yapic_6entity_11_field_impl_BytesImpl = {
+  PyVarObject_HEAD_INIT(0, 0)
+  "yapic.entity._field_impl.BytesImpl", /*tp_name*/
+  sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_BytesImpl), /*tp_basicsize*/
+  0, /*tp_itemsize*/
+  __pyx_tp_dealloc_5yapic_6entity_11_field_impl_BytesImpl, /*tp_dealloc*/
+  0, /*tp_print*/
+  0, /*tp_getattr*/
+  0, /*tp_setattr*/
+  #if PY_MAJOR_VERSION < 3
+  0, /*tp_compare*/
+  #endif
+  #if PY_MAJOR_VERSION >= 3
+  0, /*tp_as_async*/
+  #endif
+  __pyx_pw_5yapic_6entity_11_field_impl_9BytesImpl_1__repr__, /*tp_repr*/
+  0, /*tp_as_number*/
+  0, /*tp_as_sequence*/
+  0, /*tp_as_mapping*/
+  0, /*tp_hash*/
+  0, /*tp_call*/
+  0, /*tp_str*/
+  0, /*tp_getattro*/
+  0, /*tp_setattro*/
+  0, /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE, /*tp_flags*/
+  0, /*tp_doc*/
+  0, /*tp_traverse*/
+  0, /*tp_clear*/
+  0, /*tp_richcompare*/
+  0, /*tp_weaklistoffset*/
+  0, /*tp_iter*/
+  0, /*tp_iternext*/
+  __pyx_methods_5yapic_6entity_11_field_impl_BytesImpl, /*tp_methods*/
+  0, /*tp_members*/
+  0, /*tp_getset*/
+  0, /*tp_base*/
+  0, /*tp_dict*/
+  0, /*tp_descr_get*/
+  0, /*tp_descr_set*/
+  0, /*tp_dictoffset*/
+  0, /*tp_init*/
+  0, /*tp_alloc*/
+  __pyx_tp_new_5yapic_6entity_11_field_impl_BytesImpl, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -3575,6 +3743,8 @@ static struct PyModuleDef __pyx_moduledef = {
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_u_Bool, __pyx_k_Bool, sizeof(__pyx_k_Bool), 0, 1, 0, 1},
   {&__pyx_n_s_BoolImpl, __pyx_k_BoolImpl, sizeof(__pyx_k_BoolImpl), 0, 0, 1, 1},
+  {&__pyx_n_u_Bytes, __pyx_k_Bytes, sizeof(__pyx_k_Bytes), 0, 1, 0, 1},
+  {&__pyx_n_s_BytesImpl, __pyx_k_BytesImpl, sizeof(__pyx_k_BytesImpl), 0, 0, 1, 1},
   {&__pyx_n_s_ChoiceImpl, __pyx_k_ChoiceImpl, sizeof(__pyx_k_ChoiceImpl), 0, 0, 1, 1},
   {&__pyx_kp_u_Choice_r, __pyx_k_Choice_r, sizeof(__pyx_k_Choice_r), 0, 1, 0, 0},
   {&__pyx_kp_u_Choice_type_argument_must_be_a_s, __pyx_k_Choice_type_argument_must_be_a_s, sizeof(__pyx_k_Choice_type_argument_must_be_a_s), 0, 1, 0, 0},
@@ -3604,7 +3774,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 15, __pyx_L1_error)
+  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 20, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -3614,14 +3784,14 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "yapic/entity/_field_impl.pyx":15
+  /* "yapic/entity/_field_impl.pyx":20
  *     def __cinit__(self, enum):
  *         if not issubclass(enum, Enum):
  *             raise TypeError("Choice type argument must be a subclass of Enum type")             # <<<<<<<<<<<<<<
  * 
  *         self._enum = enum
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_Choice_type_argument_must_be_a_s); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 15, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_Choice_type_argument_must_be_a_s); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 20, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
   __Pyx_RefNannyFinishContext();
@@ -3691,71 +3861,82 @@ static int __Pyx_modinit_type_init_code(void) {
   if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_field_impl_StringImpl.tp_dict, __pyx_vtabptr_5yapic_6entity_11_field_impl_StringImpl) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
   if (PyObject_SetAttr(__pyx_m, __pyx_n_s_StringImpl, (PyObject *)&__pyx_type_5yapic_6entity_11_field_impl_StringImpl) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_StringImpl = &__pyx_type_5yapic_6entity_11_field_impl_StringImpl;
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_BytesImpl = &__pyx_vtable_5yapic_6entity_11_field_impl_BytesImpl;
+  __pyx_vtable_5yapic_6entity_11_field_impl_BytesImpl.__pyx_base = *__pyx_vtabptr_5yapic_6entity_6_field_FieldImpl;
+  __pyx_type_5yapic_6entity_11_field_impl_BytesImpl.tp_base = __pyx_ptype_5yapic_6entity_6_field_FieldImpl;
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_field_impl_BytesImpl) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_type_5yapic_6entity_11_field_impl_BytesImpl.tp_print = 0;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_11_field_impl_BytesImpl.tp_dictoffset && __pyx_type_5yapic_6entity_11_field_impl_BytesImpl.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_5yapic_6entity_11_field_impl_BytesImpl.tp_getattro = __Pyx_PyObject_GenericGetAttr;
+  }
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_field_impl_BytesImpl.tp_dict, __pyx_vtabptr_5yapic_6entity_11_field_impl_BytesImpl) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_BytesImpl, (PyObject *)&__pyx_type_5yapic_6entity_11_field_impl_BytesImpl) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_11_field_impl_BytesImpl = &__pyx_type_5yapic_6entity_11_field_impl_BytesImpl;
   __pyx_vtabptr_5yapic_6entity_11_field_impl_IntImpl = &__pyx_vtable_5yapic_6entity_11_field_impl_IntImpl;
   __pyx_vtable_5yapic_6entity_11_field_impl_IntImpl.__pyx_base = *__pyx_vtabptr_5yapic_6entity_6_field_FieldImpl;
   __pyx_type_5yapic_6entity_11_field_impl_IntImpl.tp_base = __pyx_ptype_5yapic_6entity_6_field_FieldImpl;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_field_impl_IntImpl) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_field_impl_IntImpl) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
   __pyx_type_5yapic_6entity_11_field_impl_IntImpl.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_11_field_impl_IntImpl.tp_dictoffset && __pyx_type_5yapic_6entity_11_field_impl_IntImpl.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_11_field_impl_IntImpl.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_field_impl_IntImpl.tp_dict, __pyx_vtabptr_5yapic_6entity_11_field_impl_IntImpl) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_IntImpl, (PyObject *)&__pyx_type_5yapic_6entity_11_field_impl_IntImpl) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_field_impl_IntImpl.tp_dict, __pyx_vtabptr_5yapic_6entity_11_field_impl_IntImpl) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_IntImpl, (PyObject *)&__pyx_type_5yapic_6entity_11_field_impl_IntImpl) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_IntImpl = &__pyx_type_5yapic_6entity_11_field_impl_IntImpl;
   __pyx_vtabptr_5yapic_6entity_11_field_impl_BoolImpl = &__pyx_vtable_5yapic_6entity_11_field_impl_BoolImpl;
   __pyx_vtable_5yapic_6entity_11_field_impl_BoolImpl.__pyx_base = *__pyx_vtabptr_5yapic_6entity_6_field_FieldImpl;
   __pyx_type_5yapic_6entity_11_field_impl_BoolImpl.tp_base = __pyx_ptype_5yapic_6entity_6_field_FieldImpl;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_field_impl_BoolImpl) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_field_impl_BoolImpl) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
   __pyx_type_5yapic_6entity_11_field_impl_BoolImpl.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_11_field_impl_BoolImpl.tp_dictoffset && __pyx_type_5yapic_6entity_11_field_impl_BoolImpl.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_11_field_impl_BoolImpl.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_field_impl_BoolImpl.tp_dict, __pyx_vtabptr_5yapic_6entity_11_field_impl_BoolImpl) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_BoolImpl, (PyObject *)&__pyx_type_5yapic_6entity_11_field_impl_BoolImpl) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_field_impl_BoolImpl.tp_dict, __pyx_vtabptr_5yapic_6entity_11_field_impl_BoolImpl) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_BoolImpl, (PyObject *)&__pyx_type_5yapic_6entity_11_field_impl_BoolImpl) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_BoolImpl = &__pyx_type_5yapic_6entity_11_field_impl_BoolImpl;
   __pyx_vtabptr_5yapic_6entity_11_field_impl_DateImpl = &__pyx_vtable_5yapic_6entity_11_field_impl_DateImpl;
   __pyx_vtable_5yapic_6entity_11_field_impl_DateImpl.__pyx_base = *__pyx_vtabptr_5yapic_6entity_6_field_FieldImpl;
   __pyx_type_5yapic_6entity_11_field_impl_DateImpl.tp_base = __pyx_ptype_5yapic_6entity_6_field_FieldImpl;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_field_impl_DateImpl) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_field_impl_DateImpl) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
   __pyx_type_5yapic_6entity_11_field_impl_DateImpl.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_11_field_impl_DateImpl.tp_dictoffset && __pyx_type_5yapic_6entity_11_field_impl_DateImpl.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_11_field_impl_DateImpl.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_field_impl_DateImpl.tp_dict, __pyx_vtabptr_5yapic_6entity_11_field_impl_DateImpl) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DateImpl, (PyObject *)&__pyx_type_5yapic_6entity_11_field_impl_DateImpl) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_field_impl_DateImpl.tp_dict, __pyx_vtabptr_5yapic_6entity_11_field_impl_DateImpl) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DateImpl, (PyObject *)&__pyx_type_5yapic_6entity_11_field_impl_DateImpl) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_DateImpl = &__pyx_type_5yapic_6entity_11_field_impl_DateImpl;
   __pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeImpl = &__pyx_vtable_5yapic_6entity_11_field_impl_DateTimeImpl;
   __pyx_vtable_5yapic_6entity_11_field_impl_DateTimeImpl.__pyx_base = *__pyx_vtabptr_5yapic_6entity_6_field_FieldImpl;
   __pyx_type_5yapic_6entity_11_field_impl_DateTimeImpl.tp_base = __pyx_ptype_5yapic_6entity_6_field_FieldImpl;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_field_impl_DateTimeImpl) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_field_impl_DateTimeImpl) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
   __pyx_type_5yapic_6entity_11_field_impl_DateTimeImpl.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_11_field_impl_DateTimeImpl.tp_dictoffset && __pyx_type_5yapic_6entity_11_field_impl_DateTimeImpl.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_11_field_impl_DateTimeImpl.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_field_impl_DateTimeImpl.tp_dict, __pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeImpl) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DateTimeImpl, (PyObject *)&__pyx_type_5yapic_6entity_11_field_impl_DateTimeImpl) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_field_impl_DateTimeImpl.tp_dict, __pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeImpl) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DateTimeImpl, (PyObject *)&__pyx_type_5yapic_6entity_11_field_impl_DateTimeImpl) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_DateTimeImpl = &__pyx_type_5yapic_6entity_11_field_impl_DateTimeImpl;
   __pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeTzImpl = &__pyx_vtable_5yapic_6entity_11_field_impl_DateTimeTzImpl;
   __pyx_vtable_5yapic_6entity_11_field_impl_DateTimeTzImpl.__pyx_base = *__pyx_vtabptr_5yapic_6entity_6_field_FieldImpl;
   __pyx_type_5yapic_6entity_11_field_impl_DateTimeTzImpl.tp_base = __pyx_ptype_5yapic_6entity_6_field_FieldImpl;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_field_impl_DateTimeTzImpl) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_field_impl_DateTimeTzImpl) < 0) __PYX_ERR(0, 53, __pyx_L1_error)
   __pyx_type_5yapic_6entity_11_field_impl_DateTimeTzImpl.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_11_field_impl_DateTimeTzImpl.tp_dictoffset && __pyx_type_5yapic_6entity_11_field_impl_DateTimeTzImpl.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_11_field_impl_DateTimeTzImpl.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_field_impl_DateTimeTzImpl.tp_dict, __pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeTzImpl) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DateTimeTzImpl, (PyObject *)&__pyx_type_5yapic_6entity_11_field_impl_DateTimeTzImpl) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_field_impl_DateTimeTzImpl.tp_dict, __pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeTzImpl) < 0) __PYX_ERR(0, 53, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DateTimeTzImpl, (PyObject *)&__pyx_type_5yapic_6entity_11_field_impl_DateTimeTzImpl) < 0) __PYX_ERR(0, 53, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_DateTimeTzImpl = &__pyx_type_5yapic_6entity_11_field_impl_DateTimeTzImpl;
   __pyx_vtabptr_5yapic_6entity_11_field_impl_ChoiceImpl = &__pyx_vtable_5yapic_6entity_11_field_impl_ChoiceImpl;
   __pyx_vtable_5yapic_6entity_11_field_impl_ChoiceImpl.__pyx_base = *__pyx_vtabptr_5yapic_6entity_6_field_FieldImpl;
   __pyx_type_5yapic_6entity_11_field_impl_ChoiceImpl.tp_base = __pyx_ptype_5yapic_6entity_6_field_FieldImpl;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_field_impl_ChoiceImpl) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_field_impl_ChoiceImpl) < 0) __PYX_ERR(0, 17, __pyx_L1_error)
   __pyx_type_5yapic_6entity_11_field_impl_ChoiceImpl.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_11_field_impl_ChoiceImpl.tp_dictoffset && __pyx_type_5yapic_6entity_11_field_impl_ChoiceImpl.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_11_field_impl_ChoiceImpl.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_field_impl_ChoiceImpl.tp_dict, __pyx_vtabptr_5yapic_6entity_11_field_impl_ChoiceImpl) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ChoiceImpl, (PyObject *)&__pyx_type_5yapic_6entity_11_field_impl_ChoiceImpl) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_field_impl_ChoiceImpl.tp_dict, __pyx_vtabptr_5yapic_6entity_11_field_impl_ChoiceImpl) < 0) __PYX_ERR(0, 17, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ChoiceImpl, (PyObject *)&__pyx_type_5yapic_6entity_11_field_impl_ChoiceImpl) < 0) __PYX_ERR(0, 17, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_ChoiceImpl = &__pyx_type_5yapic_6entity_11_field_impl_ChoiceImpl;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
