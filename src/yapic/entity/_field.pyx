@@ -47,13 +47,13 @@ cdef class Field(EntityAttribute):
     # def __delete__(self, EntityBase instance):
     #     instance.__fstate__.del_value(self._index_)
 
-    cdef bind(self, EntityType entity):
-        EntityAttribute.bind(self, entity)
+    cdef object bind(self, EntityType entity):
         if self.nullable is None:
             if self.get_ext(PrimaryKey):
                 self.nullable = False
             else:
                 self.nullable = bool(self._default_ is None)
+        return EntityAttribute.bind(self, entity)
 
     cpdef clone(self):
         cdef Field res = type(self)(self._impl_,
@@ -98,8 +98,8 @@ cdef class FieldExtension(EntityAttributeExt):
 
 
 cdef class FieldImpl(EntityAttributeImpl):
-    cpdef init(self, EntityType entity, EntityAttribute attr):
-        pass
+    cpdef object init(self, EntityAttribute attr):
+        return True
 
 
 cdef class StorageType:
@@ -139,34 +139,31 @@ cdef class ForeignKey(FieldExtension):
         else:
             self._ref = field
 
+        self.ref = None
         self.name = name
         self.on_update = on_update
         self.on_delete = on_delete
 
-    @property
-    def ref(self):
-        cdef PyObject* mdict
-
-        if not isinstance(self._ref, Field):
-            module = PyImport_Import(self.attr._entity_.__module__)
-            mdict = PyModule_GetDict(module)
-            self._ref = eval(self._ref, <object>mdict, None)
-
-            if not isinstance(self._ref, Field):
-                raise ValueError("Invalid value for ForeignKey field: %r" % self._ref)
-            else:
-                if self.name is None:
-                    self.name = compute_fk_name(self.attr, self._ref)
-                    self.attr._deps_.add(self._ref._entity_)
-
-        return self._ref
-
     cpdef object bind(self, EntityAttribute attr):
-        FieldExtension.bind(self, attr)
+        if FieldExtension.bind(self, attr) is False:
+            return False
+
+        if self.ref is None:
+            if not isinstance(self._ref, Field):
+                module = PyImport_Import(self.attr._entity_.__module__)
+                mdict = PyModule_GetDict(module)
+                try:
+                    self.ref = eval(self._ref, <object>mdict, None)
+                except NameError as e:
+                    return False
+            else:
+                self.ref = self._ref
+
         if self.name is None:
-            if isinstance(self._ref, Field):
-                self.name = compute_fk_name(attr, self._ref)
-                attr._deps_.add(self._ref._entity_)
+            self.name = compute_fk_name(attr, self.ref)
+            attr._deps_.add(self.ref._entity_)
+
+        return True
 
     cpdef object clone(self):
         return type(self)(self.ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)

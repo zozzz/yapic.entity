@@ -1,23 +1,28 @@
 from enum import Enum, Flag
 
-from yapic.entity import Entity, Int, Serial, String, Choice, Field, PrimaryKey, ForeignKey, Date, DateTime, DateTimeTz, Bool, func, const
-from yapic.sql import PostgreDialect
+from yapic.entity import (Int, Serial, String, Choice, Field, PrimaryKey, ForeignKey, Date, DateTime,
+                          DateTimeTz, Bool, func, const, Registry)
+from yapic.sql import PostgreDialect, Entity
 
 dialect = PostgreDialect()
 ddl = dialect.create_ddl_compiler()
 
 
+class BaseEntity(Entity, registry=Registry(), _root=True):
+    pass
+
+
 def test_basic():
-    class User(Entity):
+    class User(BaseEntity):
         pass
 
-    class User2(Entity, name="__user__"):
+    class User2(BaseEntity, name="__user__"):
         pass
 
-    class User3(Entity, schema="auth"):
+    class User3(BaseEntity, schema="auth"):
         pass
 
-    class User4(Entity, schema="auth", name="userX"):
+    class User4(BaseEntity, schema="auth", name="userX"):
         pass
 
     result = ddl.compile_entity(User)
@@ -38,7 +43,7 @@ def test_basic():
 
 
 def test_int():
-    class Ints(Entity):
+    class Ints(BaseEntity):
         int_small: Int = Field(size=2)
         int_medium: Int = Field(size=4)
         int_large: Int = Field(size=8)
@@ -50,15 +55,15 @@ def test_int():
   "int_large" INT8
 );"""
 
-    class Pk_small(Entity):
+    class Pk_small(BaseEntity):
         id: Int = Field(size=2) // PrimaryKey(auto_increment=True)
         id2: Serial = Field(size=2)
 
-    class Pk_medium(Entity):
+    class Pk_medium(BaseEntity):
         id: Int = Field(size=4) // PrimaryKey(auto_increment=True)
         id2: Serial = Field(size=4)
 
-    class Pk_large(Entity):
+    class Pk_large(BaseEntity):
         id: Int = Field(size=8) // PrimaryKey(auto_increment=True)
         id2: Serial = Field(size=8)
 
@@ -85,7 +90,7 @@ def test_int():
 
 
 def test_string():
-    class A(Entity):
+    class A(BaseEntity):
         id: String = Field(size=[10, 10]) // PrimaryKey()
         name: String = Field(size=50)
         email: String = Field(size=50)
@@ -112,7 +117,7 @@ def test_enum():
         GREEN = 2
         BLUE = 4
 
-    class A2(Entity):
+    class A2(BaseEntity):
         mood: Choice[Mood]
         colors: Choice[Color]
 
@@ -124,17 +129,17 @@ def test_enum():
 
 
 def test_fk():
-    class A3(Entity):
+    class A3(BaseEntity):
         id: Serial
 
     class X(Entity, schema="x_schema", name="y"):
         id: Serial
 
-    class Z(Entity):
+    class Z(BaseEntity):
         id1: Serial
         id2: Serial
 
-    class B(Entity):
+    class B(BaseEntity):
         id: Serial = ForeignKey(Z.id1, name="composite_fk")
         id_a: Int = ForeignKey(A3.id) // ForeignKey(Z.id2, name="composite_fk")
         id_x: Int = ForeignKey(X.id)
@@ -159,7 +164,7 @@ def test_fk():
 
 
 def test_date():
-    class A4(Entity):
+    class A4(BaseEntity):
         date: Date
         date_time: DateTime
         date_time_tz: DateTimeTz = func.now()
@@ -175,7 +180,7 @@ def test_date():
 
 
 def test_bool():
-    class A5(Entity):
+    class A5(BaseEntity):
         is_active: Bool = 1
 
     result = ddl.compile_entity(A5)

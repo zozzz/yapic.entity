@@ -7,6 +7,7 @@ from collections.abc import ItemsView
 from cpython.object cimport PyObject
 from cpython.ref cimport Py_DECREF, Py_INCREF, Py_XDECREF, Py_XINCREF
 from cpython.tuple cimport PyTuple_SetItem, PyTuple_GetItem, PyTuple_New, PyTuple_GET_SIZE, PyTuple_SET_ITEM, PyTuple_GET_ITEM, PyTuple_Pack
+from cpython.module cimport PyImport_Import, PyModule_GetDict
 
 from ._field cimport Field, PrimaryKey
 from ._relation cimport Relation
@@ -94,26 +95,37 @@ cdef class EntityType(type):
 
                         setattr(self, name, attr)
 
+        self.__deferred__ = []
         self.__fields__ = tuple(fields)
+        self.__attrs__ = tuple(fields + __attrs__)
+
         pk = []
 
-        for i, attr in enumerate(fields):
+        for i, attr in enumerate(self.__attrs__):
             attr._index_ = i
-            attr.bind(self)
 
-            if attr.get_ext(PrimaryKey):
+            if not attr.bind(self):
+                self.__deferred__.append(attr)
+
+            if isinstance(attr, Field) and attr.get_ext(PrimaryKey):
                 pk.append(attr)
 
-        for attr in __attrs__:
-            i += 1
-            attr._index_ = i
-            attr.bind(self)
-
-        self.__attrs__ = tuple(fields + __attrs__)
         self.__pk__ = tuple(pk)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, _root=False, __fields__=None, is_alias=False, **kwargs):
         type.__init__(self, *args)
+
+        if _root is False:
+            # if __fields__ is present, this entitiy, not created normally
+            if not __fields__ and not is_alias:
+                module = PyImport_Import(self.__module__)
+                mdict = PyModule_GetDict(module)
+
+                # XXX little hacky, insert class instance into module dict before call register
+                (<object>mdict)[args[0]] = self
+
+            if not is_alias:
+                self.__register__()
 
     @property
     def __meta__(self):
@@ -155,6 +167,19 @@ cdef class EntityType(type):
     def __dealloc__(self):
         Py_XDECREF(self.meta)
         Py_XDECREF(self.registry)
+
+    cdef object resolve_deferred(self):
+        cdef EntityAttribute attr
+        cdef list deferred = self.__deferred__
+        cdef int index = len(deferred) - 1
+
+        while index >= 0:
+            attr = deferred[index]
+            if attr.bind(self):
+                deferred.pop(index)
+            index -= 1
+
+        return len(deferred) == 0
 
 
 cpdef bint is_entity_alias(object o):
@@ -210,13 +235,10 @@ cdef class EntityAttribute(Expression):
             self._impl = args[0]
         else:
             self._impl = None
+
+        self._impl_ = None
         self._exts_ = []
         self._deps_ = set()
-
-        if self._impl is not None \
-                and not is_forward_decl(self._impl) \
-                and not isinstance(self._impl, EntityAttributeImpl):
-            raise ValueError("Invalid attribute implementation: %r" % self._impl)
 
     def __floordiv__(Field self, EntityAttributeExt other):
         if other.attr is not None:
@@ -245,35 +267,37 @@ cdef class EntityAttribute(Expression):
     def __delete__(self, EntityBase instance):
         instance.__state__.del_value(self)
 
-    @property
-    def _impl_(self):
-        if is_forward_decl(self._impl):
-            self._impl = new_instance_from_forward(self._impl)
-            if isinstance(self._impl, EntityAttributeImpl):
-                try:
-                    (<EntityAttributeImpl>self._impl).init(self._entity_, self)
-                    (<EntityAttributeImpl>self._impl).inited = True
-                except Exception as e:
-                    raise RuntimeError("Can't init attribute impl, original exception: %s" % e)
-            else:
-                raise ValueError("Invalid attribute implementation: %r" % self._impl)
-        return self._impl
-
-    cdef bind(self, EntityType entity):
-        if self._entity_ is not None:
+    cdef object bind(self, EntityType entity):
+        if self._entity_ is not None and self._entity_ is not entity:
             raise RuntimeError("Can't rebind entity attribute")
         self._entity_ = entity
 
+        if self._impl_ is None:
+            if self._impl is None:
+                raise TypeError("Missing attribute implementation")
+
+            if is_forward_decl(self._impl):
+                try:
+                    self._impl_ = new_instance_from_forward(self._impl)
+                except NameError as e:
+                    return False
+            else:
+                self._impl_ = self._impl
+
+            self._impl = None
+            if not self._impl_.inited:
+                if self._impl_.init(self) is False:
+                    return False
+                else:
+                    self._impl_.inited = True
+
         cdef EntityAttributeExt ext
         for ext in self._exts_:
-            ext.bind(self)
+            if not ext.bound and not ext.bind(self):
+                return False
+            ext.bound = True
 
-        if self._impl is None:
-            raise RuntimeError("Missing attribute implementation")
-
-        if isinstance(self._impl, EntityAttributeImpl) and not (<EntityAttributeImpl>self._impl).inited:
-            (<EntityAttributeImpl>self._impl).init(entity, self)
-            (<EntityAttributeImpl>self._impl).inited = True
+        return True
 
     cpdef clone(self):
         raise NotImplementedError()
@@ -297,6 +321,7 @@ cdef class EntityAttribute(Expression):
 cdef class EntityAttributeExt:
     def __cinit__(self, *args, **kwargs):
         self._tmp = []
+        self.bound = False
 
     def __floordiv__(EntityAttributeExt self, EntityAttributeExt other):
         if not self.attr and other.attr:
@@ -319,6 +344,7 @@ cdef class EntityAttributeExt:
         #     else:
         #         return
         self.attr = attr
+        return True
 
     cpdef object clone(self):
         return type(self)()
@@ -328,7 +354,7 @@ cdef class EntityAttributeImpl:
     def __cinit__(self, *args, **kwargs):
         self.inited = False
 
-    cpdef init(self, EntityType entity, EntityAttribute attr):
+    cpdef object init(self, EntityAttribute attr):
         raise NotImplementedError()
 
     cpdef object clone(self):
@@ -781,8 +807,8 @@ cdef class EntityBase:
                     Py_XINCREF(ent.registry)
                     break
 
-        if _root is False:
-            cls.__register__()
+        # if _root is False:
+        #     cls.__register__()
 
     @classmethod
     def __register__(cls):

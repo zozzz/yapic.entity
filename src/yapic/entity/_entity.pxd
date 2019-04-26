@@ -13,10 +13,13 @@ cdef class EntityType(type):
     cdef readonly tuple __attrs__
     cdef readonly tuple __fields__
     cdef readonly tuple __pk__
+    cdef readonly list __deferred__
     cdef PyObject* registry
     cdef PyObject* meta
     cdef set deps
     cdef object __weakref__
+
+    cdef object resolve_deferred(self)
 
 
 cpdef bint is_entity_alias(object o)
@@ -35,11 +38,13 @@ cdef class EntityAttribute(Expression):
     cdef readonly int _index_
     cdef readonly str _name_
     cdef readonly object _default_
+    cdef readonly EntityAttributeImpl _impl_
     cdef readonly EntityType _entity_
     cdef readonly list _exts_
     cdef readonly set _deps_
 
-    cdef bind(self, EntityType entity)
+    # returns true when successfully bind, otherwise the system can try bind in the later time
+    cdef object bind(self, EntityType entity)
     cpdef clone(self)
     cpdef get_ext(self, ext_type)
     cpdef clone_exts(self, EntityAttribute attr)
@@ -48,14 +53,18 @@ cdef class EntityAttribute(Expression):
 cdef class EntityAttributeExt:
     cdef readonly EntityAttribute attr
     cdef list _tmp
+    cdef bint bound
 
+    # returns true when successfully bind, otherwise the system can try bind in the later time
     cpdef object bind(self, EntityAttribute attr)
     cpdef object clone(self)
 
 
 cdef class EntityAttributeImpl:
     cdef bint inited
-    cpdef init(self, EntityType entity, EntityAttribute attr)
+
+    # returns true when successfully bind, otherwise the system can try bind in the later time
+    cpdef object init(self, EntityAttribute attr)
     cpdef object clone(self)
 
     cdef object state_init(self, object initial)

@@ -43,7 +43,7 @@ cdef class RelationAttribute(Expression):
         return getattr(self.attr, name)
 
     def __repr__(self):
-        return "<RelationAttribute %s :: %s>" % (self.relation, self.attr.name)
+        return "<RelationAttribute %s :: %s>" % (self.relation, self.attr._name_)
 
 
 cdef class RelationImpl(EntityAttributeImpl):
@@ -51,10 +51,10 @@ cdef class RelationImpl(EntityAttributeImpl):
         self.joined = joined
         self.state_impl = state_impl
 
-    cpdef init(self, EntityType entity, EntityAttribute attr):
-        self.determine_join_expr(entity, attr)
+    cpdef object init(self, EntityAttribute attr):
+        return self.determine_join_expr(attr._entity_, attr)
 
-    cdef determine_join_expr(self, EntityType entity, Relation attr):
+    cdef object determine_join_expr(self, EntityType entity, Relation attr):
         raise NotImplementedError()
 
     cpdef object clone(self):
@@ -86,7 +86,10 @@ cdef class ManyToOne(RelationImpl):
     def __repr__(self):
         return "ManyToOne %r" % self.joined
 
-    cdef determine_join_expr(self, EntityType entity, Relation attr):
+    cdef object determine_join_expr(self, EntityType entity, Relation attr):
+        if self.joined.__deferred__:
+            return False
+
         self.join_expr = determine_join_expr(entity, self.joined)
         attr._deps_.add(self.joined)
 
@@ -95,7 +98,10 @@ cdef class OneToMany(RelationImpl):
     def __repr__(self):
         return "OneToMany %r" % self.joined
 
-    cdef determine_join_expr(self, EntityType entity, Relation attr):
+    cdef object determine_join_expr(self, EntityType entity, Relation attr):
+        if self.joined.__deferred__:
+            return False
+
         self.join_expr = determine_join_expr(self.joined, entity)
 
 
@@ -106,7 +112,10 @@ cdef class ManyToMany(RelationImpl):
     def __repr__(self):
         return "ManyToMany %r => %r" % (self.across, self.joined)
 
-    cdef determine_join_expr(self, EntityType entity, Relation attr):
+    cdef object determine_join_expr(self, EntityType entity, Relation attr):
+        if self.joined.__deferred__ or self.across.__deferred__:
+            return False
+
         self.across_join_expr = determine_join_expr(self.across, entity)
         self.join_expr = determine_join_expr(self.across, self.joined)
 

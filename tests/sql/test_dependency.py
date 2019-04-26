@@ -27,9 +27,9 @@ class Tag(BaseEntity, schema="deps"):
     tag: String
 
 
-# class Backward(BaseEntity, schema="deps"):
-#     id: Serial
-#     user_id: Int = ForeignKey("User.id")
+class Backward(BaseEntity, schema="deps"):
+    id: Serial
+    user_id: Int = ForeignKey("User.id")
 
 
 class User(BaseEntity, schema="deps"):
@@ -40,7 +40,7 @@ class User(BaseEntity, schema="deps"):
     address: One[Address]
 
     forward: Many["Forward"]
-    # backward: Many[Backward]
+    backward: Many[Backward]
 
     tags: ManyAcross["UserTags", Tag]
 
@@ -50,7 +50,7 @@ class Forward(BaseEntity, schema="deps"):
     user_id: Int = ForeignKey(User.id)
 
 
-class UserTags(BaseEntity, schema="deps"):
+class UserTags(BaseEntity, name="user-tags", schema="deps"):
     user_id: Serial = ForeignKey(User.id)
     tag_id: Serial = ForeignKey(Tag.id)
 
@@ -61,7 +61,7 @@ async def test_creation(conn):
     assert Address.__deps__ == set()
     assert Tag.__deps__ == set()
     assert User.__deps__ == {Address}
-    # assert Backward.__deps__ == {User}
+    assert Backward.__deps__ == {User}
     assert Forward.__deps__ == {User}
     assert UserTags.__deps__ == {User, Tag}
 
@@ -69,7 +69,11 @@ async def test_creation(conn):
     assert entity_deps(Tag) == []
     assert entity_deps(User) == [Address]
     assert entity_deps(Forward) == [Address, User]
-    assert entity_deps(UserTags) == [Tag, Address, User]
+    assert entity_deps(UserTags) == [Address, User, Tag] or entity_deps(UserTags) == [Tag, Address, User]
 
     result = await sync(conn, _registry)
-    print(result)
+    await conn.conn.execute(result)
+
+
+async def test_cleanup(conn):
+    await conn.conn.execute("""DROP SCHEMA IF EXISTS "deps" CASCADE""")

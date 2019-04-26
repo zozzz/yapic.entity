@@ -1,7 +1,7 @@
 # from hashids import Hashids
 
 from yapic.entity._entity import Entity
-from yapic.entity._entity cimport EntityType
+from yapic.entity._entity cimport EntityType, EntityAttribute
 from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, StorageType
 from yapic.entity._field_impl cimport IntImpl, StringImpl, BytesImpl, ChoiceImpl, BoolImpl, DateImpl, DateTimeImpl, DateTimeTzImpl
 from yapic.entity._registry cimport Registry
@@ -24,9 +24,19 @@ cdef class PostgreDDLReflect(DDLReflect):
                 AND "table_schema" NOT LIKE 'pg_%'
                 AND "table_type" = 'BASE TABLE'""")
 
+        cdef EntityAttribute attr
+
         for schema, table in tables:
             fields = await self.get_fields(conn, schema, table)
             entity = await self.create_entity(conn, registry, schema, table, fields)
+
+            for attr in entity.__fields__:
+                if attr._default_ is not None:
+                    type_impl = conn.dialect.get_field_type(attr)
+                    try:
+                        attr._default_ = type_impl.decode(attr._default_)
+                    except:
+                        attr._default_ = RawExpression(str(attr._default_))
 
         for schema, table in tables:
             fks = await self.update_foreign_keys(conn, schema, table, registry)
@@ -142,11 +152,7 @@ cdef class PostgreDDLReflect(DDLReflect):
             if isinstance(default, str) and "::" in default:
                 default = await conn.conn.fetchval(f"SELECT {default}")
 
-            type_impl = conn.dialect.get_field_type(field)
-            try:
-                field._default_ = type_impl.decode(default)
-            except:
-                field._default_ = RawExpression(default)
+            field._default_ = default
 
         if skip_primary is False and primary:
             field // PrimaryKey()

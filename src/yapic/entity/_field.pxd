@@ -41,6 +41,7 @@ cdef class Index(FieldExtension):
 
 cdef class ForeignKey(FieldExtension):
     cdef object _ref
+    cdef readonly Field ref
     cdef readonly str name
     cdef readonly str on_update
     cdef readonly str on_delete
