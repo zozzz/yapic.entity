@@ -2,7 +2,7 @@ import cython
 from enum import Enum
 from weakref import WeakValueDictionary
 
-from ._entity cimport entity_deps
+from ._entity cimport DependencyList
 from ._entity_diff cimport EntityDiff
 
 
@@ -63,7 +63,7 @@ cdef class RegistryDiff:
         self.a = a
         self.b = b
         self.changes = []
-        order = []
+        cdef DependencyList order = DependencyList()
 
         a_names = set(a.keys())
         b_names = set(b.keys())
@@ -71,19 +71,19 @@ cdef class RegistryDiff:
         for removed in sorted(a_names - b_names):
             val = a[removed]
             self.changes.append((RegistryDiffKind.REMOVED, val))
-            add_deps_to_order(order, val)
+            order.add(val)
 
         for created in sorted(b_names - a_names):
             val = b[created]
             self.changes.append((RegistryDiffKind.CREATED, val))
-            add_deps_to_order(order, val)
+            order.add(val)
 
         for maybe_changed in sorted(a_names & b_names):
             val = b[maybe_changed]
             diff = entity_diff(a[maybe_changed], val)
             if diff:
                 self.changes.append((RegistryDiffKind.CHANGED, diff))
-                add_deps_to_order(order, val)
+                order.add(val)
 
         def key(item):
             kind, val = item
@@ -103,10 +103,3 @@ cdef class RegistryDiff:
 
     def __iter__(self):
         return iter(self.changes)
-
-
-cdef add_deps_to_order(list order, EntityType entity):
-    for d in entity_deps(entity):
-        if d not in order:
-            order.append(d)
-    order.append(entity)

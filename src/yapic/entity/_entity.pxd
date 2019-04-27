@@ -24,7 +24,6 @@ cdef class EntityType(type):
 
 cpdef bint is_entity_alias(object o)
 cpdef EntityType get_alias_target(EntityType o)
-cpdef list entity_deps(EntityType ent)
 
 
 cdef class EntityBase:
@@ -100,3 +99,6 @@ cdef class EntityState:
 
 
 
+@cython.final
+cdef class DependencyList(list):
+    cpdef add(self, EntityType item)

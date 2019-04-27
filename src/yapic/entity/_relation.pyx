@@ -183,10 +183,21 @@ cdef class RelatedItem(ValueStore):
         return value
 
     cpdef object state_get_dirty(self, object initial, object current):
-        if initial != current:
-            return current
+        if initial is NOTSET or initial is None:
+            if current is NOTSET or current is None:
+                return NOTSET
+            else:
+                return ([current], [], [])
         else:
-            return NOTSET
+            if current is None:
+                return ([], [current], [])
+            elif initial == current:
+                if current.__state__.is_dirty:
+                    return ([], [], [current])
+                else:
+                    return NOTSET
+            else:
+                return ([current], [initial], [])
 
 
 cdef class RelatedList(ValueStore):
@@ -213,7 +224,6 @@ cdef class RelatedList(ValueStore):
         else:
             for ent in current:
                 if ent in initial:
-                    # todo detect if changed
                     if ent.__state__.is_dirty:
                         chg.append(ent)
                 else:

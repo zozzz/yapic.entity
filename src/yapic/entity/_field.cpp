@@ -862,6 +862,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute;
 struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt;
 struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl;
 struct __pyx_obj_5yapic_6entity_7_entity_EntityState;
+struct __pyx_obj_5yapic_6entity_7_entity_DependencyList;
 struct __pyx_obj_5yapic_6entity_8_factory_Factory;
 struct __pyx_obj_5yapic_6entity_6_field_Field;
 struct __pyx_obj_5yapic_6entity_6_field_FieldExtension;
@@ -1082,7 +1083,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityType {
 };
 
 
-/* "_entity.pxd":30
+/* "_entity.pxd":29
  * 
  * 
  * cdef class EntityBase:             # <<<<<<<<<<<<<<
@@ -1096,7 +1097,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityBase {
 };
 
 
-/* "_entity.pxd":35
+/* "_entity.pxd":34
  * 
  * 
  * cdef class EntityAttribute(Expression):             # <<<<<<<<<<<<<<
@@ -1117,7 +1118,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute {
 };
 
 
-/* "_entity.pxd":53
+/* "_entity.pxd":52
  * 
  * 
  * cdef class EntityAttributeExt:             # <<<<<<<<<<<<<<
@@ -1133,7 +1134,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt {
 };
 
 
-/* "_entity.pxd":63
+/* "_entity.pxd":62
  * 
  * 
  * cdef class EntityAttributeImpl:             # <<<<<<<<<<<<<<
@@ -1147,7 +1148,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl {
 };
 
 
-/* "_entity.pxd":77
+/* "_entity.pxd":76
  * @cython.final
  * @cython.freelist(1000)
  * cdef class EntityState:             # <<<<<<<<<<<<<<
@@ -1161,6 +1162,18 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityState {
   PyObject *initial;
   PyObject *current;
   int field_count;
+};
+
+
+/* "_entity.pxd":103
+ * 
+ * @cython.final
+ * cdef class DependencyList(list):             # <<<<<<<<<<<<<<
+ *     cpdef add(self, EntityType item)
+ */
+struct __pyx_obj_5yapic_6entity_7_entity_DependencyList {
+  PyListObject __pyx_base;
+  struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList *__pyx_vtab;
 };
 
 
@@ -1466,7 +1479,7 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityType {
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityType *__pyx_vtabptr_5yapic_6entity_7_entity_EntityType;
 
 
-/* "_entity.pxd":35
+/* "_entity.pxd":34
  * 
  * 
  * cdef class EntityAttribute(Expression):             # <<<<<<<<<<<<<<
@@ -1484,7 +1497,7 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute {
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute *__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttribute;
 
 
-/* "_entity.pxd":53
+/* "_entity.pxd":52
  * 
  * 
  * cdef class EntityAttributeExt:             # <<<<<<<<<<<<<<
@@ -1499,7 +1512,7 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt {
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt *__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt;
 
 
-/* "_entity.pxd":63
+/* "_entity.pxd":62
  * 
  * 
  * cdef class EntityAttributeImpl:             # <<<<<<<<<<<<<<
@@ -1517,7 +1530,7 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl {
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl *__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeImpl;
 
 
-/* "_entity.pxd":77
+/* "_entity.pxd":76
  * @cython.final
  * @cython.freelist(1000)
  * cdef class EntityState:             # <<<<<<<<<<<<<<
@@ -1539,6 +1552,19 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState {
   PyObject *(*reset_attr)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *__pyx_vtabptr_5yapic_6entity_7_entity_EntityState;
+
+
+/* "_entity.pxd":103
+ * 
+ * @cython.final
+ * cdef class DependencyList(list):             # <<<<<<<<<<<<<<
+ *     cpdef add(self, EntityType item)
+ */
+
+struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList {
+  PyObject *(*add)(struct __pyx_obj_5yapic_6entity_7_entity_DependencyList *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
+};
+static struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList *__pyx_vtabptr_5yapic_6entity_7_entity_DependencyList;
 
 
 /* "_factory.pxd":41
@@ -2155,6 +2181,7 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_EntityAttribute = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeImpl = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_EntityState = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_DependencyList = 0;
 
 /* Module declarations from 'cpython.weakref' */
 
@@ -7542,10 +7569,13 @@ static int __Pyx_modinit_type_import_code(void) {
    if (!__pyx_ptype_5yapic_6entity_7_entity_EntityType) __PYX_ERR(5, 12, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_7_entity_EntityType = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityType*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityType->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityType)) __PYX_ERR(5, 12, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_EntityBase = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityBase", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityBase), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityBase) __PYX_ERR(5, 30, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityBase) __PYX_ERR(5, 29, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_EntityState = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityState", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityState), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityState) __PYX_ERR(5, 77, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_7_entity_EntityState = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityState->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityState)) __PYX_ERR(5, 77, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityState) __PYX_ERR(5, 76, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_EntityState = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityState->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityState)) __PYX_ERR(5, 76, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_7_entity_DependencyList = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "DependencyList", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_DependencyList), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_7_entity_DependencyList) __PYX_ERR(5, 103, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_DependencyList = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_DependencyList->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_DependencyList)) __PYX_ERR(5, 103, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("yapic.entity._factory"); if (unlikely(!__pyx_t_1)) __PYX_ERR(6, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);

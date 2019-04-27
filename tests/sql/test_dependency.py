@@ -1,6 +1,7 @@
 import pytest
 from yapic.sql import wrap_connection, Entity, sync
-from yapic.entity import (Serial, Int, String, ForeignKey, One, Many, ManyAcross, Registry, entity_deps)
+from yapic.entity import (Serial, Int, String, ForeignKey, One, Many, ManyAcross, Registry, DependencyList,
+                          collect_entity_operations)
 
 pytestmark = pytest.mark.asyncio  # type: ignore
 
@@ -65,14 +66,42 @@ async def test_creation(conn):
     assert Forward.__deps__ == {User}
     assert UserTags.__deps__ == {User, Tag}
 
-    assert entity_deps(Address) == []
-    assert entity_deps(Tag) == []
-    assert entity_deps(User) == [Address]
-    assert entity_deps(Forward) == [Address, User]
-    assert entity_deps(UserTags) == [Address, User, Tag] or entity_deps(UserTags) == [Tag, Address, User]
+    def entity_deps(ent):
+        res = DependencyList()
+        res.add(ent)
+        return res
+
+    assert entity_deps(Address) == [Address]
+    assert entity_deps(Tag) == [Tag]
+    assert entity_deps(User) == [Address, User]
+    assert entity_deps(Forward) == [Address, User, Forward]
+    assert entity_deps(UserTags) == [Address, User, Tag, UserTags]
+
+    dl = DependencyList()
+    dl.add(UserTags)
+    dl.add(Tag)
+    dl.add(Forward)
+    dl.add(User)
+    dl.add(Backward)
+    dl.add(Address)
+    assert dl == [Address, User, Tag, UserTags, Forward, Backward]
 
     result = await sync(conn, _registry)
     await conn.conn.execute(result)
+
+
+async def test_insert(conn):
+    xyz_tag = Tag(tag="xyz")
+    await conn.insert(xyz_tag)
+
+    user = User(name="JDoe")
+    user.address = Address(address="XYZ st. 345")
+    user.tags.append(Tag(tag="some tag"))
+    user.tags.append(xyz_tag)
+
+    print(collect_entity_operations(user))
+
+    # await conn.insert(user)
 
 
 async def test_cleanup(conn):

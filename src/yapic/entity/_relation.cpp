@@ -864,6 +864,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute;
 struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt;
 struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl;
 struct __pyx_obj_5yapic_6entity_7_entity_EntityState;
+struct __pyx_obj_5yapic_6entity_7_entity_DependencyList;
 struct __pyx_obj_5yapic_6entity_8_factory_Factory;
 struct __pyx_obj_5yapic_6entity_6_field_Field;
 struct __pyx_obj_5yapic_6entity_6_field_FieldExtension;
@@ -1099,7 +1100,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityType {
 };
 
 
-/* "_entity.pxd":30
+/* "_entity.pxd":29
  * 
  * 
  * cdef class EntityBase:             # <<<<<<<<<<<<<<
@@ -1113,7 +1114,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityBase {
 };
 
 
-/* "_entity.pxd":35
+/* "_entity.pxd":34
  * 
  * 
  * cdef class EntityAttribute(Expression):             # <<<<<<<<<<<<<<
@@ -1134,7 +1135,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute {
 };
 
 
-/* "_entity.pxd":53
+/* "_entity.pxd":52
  * 
  * 
  * cdef class EntityAttributeExt:             # <<<<<<<<<<<<<<
@@ -1150,7 +1151,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt {
 };
 
 
-/* "_entity.pxd":63
+/* "_entity.pxd":62
  * 
  * 
  * cdef class EntityAttributeImpl:             # <<<<<<<<<<<<<<
@@ -1164,7 +1165,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl {
 };
 
 
-/* "_entity.pxd":77
+/* "_entity.pxd":76
  * @cython.final
  * @cython.freelist(1000)
  * cdef class EntityState:             # <<<<<<<<<<<<<<
@@ -1178,6 +1179,18 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityState {
   PyObject *initial;
   PyObject *current;
   int field_count;
+};
+
+
+/* "_entity.pxd":103
+ * 
+ * @cython.final
+ * cdef class DependencyList(list):             # <<<<<<<<<<<<<<
+ *     cpdef add(self, EntityType item)
+ */
+struct __pyx_obj_5yapic_6entity_7_entity_DependencyList {
+  PyListObject __pyx_base;
+  struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList *__pyx_vtab;
 };
 
 
@@ -1675,7 +1688,7 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityType {
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityType *__pyx_vtabptr_5yapic_6entity_7_entity_EntityType;
 
 
-/* "_entity.pxd":35
+/* "_entity.pxd":34
  * 
  * 
  * cdef class EntityAttribute(Expression):             # <<<<<<<<<<<<<<
@@ -1693,7 +1706,7 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute {
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute *__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttribute;
 
 
-/* "_entity.pxd":53
+/* "_entity.pxd":52
  * 
  * 
  * cdef class EntityAttributeExt:             # <<<<<<<<<<<<<<
@@ -1708,7 +1721,7 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt {
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt *__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt;
 
 
-/* "_entity.pxd":63
+/* "_entity.pxd":62
  * 
  * 
  * cdef class EntityAttributeImpl:             # <<<<<<<<<<<<<<
@@ -1726,7 +1739,7 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl {
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl *__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeImpl;
 
 
-/* "_entity.pxd":77
+/* "_entity.pxd":76
  * @cython.final
  * @cython.freelist(1000)
  * cdef class EntityState:             # <<<<<<<<<<<<<<
@@ -1748,6 +1761,19 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState {
   PyObject *(*reset_attr)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *__pyx_vtabptr_5yapic_6entity_7_entity_EntityState;
+
+
+/* "_entity.pxd":103
+ * 
+ * @cython.final
+ * cdef class DependencyList(list):             # <<<<<<<<<<<<<<
+ *     cpdef add(self, EntityType item)
+ */
+
+struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList {
+  PyObject *(*add)(struct __pyx_obj_5yapic_6entity_7_entity_DependencyList *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
+};
+static struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList *__pyx_vtabptr_5yapic_6entity_7_entity_DependencyList;
 
 
 /* "_factory.pxd":41
@@ -2036,7 +2062,7 @@ struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedItem {
 static struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedItem *__pyx_vtabptr_5yapic_6entity_9_relation_RelatedItem;
 
 
-/* "yapic/entity/_relation.pyx":192
+/* "yapic/entity/_relation.pyx":203
  * 
  * 
  * cdef class RelatedList(ValueStore):             # <<<<<<<<<<<<<<
@@ -2050,7 +2076,7 @@ struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedList {
 static struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedList *__pyx_vtabptr_5yapic_6entity_9_relation_RelatedList;
 
 
-/* "yapic/entity/_relation.pyx":232
+/* "yapic/entity/_relation.pyx":242
  * 
  * 
  * cdef class RelatedDict(ValueStore):             # <<<<<<<<<<<<<<
@@ -2538,6 +2564,7 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_EntityAttribute = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeImpl = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_EntityState = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_DependencyList = 0;
 static struct __pyx_obj_5yapic_6entity_7_entity_EntityType *(*__pyx_f_5yapic_6entity_7_entity_get_alias_target)(struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch); /*proto*/
 
 /* Module declarations from 'yapic.entity._factory' */
@@ -2603,6 +2630,7 @@ static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_clone[] = "clone";
 static const char __pyx_k_items[] = "items";
 static const char __pyx_k_range[] = "range";
+static const char __pyx_k_state[] = "__state__";
 static const char __pyx_k_value[] = "value";
 static const char __pyx_k_visit[] = "visit";
 static const char __pyx_k_across[] = "across";
@@ -2677,6 +2705,7 @@ static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_n_s_pyx_vtable;
 static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_relation;
+static PyObject *__pyx_n_s_state;
 static PyObject *__pyx_n_s_state_get_dirty;
 static PyObject *__pyx_n_s_state_impl;
 static PyObject *__pyx_n_s_state_init;
@@ -6810,8 +6839,8 @@ static PyObject *__pyx_pf_5yapic_6entity_9_relation_11RelatedItem_2state_set(str
  *         return value
  * 
  *     cpdef object state_get_dirty(self, object initial, object current):             # <<<<<<<<<<<<<<
- *         if initial != current:
- *             return current
+ *         if initial is NOTSET or initial is None:
+ *             if current is NOTSET or current is None:
  */
 
 static PyObject *__pyx_pw_5yapic_6entity_9_relation_11RelatedItem_5state_get_dirty(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
@@ -6825,6 +6854,8 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedItem_state_get_dirty
   int __pyx_t_5;
   PyObject *__pyx_t_6 = NULL;
   int __pyx_t_7;
+  int __pyx_t_8;
+  int __pyx_t_9;
   __Pyx_RefNannySetupContext("state_get_dirty", 0);
   /* Check if called by wrapper */
   if (unlikely(__pyx_skip_dispatch)) ;
@@ -6906,56 +6937,296 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedItem_state_get_dirty
   /* "yapic/entity/_relation.pyx":186
  * 
  *     cpdef object state_get_dirty(self, object initial, object current):
- *         if initial != current:             # <<<<<<<<<<<<<<
- *             return current
- *         else:
+ *         if initial is NOTSET or initial is None:             # <<<<<<<<<<<<<<
+ *             if current is NOTSET or current is None:
+ *                 return NOTSET
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_initial, __pyx_v_current, Py_NE); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 186, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 186, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_8 = (__pyx_v_initial == ((PyObject *)__pyx_ptype_5yapic_6entity_7_entity_NOTSET));
+  __pyx_t_9 = (__pyx_t_8 != 0);
+  if (!__pyx_t_9) {
+  } else {
+    __pyx_t_7 = __pyx_t_9;
+    goto __pyx_L4_bool_binop_done;
+  }
+  __pyx_t_9 = (__pyx_v_initial == Py_None);
+  __pyx_t_8 = (__pyx_t_9 != 0);
+  __pyx_t_7 = __pyx_t_8;
+  __pyx_L4_bool_binop_done:;
   if (__pyx_t_7) {
 
     /* "yapic/entity/_relation.pyx":187
  *     cpdef object state_get_dirty(self, object initial, object current):
- *         if initial != current:
- *             return current             # <<<<<<<<<<<<<<
- *         else:
- *             return NOTSET
+ *         if initial is NOTSET or initial is None:
+ *             if current is NOTSET or current is None:             # <<<<<<<<<<<<<<
+ *                 return NOTSET
+ *             else:
  */
-    __Pyx_XDECREF(__pyx_r);
-    __Pyx_INCREF(__pyx_v_current);
-    __pyx_r = __pyx_v_current;
-    goto __pyx_L0;
+    __pyx_t_8 = (__pyx_v_current == ((PyObject *)__pyx_ptype_5yapic_6entity_7_entity_NOTSET));
+    __pyx_t_9 = (__pyx_t_8 != 0);
+    if (!__pyx_t_9) {
+    } else {
+      __pyx_t_7 = __pyx_t_9;
+      goto __pyx_L7_bool_binop_done;
+    }
+    __pyx_t_9 = (__pyx_v_current == Py_None);
+    __pyx_t_8 = (__pyx_t_9 != 0);
+    __pyx_t_7 = __pyx_t_8;
+    __pyx_L7_bool_binop_done:;
+    if (__pyx_t_7) {
+
+      /* "yapic/entity/_relation.pyx":188
+ *         if initial is NOTSET or initial is None:
+ *             if current is NOTSET or current is None:
+ *                 return NOTSET             # <<<<<<<<<<<<<<
+ *             else:
+ *                 return ([current], [], [])
+ */
+      __Pyx_XDECREF(__pyx_r);
+      __Pyx_INCREF(((PyObject *)__pyx_ptype_5yapic_6entity_7_entity_NOTSET));
+      __pyx_r = ((PyObject *)__pyx_ptype_5yapic_6entity_7_entity_NOTSET);
+      goto __pyx_L0;
+
+      /* "yapic/entity/_relation.pyx":187
+ *     cpdef object state_get_dirty(self, object initial, object current):
+ *         if initial is NOTSET or initial is None:
+ *             if current is NOTSET or current is None:             # <<<<<<<<<<<<<<
+ *                 return NOTSET
+ *             else:
+ */
+    }
+
+    /* "yapic/entity/_relation.pyx":190
+ *                 return NOTSET
+ *             else:
+ *                 return ([current], [], [])             # <<<<<<<<<<<<<<
+ *         else:
+ *             if current is None:
+ */
+    /*else*/ {
+      __Pyx_XDECREF(__pyx_r);
+      __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 190, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_INCREF(__pyx_v_current);
+      __Pyx_GIVEREF(__pyx_v_current);
+      PyList_SET_ITEM(__pyx_t_1, 0, __pyx_v_current);
+      __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 190, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 190, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 190, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __Pyx_GIVEREF(__pyx_t_1);
+      PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_1);
+      __Pyx_GIVEREF(__pyx_t_2);
+      PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_2);
+      __Pyx_GIVEREF(__pyx_t_3);
+      PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_t_3);
+      __pyx_t_1 = 0;
+      __pyx_t_2 = 0;
+      __pyx_t_3 = 0;
+      __pyx_r = __pyx_t_6;
+      __pyx_t_6 = 0;
+      goto __pyx_L0;
+    }
 
     /* "yapic/entity/_relation.pyx":186
  * 
  *     cpdef object state_get_dirty(self, object initial, object current):
- *         if initial != current:             # <<<<<<<<<<<<<<
- *             return current
- *         else:
+ *         if initial is NOTSET or initial is None:             # <<<<<<<<<<<<<<
+ *             if current is NOTSET or current is None:
+ *                 return NOTSET
  */
   }
 
-  /* "yapic/entity/_relation.pyx":189
- *             return current
+  /* "yapic/entity/_relation.pyx":192
+ *                 return ([current], [], [])
  *         else:
- *             return NOTSET             # <<<<<<<<<<<<<<
+ *             if current is None:             # <<<<<<<<<<<<<<
+ *                 return ([], [current], [])
+ *             elif initial == current:
+ */
+  /*else*/ {
+    __pyx_t_7 = (__pyx_v_current == Py_None);
+    __pyx_t_8 = (__pyx_t_7 != 0);
+    if (__pyx_t_8) {
+
+      /* "yapic/entity/_relation.pyx":193
+ *         else:
+ *             if current is None:
+ *                 return ([], [current], [])             # <<<<<<<<<<<<<<
+ *             elif initial == current:
+ *                 if current.__state__.is_dirty:
+ */
+      __Pyx_XDECREF(__pyx_r);
+      __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 193, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 193, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_INCREF(__pyx_v_current);
+      __Pyx_GIVEREF(__pyx_v_current);
+      PyList_SET_ITEM(__pyx_t_3, 0, __pyx_v_current);
+      __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 193, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 193, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_GIVEREF(__pyx_t_6);
+      PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_6);
+      __Pyx_GIVEREF(__pyx_t_3);
+      PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_3);
+      __Pyx_GIVEREF(__pyx_t_2);
+      PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_2);
+      __pyx_t_6 = 0;
+      __pyx_t_3 = 0;
+      __pyx_t_2 = 0;
+      __pyx_r = __pyx_t_1;
+      __pyx_t_1 = 0;
+      goto __pyx_L0;
+
+      /* "yapic/entity/_relation.pyx":192
+ *                 return ([current], [], [])
+ *         else:
+ *             if current is None:             # <<<<<<<<<<<<<<
+ *                 return ([], [current], [])
+ *             elif initial == current:
+ */
+    }
+
+    /* "yapic/entity/_relation.pyx":194
+ *             if current is None:
+ *                 return ([], [current], [])
+ *             elif initial == current:             # <<<<<<<<<<<<<<
+ *                 if current.__state__.is_dirty:
+ *                     return ([], [], [current])
+ */
+    __pyx_t_1 = PyObject_RichCompare(__pyx_v_initial, __pyx_v_current, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 194, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 194, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    if (__pyx_t_8) {
+
+      /* "yapic/entity/_relation.pyx":195
+ *                 return ([], [current], [])
+ *             elif initial == current:
+ *                 if current.__state__.is_dirty:             # <<<<<<<<<<<<<<
+ *                     return ([], [], [current])
+ *                 else:
+ */
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_current, __pyx_n_s_state); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 195, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_is_dirty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 195, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 195, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      if (__pyx_t_8) {
+
+        /* "yapic/entity/_relation.pyx":196
+ *             elif initial == current:
+ *                 if current.__state__.is_dirty:
+ *                     return ([], [], [current])             # <<<<<<<<<<<<<<
+ *                 else:
+ *                     return NOTSET
+ */
+        __Pyx_XDECREF(__pyx_r);
+        __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 196, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 196, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 196, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __Pyx_INCREF(__pyx_v_current);
+        __Pyx_GIVEREF(__pyx_v_current);
+        PyList_SET_ITEM(__pyx_t_3, 0, __pyx_v_current);
+        __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_GIVEREF(__pyx_t_2);
+        PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_2);
+        __Pyx_GIVEREF(__pyx_t_1);
+        PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_1);
+        __Pyx_GIVEREF(__pyx_t_3);
+        PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_t_3);
+        __pyx_t_2 = 0;
+        __pyx_t_1 = 0;
+        __pyx_t_3 = 0;
+        __pyx_r = __pyx_t_6;
+        __pyx_t_6 = 0;
+        goto __pyx_L0;
+
+        /* "yapic/entity/_relation.pyx":195
+ *                 return ([], [current], [])
+ *             elif initial == current:
+ *                 if current.__state__.is_dirty:             # <<<<<<<<<<<<<<
+ *                     return ([], [], [current])
+ *                 else:
+ */
+      }
+
+      /* "yapic/entity/_relation.pyx":198
+ *                     return ([], [], [current])
+ *                 else:
+ *                     return NOTSET             # <<<<<<<<<<<<<<
+ *             else:
+ *                 return ([current], [initial], [])
+ */
+      /*else*/ {
+        __Pyx_XDECREF(__pyx_r);
+        __Pyx_INCREF(((PyObject *)__pyx_ptype_5yapic_6entity_7_entity_NOTSET));
+        __pyx_r = ((PyObject *)__pyx_ptype_5yapic_6entity_7_entity_NOTSET);
+        goto __pyx_L0;
+      }
+
+      /* "yapic/entity/_relation.pyx":194
+ *             if current is None:
+ *                 return ([], [current], [])
+ *             elif initial == current:             # <<<<<<<<<<<<<<
+ *                 if current.__state__.is_dirty:
+ *                     return ([], [], [current])
+ */
+    }
+
+    /* "yapic/entity/_relation.pyx":200
+ *                     return NOTSET
+ *             else:
+ *                 return ([current], [initial], [])             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  /*else*/ {
-    __Pyx_XDECREF(__pyx_r);
-    __Pyx_INCREF(((PyObject *)__pyx_ptype_5yapic_6entity_7_entity_NOTSET));
-    __pyx_r = ((PyObject *)__pyx_ptype_5yapic_6entity_7_entity_NOTSET);
-    goto __pyx_L0;
+    /*else*/ {
+      __Pyx_XDECREF(__pyx_r);
+      __pyx_t_6 = PyList_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 200, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __Pyx_INCREF(__pyx_v_current);
+      __Pyx_GIVEREF(__pyx_v_current);
+      PyList_SET_ITEM(__pyx_t_6, 0, __pyx_v_current);
+      __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 200, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_INCREF(__pyx_v_initial);
+      __Pyx_GIVEREF(__pyx_v_initial);
+      PyList_SET_ITEM(__pyx_t_3, 0, __pyx_v_initial);
+      __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 200, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 200, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_GIVEREF(__pyx_t_6);
+      PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_6);
+      __Pyx_GIVEREF(__pyx_t_3);
+      PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_3);
+      __Pyx_GIVEREF(__pyx_t_1);
+      PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_t_1);
+      __pyx_t_6 = 0;
+      __pyx_t_3 = 0;
+      __pyx_t_1 = 0;
+      __pyx_r = __pyx_t_2;
+      __pyx_t_2 = 0;
+      goto __pyx_L0;
+    }
   }
 
   /* "yapic/entity/_relation.pyx":185
  *         return value
  * 
  *     cpdef object state_get_dirty(self, object initial, object current):             # <<<<<<<<<<<<<<
- *         if initial != current:
- *             return current
+ *         if initial is NOTSET or initial is None:
+ *             if current is NOTSET or current is None:
  */
 
   /* function exit code */
@@ -7057,7 +7328,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_relation_11RelatedItem_4state_get_dir
   return __pyx_r;
 }
 
-/* "yapic/entity/_relation.pyx":193
+/* "yapic/entity/_relation.pyx":204
  * 
  * cdef class RelatedList(ValueStore):
  *     cpdef object state_init(self, object initial):             # <<<<<<<<<<<<<<
@@ -7085,7 +7356,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_init(CYTH
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_state_init); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 193, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_state_init); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 204, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_9_relation_11RelatedList_1state_init)) {
         __Pyx_XDECREF(__pyx_r);
@@ -7102,7 +7373,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_init(CYTH
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_initial) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_initial);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 193, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 204, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -7123,7 +7394,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_init(CYTH
     #endif
   }
 
-  /* "yapic/entity/_relation.pyx":194
+  /* "yapic/entity/_relation.pyx":205
  * cdef class RelatedList(ValueStore):
  *     cpdef object state_init(self, object initial):
  *         if initial is NOTSET:             # <<<<<<<<<<<<<<
@@ -7134,7 +7405,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_init(CYTH
   __pyx_t_6 = (__pyx_t_5 != 0);
   if (__pyx_t_6) {
 
-    /* "yapic/entity/_relation.pyx":195
+    /* "yapic/entity/_relation.pyx":206
  *     cpdef object state_init(self, object initial):
  *         if initial is NOTSET:
  *             return []             # <<<<<<<<<<<<<<
@@ -7142,13 +7413,13 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_init(CYTH
  *             return list(initial)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 195, __pyx_L1_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 206, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "yapic/entity/_relation.pyx":194
+    /* "yapic/entity/_relation.pyx":205
  * cdef class RelatedList(ValueStore):
  *     cpdef object state_init(self, object initial):
  *         if initial is NOTSET:             # <<<<<<<<<<<<<<
@@ -7157,7 +7428,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_init(CYTH
  */
   }
 
-  /* "yapic/entity/_relation.pyx":197
+  /* "yapic/entity/_relation.pyx":208
  *             return []
  *         else:
  *             return list(initial)             # <<<<<<<<<<<<<<
@@ -7166,14 +7437,14 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_init(CYTH
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = PySequence_List(__pyx_v_initial); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 197, __pyx_L1_error)
+    __pyx_t_1 = PySequence_List(__pyx_v_initial); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 208, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
     goto __pyx_L0;
   }
 
-  /* "yapic/entity/_relation.pyx":193
+  /* "yapic/entity/_relation.pyx":204
  * 
  * cdef class RelatedList(ValueStore):
  *     cpdef object state_init(self, object initial):             # <<<<<<<<<<<<<<
@@ -7214,7 +7485,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_relation_11RelatedList_state_init(str
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("state_init", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_9_relation_11RelatedList_state_init(__pyx_v_self, __pyx_v_initial, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 193, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_9_relation_11RelatedList_state_init(__pyx_v_self, __pyx_v_initial, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -7231,7 +7502,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_relation_11RelatedList_state_init(str
   return __pyx_r;
 }
 
-/* "yapic/entity/_relation.pyx":199
+/* "yapic/entity/_relation.pyx":210
  *             return list(initial)
  * 
  *     cpdef object state_set(self, object initial, object current, object value):             # <<<<<<<<<<<<<<
@@ -7259,7 +7530,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_set(CYTHO
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_state_set); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 199, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_state_set); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 210, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_9_relation_11RelatedList_3state_set)) {
         __Pyx_XDECREF(__pyx_r);
@@ -7279,7 +7550,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_set(CYTHO
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_3)) {
           PyObject *__pyx_temp[4] = {__pyx_t_4, __pyx_v_initial, __pyx_v_current, __pyx_v_value};
-          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 3+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 199, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 3+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 210, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_GOTREF(__pyx_t_2);
         } else
@@ -7287,13 +7558,13 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_set(CYTHO
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
           PyObject *__pyx_temp[4] = {__pyx_t_4, __pyx_v_initial, __pyx_v_current, __pyx_v_value};
-          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 3+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 199, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 3+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 210, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_GOTREF(__pyx_t_2);
         } else
         #endif
         {
-          __pyx_t_6 = PyTuple_New(3+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 199, __pyx_L1_error)
+          __pyx_t_6 = PyTuple_New(3+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 210, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
           if (__pyx_t_4) {
             __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4); __pyx_t_4 = NULL;
@@ -7307,7 +7578,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_set(CYTHO
           __Pyx_INCREF(__pyx_v_value);
           __Pyx_GIVEREF(__pyx_v_value);
           PyTuple_SET_ITEM(__pyx_t_6, 2+__pyx_t_5, __pyx_v_value);
-          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 199, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 210, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         }
@@ -7330,7 +7601,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_set(CYTHO
     #endif
   }
 
-  /* "yapic/entity/_relation.pyx":200
+  /* "yapic/entity/_relation.pyx":211
  * 
  *     cpdef object state_set(self, object initial, object current, object value):
  *         return value             # <<<<<<<<<<<<<<
@@ -7342,7 +7613,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_set(CYTHO
   __pyx_r = __pyx_v_value;
   goto __pyx_L0;
 
-  /* "yapic/entity/_relation.pyx":199
+  /* "yapic/entity/_relation.pyx":210
  *             return list(initial)
  * 
  *     cpdef object state_set(self, object initial, object current, object value):             # <<<<<<<<<<<<<<
@@ -7399,17 +7670,17 @@ static PyObject *__pyx_pw_5yapic_6entity_9_relation_11RelatedList_3state_set(PyO
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_current)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("state_set", 1, 3, 3, 1); __PYX_ERR(0, 199, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("state_set", 1, 3, 3, 1); __PYX_ERR(0, 210, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("state_set", 1, 3, 3, 2); __PYX_ERR(0, 199, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("state_set", 1, 3, 3, 2); __PYX_ERR(0, 210, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "state_set") < 0)) __PYX_ERR(0, 199, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "state_set") < 0)) __PYX_ERR(0, 210, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -7424,7 +7695,7 @@ static PyObject *__pyx_pw_5yapic_6entity_9_relation_11RelatedList_3state_set(PyO
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("state_set", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 199, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("state_set", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 210, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("yapic.entity._relation.RelatedList.state_set", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -7443,7 +7714,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_relation_11RelatedList_2state_set(str
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("state_set", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_9_relation_11RelatedList_state_set(__pyx_v_self, __pyx_v_initial, __pyx_v_current, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 199, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_9_relation_11RelatedList_state_set(__pyx_v_self, __pyx_v_initial, __pyx_v_current, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 210, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -7460,7 +7731,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_relation_11RelatedList_2state_set(str
   return __pyx_r;
 }
 
-/* "yapic/entity/_relation.pyx":202
+/* "yapic/entity/_relation.pyx":213
  *         return value
  * 
  *     cpdef object state_get_dirty(self, object initial, object current):             # <<<<<<<<<<<<<<
@@ -7497,7 +7768,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_state_get_dirty); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 202, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_state_get_dirty); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 213, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_9_relation_11RelatedList_5state_get_dirty)) {
         __Pyx_XDECREF(__pyx_r);
@@ -7517,7 +7788,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_3)) {
           PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_v_initial, __pyx_v_current};
-          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 202, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 213, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_GOTREF(__pyx_t_2);
         } else
@@ -7525,13 +7796,13 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
           PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_v_initial, __pyx_v_current};
-          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 202, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 213, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_GOTREF(__pyx_t_2);
         } else
         #endif
         {
-          __pyx_t_6 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 202, __pyx_L1_error)
+          __pyx_t_6 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 213, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
           if (__pyx_t_4) {
             __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4); __pyx_t_4 = NULL;
@@ -7542,7 +7813,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
           __Pyx_INCREF(__pyx_v_current);
           __Pyx_GIVEREF(__pyx_v_current);
           PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_5, __pyx_v_current);
-          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 202, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 213, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         }
@@ -7565,7 +7836,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
     #endif
   }
 
-  /* "yapic/entity/_relation.pyx":203
+  /* "yapic/entity/_relation.pyx":214
  * 
  *     cpdef object state_get_dirty(self, object initial, object current):
  *         if current is NOTSET:             # <<<<<<<<<<<<<<
@@ -7576,7 +7847,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
   __pyx_t_8 = (__pyx_t_7 != 0);
   if (__pyx_t_8) {
 
-    /* "yapic/entity/_relation.pyx":204
+    /* "yapic/entity/_relation.pyx":215
  *     cpdef object state_get_dirty(self, object initial, object current):
  *         if current is NOTSET:
  *             return NOTSET             # <<<<<<<<<<<<<<
@@ -7588,7 +7859,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
     __pyx_r = ((PyObject *)__pyx_ptype_5yapic_6entity_7_entity_NOTSET);
     goto __pyx_L0;
 
-    /* "yapic/entity/_relation.pyx":203
+    /* "yapic/entity/_relation.pyx":214
  * 
  *     cpdef object state_get_dirty(self, object initial, object current):
  *         if current is NOTSET:             # <<<<<<<<<<<<<<
@@ -7597,43 +7868,43 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
  */
   }
 
-  /* "yapic/entity/_relation.pyx":206
+  /* "yapic/entity/_relation.pyx":217
  *             return NOTSET
  * 
  *         cdef list add = []             # <<<<<<<<<<<<<<
  *         cdef list rem = []
  *         cdef list chg = []
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 217, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_add = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/entity/_relation.pyx":207
+  /* "yapic/entity/_relation.pyx":218
  * 
  *         cdef list add = []
  *         cdef list rem = []             # <<<<<<<<<<<<<<
  *         cdef list chg = []
  *         cdef EntityBase ent
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 218, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_rem = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/entity/_relation.pyx":208
+  /* "yapic/entity/_relation.pyx":219
  *         cdef list add = []
  *         cdef list rem = []
  *         cdef list chg = []             # <<<<<<<<<<<<<<
  *         cdef EntityBase ent
  * 
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 208, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 219, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_chg = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/entity/_relation.pyx":211
+  /* "yapic/entity/_relation.pyx":222
  *         cdef EntityBase ent
  * 
  *         if initial is NOTSET:             # <<<<<<<<<<<<<<
@@ -7644,16 +7915,16 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
   __pyx_t_7 = (__pyx_t_8 != 0);
   if (__pyx_t_7) {
 
-    /* "yapic/entity/_relation.pyx":212
+    /* "yapic/entity/_relation.pyx":223
  * 
  *         if initial is NOTSET:
  *             add.extend(current)             # <<<<<<<<<<<<<<
  *         else:
  *             for ent in current:
  */
-    __pyx_t_9 = __Pyx_PyList_Extend(__pyx_v_add, __pyx_v_current); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 212, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyList_Extend(__pyx_v_add, __pyx_v_current); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 223, __pyx_L1_error)
 
-    /* "yapic/entity/_relation.pyx":211
+    /* "yapic/entity/_relation.pyx":222
  *         cdef EntityBase ent
  * 
  *         if initial is NOTSET:             # <<<<<<<<<<<<<<
@@ -7663,38 +7934,38 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
     goto __pyx_L4;
   }
 
-  /* "yapic/entity/_relation.pyx":214
+  /* "yapic/entity/_relation.pyx":225
  *             add.extend(current)
  *         else:
  *             for ent in current:             # <<<<<<<<<<<<<<
  *                 if ent in initial:
- *                     # todo detect if changed
+ *                     if ent.__state__.is_dirty:
  */
   /*else*/ {
     if (likely(PyList_CheckExact(__pyx_v_current)) || PyTuple_CheckExact(__pyx_v_current)) {
       __pyx_t_1 = __pyx_v_current; __Pyx_INCREF(__pyx_t_1); __pyx_t_10 = 0;
       __pyx_t_11 = NULL;
     } else {
-      __pyx_t_10 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_current); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 214, __pyx_L1_error)
+      __pyx_t_10 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_current); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 225, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_11 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 214, __pyx_L1_error)
+      __pyx_t_11 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 225, __pyx_L1_error)
     }
     for (;;) {
       if (likely(!__pyx_t_11)) {
         if (likely(PyList_CheckExact(__pyx_t_1))) {
           if (__pyx_t_10 >= PyList_GET_SIZE(__pyx_t_1)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_10); __Pyx_INCREF(__pyx_t_2); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 214, __pyx_L1_error)
+          __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_10); __Pyx_INCREF(__pyx_t_2); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 225, __pyx_L1_error)
           #else
-          __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 214, __pyx_L1_error)
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 225, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           #endif
         } else {
           if (__pyx_t_10 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_10); __Pyx_INCREF(__pyx_t_2); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 214, __pyx_L1_error)
+          __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_10); __Pyx_INCREF(__pyx_t_2); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 225, __pyx_L1_error)
           #else
-          __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 214, __pyx_L1_error)
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 225, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           #endif
         }
@@ -7704,69 +7975,69 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 214, __pyx_L1_error)
+            else __PYX_ERR(0, 225, __pyx_L1_error)
           }
           break;
         }
         __Pyx_GOTREF(__pyx_t_2);
       }
-      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5yapic_6entity_7_entity_EntityBase))))) __PYX_ERR(0, 214, __pyx_L1_error)
+      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5yapic_6entity_7_entity_EntityBase))))) __PYX_ERR(0, 225, __pyx_L1_error)
       __Pyx_XDECREF_SET(__pyx_v_ent, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *)__pyx_t_2));
       __pyx_t_2 = 0;
 
-      /* "yapic/entity/_relation.pyx":215
+      /* "yapic/entity/_relation.pyx":226
  *         else:
  *             for ent in current:
  *                 if ent in initial:             # <<<<<<<<<<<<<<
- *                     # todo detect if changed
  *                     if ent.__state__.is_dirty:
+ *                         chg.append(ent)
  */
-      __pyx_t_7 = (__Pyx_PySequence_ContainsTF(((PyObject *)__pyx_v_ent), __pyx_v_initial, Py_EQ)); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 215, __pyx_L1_error)
+      __pyx_t_7 = (__Pyx_PySequence_ContainsTF(((PyObject *)__pyx_v_ent), __pyx_v_initial, Py_EQ)); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 226, __pyx_L1_error)
       __pyx_t_8 = (__pyx_t_7 != 0);
       if (__pyx_t_8) {
 
-        /* "yapic/entity/_relation.pyx":217
+        /* "yapic/entity/_relation.pyx":227
+ *             for ent in current:
  *                 if ent in initial:
- *                     # todo detect if changed
  *                     if ent.__state__.is_dirty:             # <<<<<<<<<<<<<<
  *                         chg.append(ent)
  *                 else:
  */
-        __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_ent->__state__), __pyx_n_s_is_dirty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 217, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_ent->__state__), __pyx_n_s_is_dirty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 227, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 217, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 227, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         if (__pyx_t_8) {
 
-          /* "yapic/entity/_relation.pyx":218
- *                     # todo detect if changed
+          /* "yapic/entity/_relation.pyx":228
+ *                 if ent in initial:
  *                     if ent.__state__.is_dirty:
  *                         chg.append(ent)             # <<<<<<<<<<<<<<
  *                 else:
  *                     add.append(ent)
  */
-          __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_chg, ((PyObject *)__pyx_v_ent)); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 218, __pyx_L1_error)
+          __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_chg, ((PyObject *)__pyx_v_ent)); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 228, __pyx_L1_error)
 
-          /* "yapic/entity/_relation.pyx":217
+          /* "yapic/entity/_relation.pyx":227
+ *             for ent in current:
  *                 if ent in initial:
- *                     # todo detect if changed
  *                     if ent.__state__.is_dirty:             # <<<<<<<<<<<<<<
  *                         chg.append(ent)
  *                 else:
  */
         }
 
-        /* "yapic/entity/_relation.pyx":215
+        /* "yapic/entity/_relation.pyx":226
  *         else:
  *             for ent in current:
  *                 if ent in initial:             # <<<<<<<<<<<<<<
- *                     # todo detect if changed
  *                     if ent.__state__.is_dirty:
+ *                         chg.append(ent)
  */
         goto __pyx_L7;
       }
 
-      /* "yapic/entity/_relation.pyx":220
+      /* "yapic/entity/_relation.pyx":230
  *                         chg.append(ent)
  *                 else:
  *                     add.append(ent)             # <<<<<<<<<<<<<<
@@ -7774,21 +8045,21 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
  *             for ent in initial:
  */
       /*else*/ {
-        __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_add, ((PyObject *)__pyx_v_ent)); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 220, __pyx_L1_error)
+        __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_add, ((PyObject *)__pyx_v_ent)); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 230, __pyx_L1_error)
       }
       __pyx_L7:;
 
-      /* "yapic/entity/_relation.pyx":214
+      /* "yapic/entity/_relation.pyx":225
  *             add.extend(current)
  *         else:
  *             for ent in current:             # <<<<<<<<<<<<<<
  *                 if ent in initial:
- *                     # todo detect if changed
+ *                     if ent.__state__.is_dirty:
  */
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "yapic/entity/_relation.pyx":222
+    /* "yapic/entity/_relation.pyx":232
  *                     add.append(ent)
  * 
  *             for ent in initial:             # <<<<<<<<<<<<<<
@@ -7799,26 +8070,26 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
       __pyx_t_1 = __pyx_v_initial; __Pyx_INCREF(__pyx_t_1); __pyx_t_10 = 0;
       __pyx_t_11 = NULL;
     } else {
-      __pyx_t_10 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_initial); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 222, __pyx_L1_error)
+      __pyx_t_10 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_initial); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 232, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_11 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 222, __pyx_L1_error)
+      __pyx_t_11 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 232, __pyx_L1_error)
     }
     for (;;) {
       if (likely(!__pyx_t_11)) {
         if (likely(PyList_CheckExact(__pyx_t_1))) {
           if (__pyx_t_10 >= PyList_GET_SIZE(__pyx_t_1)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_10); __Pyx_INCREF(__pyx_t_2); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 222, __pyx_L1_error)
+          __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_10); __Pyx_INCREF(__pyx_t_2); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 232, __pyx_L1_error)
           #else
-          __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 222, __pyx_L1_error)
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 232, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           #endif
         } else {
           if (__pyx_t_10 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_10); __Pyx_INCREF(__pyx_t_2); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 222, __pyx_L1_error)
+          __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_10); __Pyx_INCREF(__pyx_t_2); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 232, __pyx_L1_error)
           #else
-          __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 222, __pyx_L1_error)
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 232, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           #endif
         }
@@ -7828,37 +8099,37 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 222, __pyx_L1_error)
+            else __PYX_ERR(0, 232, __pyx_L1_error)
           }
           break;
         }
         __Pyx_GOTREF(__pyx_t_2);
       }
-      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5yapic_6entity_7_entity_EntityBase))))) __PYX_ERR(0, 222, __pyx_L1_error)
+      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5yapic_6entity_7_entity_EntityBase))))) __PYX_ERR(0, 232, __pyx_L1_error)
       __Pyx_XDECREF_SET(__pyx_v_ent, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *)__pyx_t_2));
       __pyx_t_2 = 0;
 
-      /* "yapic/entity/_relation.pyx":223
+      /* "yapic/entity/_relation.pyx":233
  * 
  *             for ent in initial:
  *                 if ent not in current:             # <<<<<<<<<<<<<<
  *                     rem.append(ent)
  * 
  */
-      __pyx_t_8 = (__Pyx_PySequence_ContainsTF(((PyObject *)__pyx_v_ent), __pyx_v_current, Py_NE)); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 223, __pyx_L1_error)
+      __pyx_t_8 = (__Pyx_PySequence_ContainsTF(((PyObject *)__pyx_v_ent), __pyx_v_current, Py_NE)); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 233, __pyx_L1_error)
       __pyx_t_7 = (__pyx_t_8 != 0);
       if (__pyx_t_7) {
 
-        /* "yapic/entity/_relation.pyx":224
+        /* "yapic/entity/_relation.pyx":234
  *             for ent in initial:
  *                 if ent not in current:
  *                     rem.append(ent)             # <<<<<<<<<<<<<<
  * 
  *         if add or rem or chg:
  */
-        __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_rem, ((PyObject *)__pyx_v_ent)); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 224, __pyx_L1_error)
+        __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_rem, ((PyObject *)__pyx_v_ent)); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 234, __pyx_L1_error)
 
-        /* "yapic/entity/_relation.pyx":223
+        /* "yapic/entity/_relation.pyx":233
  * 
  *             for ent in initial:
  *                 if ent not in current:             # <<<<<<<<<<<<<<
@@ -7867,7 +8138,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
  */
       }
 
-      /* "yapic/entity/_relation.pyx":222
+      /* "yapic/entity/_relation.pyx":232
  *                     add.append(ent)
  * 
  *             for ent in initial:             # <<<<<<<<<<<<<<
@@ -7879,7 +8150,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
   }
   __pyx_L4:;
 
-  /* "yapic/entity/_relation.pyx":226
+  /* "yapic/entity/_relation.pyx":236
  *                     rem.append(ent)
  * 
  *         if add or rem or chg:             # <<<<<<<<<<<<<<
@@ -7903,7 +8174,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
   __pyx_L13_bool_binop_done:;
   if (__pyx_t_7) {
 
-    /* "yapic/entity/_relation.pyx":227
+    /* "yapic/entity/_relation.pyx":237
  * 
  *         if add or rem or chg:
  *             return (add, rem, chg)             # <<<<<<<<<<<<<<
@@ -7911,7 +8182,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
  *             return NOTSET
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 227, __pyx_L1_error)
+    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 237, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_v_add);
     __Pyx_GIVEREF(__pyx_v_add);
@@ -7926,7 +8197,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "yapic/entity/_relation.pyx":226
+    /* "yapic/entity/_relation.pyx":236
  *                     rem.append(ent)
  * 
  *         if add or rem or chg:             # <<<<<<<<<<<<<<
@@ -7935,7 +8206,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
  */
   }
 
-  /* "yapic/entity/_relation.pyx":229
+  /* "yapic/entity/_relation.pyx":239
  *             return (add, rem, chg)
  *         else:
  *             return NOTSET             # <<<<<<<<<<<<<<
@@ -7949,7 +8220,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty
     goto __pyx_L0;
   }
 
-  /* "yapic/entity/_relation.pyx":202
+  /* "yapic/entity/_relation.pyx":213
  *         return value
  * 
  *     cpdef object state_get_dirty(self, object initial, object current):             # <<<<<<<<<<<<<<
@@ -8007,11 +8278,11 @@ static PyObject *__pyx_pw_5yapic_6entity_9_relation_11RelatedList_5state_get_dir
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_current)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("state_get_dirty", 1, 2, 2, 1); __PYX_ERR(0, 202, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("state_get_dirty", 1, 2, 2, 1); __PYX_ERR(0, 213, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "state_get_dirty") < 0)) __PYX_ERR(0, 202, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "state_get_dirty") < 0)) __PYX_ERR(0, 213, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -8024,7 +8295,7 @@ static PyObject *__pyx_pw_5yapic_6entity_9_relation_11RelatedList_5state_get_dir
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("state_get_dirty", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 202, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("state_get_dirty", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 213, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("yapic.entity._relation.RelatedList.state_get_dirty", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -8043,7 +8314,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_relation_11RelatedList_4state_get_dir
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("state_get_dirty", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty(__pyx_v_self, __pyx_v_initial, __pyx_v_current, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 202, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty(__pyx_v_self, __pyx_v_initial, __pyx_v_current, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -9297,6 +9568,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
   {&__pyx_n_s_relation, __pyx_k_relation, sizeof(__pyx_k_relation), 0, 0, 1, 1},
+  {&__pyx_n_s_state, __pyx_k_state, sizeof(__pyx_k_state), 0, 0, 1, 1},
   {&__pyx_n_s_state_get_dirty, __pyx_k_state_get_dirty, sizeof(__pyx_k_state_get_dirty), 0, 0, 1, 1},
   {&__pyx_n_s_state_impl, __pyx_k_state_impl, sizeof(__pyx_k_state_impl), 0, 0, 1, 1},
   {&__pyx_n_s_state_init, __pyx_k_state_init, sizeof(__pyx_k_state_init), 0, 0, 1, 1},
@@ -9491,24 +9763,24 @@ static int __Pyx_modinit_type_init_code(void) {
   __pyx_vtable_5yapic_6entity_9_relation_RelatedList.__pyx_base.state_set = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_9_relation_ValueStore *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_set;
   __pyx_vtable_5yapic_6entity_9_relation_RelatedList.__pyx_base.state_get_dirty = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_9_relation_ValueStore *, PyObject *, PyObject *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_9_relation_11RelatedList_state_get_dirty;
   __pyx_type_5yapic_6entity_9_relation_RelatedList.tp_base = __pyx_ptype_5yapic_6entity_9_relation_ValueStore;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_9_relation_RelatedList) < 0) __PYX_ERR(0, 192, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_9_relation_RelatedList) < 0) __PYX_ERR(0, 203, __pyx_L1_error)
   __pyx_type_5yapic_6entity_9_relation_RelatedList.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_9_relation_RelatedList.tp_dictoffset && __pyx_type_5yapic_6entity_9_relation_RelatedList.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_9_relation_RelatedList.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_9_relation_RelatedList.tp_dict, __pyx_vtabptr_5yapic_6entity_9_relation_RelatedList) < 0) __PYX_ERR(0, 192, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_RelatedList, (PyObject *)&__pyx_type_5yapic_6entity_9_relation_RelatedList) < 0) __PYX_ERR(0, 192, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_9_relation_RelatedList.tp_dict, __pyx_vtabptr_5yapic_6entity_9_relation_RelatedList) < 0) __PYX_ERR(0, 203, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_RelatedList, (PyObject *)&__pyx_type_5yapic_6entity_9_relation_RelatedList) < 0) __PYX_ERR(0, 203, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_9_relation_RelatedList = &__pyx_type_5yapic_6entity_9_relation_RelatedList;
   __pyx_vtabptr_5yapic_6entity_9_relation_RelatedDict = &__pyx_vtable_5yapic_6entity_9_relation_RelatedDict;
   __pyx_vtable_5yapic_6entity_9_relation_RelatedDict.__pyx_base = *__pyx_vtabptr_5yapic_6entity_9_relation_ValueStore;
   __pyx_type_5yapic_6entity_9_relation_RelatedDict.tp_base = __pyx_ptype_5yapic_6entity_9_relation_ValueStore;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_9_relation_RelatedDict) < 0) __PYX_ERR(0, 232, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_9_relation_RelatedDict) < 0) __PYX_ERR(0, 242, __pyx_L1_error)
   __pyx_type_5yapic_6entity_9_relation_RelatedDict.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_9_relation_RelatedDict.tp_dictoffset && __pyx_type_5yapic_6entity_9_relation_RelatedDict.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_9_relation_RelatedDict.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_9_relation_RelatedDict.tp_dict, __pyx_vtabptr_5yapic_6entity_9_relation_RelatedDict) < 0) __PYX_ERR(0, 232, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_RelatedDict, (PyObject *)&__pyx_type_5yapic_6entity_9_relation_RelatedDict) < 0) __PYX_ERR(0, 232, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_9_relation_RelatedDict.tp_dict, __pyx_vtabptr_5yapic_6entity_9_relation_RelatedDict) < 0) __PYX_ERR(0, 242, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_RelatedDict, (PyObject *)&__pyx_type_5yapic_6entity_9_relation_RelatedDict) < 0) __PYX_ERR(0, 242, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_9_relation_RelatedDict = &__pyx_type_5yapic_6entity_9_relation_RelatedDict;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -9583,13 +9855,16 @@ static int __Pyx_modinit_type_import_code(void) {
    if (!__pyx_ptype_5yapic_6entity_7_entity_EntityType) __PYX_ERR(5, 12, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_7_entity_EntityType = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityType*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityType->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityType)) __PYX_ERR(5, 12, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_EntityBase = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityBase", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityBase), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityBase) __PYX_ERR(5, 30, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityBase) __PYX_ERR(5, 29, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityAttributeExt", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt) __PYX_ERR(5, 53, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt)) __PYX_ERR(5, 53, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt) __PYX_ERR(5, 52, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt)) __PYX_ERR(5, 52, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_EntityState = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityState", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityState), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityState) __PYX_ERR(5, 77, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_7_entity_EntityState = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityState->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityState)) __PYX_ERR(5, 77, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityState) __PYX_ERR(5, 76, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_EntityState = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityState->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityState)) __PYX_ERR(5, 76, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_7_entity_DependencyList = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "DependencyList", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_DependencyList), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_7_entity_DependencyList) __PYX_ERR(5, 103, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_DependencyList = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_DependencyList->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_DependencyList)) __PYX_ERR(5, 103, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("yapic.entity._factory"); if (unlikely(!__pyx_t_1)) __PYX_ERR(6, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -9894,7 +10169,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_sys, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "yapic/entity/_relation.pyx":232
+  /* "yapic/entity/_relation.pyx":242
  * 
  * 
  * cdef class RelatedDict(ValueStore):             # <<<<<<<<<<<<<<

@@ -3,6 +3,7 @@ import random
 import string
 
 from collections.abc import ItemsView
+from operator import attrgetter
 
 from cpython.object cimport PyObject
 from cpython.ref cimport Py_DECREF, Py_INCREF, Py_XDECREF, Py_XINCREF
@@ -746,8 +747,15 @@ cdef class EntityState:
         Py_INCREF(<object>val)
         PyTuple_SET_ITEM(<object>current, idx, <object>val)
 
+    def changed_realtions(self):
+        cdef EntityAttribute attr
 
-
+        for i in range(self.field_count, len(self.entity.__attrs__)):
+            attr = self.entity.__attrs__[i]
+            if isinstance(attr, Relation):
+                val = self.attr_changes(attr)
+                if val is not NOTSET:
+                    yield (attr, val)
 
 
 cdef class EntityBase:
@@ -840,6 +848,15 @@ cdef class EntityBase:
         else:
             return ()
 
+    def __hash__(self):
+        return hash(type(self)) ^ hash(self.__pk__)
+
+    def __eq__(self, other):
+        return isinstance(other, EntityBase) and self.__pk__ == other.__pk__
+
+    def __ne__(self, other):
+        return not isinstance(other, EntityBase) or self.__pk__ != other.__pk__
+
     def __iter__(self):
         self.iter_index = 0
         return self
@@ -885,15 +902,17 @@ class Entity(EntityBase, metaclass=EntityType, registry=REGISTRY, _root=True):
         return "<%s %r>" % (type(self).__name__, self.__pk__)
 
 
-cpdef list entity_deps(EntityType ent):
-    cdef list res = []
+@cython.final
+cdef class DependencyList(list):
+    cpdef add(self, EntityType item):
+        try:
+            idx = self.index(item)
+        except ValueError:
+            idx = len(self)
+            self.append(item)
 
-    for dep in ent.__deps__:
-        for pre_dep in entity_deps(dep):
-            if pre_dep not in res:
-                res.append(pre_dep)
+        for dep in sorted(item.__deps__, key=attrgetter("__name__")):
+            if dep not in self:
+                self.insert(idx, dep)
+            self.add(dep)
 
-        if dep not in res:
-            res.append(dep)
-
-    return res

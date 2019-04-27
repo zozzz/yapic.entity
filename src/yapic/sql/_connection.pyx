@@ -3,7 +3,7 @@
 from yapic.entity._entity cimport EntityType
 from yapic.entity._entity_diff cimport EntityDiff
 from yapic.entity._query cimport Query
-from yapic.entity._entity cimport EntityType, EntityBase
+from yapic.entity._entity cimport EntityType, EntityBase, EntityState
 from yapic.entity._registry cimport Registry, RegistryDiff
 
 from ._query_context cimport QueryContext
@@ -48,6 +48,9 @@ cdef class Connection:
 
     async def save(self, EntityBase entity):
         raise NotImplementedError()
+
+    def _collect_entities_to_store(self, EntityBase entity):
+        pass
 
     async def reflect(self, EntityType base=Entity):
         reg = Registry()
