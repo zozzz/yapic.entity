@@ -1,7 +1,9 @@
 
 
-from yapic.entity._entity cimport EntityType
+from yapic.entity._entity cimport EntityType, NOTSET
 from yapic.entity._entity_diff cimport EntityDiff
+from yapic.entity._entity_operation cimport save_operations
+from yapic.entity._entity_operation import EntityOperation
 from yapic.entity._query cimport Query
 from yapic.entity._entity cimport EntityType, EntityBase, EntityState
 from yapic.entity._registry cimport Registry, RegistryDiff
@@ -40,6 +42,9 @@ cdef class Connection:
     async def insert(self, EntityBase entity):
         raise NotImplementedError()
 
+    async def insert_or_update(self, EntityBase entity):
+        raise NotImplementedError()
+
     async def update(self, EntityBase entity):
         raise NotImplementedError()
 
@@ -47,10 +52,25 @@ cdef class Connection:
         raise NotImplementedError()
 
     async def save(self, EntityBase entity):
-        raise NotImplementedError()
+        cdef EntityBase target
+        cdef EntityBase src
 
-    def _collect_entities_to_store(self, EntityBase entity):
-        pass
+        for op, param in save_operations(entity):
+            if op is EntityOperation.REMOVE:
+                await self.delete(param)
+            elif op is EntityOperation.UPDATE:
+                await self.update(param)
+            elif op is EntityOperation.INSERT:
+                await self.insert(param)
+            elif op is EntityOperation.INSERT_OR_UPDATE:
+                await self.insert_or_update(param)
+            elif op is EntityOperation.UPDATE_ATTR:
+                target = param[0]
+                src = param[2]
+
+                val = src.__state__.get_value(param[3])
+                if val is not NOTSET:
+                    target.__state__.set_value(param[1], val)
 
     async def reflect(self, EntityType base=Entity):
         reg = Registry()

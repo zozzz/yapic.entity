@@ -1,7 +1,7 @@
 import pytest
 from yapic.sql import wrap_connection, Entity, sync
 from yapic.entity import (Serial, Int, String, ForeignKey, One, Many, ManyAcross, Registry, DependencyList,
-                          collect_entity_operations)
+                          save_operations)
 
 pytestmark = pytest.mark.asyncio  # type: ignore
 
@@ -99,10 +99,23 @@ async def test_insert(conn):
     user.tags.append(Tag(tag="some tag"))
     user.tags.append(xyz_tag)
 
-    print(collect_entity_operations(user))
+    print("\n".join(map(repr, save_operations(user))))
+
+    await conn.save(user)
+
+    assert user.id == 1
+    assert user.name == "JDoe"
+    assert user.address_id == 1
+    assert user.address.id == 1
+    assert user.address.address == "XYZ st. 345"
+    assert len(user.tags) == 2
+    assert user.tags[0].id == 2
+    assert user.tags[0].tag == "some tag"
+    assert user.tags[1].id == 1
+    assert user.tags[1].tag == "xyz"
 
     # await conn.insert(user)
 
 
-async def test_cleanup(conn):
-    await conn.conn.execute("""DROP SCHEMA IF EXISTS "deps" CASCADE""")
+# async def test_cleanup(conn):
+#     await conn.conn.execute("""DROP SCHEMA IF EXISTS "deps" CASCADE""")

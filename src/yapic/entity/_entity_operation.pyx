@@ -12,12 +12,25 @@ from ._expression cimport Visitor, Expression, ConstExpression, RawExpression, U
 class EntityOperation(IntFlag):
     REMOVE = 1
     UPDATE = 2
-    CREATE = 4
-    CREATE_OR_UPDATE = 8
+    INSERT = 4
+    INSERT_OR_UPDATE = 8
 
-    # (EntityAttribute target, EntityAttribute src)
+    # (EntityBase target, EntityAttribute target_attr, EntityBase src, EntityAttribute src_attr)
     # XXX MUST HAVE LAST VALUE
     UPDATE_ATTR = 16
+
+
+cpdef list save_operations(EntityBase entity):
+    cdef DependencyList order = DependencyList()
+    cdef list ops = []
+
+    _collect_entities(entity, order, ops, determine_entity_op(entity))
+    ops.sort(key=cmp_to_key(_comparator(order)))
+    return ops
+
+
+cpdef list load_operations(EntityBase entity):
+    pass
 
 
 @cython.final
@@ -35,33 +48,17 @@ cdef class _comparator:
             return self.order.index(type(a_val)) - self.order.index(type(b_val))
         else:
             if a_op is EntityOperation.UPDATE_ATTR:
-                a_idx = max(self.order.index(a_val[1]._entity_), self.order.index(a_val[2]._entity_))
+                a_idx = max(self.order.index(a_val[1]._entity_), self.order.index(a_val[3]._entity_))
                 if b_op is EntityOperation.UPDATE_ATTR:
-                    return a_idx - max(self.order.index(b_val[1]._entity_), self.order.index(b_val[2]._entity_))
+                    return a_idx - max(self.order.index(b_val[1]._entity_), self.order.index(b_val[3]._entity_))
                 else:
                     return a_idx - self.order.index(type(b_val))
             else:
                 a_idx = self.order.index(type(a_val))
                 if b_op is EntityOperation.UPDATE_ATTR:
-                    return a_idx - max(self.order.index(b_val[1]._entity_), self.order.index(b_val[2]._entity_))
+                    return a_idx - max(self.order.index(b_val[1]._entity_), self.order.index(b_val[3]._entity_))
                 else:
                     return a_idx - self.order.index(type(b_val))
-
-
-cpdef list collect_entity_operations(EntityBase entity):
-    cdef DependencyList order = DependencyList()
-    cdef list ops = []
-
-    _collect_entities(entity, order, ops, determine_entity_op(entity))
-
-    # print(order)
-    # print("\n".join(map(repr, entitis)))
-
-    ops.sort(key=cmp_to_key(_comparator(order)))
-
-    # print("\n".join(map(repr, entitis)))
-
-    return ops
 
 
 cdef _collect_entities(EntityBase entity, DependencyList order, list ops, object op):
@@ -99,7 +96,7 @@ cdef set_related_attrs(Relation attr, EntityBase main, EntityBase related, Depen
         append_fields(across_entity, main, attr._impl_.across_join_expr, ops)
         append_fields(across_entity, related, attr._impl_.join_expr, ops)
 
-        _collect_entities(across_entity, order, ops, EntityOperation.CREATE_OR_UPDATE)
+        _collect_entities(across_entity, order, ops, EntityOperation.INSERT_OR_UPDATE)
         order.add(type(across_entity))
     else:
         append_fields(main, related, attr._impl_.join_expr, ops)
@@ -121,7 +118,7 @@ cdef determine_entity_op(EntityBase entity):
     if entity.__pk__:
         return EntityOperation.UPDATE
     else:
-        return EntityOperation.CREATE
+        return EntityOperation.INSERT
 
 
 cdef class FieldUpdater(Visitor):
@@ -143,13 +140,13 @@ cdef class FieldUpdater(Visitor):
             self.visit(right)
         elif expr.op is __eq__:
             if isinstance(left, EntityAttribute) and left._entity_ is type(self.target):
-                if isinstance(right, Expression):
-                    self.result.append((self.target, left, right))
+                if isinstance(right, EntityAttribute) and right._entity_ is type(self.source):
+                    self.result.append((self.target, left, self.source, right))
                 else:
                     self.target.__state__.set_value(left, right)
             elif isinstance(right, EntityAttribute) and right._entity_ is type(self.target):
-                if isinstance(left, Expression):
-                    self.result.append((self.target, right, left))
+                if isinstance(left, EntityAttribute) and left._entity_ is type(self.source):
+                    self.result.append((self.target, right, self.source, left))
                 else:
                     self.target.__state__.set_value(right, left)
         else:

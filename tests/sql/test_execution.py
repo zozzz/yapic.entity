@@ -12,12 +12,12 @@ async def conn(pgsql):
     yield wrap_connection(pgsql, "pgsql")
 
 
-class Address(Entity):
+class Address(Entity, schema="execution"):
     id: Serial
     title: String
 
 
-class User(Entity):
+class User(Entity, schema="execution"):
     id: Serial
     name: String = Field(size=100)
     bio: String
@@ -34,7 +34,7 @@ class User(Entity):
     updated_time: DateTimeTz
 
 
-class User2(Entity, schema="private", name="User"):
+class User2(Entity, schema="execution_private", name="User"):
     id: Serial
     name: String
     email: String
@@ -43,6 +43,9 @@ class User2(Entity, schema="private", name="User"):
 
 
 async def test_ddl(conn):
+    await conn.conn.execute("""DROP SCHEMA IF EXISTS "execution" CASCADE""")
+    await conn.conn.execute("""DROP SCHEMA IF EXISTS "execution_private" CASCADE""")
+
     await conn.create_entity(Address, drop=True)
     await conn.create_entity(User, drop=True)
     await conn.create_entity(User2, drop=True)
@@ -64,6 +67,24 @@ async def test_basic_insert_update(conn):
     assert u.__state__.changes() == {}
 
     assert await conn.delete(u) is True
+
+
+async def test_insert_or_update(conn):
+    u = User(name="Jhon Doe", secret=b"bytes")
+
+    assert await conn.insert(u) is True
+    assert u.id == 2
+    assert u.name == "Jhon Doe"
+    assert u.secret == b"bytes"
+    assert u.__state__.changes() == {}
+
+    u2 = User(id=u.id, name="Another Name")
+
+    assert await conn.insert_or_update(u2) is True
+    assert u2.id == 2
+    assert u2.name == "Another Name"
+    assert u2.secret == b"bytes"
+    assert u2.__state__.changes() == {}
 
 
 async def test_select(conn):
@@ -90,7 +111,7 @@ async def test_reflect(conn):
     ent_reg = await conn.reflect()
 
     def test_field(ent, field, impl, *, size=None, nullable=None, default=None):
-        reflected = ent_reg[ent]
+        reflected = ent_reg[f"execution.{ent}"]
         attr = getattr(reflected, field)
 
         assert attr._name_ == field
@@ -108,26 +129,26 @@ async def test_reflect(conn):
         if default is not None:
             assert attr._default_ == default
 
-    # test_field("User", "id", "Int", size=4, nullable=False)
-    # test_field("User", "name", "String", size=100, nullable=True)
-    # test_field("User", "bio", "String", size=-1, nullable=True)
-    # test_field("User", "fixed_char", "String", size=[5, 5], nullable=True)
-    # test_field("User", "secret", "Bytes", nullable=True)
-    # test_field("User", "address_id", "Int", size=4, nullable=True)
-    # test_field("User", "is_active", "Bool", nullable=False, default=True)
-    # test_field("User", "birth_date", "Date", nullable=True)
-    # test_field("User", "naive_date", "DateTime", nullable=False, default=datetime(2019, 1, 1, 12, 34, 55))
-    # test_field("User", "created_time", "DateTimeTz", nullable=False)
-    # test_field("User", "updated_time", "DateTimeTz", nullable=True)
+    test_field("User", "id", "Int", size=4, nullable=False)
+    test_field("User", "name", "String", size=100, nullable=True)
+    test_field("User", "bio", "String", size=-1, nullable=True)
+    test_field("User", "fixed_char", "String", size=[5, 5], nullable=True)
+    test_field("User", "secret", "Bytes", nullable=True)
+    test_field("User", "address_id", "Int", size=4, nullable=True)
+    test_field("User", "is_active", "Bool", nullable=False, default=True)
+    test_field("User", "birth_date", "Date", nullable=True)
+    test_field("User", "naive_date", "DateTime", nullable=False, default=datetime(2019, 1, 1, 12, 34, 55))
+    test_field("User", "created_time", "DateTimeTz", nullable=False)
+    test_field("User", "updated_time", "DateTimeTz", nullable=True)
 
-    diff = EntityDiff(ent_reg["User"], User)
+    diff = EntityDiff(ent_reg["execution.User"], User)
     assert diff.changes == []
 
 
 async def test_diff(conn):
     new_reg = Registry()
 
-    class User(Entity, registry=new_reg):
+    class User(Entity, schema="execution", registry=new_reg):
         id: Serial
         name_x: String = Field(size=100)
         bio: String = Field(size=200)
@@ -152,14 +173,14 @@ async def test_diff(conn):
     # print(diff.changes)
     result = await sync(conn, new_reg)
 
-    assert result == """DROP TABLE "Address" CASCADE;
-DROP TABLE "private"."User" CASCADE;
+    assert result == """DROP TABLE "execution"."Address" CASCADE;
+DROP TABLE "execution_private"."User" CASCADE;
 CREATE SCHEMA IF NOT EXISTS "_private";
 CREATE TABLE "_private"."NewTable" (
   "id" SERIAL4 NOT NULL,
   PRIMARY KEY("id")
 );
-ALTER TABLE "User"
+ALTER TABLE "execution"."User"
   DROP COLUMN "name",
   ADD COLUMN "name_x" VARCHAR(100),
   ALTER COLUMN "bio" TYPE VARCHAR(200) USING "bio"::VARCHAR(200),

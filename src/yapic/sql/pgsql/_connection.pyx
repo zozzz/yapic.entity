@@ -1,3 +1,5 @@
+from inspect import iscoroutine
+
 import cython
 
 from yapic.entity._entity cimport EntityType, EntityBase, EntityAttribute, EntityState
@@ -30,6 +32,7 @@ cdef class PostgreConnection(Connection):
         cdef list data = state.data_for_insert()
         cdef int data_length = len(data)
         cdef list fields = []
+        cdef list field_names = []
         cdef list values = []
         cdef list subst = []
         cdef int i
@@ -37,24 +40,64 @@ cdef class PostgreConnection(Connection):
         for i in range(data_length):
             attr, value = <tuple>data[i]
             if isinstance(attr, Field):
-                fields.append(self.dialect.quote_ident(attr._name_))
+                if iscoroutine(value):
+                    value = await value
+
+                fields.append(attr)
+                field_names.append(self.dialect.quote_ident(attr._name_))
                 values.append(value)
                 subst.append(f"${i + 1}")
 
+        # INSERT INTO X (...) VALUES (...) RETURNING ...
+        fields_str = ", ".join(field_names)
         q = ("INSERT INTO ", self.dialect.table_qname(ent),
-             " (", ", ".join(fields), ") VALUES (", ", ".join(subst), ")",
-             " RETURNING *")
+             " (", fields_str, ") VALUES (", ", ".join(subst), ")")
 
-        self.conn._check_open()
-        res = await self.conn._execute("".join(q), values, 0, timeout)
-        record = res[0]
+        return await self.__exec_iou(q, values, entity, ent, timeout)
 
-        for attr in ent.__fields__:
-            state.set_value(attr, record[attr._index_])
+    async def insert_or_update(self, EntityBase entity, timeout=None):
+        cdef EntityType ent = type(entity)
+        cdef EntityAttribute attr
+        cdef EntityState state = entity.__state__
+        cdef tuple pk = entity.__pk__
 
-        state.reset()
+        if not pk:
+            return await self.insert(entity, timeout)
 
-        return True
+        cdef list pk_names = [self.dialect.quote_ident(attr._name_) for attr in ent.__pk__]
+        cdef list fields = []
+        cdef list field_names = []
+        cdef list subst = []
+        cdef list values = []
+        cdef list updates = []
+        cdef int i = 1
+
+        for attr, value in state.data_for_insert():
+            if isinstance(attr, Field):
+                if iscoroutine(value):
+                    value = await value
+
+                field_name = self.dialect.quote_ident(attr._name_)
+                fields.append(attr)
+                field_names.append(field_name)
+                values.append(value)
+                subst.append(f"${i}")
+
+                if field_name not in pk_names:
+                    updates.append(f"{field_name}=${i}")
+
+                i += 1
+
+        # INSERT INTO X (...) VALUES (...) ON CONFLICT (pk) DO UPDATE SET field=value RETURNING ...
+
+        fields_str = ", ".join(field_names)
+        q = ("INSERT INTO ", self.dialect.table_qname(ent),
+            " (", fields_str, ") VALUES (", ", ".join(subst), ")")
+
+        if updates:
+            q += (" ON CONFLICT (", ", ".join(pk_names), ")", " DO UPDATE SET ", ", ".join(updates))
+
+        return await self.__exec_iou(q, values, entity, ent, timeout)
 
     async def update(self, EntityBase entity, timeout=None):
         cdef EntityType ent = type(entity)
@@ -68,15 +111,16 @@ cdef class PostgreConnection(Connection):
         fields = []
         updates = []
         values = []
-        returns = []
         i = 1
         for attr, value in state.data_for_update():
             if isinstance(attr, Field):
+                if iscoroutine(value):
+                    value = await value
+
                 ident = self.dialect.quote_ident(attr._name_)
                 fields.append(attr)
                 updates.append(f"{ident}=${i}")
                 values.append(value)
-                returns.append(ident)
                 i += 1
 
         if not fields:
@@ -90,15 +134,23 @@ cdef class PostgreConnection(Connection):
 
 
         q = ("UPDATE ", self.dialect.table_qname(ent), " SET ",
-             ", ".join(updates), " WHERE ", " AND ".join(condition),
-             " RETURNING ", ", ".join(returns))
+             ", ".join(updates), " WHERE ", " AND ".join(condition))
+
+        return await self.__exec_iou(q, values, entity, ent, timeout)
+
+    async def __exec_iou(self, tuple q, values, EntityBase entity, EntityType entity_t, timeout):
+        cdef list field_names = [self.dialect.quote_ident(a._name_) for a in entity_t.__fields__]
+        cdef EntityState state = entity.__state__
+        cdef EntityAttribute attr
+
+        q += (" RETURNING ", ", ".join(field_names))
 
         self.conn._check_open()
         res = await self.conn._execute("".join(q), values, 0, timeout)
         record = res[0]
 
-        for i, attr in enumerate(fields):
-            state.set_value(attr, record[i])
+        for attr in entity_t.__fields__:
+            state.set_value(attr, record[attr._index_])
 
         state.reset()
 
