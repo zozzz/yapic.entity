@@ -63,6 +63,7 @@ cdef class Expression:
     def is_true(self): return self == True
     def is_false(self): return self == False
     def is_null(self): return self == None
+    def is_none(self): return self == None
 
     cpdef asc(self): return DirectionExpression(self, True)
     cpdef desc(self): return DirectionExpression(self, False)

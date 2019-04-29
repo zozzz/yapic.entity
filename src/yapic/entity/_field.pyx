@@ -98,8 +98,7 @@ cdef class FieldExtension(EntityAttributeExt):
 
 
 cdef class FieldImpl(EntityAttributeImpl):
-    cpdef object init(self, EntityAttribute attr):
-        return True
+    pass
 
 
 cdef class StorageType:

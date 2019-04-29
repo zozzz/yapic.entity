@@ -143,12 +143,14 @@ cdef class FieldUpdater(Visitor):
                 if isinstance(right, EntityAttribute) and right._entity_ is type(self.source):
                     self.result.append((self.target, left, self.source, right))
                 else:
-                    self.target.__state__.set_value(left, right)
+                    if self.target.__state__.get_value(left) is NOTSET:
+                        self.target.__state__.set_value(left, right)
             elif isinstance(right, EntityAttribute) and right._entity_ is type(self.target):
                 if isinstance(left, EntityAttribute) and left._entity_ is type(self.source):
                     self.result.append((self.target, right, self.source, left))
                 else:
-                    self.target.__state__.set_value(right, left)
+                    if self.target.__state__.get_value(right) is NOTSET:
+                        self.target.__state__.set_value(right, left)
         else:
             raise ValueError("Unsupported operator: %r" % expr.op)
 

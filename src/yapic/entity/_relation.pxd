@@ -25,6 +25,8 @@ cdef class RelationImpl(EntityAttributeImpl):
     # cdef object new_value_store(self)
     # cdef void set_value_store_type(self, object t)
     cdef object determine_join_expr(self, EntityType entity, Relation attr)
+    cdef object resolve_default(self, Relation attr)
+    cdef object _eval(self, Relation attr, str expr)
 
 
 cdef class ManyToOne(RelationImpl):

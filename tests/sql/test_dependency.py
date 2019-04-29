@@ -39,11 +39,16 @@ class User(BaseEntity, schema="deps"):
 
     address_id: Int = ForeignKey(Address.id)
     address: One[Address]
+    caddress: One[Address] = "Address.id == User.address_id"
 
     forward: Many["Forward"]
     backward: Many[Backward]
 
     tags: ManyAcross["UserTags", Tag]
+    ctags: ManyAcross["UserTags", Tag] = {
+        "UserTags": "UserTags.user_id == User.id",
+        Tag: "Tag.id == UserTags.tag_id",
+    }
 
 
 class Forward(BaseEntity, schema="deps"):

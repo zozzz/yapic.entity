@@ -356,7 +356,7 @@ cdef class EntityAttributeImpl:
         self.inited = False
 
     cpdef object init(self, EntityAttribute attr):
-        raise NotImplementedError()
+        return True
 
     cpdef object clone(self):
         raise NotImplementedError()
