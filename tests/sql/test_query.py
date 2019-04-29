@@ -1,7 +1,7 @@
 import operator
 import pytest
 
-from yapic.sql import PostgreDialect
+from yapic.entity.sql import PostgreDialect
 from yapic.entity import Query, Entity, Serial, String, DateTimeTz, and_, or_, Int, ForeignKey, One, ManyAcross, Field, func
 
 dialect = PostgreDialect()

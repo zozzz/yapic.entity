@@ -44,16 +44,7 @@ extensions = [
         extra_compile_args=extra_compile_args,
         define_macros=list(define_macros.items()),
         undef_macros=undef_macros,
-    ),
-    Extension(
-        "*",
-        ["src/yapic/sql/**/*.pyx"],
-        language="c++",
-        include_dirs=["./libs/yapic.core/src/yapic/core/include", "./src/yapic/sql"],
-        extra_compile_args=extra_compile_args,
-        define_macros=list(define_macros.items()),
-        undef_macros=undef_macros,
-    ),
+    )
 ]
 
 
@@ -111,11 +102,9 @@ class PyTest(TestCommand):
 
 almafa = setup(
     name="yapic.entity",
-    packages=["yapic.entity", "yapic.sql", "yapic.sql.pgsql"],
-    package_dir={
-        "yapic.entity": "src/yapic/entity",
-        "yapic.sql": "src/yapic/sql"
-    },
+    version="1.0.0",
+    packages=["yapic.entity", "yapic.entity.sql", "yapic.entity.sql.pgsql"],
+    package_dir={"yapic.entity": "src/yapic/entity"},
     python_requires=">=3.7",
     ext_modules=cythonize(
         extensions,

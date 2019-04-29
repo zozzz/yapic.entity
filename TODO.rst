@@ -1,3 +1,4 @@
 - EntityType.registry = WeakRef
 - Field.entity = WeakRef
 - Extension.attr = WeakRef
+- Use Relation default value as custom join expression or db.RelationJoin extension

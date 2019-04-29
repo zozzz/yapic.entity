@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime
-from yapic.sql import wrap_connection, Entity, sync
+from yapic.entity.sql import wrap_connection, Entity, sync
 from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Bool, ForeignKey, One, Query,
                           func, EntityDiff, Registry)
 

@@ -4,19 +4,18 @@
 {
     "distutils": {
         "include_dirs": [
-            "./libs/yapic.core/src/yapic/core/include",
-            "./src/yapic/sql"
+            "./libs/yapic.core/src/yapic/core/include"
         ],
         "language": "c++",
-        "name": "yapic.sql._entity",
+        "name": "yapic.entity.sql._entity",
         "sources": [
-            "src/yapic/sql\\_entity.pyx"
+            "src/yapic/entity\\sql\\_entity.pyx"
         ],
         "undef_macros": [
             "_DEBUG"
         ]
     },
-    "module_name": "yapic.sql._entity"
+    "module_name": "yapic.entity.sql._entity"
 }
 END: Cython Metadata */
 
@@ -619,8 +618,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__yapic__sql___entity
-#define __PYX_HAVE_API__yapic__sql___entity
+#define __PYX_HAVE__yapic__entity__sql___entity
+#define __PYX_HAVE_API__yapic__entity__sql___entity
 /* Early includes */
 #include <string.h>
 #include <stdio.h>
@@ -832,7 +831,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "src\\yapic\\sql\\_entity.pyx",
+  "src\\yapic\\entity\\sql\\_entity.pyx",
   "type.pxd",
   "src\\yapic\\entity\\_expression.pxd",
   "src\\yapic\\entity\\_entity.pxd",
@@ -1891,12 +1890,12 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_DependencyList = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_9_registry_Registry = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_9_registry_RegistryDiff = 0;
 
-/* Module declarations from 'yapic.sql._entity' */
-#define __Pyx_MODULE_NAME "yapic.sql._entity"
-extern int __pyx_module_is_main_yapic__sql___entity;
-int __pyx_module_is_main_yapic__sql___entity = 0;
+/* Module declarations from 'yapic.entity.sql._entity' */
+#define __Pyx_MODULE_NAME "yapic.entity.sql._entity"
+extern int __pyx_module_is_main_yapic__entity__sql___entity;
+int __pyx_module_is_main_yapic__entity__sql___entity = 0;
 
-/* Implementation of 'yapic.sql._entity' */
+/* Implementation of 'yapic.entity.sql._entity' */
 static PyObject *__pyx_builtin_KeyError;
 static const char __pyx_k_[] = ".";
 static const char __pyx_k_cls[] = "cls";
@@ -1922,10 +1921,10 @@ static const char __pyx_k_metaclass[] = "__metaclass__";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static const char __pyx_k_registry_2[] = "registry";
 static const char __pyx_k_Entity___register[] = "Entity.__register__";
-static const char __pyx_k_yapic_sql__entity[] = "yapic.sql._entity";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_yapic_entity__entity[] = "yapic.entity._entity";
-static const char __pyx_k_src_yapic_sql__entity_pyx[] = "src\\yapic\\sql\\_entity.pyx";
+static const char __pyx_k_yapic_entity_sql__entity[] = "yapic.entity.sql._entity";
+static const char __pyx_k_src_yapic_entity_sql__entity_pyx[] = "src\\yapic\\entity\\sql\\_entity.pyx";
 static PyObject *__pyx_kp_u_;
 static PyObject *__pyx_n_s_Entity;
 static PyObject *__pyx_n_s_Entity_2;
@@ -1951,16 +1950,16 @@ static PyObject *__pyx_n_s_registry_2;
 static PyObject *__pyx_n_s_root;
 static PyObject *__pyx_n_s_schema;
 static PyObject *__pyx_n_u_schema;
-static PyObject *__pyx_kp_s_src_yapic_sql__entity_pyx;
+static PyObject *__pyx_kp_s_src_yapic_entity_sql__entity_pyx;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_yapic_entity__entity;
-static PyObject *__pyx_n_s_yapic_sql__entity;
-static PyObject *__pyx_pf_5yapic_3sql_7_entity_6Entity___register__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_cls); /* proto */
+static PyObject *__pyx_n_s_yapic_entity_sql__entity;
+static PyObject *__pyx_pf_5yapic_6entity_3sql_7_entity_6Entity___register__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_cls); /* proto */
 static PyObject *__pyx_tuple__2;
 static PyObject *__pyx_codeobj__3;
 /* Late includes */
 
-/* "yapic/sql/_entity.pyx":10
+/* "yapic/entity/sql/_entity.pyx":10
  * class Entity(_Entity, registry=REGISTRY, _root=True):
  *     @classmethod
  *     def __register__(cls):             # <<<<<<<<<<<<<<
@@ -1969,20 +1968,20 @@ static PyObject *__pyx_codeobj__3;
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5yapic_3sql_7_entity_6Entity_1__register__(PyObject *__pyx_self, PyObject *__pyx_v_cls); /*proto*/
-static PyMethodDef __pyx_mdef_5yapic_3sql_7_entity_6Entity_1__register__ = {"__register__", (PyCFunction)__pyx_pw_5yapic_3sql_7_entity_6Entity_1__register__, METH_O, 0};
-static PyObject *__pyx_pw_5yapic_3sql_7_entity_6Entity_1__register__(PyObject *__pyx_self, PyObject *__pyx_v_cls) {
+static PyObject *__pyx_pw_5yapic_6entity_3sql_7_entity_6Entity_1__register__(PyObject *__pyx_self, PyObject *__pyx_v_cls); /*proto*/
+static PyMethodDef __pyx_mdef_5yapic_6entity_3sql_7_entity_6Entity_1__register__ = {"__register__", (PyCFunction)__pyx_pw_5yapic_6entity_3sql_7_entity_6Entity_1__register__, METH_O, 0};
+static PyObject *__pyx_pw_5yapic_6entity_3sql_7_entity_6Entity_1__register__(PyObject *__pyx_self, PyObject *__pyx_v_cls) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__register__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5yapic_3sql_7_entity_6Entity___register__(__pyx_self, ((PyObject *)__pyx_v_cls));
+  __pyx_r = __pyx_pf_5yapic_6entity_3sql_7_entity_6Entity___register__(__pyx_self, ((PyObject *)__pyx_v_cls));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5yapic_3sql_7_entity_6Entity___register__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_cls) {
+static PyObject *__pyx_pf_5yapic_6entity_3sql_7_entity_6Entity___register__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_cls) {
   PyObject *__pyx_v_schema = NULL;
   PyObject *__pyx_v_name = NULL;
   PyObject *__pyx_r = NULL;
@@ -2001,7 +2000,7 @@ static PyObject *__pyx_pf_5yapic_3sql_7_entity_6Entity___register__(CYTHON_UNUSE
   PyObject *__pyx_t_12 = NULL;
   __Pyx_RefNannySetupContext("__register__", 0);
 
-  /* "yapic/sql/_entity.pyx":11
+  /* "yapic/entity/sql/_entity.pyx":11
  *     @classmethod
  *     def __register__(cls):
  *         try:             # <<<<<<<<<<<<<<
@@ -2017,7 +2016,7 @@ static PyObject *__pyx_pf_5yapic_3sql_7_entity_6Entity___register__(CYTHON_UNUSE
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "yapic/sql/_entity.pyx":12
+      /* "yapic/entity/sql/_entity.pyx":12
  *     def __register__(cls):
  *         try:
  *             schema = cls.__meta__["schema"]             # <<<<<<<<<<<<<<
@@ -2032,7 +2031,7 @@ static PyObject *__pyx_pf_5yapic_3sql_7_entity_6Entity___register__(CYTHON_UNUSE
       __pyx_v_schema = __pyx_t_5;
       __pyx_t_5 = 0;
 
-      /* "yapic/sql/_entity.pyx":11
+      /* "yapic/entity/sql/_entity.pyx":11
  *     @classmethod
  *     def __register__(cls):
  *         try:             # <<<<<<<<<<<<<<
@@ -2041,7 +2040,7 @@ static PyObject *__pyx_pf_5yapic_3sql_7_entity_6Entity___register__(CYTHON_UNUSE
  */
     }
 
-    /* "yapic/sql/_entity.pyx":16
+    /* "yapic/entity/sql/_entity.pyx":16
  *             name = cls.__name__
  *         else:
  *             if schema is None:             # <<<<<<<<<<<<<<
@@ -2053,7 +2052,7 @@ static PyObject *__pyx_pf_5yapic_3sql_7_entity_6Entity___register__(CYTHON_UNUSE
       __pyx_t_7 = (__pyx_t_6 != 0);
       if (__pyx_t_7) {
 
-        /* "yapic/sql/_entity.pyx":17
+        /* "yapic/entity/sql/_entity.pyx":17
  *         else:
  *             if schema is None:
  *                 name = cls.__name__             # <<<<<<<<<<<<<<
@@ -2065,7 +2064,7 @@ static PyObject *__pyx_pf_5yapic_3sql_7_entity_6Entity___register__(CYTHON_UNUSE
         __pyx_v_name = __pyx_t_5;
         __pyx_t_5 = 0;
 
-        /* "yapic/sql/_entity.pyx":16
+        /* "yapic/entity/sql/_entity.pyx":16
  *             name = cls.__name__
  *         else:
  *             if schema is None:             # <<<<<<<<<<<<<<
@@ -2075,7 +2074,7 @@ static PyObject *__pyx_pf_5yapic_3sql_7_entity_6Entity___register__(CYTHON_UNUSE
         goto __pyx_L9;
       }
 
-      /* "yapic/sql/_entity.pyx":19
+      /* "yapic/entity/sql/_entity.pyx":19
  *                 name = cls.__name__
  *             else:
  *                 name = f"{schema}.{cls.__name__}"             # <<<<<<<<<<<<<<
@@ -2124,7 +2123,7 @@ static PyObject *__pyx_pf_5yapic_3sql_7_entity_6Entity___register__(CYTHON_UNUSE
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "yapic/sql/_entity.pyx":13
+    /* "yapic/entity/sql/_entity.pyx":13
  *         try:
  *             schema = cls.__meta__["schema"]
  *         except KeyError:             # <<<<<<<<<<<<<<
@@ -2133,13 +2132,13 @@ static PyObject *__pyx_pf_5yapic_3sql_7_entity_6Entity___register__(CYTHON_UNUSE
  */
     __pyx_t_11 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_KeyError);
     if (__pyx_t_11) {
-      __Pyx_AddTraceback("yapic.sql._entity.Entity.__register__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("yapic.entity.sql._entity.Entity.__register__", __pyx_clineno, __pyx_lineno, __pyx_filename);
       if (__Pyx_GetException(&__pyx_t_10, &__pyx_t_5, &__pyx_t_4) < 0) __PYX_ERR(0, 13, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GOTREF(__pyx_t_4);
 
-      /* "yapic/sql/_entity.pyx":14
+      /* "yapic/entity/sql/_entity.pyx":14
  *             schema = cls.__meta__["schema"]
  *         except KeyError:
  *             name = cls.__name__             # <<<<<<<<<<<<<<
@@ -2158,7 +2157,7 @@ static PyObject *__pyx_pf_5yapic_3sql_7_entity_6Entity___register__(CYTHON_UNUSE
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
 
-    /* "yapic/sql/_entity.pyx":11
+    /* "yapic/entity/sql/_entity.pyx":11
  *     @classmethod
  *     def __register__(cls):
  *         try:             # <<<<<<<<<<<<<<
@@ -2178,7 +2177,7 @@ static PyObject *__pyx_pf_5yapic_3sql_7_entity_6Entity___register__(CYTHON_UNUSE
     __pyx_L8_try_end:;
   }
 
-  /* "yapic/sql/_entity.pyx":21
+  /* "yapic/entity/sql/_entity.pyx":21
  *                 name = f"{schema}.{cls.__name__}"
  * 
  *         (<Registry>cls.__registry__).register(name, cls)             # <<<<<<<<<<<<<<
@@ -2193,7 +2192,7 @@ static PyObject *__pyx_pf_5yapic_3sql_7_entity_6Entity___register__(CYTHON_UNUSE
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "yapic/sql/_entity.pyx":10
+  /* "yapic/entity/sql/_entity.pyx":10
  * class Entity(_Entity, registry=REGISTRY, _root=True):
  *     @classmethod
  *     def __register__(cls):             # <<<<<<<<<<<<<<
@@ -2209,7 +2208,7 @@ static PyObject *__pyx_pf_5yapic_3sql_7_entity_6Entity___register__(CYTHON_UNUSE
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_10);
   __Pyx_XDECREF(__pyx_t_12);
-  __Pyx_AddTraceback("yapic.sql._entity.Entity.__register__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("yapic.entity.sql._entity.Entity.__register__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_schema);
@@ -2290,10 +2289,10 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_root, __pyx_k_root, sizeof(__pyx_k_root), 0, 0, 1, 1},
   {&__pyx_n_s_schema, __pyx_k_schema, sizeof(__pyx_k_schema), 0, 0, 1, 1},
   {&__pyx_n_u_schema, __pyx_k_schema, sizeof(__pyx_k_schema), 0, 1, 0, 1},
-  {&__pyx_kp_s_src_yapic_sql__entity_pyx, __pyx_k_src_yapic_sql__entity_pyx, sizeof(__pyx_k_src_yapic_sql__entity_pyx), 0, 0, 1, 0},
+  {&__pyx_kp_s_src_yapic_entity_sql__entity_pyx, __pyx_k_src_yapic_entity_sql__entity_pyx, sizeof(__pyx_k_src_yapic_entity_sql__entity_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_s_yapic_entity__entity, __pyx_k_yapic_entity__entity, sizeof(__pyx_k_yapic_entity__entity), 0, 0, 1, 1},
-  {&__pyx_n_s_yapic_sql__entity, __pyx_k_yapic_sql__entity, sizeof(__pyx_k_yapic_sql__entity), 0, 0, 1, 1},
+  {&__pyx_n_s_yapic_entity_sql__entity, __pyx_k_yapic_entity_sql__entity, sizeof(__pyx_k_yapic_entity_sql__entity), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
@@ -2307,7 +2306,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "yapic/sql/_entity.pyx":10
+  /* "yapic/entity/sql/_entity.pyx":10
  * class Entity(_Entity, registry=REGISTRY, _root=True):
  *     @classmethod
  *     def __register__(cls):             # <<<<<<<<<<<<<<
@@ -2317,7 +2316,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__2 = PyTuple_Pack(3, __pyx_n_s_cls, __pyx_n_s_schema, __pyx_n_s_name_2); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
-  __pyx_codeobj__3 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__2, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_yapic_sql__entity_pyx, __pyx_n_s_register, 10, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__3)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_codeobj__3 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__2, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_yapic_entity_sql__entity_pyx, __pyx_n_s_register, 10, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__3)) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -2653,14 +2652,14 @@ if (!__Pyx_RefNanny) {
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_yapic__sql___entity) {
+  if (__pyx_module_is_main_yapic__entity__sql___entity) {
     if (PyObject_SetAttr(__pyx_m, __pyx_n_s_name, __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "yapic.sql._entity")) {
-      if (unlikely(PyDict_SetItemString(modules, "yapic.sql._entity", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "yapic.entity.sql._entity")) {
+      if (unlikely(PyDict_SetItemString(modules, "yapic.entity.sql._entity", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -2681,7 +2680,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "yapic/sql/_entity.pyx":1
+  /* "yapic/entity/sql/_entity.pyx":1
  * from yapic.entity._entity import Entity as _Entity             # <<<<<<<<<<<<<<
  * from yapic.entity._registry cimport Registry
  * 
@@ -2700,7 +2699,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "yapic/sql/_entity.pyx":5
+  /* "yapic/entity/sql/_entity.pyx":5
  * 
  * 
  * REGISTRY = Registry()             # <<<<<<<<<<<<<<
@@ -2712,7 +2711,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_REGISTRY, __pyx_t_2) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "yapic/sql/_entity.pyx":8
+  /* "yapic/entity/sql/_entity.pyx":8
  * 
  * 
  * class Entity(_Entity, registry=REGISTRY, _root=True):             # <<<<<<<<<<<<<<
@@ -2735,20 +2734,20 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_root, Py_True) < 0) __PYX_ERR(0, 8, __pyx_L1_error)
   __pyx_t_3 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 8, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_Py3MetaclassPrepare(__pyx_t_3, __pyx_t_1, __pyx_n_s_Entity, __pyx_n_s_Entity, __pyx_t_2, __pyx_n_s_yapic_sql__entity, (PyObject *) NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_Py3MetaclassPrepare(__pyx_t_3, __pyx_t_1, __pyx_n_s_Entity, __pyx_n_s_Entity, __pyx_t_2, __pyx_n_s_yapic_entity_sql__entity, (PyObject *) NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 8, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "yapic/sql/_entity.pyx":10
+  /* "yapic/entity/sql/_entity.pyx":10
  * class Entity(_Entity, registry=REGISTRY, _root=True):
  *     @classmethod
  *     def __register__(cls):             # <<<<<<<<<<<<<<
  *         try:
  *             schema = cls.__meta__["schema"]
  */
-  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5yapic_3sql_7_entity_6Entity_1__register__, __Pyx_CYFUNCTION_CLASSMETHOD, __pyx_n_s_Entity___register, NULL, __pyx_n_s_yapic_sql__entity, __pyx_d, ((PyObject *)__pyx_codeobj__3)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5yapic_6entity_3sql_7_entity_6Entity_1__register__, __Pyx_CYFUNCTION_CLASSMETHOD, __pyx_n_s_Entity___register, NULL, __pyx_n_s_yapic_entity_sql__entity, __pyx_d, ((PyObject *)__pyx_codeobj__3)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "yapic/sql/_entity.pyx":9
+  /* "yapic/entity/sql/_entity.pyx":9
  * 
  * class Entity(_Entity, registry=REGISTRY, _root=True):
  *     @classmethod             # <<<<<<<<<<<<<<
@@ -2761,7 +2760,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_4, __pyx_n_s_register, __pyx_t_6) < 0) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-  /* "yapic/sql/_entity.pyx":8
+  /* "yapic/entity/sql/_entity.pyx":8
  * 
  * 
  * class Entity(_Entity, registry=REGISTRY, _root=True):             # <<<<<<<<<<<<<<
@@ -2777,7 +2776,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "yapic/sql/_entity.pyx":1
+  /* "yapic/entity/sql/_entity.pyx":1
  * from yapic.entity._entity import Entity as _Entity             # <<<<<<<<<<<<<<
  * from yapic.entity._registry cimport Registry
  * 
@@ -2799,11 +2798,11 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_6);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init yapic.sql._entity", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init yapic.entity.sql._entity", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_CLEAR(__pyx_m);
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init yapic.sql._entity");
+    PyErr_SetString(PyExc_ImportError, "init yapic.entity.sql._entity");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();

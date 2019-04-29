@@ -4,19 +4,18 @@
 {
     "distutils": {
         "include_dirs": [
-            "./libs/yapic.core/src/yapic/core/include",
-            "./src/yapic/sql"
+            "./libs/yapic.core/src/yapic/core/include"
         ],
         "language": "c++",
-        "name": "yapic.sql._ddl",
+        "name": "yapic.entity.sql._ddl",
         "sources": [
-            "src/yapic/sql\\_ddl.pyx"
+            "src/yapic/entity\\sql\\_ddl.pyx"
         ],
         "undef_macros": [
             "_DEBUG"
         ]
     },
-    "module_name": "yapic.sql._ddl"
+    "module_name": "yapic.entity.sql._ddl"
 }
 END: Cython Metadata */
 
@@ -619,8 +618,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__yapic__sql___ddl
-#define __PYX_HAVE_API__yapic__sql___ddl
+#define __PYX_HAVE__yapic__entity__sql___ddl
+#define __PYX_HAVE_API__yapic__entity__sql___ddl
 /* Early includes */
 #include <string.h>
 #include <stdio.h>
@@ -832,7 +831,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "src\\yapic\\sql\\_ddl.pyx",
+  "src\\yapic\\entity\\sql\\_ddl.pyx",
   "type.pxd",
   "src\\yapic\\entity\\_expression.pxd",
   "src\\yapic\\entity\\_registry.pxd",
@@ -840,9 +839,9 @@ static const char *__pyx_f[] = {
   "src\\yapic\\entity\\_field.pxd",
   "src\\yapic\\entity\\_entity_diff.pxd",
   "src\\yapic\\entity\\_query.pxd",
-  "src\\yapic\\sql\\_query_compiler.pxd",
-  "src\\yapic\\sql\\_dialect.pxd",
-  "src\\yapic\\sql\\_connection.pxd",
+  "src\\yapic\\entity\\sql\\_query_compiler.pxd",
+  "src\\yapic\\entity\\sql\\_dialect.pxd",
+  "src\\yapic\\entity\\sql\\_connection.pxd",
 };
 
 /*--- Type declarations ---*/
@@ -877,13 +876,13 @@ struct __pyx_obj_5yapic_6entity_6_field_ForeignKey;
 struct __pyx_obj_5yapic_6entity_12_entity_diff_EntityDiff;
 struct __pyx_obj_5yapic_6entity_6_query_Query;
 struct __pyx_obj_5yapic_6entity_6_query_QueryFinalizer;
-struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler;
-struct __pyx_obj_5yapic_3sql_8_dialect_Dialect;
-struct __pyx_obj_5yapic_3sql_11_connection_Connection;
-struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler;
-struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect;
-struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys;
-struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities;
+struct __pyx_obj_5yapic_6entity_3sql_15_query_compiler_QueryCompiler;
+struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect;
+struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection;
+struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler;
+struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect;
+struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys;
+struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities;
 
 /* "_expression.pxd":4
  * 
@@ -1347,9 +1346,9 @@ struct __pyx_obj_5yapic_6entity_6_query_QueryFinalizer {
  *     cdef readonly Dialect dialect
  *     cdef readonly list select
  */
-struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler {
+struct __pyx_obj_5yapic_6entity_3sql_15_query_compiler_QueryCompiler {
   struct __pyx_obj_5yapic_6entity_11_expression_Visitor __pyx_base;
-  struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *dialect;
+  struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *dialect;
   PyObject *select;
 };
 
@@ -1361,9 +1360,9 @@ struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler {
  *     cdef StorageTypeFactory type_factory
  * 
  */
-struct __pyx_obj_5yapic_3sql_8_dialect_Dialect {
+struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect {
   PyObject_HEAD
-  struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *__pyx_vtab;
+  struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *__pyx_vtab;
   struct __pyx_obj_5yapic_6entity_6_field_StorageTypeFactory *type_factory;
 };
 
@@ -1375,46 +1374,46 @@ struct __pyx_obj_5yapic_3sql_8_dialect_Dialect {
  *     cdef readonly object conn
  *     cdef readonly Dialect dialect
  */
-struct __pyx_obj_5yapic_3sql_11_connection_Connection {
+struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection {
   PyObject_HEAD
   PyObject *conn;
-  struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *dialect;
+  struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *dialect;
 };
 
 
-/* "yapic/sql/_ddl.pxd":8
+/* "yapic/entity/sql/_ddl.pxd":8
  * from ._connection cimport Connection
  * 
  * cdef class DDLCompiler:             # <<<<<<<<<<<<<<
  *     cdef readonly Dialect dialect
  * 
  */
-struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler {
+struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler {
   PyObject_HEAD
-  struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *dialect;
+  struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *dialect;
 };
 
 
-/* "yapic/sql/_ddl.pxd":15
+/* "yapic/entity/sql/_ddl.pxd":15
  * 
  * 
  * cdef class DDLReflect:             # <<<<<<<<<<<<<<
  *     cdef EntityType entity_base
  */
-struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect {
+struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect {
   PyObject_HEAD
   struct __pyx_obj_5yapic_6entity_7_entity_EntityType *entity_base;
 };
 
 
-/* "yapic/sql/_ddl.pyx":74
+/* "yapic/entity/sql/_ddl.pyx":74
  *         return res
  * 
  *     def compile_foreign_keys(self, dict fks):             # <<<<<<<<<<<<<<
  *         cdef str res
  *         cdef int length
  */
-struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys {
+struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys {
   PyObject_HEAD
   struct __pyx_obj_5yapic_6entity_6_field_ForeignKey *__pyx_v_fk;
   PyObject *__pyx_v_fks;
@@ -1423,7 +1422,7 @@ struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys {
   PyObject *__pyx_v_key_name;
   int __pyx_v_length;
   PyObject *__pyx_v_res;
-  struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *__pyx_v_self;
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *__pyx_v_self;
   PyObject *__pyx_t_0;
   Py_ssize_t __pyx_t_1;
   Py_ssize_t __pyx_t_2;
@@ -1431,17 +1430,17 @@ struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys {
 };
 
 
-/* "yapic/sql/_ddl.pyx":181
+/* "yapic/entity/sql/_ddl.pyx":181
  *         self.entity_base = entity_base
  * 
  *     async def get_entities(self, Connection conn, Registry registry):             # <<<<<<<<<<<<<<
  *         raise NotImplementedError()
  */
-struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities {
+struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities {
   PyObject_HEAD
-  struct __pyx_obj_5yapic_3sql_11_connection_Connection *__pyx_v_conn;
+  struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *__pyx_v_conn;
   struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx_v_registry;
-  struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect *__pyx_v_self;
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect *__pyx_v_self;
 };
 
 
@@ -1862,11 +1861,11 @@ static struct __pyx_vtabstruct_5yapic_6entity_6_query_QueryFinalizer *__pyx_vtab
  *     cdef readonly list select
  */
 
-struct __pyx_vtabstruct_5yapic_3sql_15_query_compiler_QueryCompiler {
+struct __pyx_vtabstruct_5yapic_6entity_3sql_15_query_compiler_QueryCompiler {
   struct __pyx_vtabstruct_5yapic_6entity_11_expression_Visitor __pyx_base;
-  PyObject *(*compile_select)(struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler *, struct __pyx_obj_5yapic_6entity_6_query_Query *, int __pyx_skip_dispatch);
+  PyObject *(*compile_select)(struct __pyx_obj_5yapic_6entity_3sql_15_query_compiler_QueryCompiler *, struct __pyx_obj_5yapic_6entity_6_query_Query *, int __pyx_skip_dispatch);
 };
-static struct __pyx_vtabstruct_5yapic_3sql_15_query_compiler_QueryCompiler *__pyx_vtabptr_5yapic_3sql_15_query_compiler_QueryCompiler;
+static struct __pyx_vtabstruct_5yapic_6entity_3sql_15_query_compiler_QueryCompiler *__pyx_vtabptr_5yapic_6entity_3sql_15_query_compiler_QueryCompiler;
 
 
 /* "_dialect.pxd":9
@@ -1877,18 +1876,18 @@ static struct __pyx_vtabstruct_5yapic_3sql_15_query_compiler_QueryCompiler *__py
  * 
  */
 
-struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect {
-  struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *(*create_ddl_compiler)(struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *, int __pyx_skip_dispatch);
-  struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect *(*create_ddl_reflect)(struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
-  struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler *(*create_query_compiler)(struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *, int __pyx_skip_dispatch);
-  PyObject *(*quote_ident)(struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *, PyObject *, int __pyx_skip_dispatch);
-  PyObject *(*quote_value)(struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *, PyObject *, int __pyx_skip_dispatch);
-  PyObject *(*table_qname)(struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
-  struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*get_field_type)(struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *, struct __pyx_obj_5yapic_6entity_6_field_Field *, int __pyx_skip_dispatch);
-  int (*expression_eq)(struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *, struct __pyx_obj_5yapic_6entity_11_expression_Expression *, struct __pyx_obj_5yapic_6entity_11_expression_Expression *, int __pyx_skip_dispatch);
-  struct __pyx_obj_5yapic_6entity_12_entity_diff_EntityDiff *(*entity_diff)(struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
+struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect {
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *(*create_ddl_compiler)(struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *, int __pyx_skip_dispatch);
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect *(*create_ddl_reflect)(struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
+  struct __pyx_obj_5yapic_6entity_3sql_15_query_compiler_QueryCompiler *(*create_query_compiler)(struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *, int __pyx_skip_dispatch);
+  PyObject *(*quote_ident)(struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *, PyObject *, int __pyx_skip_dispatch);
+  PyObject *(*quote_value)(struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *, PyObject *, int __pyx_skip_dispatch);
+  PyObject *(*table_qname)(struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
+  struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*get_field_type)(struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *, struct __pyx_obj_5yapic_6entity_6_field_Field *, int __pyx_skip_dispatch);
+  int (*expression_eq)(struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *, struct __pyx_obj_5yapic_6entity_11_expression_Expression *, struct __pyx_obj_5yapic_6entity_11_expression_Expression *, int __pyx_skip_dispatch);
+  struct __pyx_obj_5yapic_6entity_12_entity_diff_EntityDiff *(*entity_diff)(struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
 };
-static struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *__pyx_vtabptr_5yapic_3sql_8_dialect_Dialect;
+static struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *__pyx_vtabptr_5yapic_6entity_3sql_8_dialect_Dialect;
 
 /* --- Runtime support code (head) --- */
 /* Refnanny.proto */
@@ -2583,25 +2582,25 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_12_entity_diff_EntityDiff = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_query_Query = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_query_QueryFinalizer = 0;
 
-/* Module declarations from 'yapic.sql._query_compiler' */
-static PyTypeObject *__pyx_ptype_5yapic_3sql_15_query_compiler_QueryCompiler = 0;
+/* Module declarations from 'yapic.entity.sql._query_compiler' */
+static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_15_query_compiler_QueryCompiler = 0;
 
-/* Module declarations from 'yapic.sql._dialect' */
-static PyTypeObject *__pyx_ptype_5yapic_3sql_8_dialect_Dialect = 0;
+/* Module declarations from 'yapic.entity.sql._dialect' */
+static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_8_dialect_Dialect = 0;
 
-/* Module declarations from 'yapic.sql._connection' */
-static PyTypeObject *__pyx_ptype_5yapic_3sql_11_connection_Connection = 0;
+/* Module declarations from 'yapic.entity.sql._connection' */
+static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_11_connection_Connection = 0;
 
-/* Module declarations from 'yapic.sql._ddl' */
-static PyTypeObject *__pyx_ptype_5yapic_3sql_4_ddl_DDLCompiler = 0;
-static PyTypeObject *__pyx_ptype_5yapic_3sql_4_ddl_DDLReflect = 0;
-static PyTypeObject *__pyx_ptype_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys = 0;
-static PyTypeObject *__pyx_ptype_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities = 0;
-#define __Pyx_MODULE_NAME "yapic.sql._ddl"
-extern int __pyx_module_is_main_yapic__sql___ddl;
-int __pyx_module_is_main_yapic__sql___ddl = 0;
+/* Module declarations from 'yapic.entity.sql._ddl' */
+static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_4_ddl_DDLCompiler = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_4_ddl_DDLReflect = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities = 0;
+#define __Pyx_MODULE_NAME "yapic.entity.sql._ddl"
+extern int __pyx_module_is_main_yapic__entity__sql___ddl;
+int __pyx_module_is_main_yapic__entity__sql___ddl = 0;
 
-/* Implementation of 'yapic.sql._ddl' */
+/* Implementation of 'yapic.entity.sql._ddl' */
 static PyObject *__pyx_builtin_enumerate;
 static PyObject *__pyx_builtin_ValueError;
 static PyObject *__pyx_builtin_range;
@@ -2687,13 +2686,13 @@ static const char __pyx_k_DROP_NOT_NULL[] = " DROP NOT NULL";
 static const char __pyx_k_compile_field[] = "compile_field";
 static const char __pyx_k_EntityDiffKind[] = "EntityDiffKind";
 static const char __pyx_k_compile_entity[] = "compile_entity";
-static const char __pyx_k_yapic_sql__ddl[] = "yapic.sql._ddl";
 static const char __pyx_k_RegistryDiffKind[] = "RegistryDiffKind";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_compile_field_diff[] = "compile_field_diff";
 static const char __pyx_k_NotImplementedError[] = "NotImplementedError";
 static const char __pyx_k_compile_entity_diff[] = "compile_entity_diff";
 static const char __pyx_k_compile_foreign_keys[] = "compile_foreign_keys";
+static const char __pyx_k_yapic_entity_sql__ddl[] = "yapic.entity.sql._ddl";
 static const char __pyx_k_yapic_entity__registry[] = "yapic.entity._registry";
 static const char __pyx_k_DDLReflect_get_entities[] = "DDLReflect.get_entities";
 static const char __pyx_k_yapic_entity__entity_diff[] = "yapic.entity._entity_diff";
@@ -2793,28 +2792,28 @@ static PyObject *__pyx_n_s_throw;
 static PyObject *__pyx_n_s_values;
 static PyObject *__pyx_n_s_yapic_entity__entity_diff;
 static PyObject *__pyx_n_s_yapic_entity__registry;
-static PyObject *__pyx_n_s_yapic_sql__ddl;
-static int __pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler___cinit__(struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *__pyx_v_dialect); /* proto */
-static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_entity); /* proto */
-static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_field, CYTHON_UNUSED PyObject *__pyx_v_requirements); /* proto */
-static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_6compile_foreign_keys(struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *__pyx_v_self, PyObject *__pyx_v_fks); /* proto */
-static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff(struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_diff); /* proto */
-static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_12_entity_diff_EntityDiff *__pyx_v_diff); /* proto */
-static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_field, PyObject *__pyx_v_diff); /* proto */
-static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_15drop_entity(struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_entity); /* proto */
-static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_7dialect___get__(struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *__pyx_v_self); /* proto */
-static int __pyx_pf_5yapic_3sql_4_ddl_10DDLReflect___cinit__(struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_entity_base); /* proto */
-static PyObject *__pyx_pf_5yapic_3sql_4_ddl_10DDLReflect_2get_entities(CYTHON_UNUSED struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect *__pyx_v_self, CYTHON_UNUSED struct __pyx_obj_5yapic_3sql_11_connection_Connection *__pyx_v_conn, CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx_v_registry); /* proto */
-static PyObject *__pyx_tp_new_5yapic_3sql_4_ddl_DDLCompiler(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_5yapic_3sql_4_ddl_DDLReflect(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_n_s_yapic_entity_sql__ddl;
+static int __pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler___cinit__(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *__pyx_v_dialect); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_2compile_entity(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_entity); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_4compile_field(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_field, CYTHON_UNUSED PyObject *__pyx_v_requirements); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_6compile_foreign_keys(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *__pyx_v_self, PyObject *__pyx_v_fks); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_9compile_registry_diff(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_diff); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_12_entity_diff_EntityDiff *__pyx_v_diff); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_13compile_field_diff(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_field, PyObject *__pyx_v_diff); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_15drop_entity(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_entity); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_7dialect___get__(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *__pyx_v_self); /* proto */
+static int __pyx_pf_5yapic_6entity_3sql_4_ddl_10DDLReflect___cinit__(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_entity_base); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_10DDLReflect_2get_entities(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect *__pyx_v_self, CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *__pyx_v_conn, CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx_v_registry); /* proto */
+static PyObject *__pyx_tp_new_5yapic_6entity_3sql_4_ddl_DDLCompiler(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_5yapic_6entity_3sql_4_ddl_DDLReflect(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_tuple__11;
 /* Late includes */
 
-/* "yapic/sql/_ddl.pyx":13
+/* "yapic/entity/sql/_ddl.pyx":13
  * 
  * cdef class DDLCompiler:
  *     def __cinit__(self, Dialect dialect):             # <<<<<<<<<<<<<<
@@ -2823,9 +2822,9 @@ static PyObject *__pyx_tuple__11;
  */
 
 /* Python wrapper */
-static int __pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static int __pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *__pyx_v_dialect = 0;
+static int __pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *__pyx_v_dialect = 0;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
@@ -2855,18 +2854,18 @@ static int __pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_1__cinit__(PyObject *__pyx_v
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
     }
-    __pyx_v_dialect = ((struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *)values[0]);
+    __pyx_v_dialect = ((struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *)values[0]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 13, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("yapic.sql._ddl.DDLCompiler.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("yapic.entity.sql._ddl.DDLCompiler.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_dialect), __pyx_ptype_5yapic_3sql_8_dialect_Dialect, 1, "dialect", 0))) __PYX_ERR(0, 13, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler___cinit__(((struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *)__pyx_v_self), __pyx_v_dialect);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_dialect), __pyx_ptype_5yapic_6entity_3sql_8_dialect_Dialect, 1, "dialect", 0))) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler___cinit__(((struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *)__pyx_v_self), __pyx_v_dialect);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2877,12 +2876,12 @@ static int __pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_1__cinit__(PyObject *__pyx_v
   return __pyx_r;
 }
 
-static int __pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler___cinit__(struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *__pyx_v_dialect) {
+static int __pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler___cinit__(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *__pyx_v_dialect) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "yapic/sql/_ddl.pyx":14
+  /* "yapic/entity/sql/_ddl.pyx":14
  * cdef class DDLCompiler:
  *     def __cinit__(self, Dialect dialect):
  *         self.dialect = dialect             # <<<<<<<<<<<<<<
@@ -2895,7 +2894,7 @@ static int __pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler___cinit__(struct __pyx_obj_5
   __Pyx_DECREF(((PyObject *)__pyx_v_self->dialect));
   __pyx_v_self->dialect = __pyx_v_dialect;
 
-  /* "yapic/sql/_ddl.pyx":13
+  /* "yapic/entity/sql/_ddl.pyx":13
  * 
  * cdef class DDLCompiler:
  *     def __cinit__(self, Dialect dialect):             # <<<<<<<<<<<<<<
@@ -2909,7 +2908,7 @@ static int __pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler___cinit__(struct __pyx_obj_5
   return __pyx_r;
 }
 
-/* "yapic/sql/_ddl.pyx":16
+/* "yapic/entity/sql/_ddl.pyx":16
  *         self.dialect = dialect
  * 
  *     def compile_entity(self, EntityType entity):             # <<<<<<<<<<<<<<
@@ -2918,13 +2917,13 @@ static int __pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler___cinit__(struct __pyx_obj_5
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_3compile_entity(PyObject *__pyx_v_self, PyObject *__pyx_v_entity); /*proto*/
-static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_3compile_entity(PyObject *__pyx_v_self, PyObject *__pyx_v_entity) {
+static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_3compile_entity(PyObject *__pyx_v_self, PyObject *__pyx_v_entity); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_3compile_entity(PyObject *__pyx_v_self, PyObject *__pyx_v_entity) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("compile_entity (wrapper)", 0);
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_entity), __pyx_ptype_5yapic_6entity_7_entity_EntityType, 1, "entity", 0))) __PYX_ERR(0, 16, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(((struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_v_entity));
+  __pyx_r = __pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_2compile_entity(((struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_v_entity));
 
   /* function exit code */
   goto __pyx_L0;
@@ -2935,7 +2934,7 @@ static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_3compile_entity(PyObje
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_entity) {
+static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_2compile_entity(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_entity) {
   PyObject *__pyx_v_elements = 0;
   PyObject *__pyx_v_table_parts = 0;
   PyObject *__pyx_v_requirements = 0;
@@ -2961,7 +2960,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
   int __pyx_t_11;
   __Pyx_RefNannySetupContext("compile_entity", 0);
 
-  /* "yapic/sql/_ddl.pyx":17
+  /* "yapic/entity/sql/_ddl.pyx":17
  * 
  *     def compile_entity(self, EntityType entity):
  *         cdef list elements = []             # <<<<<<<<<<<<<<
@@ -2973,7 +2972,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
   __pyx_v_elements = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/sql/_ddl.pyx":18
+  /* "yapic/entity/sql/_ddl.pyx":18
  *     def compile_entity(self, EntityType entity):
  *         cdef list elements = []
  *         cdef list table_parts = []             # <<<<<<<<<<<<<<
@@ -2985,7 +2984,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
   __pyx_v_table_parts = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/sql/_ddl.pyx":19
+  /* "yapic/entity/sql/_ddl.pyx":19
  *         cdef list elements = []
  *         cdef list table_parts = []
  *         cdef list requirements = []             # <<<<<<<<<<<<<<
@@ -2997,7 +2996,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
   __pyx_v_requirements = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/sql/_ddl.pyx":21
+  /* "yapic/entity/sql/_ddl.pyx":21
  *         cdef list requirements = []
  * 
  *         table_parts.append(f"CREATE TABLE {self.dialect.table_qname(entity)} (\n")             # <<<<<<<<<<<<<<
@@ -3012,7 +3011,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
   __pyx_t_2 += 13;
   __Pyx_GIVEREF(__pyx_kp_u_CREATE_TABLE);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_CREATE_TABLE);
-  __pyx_t_4 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->table_qname(__pyx_v_self->dialect, __pyx_v_entity, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __pyx_t_4 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->table_qname(__pyx_v_self->dialect, __pyx_v_entity, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 21, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = __Pyx_PyUnicode_Unicode(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 21, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
@@ -3032,7 +3031,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
   __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_table_parts, __pyx_t_5); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 21, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "yapic/sql/_ddl.pyx":23
+  /* "yapic/entity/sql/_ddl.pyx":23
  *         table_parts.append(f"CREATE TABLE {self.dialect.table_qname(entity)} (\n")
  * 
  *         length = len(entity.__fields__)             # <<<<<<<<<<<<<<
@@ -3049,7 +3048,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_v_length = __pyx_t_2;
 
-  /* "yapic/sql/_ddl.pyx":24
+  /* "yapic/entity/sql/_ddl.pyx":24
  * 
  *         length = len(entity.__fields__)
  *         for i, field in enumerate(entity.__fields__):             # <<<<<<<<<<<<<<
@@ -3077,7 +3076,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
     __pyx_t_5 = __pyx_t_4;
     __pyx_t_4 = 0;
 
-    /* "yapic/sql/_ddl.pyx":25
+    /* "yapic/entity/sql/_ddl.pyx":25
  *         length = len(entity.__fields__)
  *         for i, field in enumerate(entity.__fields__):
  *             elements.append(self.compile_field(<Field>field, requirements))             # <<<<<<<<<<<<<<
@@ -3134,7 +3133,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
     __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_elements, __pyx_t_4); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 25, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "yapic/sql/_ddl.pyx":24
+    /* "yapic/entity/sql/_ddl.pyx":24
  * 
  *         length = len(entity.__fields__)
  *         for i, field in enumerate(entity.__fields__):             # <<<<<<<<<<<<<<
@@ -3145,7 +3144,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "yapic/sql/_ddl.pyx":27
+  /* "yapic/entity/sql/_ddl.pyx":27
  *             elements.append(self.compile_field(<Field>field, requirements))
  * 
  *         primary_keys = entity.__pk__             # <<<<<<<<<<<<<<
@@ -3157,7 +3156,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
   __pyx_v_primary_keys = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "yapic/sql/_ddl.pyx":28
+  /* "yapic/entity/sql/_ddl.pyx":28
  * 
  *         primary_keys = entity.__pk__
  *         if primary_keys:             # <<<<<<<<<<<<<<
@@ -3167,7 +3166,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
   __pyx_t_11 = (__pyx_v_primary_keys != Py_None)&&(PyTuple_GET_SIZE(__pyx_v_primary_keys) != 0);
   if (__pyx_t_11) {
 
-    /* "yapic/sql/_ddl.pyx":29
+    /* "yapic/entity/sql/_ddl.pyx":29
  *         primary_keys = entity.__pk__
  *         if primary_keys:
  *             pk_names = [self.dialect.quote_ident(pk._name_) for pk in primary_keys]             # <<<<<<<<<<<<<<
@@ -3195,7 +3194,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
         __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_7genexpr__pyx_v_pk, __pyx_n_s_name); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 29, __pyx_L8_error)
         __Pyx_GOTREF(__pyx_t_4);
         if (!(likely(PyUnicode_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 29, __pyx_L8_error)
-        __pyx_t_7 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_v_self->dialect, ((PyObject*)__pyx_t_4), 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 29, __pyx_L8_error)
+        __pyx_t_7 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_v_self->dialect, ((PyObject*)__pyx_t_4), 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 29, __pyx_L8_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         if (unlikely(__Pyx_ListComp_Append(__pyx_t_5, (PyObject*)__pyx_t_7))) __PYX_ERR(0, 29, __pyx_L8_error)
@@ -3212,7 +3211,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
     __pyx_v_pk_names = ((PyObject*)__pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "yapic/sql/_ddl.pyx":30
+    /* "yapic/entity/sql/_ddl.pyx":30
  *         if primary_keys:
  *             pk_names = [self.dialect.quote_ident(pk._name_) for pk in primary_keys]
  *             elements.append(f"PRIMARY KEY({', '.join(pk_names)})")             # <<<<<<<<<<<<<<
@@ -3244,7 +3243,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
     __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_elements, __pyx_t_1); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 30, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "yapic/sql/_ddl.pyx":28
+    /* "yapic/entity/sql/_ddl.pyx":28
  * 
  *         primary_keys = entity.__pk__
  *         if primary_keys:             # <<<<<<<<<<<<<<
@@ -3253,7 +3252,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
  */
   }
 
-  /* "yapic/sql/_ddl.pyx":32
+  /* "yapic/entity/sql/_ddl.pyx":32
  *             elements.append(f"PRIMARY KEY({', '.join(pk_names)})")
  * 
  *         cdef dict fks = collect_foreign_keys(entity)             # <<<<<<<<<<<<<<
@@ -3265,7 +3264,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
   __pyx_v_fks = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/sql/_ddl.pyx":33
+  /* "yapic/entity/sql/_ddl.pyx":33
  * 
  *         cdef dict fks = collect_foreign_keys(entity)
  *         if fks:             # <<<<<<<<<<<<<<
@@ -3275,7 +3274,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
   __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_v_fks); if (unlikely(__pyx_t_11 < 0)) __PYX_ERR(0, 33, __pyx_L1_error)
   if (__pyx_t_11) {
 
-    /* "yapic/sql/_ddl.pyx":34
+    /* "yapic/entity/sql/_ddl.pyx":34
  *         cdef dict fks = collect_foreign_keys(entity)
  *         if fks:
  *             elements.extend(self.compile_foreign_keys(fks))             # <<<<<<<<<<<<<<
@@ -3302,7 +3301,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
     __pyx_t_6 = __Pyx_PyList_Extend(__pyx_v_elements, __pyx_t_1); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 34, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "yapic/sql/_ddl.pyx":33
+    /* "yapic/entity/sql/_ddl.pyx":33
  * 
  *         cdef dict fks = collect_foreign_keys(entity)
  *         if fks:             # <<<<<<<<<<<<<<
@@ -3311,7 +3310,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
  */
   }
 
-  /* "yapic/sql/_ddl.pyx":36
+  /* "yapic/entity/sql/_ddl.pyx":36
  *             elements.extend(self.compile_foreign_keys(fks))
  * 
  *         if elements:             # <<<<<<<<<<<<<<
@@ -3321,7 +3320,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
   __pyx_t_11 = (PyList_GET_SIZE(__pyx_v_elements) != 0);
   if (__pyx_t_11) {
 
-    /* "yapic/sql/_ddl.pyx":37
+    /* "yapic/entity/sql/_ddl.pyx":37
  * 
  *         if elements:
  *             table_parts.append("  ")             # <<<<<<<<<<<<<<
@@ -3330,7 +3329,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
  */
     __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_table_parts, __pyx_kp_u__4); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 37, __pyx_L1_error)
 
-    /* "yapic/sql/_ddl.pyx":38
+    /* "yapic/entity/sql/_ddl.pyx":38
  *         if elements:
  *             table_parts.append("  ")
  *             table_parts.append(",\n  ".join(elements))             # <<<<<<<<<<<<<<
@@ -3342,7 +3341,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
     __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_table_parts, __pyx_t_1); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 38, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "yapic/sql/_ddl.pyx":39
+    /* "yapic/entity/sql/_ddl.pyx":39
  *             table_parts.append("  ")
  *             table_parts.append(",\n  ".join(elements))
  *             table_parts.append("\n")             # <<<<<<<<<<<<<<
@@ -3351,7 +3350,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
  */
     __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_table_parts, __pyx_kp_u__6); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 39, __pyx_L1_error)
 
-    /* "yapic/sql/_ddl.pyx":36
+    /* "yapic/entity/sql/_ddl.pyx":36
  *             elements.extend(self.compile_foreign_keys(fks))
  * 
  *         if elements:             # <<<<<<<<<<<<<<
@@ -3360,7 +3359,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
  */
   }
 
-  /* "yapic/sql/_ddl.pyx":41
+  /* "yapic/entity/sql/_ddl.pyx":41
  *             table_parts.append("\n")
  * 
  *         table_parts.append(");")             # <<<<<<<<<<<<<<
@@ -3369,7 +3368,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
  */
   __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_table_parts, __pyx_kp_u__7); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 41, __pyx_L1_error)
 
-  /* "yapic/sql/_ddl.pyx":43
+  /* "yapic/entity/sql/_ddl.pyx":43
  *         table_parts.append(");")
  * 
  *         if requirements:             # <<<<<<<<<<<<<<
@@ -3379,7 +3378,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
   __pyx_t_11 = (PyList_GET_SIZE(__pyx_v_requirements) != 0);
   if (__pyx_t_11) {
 
-    /* "yapic/sql/_ddl.pyx":44
+    /* "yapic/entity/sql/_ddl.pyx":44
  * 
  *         if requirements:
  *             requirements.append("")             # <<<<<<<<<<<<<<
@@ -3388,7 +3387,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
  */
     __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_requirements, __pyx_kp_u__8); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 44, __pyx_L1_error)
 
-    /* "yapic/sql/_ddl.pyx":45
+    /* "yapic/entity/sql/_ddl.pyx":45
  *         if requirements:
  *             requirements.append("")
  *             table_parts.insert(0, "\n".join(requirements))             # <<<<<<<<<<<<<<
@@ -3400,7 +3399,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
     __pyx_t_6 = PyList_Insert(__pyx_v_table_parts, 0, __pyx_t_1); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 45, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "yapic/sql/_ddl.pyx":43
+    /* "yapic/entity/sql/_ddl.pyx":43
  *         table_parts.append(");")
  * 
  *         if requirements:             # <<<<<<<<<<<<<<
@@ -3409,7 +3408,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
  */
   }
 
-  /* "yapic/sql/_ddl.pyx":47
+  /* "yapic/entity/sql/_ddl.pyx":47
  *             table_parts.insert(0, "\n".join(requirements))
  * 
  *         return "".join(table_parts)             # <<<<<<<<<<<<<<
@@ -3423,7 +3422,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "yapic/sql/_ddl.pyx":16
+  /* "yapic/entity/sql/_ddl.pyx":16
  *         self.dialect = dialect
  * 
  *     def compile_entity(self, EntityType entity):             # <<<<<<<<<<<<<<
@@ -3439,7 +3438,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_10);
-  __Pyx_AddTraceback("yapic.sql._ddl.DDLCompiler.compile_entity", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("yapic.entity.sql._ddl.DDLCompiler.compile_entity", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_elements);
@@ -3456,7 +3455,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
   return __pyx_r;
 }
 
-/* "yapic/sql/_ddl.pyx":49
+/* "yapic/entity/sql/_ddl.pyx":49
  *         return "".join(table_parts)
  * 
  *     def compile_field(self, Field field, list requirements):             # <<<<<<<<<<<<<<
@@ -3465,8 +3464,8 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_2compile_entity(struct
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_5compile_field(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_5compile_field(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_5compile_field(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_5compile_field(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_field = 0;
   CYTHON_UNUSED PyObject *__pyx_v_requirements = 0;
   PyObject *__pyx_r = 0;
@@ -3514,13 +3513,13 @@ static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_5compile_field(PyObjec
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("compile_field", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 49, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("yapic.sql._ddl.DDLCompiler.compile_field", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("yapic.entity.sql._ddl.DDLCompiler.compile_field", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_field), __pyx_ptype_5yapic_6entity_6_field_Field, 1, "field", 0))) __PYX_ERR(0, 49, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_requirements), (&PyList_Type), 1, "requirements", 1))) __PYX_ERR(0, 49, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(((struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *)__pyx_v_self), __pyx_v_field, __pyx_v_requirements);
+  __pyx_r = __pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_4compile_field(((struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *)__pyx_v_self), __pyx_v_field, __pyx_v_requirements);
 
   /* function exit code */
   goto __pyx_L0;
@@ -3531,10 +3530,10 @@ static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_5compile_field(PyObjec
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_field, CYTHON_UNUSED PyObject *__pyx_v_requirements) {
+static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_4compile_field(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_field, CYTHON_UNUSED PyObject *__pyx_v_requirements) {
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *__pyx_v_type = 0;
   PyObject *__pyx_v_res = 0;
-  struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler *__pyx_v_qc = NULL;
+  struct __pyx_obj_5yapic_6entity_3sql_15_query_compiler_QueryCompiler *__pyx_v_qc = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3546,19 +3545,19 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
   PyObject *__pyx_t_7 = NULL;
   __Pyx_RefNannySetupContext("compile_field", 0);
 
-  /* "yapic/sql/_ddl.pyx":50
+  /* "yapic/entity/sql/_ddl.pyx":50
  * 
  *     def compile_field(self, Field field, list requirements):
  *         cdef StorageType type = self.dialect.get_field_type(field)             # <<<<<<<<<<<<<<
  *         if type is None:
  *             raise ValueError("Cannot determine the sql type of %r" % field)
  */
-  __pyx_t_1 = ((PyObject *)((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->get_field_type(__pyx_v_self->dialect, __pyx_v_field, 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->get_field_type(__pyx_v_self->dialect, __pyx_v_field, 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_type = ((struct __pyx_obj_5yapic_6entity_6_field_StorageType *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/sql/_ddl.pyx":51
+  /* "yapic/entity/sql/_ddl.pyx":51
  *     def compile_field(self, Field field, list requirements):
  *         cdef StorageType type = self.dialect.get_field_type(field)
  *         if type is None:             # <<<<<<<<<<<<<<
@@ -3569,7 +3568,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (unlikely(__pyx_t_3)) {
 
-    /* "yapic/sql/_ddl.pyx":52
+    /* "yapic/entity/sql/_ddl.pyx":52
  *         cdef StorageType type = self.dialect.get_field_type(field)
  *         if type is None:
  *             raise ValueError("Cannot determine the sql type of %r" % field)             # <<<<<<<<<<<<<<
@@ -3585,7 +3584,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __PYX_ERR(0, 52, __pyx_L1_error)
 
-    /* "yapic/sql/_ddl.pyx":51
+    /* "yapic/entity/sql/_ddl.pyx":51
  *     def compile_field(self, Field field, list requirements):
  *         cdef StorageType type = self.dialect.get_field_type(field)
  *         if type is None:             # <<<<<<<<<<<<<<
@@ -3594,7 +3593,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
  */
   }
 
-  /* "yapic/sql/_ddl.pyx":60
+  /* "yapic/entity/sql/_ddl.pyx":60
  *         #     requirements.append(req)
  * 
  *         cdef str res = f"{self.dialect.quote_ident(field._name_)} {type.name}"             # <<<<<<<<<<<<<<
@@ -3607,7 +3606,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
   __pyx_t_6 = 127;
   __pyx_t_1 = __pyx_v_field->__pyx_base._name_;
   __Pyx_INCREF(__pyx_t_1);
-  __pyx_t_7 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_v_self->dialect, ((PyObject*)__pyx_t_1), 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_7 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_v_self->dialect, ((PyObject*)__pyx_t_1), 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_PyUnicode_Unicode(__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
@@ -3635,7 +3634,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
   __pyx_v_res = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/sql/_ddl.pyx":62
+  /* "yapic/entity/sql/_ddl.pyx":62
  *         cdef str res = f"{self.dialect.quote_ident(field._name_)} {type.name}"
  * 
  *         if not field.nullable:             # <<<<<<<<<<<<<<
@@ -3646,7 +3645,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
   __pyx_t_2 = ((!__pyx_t_3) != 0);
   if (__pyx_t_2) {
 
-    /* "yapic/sql/_ddl.pyx":63
+    /* "yapic/entity/sql/_ddl.pyx":63
  * 
  *         if not field.nullable:
  *             res += " NOT NULL"             # <<<<<<<<<<<<<<
@@ -3658,7 +3657,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
     __Pyx_DECREF_SET(__pyx_v_res, ((PyObject*)__pyx_t_1));
     __pyx_t_1 = 0;
 
-    /* "yapic/sql/_ddl.pyx":62
+    /* "yapic/entity/sql/_ddl.pyx":62
  *         cdef str res = f"{self.dialect.quote_ident(field._name_)} {type.name}"
  * 
  *         if not field.nullable:             # <<<<<<<<<<<<<<
@@ -3667,7 +3666,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
  */
   }
 
-  /* "yapic/sql/_ddl.pyx":65
+  /* "yapic/entity/sql/_ddl.pyx":65
  *             res += " NOT NULL"
  * 
  *         if field._default_ is not None:             # <<<<<<<<<<<<<<
@@ -3678,7 +3677,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (__pyx_t_3) {
 
-    /* "yapic/sql/_ddl.pyx":66
+    /* "yapic/entity/sql/_ddl.pyx":66
  * 
  *         if field._default_ is not None:
  *             if isinstance(field._default_, Expression):             # <<<<<<<<<<<<<<
@@ -3692,19 +3691,19 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
     __pyx_t_2 = (__pyx_t_3 != 0);
     if (__pyx_t_2) {
 
-      /* "yapic/sql/_ddl.pyx":67
+      /* "yapic/entity/sql/_ddl.pyx":67
  *         if field._default_ is not None:
  *             if isinstance(field._default_, Expression):
  *                 qc = self.dialect.create_query_compiler()             # <<<<<<<<<<<<<<
  *                 res += f" DEFAULT {qc.visit(field._default_)}"
  *             else:
  */
-      __pyx_t_1 = ((PyObject *)((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->create_query_compiler(__pyx_v_self->dialect, 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
+      __pyx_t_1 = ((PyObject *)((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->create_query_compiler(__pyx_v_self->dialect, 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_v_qc = ((struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler *)__pyx_t_1);
+      __pyx_v_qc = ((struct __pyx_obj_5yapic_6entity_3sql_15_query_compiler_QueryCompiler *)__pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "yapic/sql/_ddl.pyx":68
+      /* "yapic/entity/sql/_ddl.pyx":68
  *             if isinstance(field._default_, Expression):
  *                 qc = self.dialect.create_query_compiler()
  *                 res += f" DEFAULT {qc.visit(field._default_)}"             # <<<<<<<<<<<<<<
@@ -3714,7 +3713,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
       if (!(likely(((__pyx_v_field->__pyx_base._default_) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_field->__pyx_base._default_, __pyx_ptype_5yapic_6entity_11_expression_Expression))))) __PYX_ERR(0, 68, __pyx_L1_error)
       __pyx_t_1 = __pyx_v_field->__pyx_base._default_;
       __Pyx_INCREF(__pyx_t_1);
-      __pyx_t_4 = ((struct __pyx_vtabstruct_5yapic_3sql_15_query_compiler_QueryCompiler *)__pyx_v_qc->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_qc), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_1), 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 68, __pyx_L1_error)
+      __pyx_t_4 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_15_query_compiler_QueryCompiler *)__pyx_v_qc->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_qc), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_1), 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 68, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_t_4, __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
@@ -3729,7 +3728,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
       __Pyx_DECREF_SET(__pyx_v_res, ((PyObject*)__pyx_t_1));
       __pyx_t_1 = 0;
 
-      /* "yapic/sql/_ddl.pyx":66
+      /* "yapic/entity/sql/_ddl.pyx":66
  * 
  *         if field._default_ is not None:
  *             if isinstance(field._default_, Expression):             # <<<<<<<<<<<<<<
@@ -3739,7 +3738,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
       goto __pyx_L6;
     }
 
-    /* "yapic/sql/_ddl.pyx":70
+    /* "yapic/entity/sql/_ddl.pyx":70
  *                 res += f" DEFAULT {qc.visit(field._default_)}"
  *             else:
  *                 res += f" DEFAULT {self.dialect.quote_value(type.encode(field._default_))}"             # <<<<<<<<<<<<<<
@@ -3752,7 +3751,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
       __pyx_t_4 = ((struct __pyx_vtabstruct_5yapic_6entity_6_field_StorageType *)__pyx_v_type->__pyx_vtab)->encode(__pyx_v_type, __pyx_t_1, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 70, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_1 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->quote_value(__pyx_v_self->dialect, __pyx_t_4, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
+      __pyx_t_1 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->quote_value(__pyx_v_self->dialect, __pyx_t_4, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_4 = __Pyx_PyObject_FormatSimple(__pyx_t_1, __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 70, __pyx_L1_error)
@@ -3769,7 +3768,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
     }
     __pyx_L6:;
 
-    /* "yapic/sql/_ddl.pyx":65
+    /* "yapic/entity/sql/_ddl.pyx":65
  *             res += " NOT NULL"
  * 
  *         if field._default_ is not None:             # <<<<<<<<<<<<<<
@@ -3778,7 +3777,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
  */
   }
 
-  /* "yapic/sql/_ddl.pyx":72
+  /* "yapic/entity/sql/_ddl.pyx":72
  *                 res += f" DEFAULT {self.dialect.quote_value(type.encode(field._default_))}"
  * 
  *         return res             # <<<<<<<<<<<<<<
@@ -3790,7 +3789,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
   __pyx_r = __pyx_v_res;
   goto __pyx_L0;
 
-  /* "yapic/sql/_ddl.pyx":49
+  /* "yapic/entity/sql/_ddl.pyx":49
  *         return "".join(table_parts)
  * 
  *     def compile_field(self, Field field, list requirements):             # <<<<<<<<<<<<<<
@@ -3803,7 +3802,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("yapic.sql._ddl.DDLCompiler.compile_field", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("yapic.entity.sql._ddl.DDLCompiler.compile_field", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF((PyObject *)__pyx_v_type);
@@ -3813,9 +3812,9 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_4compile_field(struct 
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
+static PyObject *__pyx_gb_5yapic_6entity_3sql_4_ddl_11DDLCompiler_8generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "yapic/sql/_ddl.pyx":74
+/* "yapic/entity/sql/_ddl.pyx":74
  *         return res
  * 
  *     def compile_foreign_keys(self, dict fks):             # <<<<<<<<<<<<<<
@@ -3824,13 +3823,13 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_7compile_foreign_keys(PyObject *__pyx_v_self, PyObject *__pyx_v_fks); /*proto*/
-static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_7compile_foreign_keys(PyObject *__pyx_v_self, PyObject *__pyx_v_fks) {
+static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_7compile_foreign_keys(PyObject *__pyx_v_self, PyObject *__pyx_v_fks); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_7compile_foreign_keys(PyObject *__pyx_v_self, PyObject *__pyx_v_fks) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("compile_foreign_keys (wrapper)", 0);
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_fks), (&PyDict_Type), 1, "fks", 1))) __PYX_ERR(0, 74, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_6compile_foreign_keys(((struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *)__pyx_v_self), ((PyObject*)__pyx_v_fks));
+  __pyx_r = __pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_6compile_foreign_keys(((struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *)__pyx_v_self), ((PyObject*)__pyx_v_fks));
 
   /* function exit code */
   goto __pyx_L0;
@@ -3841,14 +3840,14 @@ static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_7compile_foreign_keys(
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_6compile_foreign_keys(struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *__pyx_v_self, PyObject *__pyx_v_fks) {
-  struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *__pyx_cur_scope;
+static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_6compile_foreign_keys(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *__pyx_v_self, PyObject *__pyx_v_fks) {
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *__pyx_cur_scope;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("compile_foreign_keys", 0);
-  __pyx_cur_scope = (struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *)__pyx_tp_new_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys(__pyx_ptype_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys, __pyx_empty_tuple, NULL);
+  __pyx_cur_scope = (struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *)__pyx_tp_new_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys(__pyx_ptype_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys, __pyx_empty_tuple, NULL);
   if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *)Py_None);
+    __pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *)Py_None);
     __Pyx_INCREF(Py_None);
     __PYX_ERR(0, 74, __pyx_L1_error)
   } else {
@@ -3861,7 +3860,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_6compile_foreign_keys(
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_fks);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_fks);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_compile_foreign_keys, __pyx_n_s_DDLCompiler_compile_foreign_keys, __pyx_n_s_yapic_sql__ddl); if (unlikely(!gen)) __PYX_ERR(0, 74, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_5yapic_6entity_3sql_4_ddl_11DDLCompiler_8generator, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_compile_foreign_keys, __pyx_n_s_DDLCompiler_compile_foreign_keys, __pyx_n_s_yapic_entity_sql__ddl); if (unlikely(!gen)) __PYX_ERR(0, 74, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -3869,7 +3868,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_6compile_foreign_keys(
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_AddTraceback("yapic.sql._ddl.DDLCompiler.compile_foreign_keys", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("yapic.entity.sql._ddl.DDLCompiler.compile_foreign_keys", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
   __Pyx_XGIVEREF(__pyx_r);
@@ -3877,9 +3876,9 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_6compile_foreign_keys(
   return __pyx_r;
 }
 
-static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
+static PyObject *__pyx_gb_5yapic_6entity_3sql_4_ddl_11DDLCompiler_8generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
 {
-  struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *__pyx_cur_scope = ((struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *)__pyx_generator->closure);
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *__pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *)__pyx_generator->closure);
   PyObject *__pyx_r = NULL;
   PyObject *__pyx_t_1 = NULL;
   Py_ssize_t __pyx_t_2;
@@ -3906,7 +3905,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
   __pyx_L3_first_run:;
   if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 74, __pyx_L1_error)
 
-  /* "yapic/sql/_ddl.pyx":80
+  /* "yapic/entity/sql/_ddl.pyx":80
  *         cdef ForeignKey fk
  * 
  *         for key_name, foreign_keys in fks.items():             # <<<<<<<<<<<<<<
@@ -3939,7 +3938,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
     __Pyx_GIVEREF(__pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "yapic/sql/_ddl.pyx":81
+    /* "yapic/entity/sql/_ddl.pyx":81
  * 
  *         for key_name, foreign_keys in fks.items():
  *             res = f"CONSTRAINT {self.dialect.quote_ident(key_name)} FOREIGN KEY ("             # <<<<<<<<<<<<<<
@@ -3955,7 +3954,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
     __Pyx_GIVEREF(__pyx_kp_u_CONSTRAINT);
     PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_kp_u_CONSTRAINT);
     if (!(likely(PyUnicode_CheckExact(__pyx_cur_scope->__pyx_v_key_name))||((__pyx_cur_scope->__pyx_v_key_name) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_cur_scope->__pyx_v_key_name)->tp_name), 0))) __PYX_ERR(0, 81, __pyx_L1_error)
-    __pyx_t_5 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_cur_scope->__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_cur_scope->__pyx_v_self->dialect, ((PyObject*)__pyx_cur_scope->__pyx_v_key_name), 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 81, __pyx_L1_error)
+    __pyx_t_5 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_cur_scope->__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_cur_scope->__pyx_v_self->dialect, ((PyObject*)__pyx_cur_scope->__pyx_v_key_name), 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 81, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_10 = __Pyx_PyUnicode_Unicode(__pyx_t_5); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 81, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
@@ -3977,7 +3976,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
     __Pyx_GIVEREF(__pyx_t_10);
     __pyx_t_10 = 0;
 
-    /* "yapic/sql/_ddl.pyx":83
+    /* "yapic/entity/sql/_ddl.pyx":83
  *             res = f"CONSTRAINT {self.dialect.quote_ident(key_name)} FOREIGN KEY ("
  * 
  *             length = len(foreign_keys)             # <<<<<<<<<<<<<<
@@ -3991,7 +3990,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
     __pyx_t_8 = PyList_GET_SIZE(__pyx_cur_scope->__pyx_v_foreign_keys); if (unlikely(__pyx_t_8 == ((Py_ssize_t)-1))) __PYX_ERR(0, 83, __pyx_L1_error)
     __pyx_cur_scope->__pyx_v_length = __pyx_t_8;
 
-    /* "yapic/sql/_ddl.pyx":84
+    /* "yapic/entity/sql/_ddl.pyx":84
  * 
  *             length = len(foreign_keys)
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -4003,7 +4002,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
     for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
       __pyx_cur_scope->__pyx_v_i = __pyx_t_12;
 
-      /* "yapic/sql/_ddl.pyx":85
+      /* "yapic/entity/sql/_ddl.pyx":85
  *             length = len(foreign_keys)
  *             for i in range(length):
  *                 fk = foreign_keys[i]             # <<<<<<<<<<<<<<
@@ -4022,7 +4021,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
       __Pyx_GIVEREF(__pyx_t_10);
       __pyx_t_10 = 0;
 
-      /* "yapic/sql/_ddl.pyx":86
+      /* "yapic/entity/sql/_ddl.pyx":86
  *             for i in range(length):
  *                 fk = foreign_keys[i]
  *                 res += self.dialect.quote_ident(fk.attr._name_)             # <<<<<<<<<<<<<<
@@ -4031,7 +4030,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
  */
       __pyx_t_10 = __pyx_cur_scope->__pyx_v_fk->__pyx_base.__pyx_base.attr->_name_;
       __Pyx_INCREF(__pyx_t_10);
-      __pyx_t_6 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_cur_scope->__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_cur_scope->__pyx_v_self->dialect, ((PyObject*)__pyx_t_10), 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 86, __pyx_L1_error)
+      __pyx_t_6 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_cur_scope->__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_cur_scope->__pyx_v_self->dialect, ((PyObject*)__pyx_t_10), 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 86, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __pyx_t_10 = __Pyx_PyUnicode_ConcatSafe(__pyx_cur_scope->__pyx_v_res, __pyx_t_6); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 86, __pyx_L1_error)
@@ -4042,7 +4041,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
       __Pyx_GIVEREF(__pyx_t_10);
       __pyx_t_10 = 0;
 
-      /* "yapic/sql/_ddl.pyx":87
+      /* "yapic/entity/sql/_ddl.pyx":87
  *                 fk = foreign_keys[i]
  *                 res += self.dialect.quote_ident(fk.attr._name_)
  *                 if i != length - 1:             # <<<<<<<<<<<<<<
@@ -4052,7 +4051,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
       __pyx_t_13 = ((__pyx_cur_scope->__pyx_v_i != (__pyx_cur_scope->__pyx_v_length - 1)) != 0);
       if (__pyx_t_13) {
 
-        /* "yapic/sql/_ddl.pyx":88
+        /* "yapic/entity/sql/_ddl.pyx":88
  *                 res += self.dialect.quote_ident(fk.attr._name_)
  *                 if i != length - 1:
  *                     res += ", "             # <<<<<<<<<<<<<<
@@ -4066,7 +4065,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
         __Pyx_GIVEREF(__pyx_t_10);
         __pyx_t_10 = 0;
 
-        /* "yapic/sql/_ddl.pyx":87
+        /* "yapic/entity/sql/_ddl.pyx":87
  *                 fk = foreign_keys[i]
  *                 res += self.dialect.quote_ident(fk.attr._name_)
  *                 if i != length - 1:             # <<<<<<<<<<<<<<
@@ -4076,7 +4075,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
       }
     }
 
-    /* "yapic/sql/_ddl.pyx":90
+    /* "yapic/entity/sql/_ddl.pyx":90
  *                     res += ", "
  * 
  *             res += f") REFERENCES {self.dialect.table_qname(foreign_keys[0].ref._entity_)} ("             # <<<<<<<<<<<<<<
@@ -4101,7 +4100,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5yapic_6entity_7_entity_EntityType))))) __PYX_ERR(0, 90, __pyx_L1_error)
-    __pyx_t_6 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_cur_scope->__pyx_v_self->dialect->__pyx_vtab)->table_qname(__pyx_cur_scope->__pyx_v_self->dialect, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_5), 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 90, __pyx_L1_error)
+    __pyx_t_6 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_cur_scope->__pyx_v_self->dialect->__pyx_vtab)->table_qname(__pyx_cur_scope->__pyx_v_self->dialect, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_5), 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_t_5 = __Pyx_PyUnicode_Unicode(__pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 90, __pyx_L1_error)
@@ -4127,7 +4126,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
     __Pyx_GIVEREF(__pyx_t_10);
     __pyx_t_10 = 0;
 
-    /* "yapic/sql/_ddl.pyx":92
+    /* "yapic/entity/sql/_ddl.pyx":92
  *             res += f") REFERENCES {self.dialect.table_qname(foreign_keys[0].ref._entity_)} ("
  * 
  *             for i in range(length):             # <<<<<<<<<<<<<<
@@ -4139,7 +4138,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
     for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
       __pyx_cur_scope->__pyx_v_i = __pyx_t_12;
 
-      /* "yapic/sql/_ddl.pyx":93
+      /* "yapic/entity/sql/_ddl.pyx":93
  * 
  *             for i in range(length):
  *                 fk = foreign_keys[i]             # <<<<<<<<<<<<<<
@@ -4158,7 +4157,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
       __Pyx_GIVEREF(__pyx_t_10);
       __pyx_t_10 = 0;
 
-      /* "yapic/sql/_ddl.pyx":94
+      /* "yapic/entity/sql/_ddl.pyx":94
  *             for i in range(length):
  *                 fk = foreign_keys[i]
  *                 res += self.dialect.quote_ident(fk.ref._name_)             # <<<<<<<<<<<<<<
@@ -4167,7 +4166,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
  */
       __pyx_t_10 = __pyx_cur_scope->__pyx_v_fk->ref->__pyx_base._name_;
       __Pyx_INCREF(__pyx_t_10);
-      __pyx_t_5 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_cur_scope->__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_cur_scope->__pyx_v_self->dialect, ((PyObject*)__pyx_t_10), 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 94, __pyx_L1_error)
+      __pyx_t_5 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_cur_scope->__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_cur_scope->__pyx_v_self->dialect, ((PyObject*)__pyx_t_10), 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 94, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __pyx_t_10 = __Pyx_PyUnicode_ConcatSafe(__pyx_cur_scope->__pyx_v_res, __pyx_t_5); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 94, __pyx_L1_error)
@@ -4178,7 +4177,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
       __Pyx_GIVEREF(__pyx_t_10);
       __pyx_t_10 = 0;
 
-      /* "yapic/sql/_ddl.pyx":95
+      /* "yapic/entity/sql/_ddl.pyx":95
  *                 fk = foreign_keys[i]
  *                 res += self.dialect.quote_ident(fk.ref._name_)
  *                 if i != length - 1:             # <<<<<<<<<<<<<<
@@ -4188,7 +4187,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
       __pyx_t_13 = ((__pyx_cur_scope->__pyx_v_i != (__pyx_cur_scope->__pyx_v_length - 1)) != 0);
       if (__pyx_t_13) {
 
-        /* "yapic/sql/_ddl.pyx":96
+        /* "yapic/entity/sql/_ddl.pyx":96
  *                 res += self.dialect.quote_ident(fk.ref._name_)
  *                 if i != length - 1:
  *                     res += ", "             # <<<<<<<<<<<<<<
@@ -4202,7 +4201,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
         __Pyx_GIVEREF(__pyx_t_10);
         __pyx_t_10 = 0;
 
-        /* "yapic/sql/_ddl.pyx":95
+        /* "yapic/entity/sql/_ddl.pyx":95
  *                 fk = foreign_keys[i]
  *                 res += self.dialect.quote_ident(fk.ref._name_)
  *                 if i != length - 1:             # <<<<<<<<<<<<<<
@@ -4212,7 +4211,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
       }
     }
 
-    /* "yapic/sql/_ddl.pyx":98
+    /* "yapic/entity/sql/_ddl.pyx":98
  *                     res += ", "
  * 
  *             res += ")"             # <<<<<<<<<<<<<<
@@ -4226,7 +4225,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
     __Pyx_GIVEREF(__pyx_t_10);
     __pyx_t_10 = 0;
 
-    /* "yapic/sql/_ddl.pyx":100
+    /* "yapic/entity/sql/_ddl.pyx":100
  *             res += ")"
  * 
  *             res += f" ON UPDATE {foreign_keys[0].on_update} ON DELETE {foreign_keys[0].on_delete}"             # <<<<<<<<<<<<<<
@@ -4284,7 +4283,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
     __Pyx_GIVEREF(__pyx_t_10);
     __pyx_t_10 = 0;
 
-    /* "yapic/sql/_ddl.pyx":102
+    /* "yapic/entity/sql/_ddl.pyx":102
  *             res += f" ON UPDATE {foreign_keys[0].on_update} ON DELETE {foreign_keys[0].on_delete}"
  * 
  *             yield res             # <<<<<<<<<<<<<<
@@ -4316,7 +4315,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "yapic/sql/_ddl.pyx":74
+  /* "yapic/entity/sql/_ddl.pyx":74
  *         return res
  * 
  *     def compile_foreign_keys(self, dict fks):             # <<<<<<<<<<<<<<
@@ -4344,7 +4343,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
   return __pyx_r;
 }
 
-/* "yapic/sql/_ddl.pyx":104
+/* "yapic/entity/sql/_ddl.pyx":104
  *             yield res
  * 
  *     def compile_registry_diff(self, RegistryDiff diff):             # <<<<<<<<<<<<<<
@@ -4353,13 +4352,13 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_11DDLCompiler_8generator(__pyx_Corou
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_10compile_registry_diff(PyObject *__pyx_v_self, PyObject *__pyx_v_diff); /*proto*/
-static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_10compile_registry_diff(PyObject *__pyx_v_self, PyObject *__pyx_v_diff) {
+static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_10compile_registry_diff(PyObject *__pyx_v_self, PyObject *__pyx_v_diff); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_10compile_registry_diff(PyObject *__pyx_v_self, PyObject *__pyx_v_diff) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("compile_registry_diff (wrapper)", 0);
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_diff), __pyx_ptype_5yapic_6entity_9_registry_RegistryDiff, 1, "diff", 0))) __PYX_ERR(0, 104, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff(((struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *)__pyx_v_diff));
+  __pyx_r = __pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_9compile_registry_diff(((struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *)__pyx_v_diff));
 
   /* function exit code */
   goto __pyx_L0;
@@ -4370,7 +4369,7 @@ static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_10compile_registry_dif
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff(struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_diff) {
+static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_9compile_registry_diff(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_diff) {
   PyObject *__pyx_v_lines = NULL;
   PyObject *__pyx_v_schemas_created = NULL;
   PyObject *__pyx_v_kind = NULL;
@@ -4396,7 +4395,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
   Py_UCS4 __pyx_t_15;
   __Pyx_RefNannySetupContext("compile_registry_diff", 0);
 
-  /* "yapic/sql/_ddl.pyx":105
+  /* "yapic/entity/sql/_ddl.pyx":105
  * 
  *     def compile_registry_diff(self, RegistryDiff diff):
  *         lines = []             # <<<<<<<<<<<<<<
@@ -4408,7 +4407,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
   __pyx_v_lines = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/sql/_ddl.pyx":106
+  /* "yapic/entity/sql/_ddl.pyx":106
  *     def compile_registry_diff(self, RegistryDiff diff):
  *         lines = []
  *         schemas_created = {ent.__meta__.get("schema", "public") for ent in diff.a.values()}             # <<<<<<<<<<<<<<
@@ -4457,7 +4456,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
   __pyx_v_schemas_created = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/sql/_ddl.pyx":110
+  /* "yapic/entity/sql/_ddl.pyx":110
  *         # TODO: entity dependency order
  * 
  *         for kind, param in diff:             # <<<<<<<<<<<<<<
@@ -4554,7 +4553,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
     __Pyx_XDECREF_SET(__pyx_v_param, __pyx_t_8);
     __pyx_t_8 = 0;
 
-    /* "yapic/sql/_ddl.pyx":111
+    /* "yapic/entity/sql/_ddl.pyx":111
  * 
  *         for kind, param in diff:
  *             if kind == RegistryDiffKind.REMOVED:             # <<<<<<<<<<<<<<
@@ -4572,7 +4571,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_12) {
 
-      /* "yapic/sql/_ddl.pyx":112
+      /* "yapic/entity/sql/_ddl.pyx":112
  *         for kind, param in diff:
  *             if kind == RegistryDiffKind.REMOVED:
  *                 lines.append(self.drop_entity(param))             # <<<<<<<<<<<<<<
@@ -4599,7 +4598,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
       __pyx_t_13 = __Pyx_PyList_Append(__pyx_v_lines, __pyx_t_2); if (unlikely(__pyx_t_13 == ((int)-1))) __PYX_ERR(0, 112, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "yapic/sql/_ddl.pyx":111
+      /* "yapic/entity/sql/_ddl.pyx":111
  * 
  *         for kind, param in diff:
  *             if kind == RegistryDiffKind.REMOVED:             # <<<<<<<<<<<<<<
@@ -4609,7 +4608,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
       goto __pyx_L13;
     }
 
-    /* "yapic/sql/_ddl.pyx":113
+    /* "yapic/entity/sql/_ddl.pyx":113
  *             if kind == RegistryDiffKind.REMOVED:
  *                 lines.append(self.drop_entity(param))
  *             elif kind == RegistryDiffKind.CREATED:             # <<<<<<<<<<<<<<
@@ -4627,7 +4626,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_12) {
 
-      /* "yapic/sql/_ddl.pyx":114
+      /* "yapic/entity/sql/_ddl.pyx":114
  *                 lines.append(self.drop_entity(param))
  *             elif kind == RegistryDiffKind.CREATED:
  *                 schema = param.__meta__.get("schema", "public")             # <<<<<<<<<<<<<<
@@ -4645,7 +4644,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
       __Pyx_XDECREF_SET(__pyx_v_schema, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "yapic/sql/_ddl.pyx":115
+      /* "yapic/entity/sql/_ddl.pyx":115
  *             elif kind == RegistryDiffKind.CREATED:
  *                 schema = param.__meta__.get("schema", "public")
  *                 if schema not in schemas_created:             # <<<<<<<<<<<<<<
@@ -4656,7 +4655,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
       __pyx_t_14 = (__pyx_t_12 != 0);
       if (__pyx_t_14) {
 
-        /* "yapic/sql/_ddl.pyx":116
+        /* "yapic/entity/sql/_ddl.pyx":116
  *                 schema = param.__meta__.get("schema", "public")
  *                 if schema not in schemas_created:
  *                     schemas_created.add(schema)             # <<<<<<<<<<<<<<
@@ -4665,7 +4664,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
  */
         __pyx_t_13 = PySet_Add(__pyx_v_schemas_created, __pyx_v_schema); if (unlikely(__pyx_t_13 == ((int)-1))) __PYX_ERR(0, 116, __pyx_L1_error)
 
-        /* "yapic/sql/_ddl.pyx":117
+        /* "yapic/entity/sql/_ddl.pyx":117
  *                 if schema not in schemas_created:
  *                     schemas_created.add(schema)
  *                     lines.append(f"CREATE SCHEMA IF NOT EXISTS {self.dialect.quote_ident(schema)};")             # <<<<<<<<<<<<<<
@@ -4681,7 +4680,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
         __Pyx_GIVEREF(__pyx_kp_u_CREATE_SCHEMA_IF_NOT_EXISTS);
         PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_kp_u_CREATE_SCHEMA_IF_NOT_EXISTS);
         if (!(likely(PyUnicode_CheckExact(__pyx_v_schema))||((__pyx_v_schema) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_v_schema)->tp_name), 0))) __PYX_ERR(0, 117, __pyx_L1_error)
-        __pyx_t_8 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_v_self->dialect, ((PyObject*)__pyx_v_schema), 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 117, __pyx_L1_error)
+        __pyx_t_8 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_v_self->dialect, ((PyObject*)__pyx_v_schema), 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 117, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         __pyx_t_6 = __Pyx_PyUnicode_Unicode(__pyx_t_8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 117, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
@@ -4701,7 +4700,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
         __pyx_t_13 = __Pyx_PyList_Append(__pyx_v_lines, __pyx_t_6); if (unlikely(__pyx_t_13 == ((int)-1))) __PYX_ERR(0, 117, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-        /* "yapic/sql/_ddl.pyx":115
+        /* "yapic/entity/sql/_ddl.pyx":115
  *             elif kind == RegistryDiffKind.CREATED:
  *                 schema = param.__meta__.get("schema", "public")
  *                 if schema not in schemas_created:             # <<<<<<<<<<<<<<
@@ -4710,7 +4709,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
  */
       }
 
-      /* "yapic/sql/_ddl.pyx":119
+      /* "yapic/entity/sql/_ddl.pyx":119
  *                     lines.append(f"CREATE SCHEMA IF NOT EXISTS {self.dialect.quote_ident(schema)};")
  * 
  *                 lines.append(self.compile_entity(param))             # <<<<<<<<<<<<<<
@@ -4737,7 +4736,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
       __pyx_t_13 = __Pyx_PyList_Append(__pyx_v_lines, __pyx_t_6); if (unlikely(__pyx_t_13 == ((int)-1))) __PYX_ERR(0, 119, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "yapic/sql/_ddl.pyx":113
+      /* "yapic/entity/sql/_ddl.pyx":113
  *             if kind == RegistryDiffKind.REMOVED:
  *                 lines.append(self.drop_entity(param))
  *             elif kind == RegistryDiffKind.CREATED:             # <<<<<<<<<<<<<<
@@ -4747,7 +4746,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
       goto __pyx_L13;
     }
 
-    /* "yapic/sql/_ddl.pyx":120
+    /* "yapic/entity/sql/_ddl.pyx":120
  * 
  *                 lines.append(self.compile_entity(param))
  *             elif kind == RegistryDiffKind.CHANGED:             # <<<<<<<<<<<<<<
@@ -4765,7 +4764,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     if (__pyx_t_14) {
 
-      /* "yapic/sql/_ddl.pyx":121
+      /* "yapic/entity/sql/_ddl.pyx":121
  *                 lines.append(self.compile_entity(param))
  *             elif kind == RegistryDiffKind.CHANGED:
  *                 lines.append(self.compile_entity_diff(param))             # <<<<<<<<<<<<<<
@@ -4792,7 +4791,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
       __pyx_t_13 = __Pyx_PyList_Append(__pyx_v_lines, __pyx_t_6); if (unlikely(__pyx_t_13 == ((int)-1))) __PYX_ERR(0, 121, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "yapic/sql/_ddl.pyx":120
+      /* "yapic/entity/sql/_ddl.pyx":120
  * 
  *                 lines.append(self.compile_entity(param))
  *             elif kind == RegistryDiffKind.CHANGED:             # <<<<<<<<<<<<<<
@@ -4802,7 +4801,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
     }
     __pyx_L13:;
 
-    /* "yapic/sql/_ddl.pyx":110
+    /* "yapic/entity/sql/_ddl.pyx":110
  *         # TODO: entity dependency order
  * 
  *         for kind, param in diff:             # <<<<<<<<<<<<<<
@@ -4812,7 +4811,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "yapic/sql/_ddl.pyx":123
+  /* "yapic/entity/sql/_ddl.pyx":123
  *                 lines.append(self.compile_entity_diff(param))
  * 
  *         return "\n".join(lines)             # <<<<<<<<<<<<<<
@@ -4826,7 +4825,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "yapic/sql/_ddl.pyx":104
+  /* "yapic/entity/sql/_ddl.pyx":104
  *             yield res
  * 
  *     def compile_registry_diff(self, RegistryDiff diff):             # <<<<<<<<<<<<<<
@@ -4841,7 +4840,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_10);
-  __Pyx_AddTraceback("yapic.sql._ddl.DDLCompiler.compile_registry_diff", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("yapic.entity.sql._ddl.DDLCompiler.compile_registry_diff", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_lines);
@@ -4855,7 +4854,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
   return __pyx_r;
 }
 
-/* "yapic/sql/_ddl.pyx":125
+/* "yapic/entity/sql/_ddl.pyx":125
  *         return "\n".join(lines)
  * 
  *     def compile_entity_diff(self, EntityDiff diff):             # <<<<<<<<<<<<<<
@@ -4864,13 +4863,13 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_9compile_registry_diff
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_12compile_entity_diff(PyObject *__pyx_v_self, PyObject *__pyx_v_diff); /*proto*/
-static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_12compile_entity_diff(PyObject *__pyx_v_self, PyObject *__pyx_v_diff) {
+static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_12compile_entity_diff(PyObject *__pyx_v_self, PyObject *__pyx_v_diff); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_12compile_entity_diff(PyObject *__pyx_v_self, PyObject *__pyx_v_diff) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("compile_entity_diff (wrapper)", 0);
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_diff), __pyx_ptype_5yapic_6entity_12_entity_diff_EntityDiff, 1, "diff", 0))) __PYX_ERR(0, 125, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(((struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_12_entity_diff_EntityDiff *)__pyx_v_diff));
+  __pyx_r = __pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(((struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_12_entity_diff_EntityDiff *)__pyx_v_diff));
 
   /* function exit code */
   goto __pyx_L0;
@@ -4881,7 +4880,7 @@ static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_12compile_entity_diff(
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_12_entity_diff_EntityDiff *__pyx_v_diff) {
+static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_12_entity_diff_EntityDiff *__pyx_v_diff) {
   PyObject *__pyx_v_requirements = NULL;
   PyObject *__pyx_v_alter = NULL;
   PyObject *__pyx_v_kind = NULL;
@@ -4906,7 +4905,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
   Py_UCS4 __pyx_t_16;
   __Pyx_RefNannySetupContext("compile_entity_diff", 0);
 
-  /* "yapic/sql/_ddl.pyx":126
+  /* "yapic/entity/sql/_ddl.pyx":126
  * 
  *     def compile_entity_diff(self, EntityDiff diff):
  *         requirements = []             # <<<<<<<<<<<<<<
@@ -4918,7 +4917,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
   __pyx_v_requirements = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/sql/_ddl.pyx":127
+  /* "yapic/entity/sql/_ddl.pyx":127
  *     def compile_entity_diff(self, EntityDiff diff):
  *         requirements = []
  *         alter = []             # <<<<<<<<<<<<<<
@@ -4930,7 +4929,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
   __pyx_v_alter = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "yapic/sql/_ddl.pyx":129
+  /* "yapic/entity/sql/_ddl.pyx":129
  *         alter = []
  * 
  *         for kind, param in diff:             # <<<<<<<<<<<<<<
@@ -5027,7 +5026,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
     __Pyx_XDECREF_SET(__pyx_v_param, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "yapic/sql/_ddl.pyx":130
+    /* "yapic/entity/sql/_ddl.pyx":130
  * 
  *         for kind, param in diff:
  *             if kind == EntityDiffKind.REMOVED:             # <<<<<<<<<<<<<<
@@ -5045,7 +5044,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (__pyx_t_9) {
 
-      /* "yapic/sql/_ddl.pyx":131
+      /* "yapic/entity/sql/_ddl.pyx":131
  *         for kind, param in diff:
  *             if kind == EntityDiffKind.REMOVED:
  *                 alter.append(f"DROP COLUMN {self.dialect.quote_ident(param._name_)}")             # <<<<<<<<<<<<<<
@@ -5055,7 +5054,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
       __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_param, __pyx_n_s_name); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 131, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       if (!(likely(PyUnicode_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 131, __pyx_L1_error)
-      __pyx_t_6 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_v_self->dialect, ((PyObject*)__pyx_t_4), 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 131, __pyx_L1_error)
+      __pyx_t_6 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_v_self->dialect, ((PyObject*)__pyx_t_4), 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 131, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_4 = __Pyx_PyUnicode_Unicode(__pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 131, __pyx_L1_error)
@@ -5067,7 +5066,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
       __pyx_t_10 = __Pyx_PyObject_Append(__pyx_v_alter, __pyx_t_6); if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 131, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "yapic/sql/_ddl.pyx":130
+      /* "yapic/entity/sql/_ddl.pyx":130
  * 
  *         for kind, param in diff:
  *             if kind == EntityDiffKind.REMOVED:             # <<<<<<<<<<<<<<
@@ -5077,7 +5076,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
       goto __pyx_L7;
     }
 
-    /* "yapic/sql/_ddl.pyx":132
+    /* "yapic/entity/sql/_ddl.pyx":132
  *             if kind == EntityDiffKind.REMOVED:
  *                 alter.append(f"DROP COLUMN {self.dialect.quote_ident(param._name_)}")
  *             elif kind == EntityDiffKind.CREATED:             # <<<<<<<<<<<<<<
@@ -5095,7 +5094,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     if (__pyx_t_9) {
 
-      /* "yapic/sql/_ddl.pyx":133
+      /* "yapic/entity/sql/_ddl.pyx":133
  *                 alter.append(f"DROP COLUMN {self.dialect.quote_ident(param._name_)}")
  *             elif kind == EntityDiffKind.CREATED:
  *                 alter.append(f"ADD COLUMN {self.compile_field(param, requirements)}")             # <<<<<<<<<<<<<<
@@ -5158,7 +5157,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
       __pyx_t_10 = __Pyx_PyObject_Append(__pyx_v_alter, __pyx_t_6); if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 133, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "yapic/sql/_ddl.pyx":132
+      /* "yapic/entity/sql/_ddl.pyx":132
  *             if kind == EntityDiffKind.REMOVED:
  *                 alter.append(f"DROP COLUMN {self.dialect.quote_ident(param._name_)}")
  *             elif kind == EntityDiffKind.CREATED:             # <<<<<<<<<<<<<<
@@ -5168,7 +5167,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
       goto __pyx_L7;
     }
 
-    /* "yapic/sql/_ddl.pyx":134
+    /* "yapic/entity/sql/_ddl.pyx":134
  *             elif kind == EntityDiffKind.CREATED:
  *                 alter.append(f"ADD COLUMN {self.compile_field(param, requirements)}")
  *             elif kind == EntityDiffKind.CHANGED:             # <<<<<<<<<<<<<<
@@ -5186,7 +5185,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     if (__pyx_t_9) {
 
-      /* "yapic/sql/_ddl.pyx":135
+      /* "yapic/entity/sql/_ddl.pyx":135
  *                 alter.append(f"ADD COLUMN {self.compile_field(param, requirements)}")
  *             elif kind == EntityDiffKind.CHANGED:
  *                 alter.extend(self.compile_field_diff(param[1], param[2]))             # <<<<<<<<<<<<<<
@@ -5268,7 +5267,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "yapic/sql/_ddl.pyx":134
+      /* "yapic/entity/sql/_ddl.pyx":134
  *             elif kind == EntityDiffKind.CREATED:
  *                 alter.append(f"ADD COLUMN {self.compile_field(param, requirements)}")
  *             elif kind == EntityDiffKind.CHANGED:             # <<<<<<<<<<<<<<
@@ -5278,7 +5277,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
     }
     __pyx_L7:;
 
-    /* "yapic/sql/_ddl.pyx":129
+    /* "yapic/entity/sql/_ddl.pyx":129
  *         alter = []
  * 
  *         for kind, param in diff:             # <<<<<<<<<<<<<<
@@ -5288,7 +5287,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "yapic/sql/_ddl.pyx":137
+  /* "yapic/entity/sql/_ddl.pyx":137
  *                 alter.extend(self.compile_field_diff(param[1], param[2]))
  * 
  *         if alter:             # <<<<<<<<<<<<<<
@@ -5298,7 +5297,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
   __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_v_alter); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 137, __pyx_L1_error)
   if (__pyx_t_9) {
 
-    /* "yapic/sql/_ddl.pyx":138
+    /* "yapic/entity/sql/_ddl.pyx":138
  * 
  *         if alter:
  *             alter = ',\n  '.join(alter)             # <<<<<<<<<<<<<<
@@ -5310,7 +5309,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
     __Pyx_DECREF_SET(__pyx_v_alter, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "yapic/sql/_ddl.pyx":139
+    /* "yapic/entity/sql/_ddl.pyx":139
  *         if alter:
  *             alter = ',\n  '.join(alter)
  *             return f"ALTER TABLE {self.dialect.table_qname(diff.b)}\n  {alter};"             # <<<<<<<<<<<<<<
@@ -5328,7 +5327,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_ALTER_TABLE);
     __pyx_t_6 = ((PyObject *)__pyx_v_diff->b);
     __Pyx_INCREF(__pyx_t_6);
-    __pyx_t_4 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->table_qname(__pyx_v_self->dialect, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_6), 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 139, __pyx_L1_error)
+    __pyx_t_4 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->table_qname(__pyx_v_self->dialect, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_6), 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 139, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_6 = __Pyx_PyUnicode_Unicode(__pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 139, __pyx_L1_error)
@@ -5361,7 +5360,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
     __pyx_t_6 = 0;
     goto __pyx_L0;
 
-    /* "yapic/sql/_ddl.pyx":137
+    /* "yapic/entity/sql/_ddl.pyx":137
  *                 alter.extend(self.compile_field_diff(param[1], param[2]))
  * 
  *         if alter:             # <<<<<<<<<<<<<<
@@ -5370,7 +5369,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
  */
   }
 
-  /* "yapic/sql/_ddl.pyx":141
+  /* "yapic/entity/sql/_ddl.pyx":141
  *             return f"ALTER TABLE {self.dialect.table_qname(diff.b)}\n  {alter};"
  *         else:
  *             return ""             # <<<<<<<<<<<<<<
@@ -5384,7 +5383,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
     goto __pyx_L0;
   }
 
-  /* "yapic/sql/_ddl.pyx":125
+  /* "yapic/entity/sql/_ddl.pyx":125
  *         return "\n".join(lines)
  * 
  *     def compile_entity_diff(self, EntityDiff diff):             # <<<<<<<<<<<<<<
@@ -5403,7 +5402,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
   __Pyx_XDECREF(__pyx_t_13);
   __Pyx_XDECREF(__pyx_t_14);
   __Pyx_XDECREF(__pyx_t_15);
-  __Pyx_AddTraceback("yapic.sql._ddl.DDLCompiler.compile_entity_diff", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("yapic.entity.sql._ddl.DDLCompiler.compile_entity_diff", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_requirements);
@@ -5415,7 +5414,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
   return __pyx_r;
 }
 
-/* "yapic/sql/_ddl.pyx":143
+/* "yapic/entity/sql/_ddl.pyx":143
  *             return ""
  * 
  *     def compile_field_diff(self, Field field, dict diff):             # <<<<<<<<<<<<<<
@@ -5424,8 +5423,8 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_11compile_entity_diff(
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_14compile_field_diff(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_14compile_field_diff(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_14compile_field_diff(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_14compile_field_diff(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_field = 0;
   PyObject *__pyx_v_diff = 0;
   PyObject *__pyx_r = 0;
@@ -5473,13 +5472,13 @@ static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_14compile_field_diff(P
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("compile_field_diff", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 143, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("yapic.sql._ddl.DDLCompiler.compile_field_diff", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("yapic.entity.sql._ddl.DDLCompiler.compile_field_diff", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_field), __pyx_ptype_5yapic_6entity_6_field_Field, 1, "field", 0))) __PYX_ERR(0, 143, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_diff), (&PyDict_Type), 1, "diff", 1))) __PYX_ERR(0, 143, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(((struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *)__pyx_v_self), __pyx_v_field, __pyx_v_diff);
+  __pyx_r = __pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_13compile_field_diff(((struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *)__pyx_v_self), __pyx_v_field, __pyx_v_diff);
 
   /* function exit code */
   goto __pyx_L0;
@@ -5490,11 +5489,11 @@ static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_14compile_field_diff(P
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_field, PyObject *__pyx_v_diff) {
+static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_13compile_field_diff(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_field, PyObject *__pyx_v_diff) {
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *__pyx_v_type = 0;
   PyObject *__pyx_v_col_name = 0;
   PyObject *__pyx_v_result = NULL;
-  struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler *__pyx_v_qc = NULL;
+  struct __pyx_obj_5yapic_6entity_3sql_15_query_compiler_QueryCompiler *__pyx_v_qc = NULL;
   PyObject *__pyx_v_default = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -5508,7 +5507,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
   int __pyx_t_8;
   __Pyx_RefNannySetupContext("compile_field_diff", 0);
 
-  /* "yapic/sql/_ddl.pyx":145
+  /* "yapic/entity/sql/_ddl.pyx":145
  *     def compile_field_diff(self, Field field, dict diff):
  *         cdef StorageType type
  *         cdef str col_name = self.dialect.quote_ident(field._name_)             # <<<<<<<<<<<<<<
@@ -5517,13 +5516,13 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
  */
   __pyx_t_1 = __pyx_v_field->__pyx_base._name_;
   __Pyx_INCREF(__pyx_t_1);
-  __pyx_t_2 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_v_self->dialect, ((PyObject*)__pyx_t_1), 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 145, __pyx_L1_error)
+  __pyx_t_2 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->quote_ident(__pyx_v_self->dialect, ((PyObject*)__pyx_t_1), 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 145, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_col_name = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "yapic/sql/_ddl.pyx":146
+  /* "yapic/entity/sql/_ddl.pyx":146
  *         cdef StorageType type
  *         cdef str col_name = self.dialect.quote_ident(field._name_)
  *         result = []             # <<<<<<<<<<<<<<
@@ -5535,7 +5534,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
   __pyx_v_result = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "yapic/sql/_ddl.pyx":148
+  /* "yapic/entity/sql/_ddl.pyx":148
  *         result = []
  * 
  *         if "_impl_" in diff or "size" in diff:             # <<<<<<<<<<<<<<
@@ -5563,19 +5562,19 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_3) {
 
-    /* "yapic/sql/_ddl.pyx":149
+    /* "yapic/entity/sql/_ddl.pyx":149
  * 
  *         if "_impl_" in diff or "size" in diff:
  *             type = self.dialect.get_field_type(field)             # <<<<<<<<<<<<<<
  *             if type is None:
  *                 raise ValueError("Cannot determine the sql type of %r" % field)
  */
-    __pyx_t_2 = ((PyObject *)((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->get_field_type(__pyx_v_self->dialect, __pyx_v_field, 0)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 149, __pyx_L1_error)
+    __pyx_t_2 = ((PyObject *)((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->get_field_type(__pyx_v_self->dialect, __pyx_v_field, 0)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 149, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_v_type = ((struct __pyx_obj_5yapic_6entity_6_field_StorageType *)__pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "yapic/sql/_ddl.pyx":150
+    /* "yapic/entity/sql/_ddl.pyx":150
  *         if "_impl_" in diff or "size" in diff:
  *             type = self.dialect.get_field_type(field)
  *             if type is None:             # <<<<<<<<<<<<<<
@@ -5586,7 +5585,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
     __pyx_t_4 = (__pyx_t_3 != 0);
     if (unlikely(__pyx_t_4)) {
 
-      /* "yapic/sql/_ddl.pyx":151
+      /* "yapic/entity/sql/_ddl.pyx":151
  *             type = self.dialect.get_field_type(field)
  *             if type is None:
  *                 raise ValueError("Cannot determine the sql type of %r" % field)             # <<<<<<<<<<<<<<
@@ -5602,7 +5601,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __PYX_ERR(0, 151, __pyx_L1_error)
 
-      /* "yapic/sql/_ddl.pyx":150
+      /* "yapic/entity/sql/_ddl.pyx":150
  *         if "_impl_" in diff or "size" in diff:
  *             type = self.dialect.get_field_type(field)
  *             if type is None:             # <<<<<<<<<<<<<<
@@ -5611,7 +5610,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
  */
     }
 
-    /* "yapic/sql/_ddl.pyx":152
+    /* "yapic/entity/sql/_ddl.pyx":152
  *             if type is None:
  *                 raise ValueError("Cannot determine the sql type of %r" % field)
  *             result.append(f"ALTER COLUMN {col_name} TYPE {type.name} USING {col_name}::{type.name}")             # <<<<<<<<<<<<<<
@@ -5672,7 +5671,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
     __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_result, __pyx_t_2); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 152, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "yapic/sql/_ddl.pyx":148
+    /* "yapic/entity/sql/_ddl.pyx":148
  *         result = []
  * 
  *         if "_impl_" in diff or "size" in diff:             # <<<<<<<<<<<<<<
@@ -5681,7 +5680,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
  */
   }
 
-  /* "yapic/sql/_ddl.pyx":154
+  /* "yapic/entity/sql/_ddl.pyx":154
  *             result.append(f"ALTER COLUMN {col_name} TYPE {type.name} USING {col_name}::{type.name}")
  * 
  *         if "nullable" in diff:             # <<<<<<<<<<<<<<
@@ -5696,7 +5695,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
   __pyx_t_3 = (__pyx_t_4 != 0);
   if (__pyx_t_3) {
 
-    /* "yapic/sql/_ddl.pyx":155
+    /* "yapic/entity/sql/_ddl.pyx":155
  * 
  *         if "nullable" in diff:
  *             if diff["nullable"]:             # <<<<<<<<<<<<<<
@@ -5713,7 +5712,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_3) {
 
-      /* "yapic/sql/_ddl.pyx":156
+      /* "yapic/entity/sql/_ddl.pyx":156
  *         if "nullable" in diff:
  *             if diff["nullable"]:
  *                 result.append(f"ALTER COLUMN {col_name} DROP NOT NULL")             # <<<<<<<<<<<<<<
@@ -5745,7 +5744,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
       __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_result, __pyx_t_1); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 156, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "yapic/sql/_ddl.pyx":155
+      /* "yapic/entity/sql/_ddl.pyx":155
  * 
  *         if "nullable" in diff:
  *             if diff["nullable"]:             # <<<<<<<<<<<<<<
@@ -5755,7 +5754,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
       goto __pyx_L8;
     }
 
-    /* "yapic/sql/_ddl.pyx":158
+    /* "yapic/entity/sql/_ddl.pyx":158
  *                 result.append(f"ALTER COLUMN {col_name} DROP NOT NULL")
  *             else:
  *                 result.append(f"ALTER COLUMN {col_name} SET NOT NULL")             # <<<<<<<<<<<<<<
@@ -5790,7 +5789,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
     }
     __pyx_L8:;
 
-    /* "yapic/sql/_ddl.pyx":154
+    /* "yapic/entity/sql/_ddl.pyx":154
  *             result.append(f"ALTER COLUMN {col_name} TYPE {type.name} USING {col_name}::{type.name}")
  * 
  *         if "nullable" in diff:             # <<<<<<<<<<<<<<
@@ -5799,7 +5798,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
  */
   }
 
-  /* "yapic/sql/_ddl.pyx":160
+  /* "yapic/entity/sql/_ddl.pyx":160
  *                 result.append(f"ALTER COLUMN {col_name} SET NOT NULL")
  * 
  *         if "_default_" in diff:             # <<<<<<<<<<<<<<
@@ -5814,7 +5813,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
   __pyx_t_4 = (__pyx_t_3 != 0);
   if (__pyx_t_4) {
 
-    /* "yapic/sql/_ddl.pyx":161
+    /* "yapic/entity/sql/_ddl.pyx":161
  * 
  *         if "_default_" in diff:
  *             if diff["_default_"] is None:             # <<<<<<<<<<<<<<
@@ -5832,7 +5831,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
     __pyx_t_3 = (__pyx_t_4 != 0);
     if (__pyx_t_3) {
 
-      /* "yapic/sql/_ddl.pyx":162
+      /* "yapic/entity/sql/_ddl.pyx":162
  *         if "_default_" in diff:
  *             if diff["_default_"] is None:
  *                 result.append(f"ALTER COLUMN {col_name} DROP DEFAULT")             # <<<<<<<<<<<<<<
@@ -5864,7 +5863,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
       __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_result, __pyx_t_1); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 162, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "yapic/sql/_ddl.pyx":161
+      /* "yapic/entity/sql/_ddl.pyx":161
  * 
  *         if "_default_" in diff:
  *             if diff["_default_"] is None:             # <<<<<<<<<<<<<<
@@ -5874,7 +5873,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
       goto __pyx_L10;
     }
 
-    /* "yapic/sql/_ddl.pyx":164
+    /* "yapic/entity/sql/_ddl.pyx":164
  *                 result.append(f"ALTER COLUMN {col_name} DROP DEFAULT")
  *             else:
  *                 if isinstance(diff["_default_"], Expression):             # <<<<<<<<<<<<<<
@@ -5893,19 +5892,19 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
       __pyx_t_4 = (__pyx_t_3 != 0);
       if (__pyx_t_4) {
 
-        /* "yapic/sql/_ddl.pyx":165
+        /* "yapic/entity/sql/_ddl.pyx":165
  *             else:
  *                 if isinstance(diff["_default_"], Expression):
  *                     qc = self.dialect.create_query_compiler()             # <<<<<<<<<<<<<<
  *                     default = qc.visit(diff['_default_'])
  *                 else:
  */
-        __pyx_t_1 = ((PyObject *)((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->create_query_compiler(__pyx_v_self->dialect, 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 165, __pyx_L1_error)
+        __pyx_t_1 = ((PyObject *)((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->create_query_compiler(__pyx_v_self->dialect, 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 165, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_v_qc = ((struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler *)__pyx_t_1);
+        __pyx_v_qc = ((struct __pyx_obj_5yapic_6entity_3sql_15_query_compiler_QueryCompiler *)__pyx_t_1);
         __pyx_t_1 = 0;
 
-        /* "yapic/sql/_ddl.pyx":166
+        /* "yapic/entity/sql/_ddl.pyx":166
  *                 if isinstance(diff["_default_"], Expression):
  *                     qc = self.dialect.create_query_compiler()
  *                     default = qc.visit(diff['_default_'])             # <<<<<<<<<<<<<<
@@ -5919,13 +5918,13 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
         __pyx_t_1 = __Pyx_PyDict_GetItem(__pyx_v_diff, __pyx_n_u_default); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 166, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5yapic_6entity_11_expression_Expression))))) __PYX_ERR(0, 166, __pyx_L1_error)
-        __pyx_t_2 = ((struct __pyx_vtabstruct_5yapic_3sql_15_query_compiler_QueryCompiler *)__pyx_v_qc->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_qc), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_1), 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 166, __pyx_L1_error)
+        __pyx_t_2 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_15_query_compiler_QueryCompiler *)__pyx_v_qc->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_qc), ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)__pyx_t_1), 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 166, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         __pyx_v_default = __pyx_t_2;
         __pyx_t_2 = 0;
 
-        /* "yapic/sql/_ddl.pyx":164
+        /* "yapic/entity/sql/_ddl.pyx":164
  *                 result.append(f"ALTER COLUMN {col_name} DROP DEFAULT")
  *             else:
  *                 if isinstance(diff["_default_"], Expression):             # <<<<<<<<<<<<<<
@@ -5935,7 +5934,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
         goto __pyx_L11;
       }
 
-      /* "yapic/sql/_ddl.pyx":168
+      /* "yapic/entity/sql/_ddl.pyx":168
  *                     default = qc.visit(diff['_default_'])
  *                 else:
  *                     default = self.dialect.quote_value(type.encode(diff["_default_"]))             # <<<<<<<<<<<<<<
@@ -5953,7 +5952,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
         __pyx_t_1 = ((struct __pyx_vtabstruct_5yapic_6entity_6_field_StorageType *)__pyx_v_type->__pyx_vtab)->encode(__pyx_v_type, __pyx_t_2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 168, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-        __pyx_t_2 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->quote_value(__pyx_v_self->dialect, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 168, __pyx_L1_error)
+        __pyx_t_2 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->quote_value(__pyx_v_self->dialect, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 168, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         __pyx_v_default = __pyx_t_2;
@@ -5961,7 +5960,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
       }
       __pyx_L11:;
 
-      /* "yapic/sql/_ddl.pyx":169
+      /* "yapic/entity/sql/_ddl.pyx":169
  *                 else:
  *                     default = self.dialect.quote_value(type.encode(diff["_default_"]))
  *                 result.append(f"ALTER COLUMN {col_name} SET DEFAULT {default}")             # <<<<<<<<<<<<<<
@@ -6002,7 +6001,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
     }
     __pyx_L10:;
 
-    /* "yapic/sql/_ddl.pyx":160
+    /* "yapic/entity/sql/_ddl.pyx":160
  *                 result.append(f"ALTER COLUMN {col_name} SET NOT NULL")
  * 
  *         if "_default_" in diff:             # <<<<<<<<<<<<<<
@@ -6011,7 +6010,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
  */
   }
 
-  /* "yapic/sql/_ddl.pyx":171
+  /* "yapic/entity/sql/_ddl.pyx":171
  *                 result.append(f"ALTER COLUMN {col_name} SET DEFAULT {default}")
  * 
  *         return result             # <<<<<<<<<<<<<<
@@ -6023,7 +6022,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
   __pyx_r = __pyx_v_result;
   goto __pyx_L0;
 
-  /* "yapic/sql/_ddl.pyx":143
+  /* "yapic/entity/sql/_ddl.pyx":143
  *             return ""
  * 
  *     def compile_field_diff(self, Field field, dict diff):             # <<<<<<<<<<<<<<
@@ -6035,7 +6034,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("yapic.sql._ddl.DDLCompiler.compile_field_diff", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("yapic.entity.sql._ddl.DDLCompiler.compile_field_diff", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF((PyObject *)__pyx_v_type);
@@ -6048,7 +6047,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
   return __pyx_r;
 }
 
-/* "yapic/sql/_ddl.pyx":173
+/* "yapic/entity/sql/_ddl.pyx":173
  *         return result
  * 
  *     def drop_entity(self, EntityType entity):             # <<<<<<<<<<<<<<
@@ -6057,13 +6056,13 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_13compile_field_diff(s
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_16drop_entity(PyObject *__pyx_v_self, PyObject *__pyx_v_entity); /*proto*/
-static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_16drop_entity(PyObject *__pyx_v_self, PyObject *__pyx_v_entity) {
+static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_16drop_entity(PyObject *__pyx_v_self, PyObject *__pyx_v_entity); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_16drop_entity(PyObject *__pyx_v_self, PyObject *__pyx_v_entity) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("drop_entity (wrapper)", 0);
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_entity), __pyx_ptype_5yapic_6entity_7_entity_EntityType, 1, "entity", 0))) __PYX_ERR(0, 173, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_15drop_entity(((struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_v_entity));
+  __pyx_r = __pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_15drop_entity(((struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_v_entity));
 
   /* function exit code */
   goto __pyx_L0;
@@ -6074,7 +6073,7 @@ static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_16drop_entity(PyObject
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_15drop_entity(struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_entity) {
+static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_15drop_entity(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_entity) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6084,7 +6083,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_15drop_entity(struct _
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("drop_entity", 0);
 
-  /* "yapic/sql/_ddl.pyx":174
+  /* "yapic/entity/sql/_ddl.pyx":174
  * 
  *     def drop_entity(self, EntityType entity):
  *         return f"DROP TABLE {self.dialect.table_qname(entity)} CASCADE;"             # <<<<<<<<<<<<<<
@@ -6100,7 +6099,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_15drop_entity(struct _
   __pyx_t_2 += 11;
   __Pyx_GIVEREF(__pyx_kp_u_DROP_TABLE);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_DROP_TABLE);
-  __pyx_t_4 = ((struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->table_qname(__pyx_v_self->dialect, __pyx_v_entity, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 174, __pyx_L1_error)
+  __pyx_t_4 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_v_self->dialect->__pyx_vtab)->table_qname(__pyx_v_self->dialect, __pyx_v_entity, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 174, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = __Pyx_PyUnicode_Unicode(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 174, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
@@ -6121,7 +6120,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_15drop_entity(struct _
   __pyx_t_5 = 0;
   goto __pyx_L0;
 
-  /* "yapic/sql/_ddl.pyx":173
+  /* "yapic/entity/sql/_ddl.pyx":173
  *         return result
  * 
  *     def drop_entity(self, EntityType entity):             # <<<<<<<<<<<<<<
@@ -6134,7 +6133,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_15drop_entity(struct _
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("yapic.sql._ddl.DDLCompiler.drop_entity", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("yapic.entity.sql._ddl.DDLCompiler.drop_entity", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -6142,7 +6141,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_15drop_entity(struct _
   return __pyx_r;
 }
 
-/* "yapic/sql/_ddl.pxd":9
+/* "yapic/entity/sql/_ddl.pxd":9
  * 
  * cdef class DDLCompiler:
  *     cdef readonly Dialect dialect             # <<<<<<<<<<<<<<
@@ -6151,19 +6150,19 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_15drop_entity(struct _
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_7dialect_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_7dialect_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_7dialect_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_7dialect_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_7dialect___get__(((struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_7dialect___get__(((struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_7dialect___get__(struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *__pyx_v_self) {
+static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_7dialect___get__(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
@@ -6179,7 +6178,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_7dialect___get__(struc
   return __pyx_r;
 }
 
-/* "yapic/sql/_ddl.pyx":178
+/* "yapic/entity/sql/_ddl.pyx":178
  * 
  * cdef class DDLReflect:
  *     def __cinit__(self, EntityType entity_base):             # <<<<<<<<<<<<<<
@@ -6188,8 +6187,8 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_11DDLCompiler_7dialect___get__(struc
  */
 
 /* Python wrapper */
-static int __pyx_pw_5yapic_3sql_4_ddl_10DDLReflect_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static int __pyx_pw_5yapic_3sql_4_ddl_10DDLReflect_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static int __pyx_pw_5yapic_6entity_3sql_4_ddl_10DDLReflect_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_5yapic_6entity_3sql_4_ddl_10DDLReflect_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_entity_base = 0;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -6226,12 +6225,12 @@ static int __pyx_pw_5yapic_3sql_4_ddl_10DDLReflect_1__cinit__(PyObject *__pyx_v_
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 178, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("yapic.sql._ddl.DDLReflect.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("yapic.entity.sql._ddl.DDLReflect.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_entity_base), __pyx_ptype_5yapic_6entity_7_entity_EntityType, 1, "entity_base", 0))) __PYX_ERR(0, 178, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_3sql_4_ddl_10DDLReflect___cinit__(((struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect *)__pyx_v_self), __pyx_v_entity_base);
+  __pyx_r = __pyx_pf_5yapic_6entity_3sql_4_ddl_10DDLReflect___cinit__(((struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect *)__pyx_v_self), __pyx_v_entity_base);
 
   /* function exit code */
   goto __pyx_L0;
@@ -6242,12 +6241,12 @@ static int __pyx_pw_5yapic_3sql_4_ddl_10DDLReflect_1__cinit__(PyObject *__pyx_v_
   return __pyx_r;
 }
 
-static int __pyx_pf_5yapic_3sql_4_ddl_10DDLReflect___cinit__(struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_entity_base) {
+static int __pyx_pf_5yapic_6entity_3sql_4_ddl_10DDLReflect___cinit__(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_entity_base) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "yapic/sql/_ddl.pyx":179
+  /* "yapic/entity/sql/_ddl.pyx":179
  * cdef class DDLReflect:
  *     def __cinit__(self, EntityType entity_base):
  *         self.entity_base = entity_base             # <<<<<<<<<<<<<<
@@ -6260,7 +6259,7 @@ static int __pyx_pf_5yapic_3sql_4_ddl_10DDLReflect___cinit__(struct __pyx_obj_5y
   __Pyx_DECREF(((PyObject *)__pyx_v_self->entity_base));
   __pyx_v_self->entity_base = __pyx_v_entity_base;
 
-  /* "yapic/sql/_ddl.pyx":178
+  /* "yapic/entity/sql/_ddl.pyx":178
  * 
  * cdef class DDLReflect:
  *     def __cinit__(self, EntityType entity_base):             # <<<<<<<<<<<<<<
@@ -6273,9 +6272,9 @@ static int __pyx_pf_5yapic_3sql_4_ddl_10DDLReflect___cinit__(struct __pyx_obj_5y
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static PyObject *__pyx_gb_5yapic_3sql_4_ddl_10DDLReflect_4generator1(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
+static PyObject *__pyx_gb_5yapic_6entity_3sql_4_ddl_10DDLReflect_4generator1(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "yapic/sql/_ddl.pyx":181
+/* "yapic/entity/sql/_ddl.pyx":181
  *         self.entity_base = entity_base
  * 
  *     async def get_entities(self, Connection conn, Registry registry):             # <<<<<<<<<<<<<<
@@ -6283,9 +6282,9 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_10DDLReflect_4generator1(__pyx_Corou
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5yapic_3sql_4_ddl_10DDLReflect_3get_entities(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_5yapic_3sql_4_ddl_10DDLReflect_3get_entities(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  CYTHON_UNUSED struct __pyx_obj_5yapic_3sql_11_connection_Connection *__pyx_v_conn = 0;
+static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_10DDLReflect_3get_entities(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_10DDLReflect_3get_entities(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *__pyx_v_conn = 0;
   CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx_v_registry = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -6325,20 +6324,20 @@ static PyObject *__pyx_pw_5yapic_3sql_4_ddl_10DDLReflect_3get_entities(PyObject 
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
-    __pyx_v_conn = ((struct __pyx_obj_5yapic_3sql_11_connection_Connection *)values[0]);
+    __pyx_v_conn = ((struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *)values[0]);
     __pyx_v_registry = ((struct __pyx_obj_5yapic_6entity_9_registry_Registry *)values[1]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("get_entities", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 181, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("yapic.sql._ddl.DDLReflect.get_entities", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("yapic.entity.sql._ddl.DDLReflect.get_entities", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_conn), __pyx_ptype_5yapic_3sql_11_connection_Connection, 1, "conn", 0))) __PYX_ERR(0, 181, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_conn), __pyx_ptype_5yapic_6entity_3sql_11_connection_Connection, 1, "conn", 0))) __PYX_ERR(0, 181, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_registry), __pyx_ptype_5yapic_6entity_9_registry_Registry, 1, "registry", 0))) __PYX_ERR(0, 181, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_3sql_4_ddl_10DDLReflect_2get_entities(((struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect *)__pyx_v_self), __pyx_v_conn, __pyx_v_registry);
+  __pyx_r = __pyx_pf_5yapic_6entity_3sql_4_ddl_10DDLReflect_2get_entities(((struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect *)__pyx_v_self), __pyx_v_conn, __pyx_v_registry);
 
   /* function exit code */
   goto __pyx_L0;
@@ -6349,14 +6348,14 @@ static PyObject *__pyx_pw_5yapic_3sql_4_ddl_10DDLReflect_3get_entities(PyObject 
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5yapic_3sql_4_ddl_10DDLReflect_2get_entities(CYTHON_UNUSED struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect *__pyx_v_self, CYTHON_UNUSED struct __pyx_obj_5yapic_3sql_11_connection_Connection *__pyx_v_conn, CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx_v_registry) {
-  struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities *__pyx_cur_scope;
+static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_10DDLReflect_2get_entities(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect *__pyx_v_self, CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *__pyx_v_conn, CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx_v_registry) {
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities *__pyx_cur_scope;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("get_entities", 0);
-  __pyx_cur_scope = (struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities *)__pyx_tp_new_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities(__pyx_ptype_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities, __pyx_empty_tuple, NULL);
+  __pyx_cur_scope = (struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities *)__pyx_tp_new_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities(__pyx_ptype_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities, __pyx_empty_tuple, NULL);
   if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities *)Py_None);
+    __pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities *)Py_None);
     __Pyx_INCREF(Py_None);
     __PYX_ERR(0, 181, __pyx_L1_error)
   } else {
@@ -6372,7 +6371,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_10DDLReflect_2get_entities(CYTHON_UN
   __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_registry);
   __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_registry);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5yapic_3sql_4_ddl_10DDLReflect_4generator1, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_get_entities, __pyx_n_s_DDLReflect_get_entities, __pyx_n_s_yapic_sql__ddl); if (unlikely(!gen)) __PYX_ERR(0, 181, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5yapic_6entity_3sql_4_ddl_10DDLReflect_4generator1, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_get_entities, __pyx_n_s_DDLReflect_get_entities, __pyx_n_s_yapic_entity_sql__ddl); if (unlikely(!gen)) __PYX_ERR(0, 181, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -6380,7 +6379,7 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_10DDLReflect_2get_entities(CYTHON_UN
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_AddTraceback("yapic.sql._ddl.DDLReflect.get_entities", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("yapic.entity.sql._ddl.DDLReflect.get_entities", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
   __Pyx_XGIVEREF(__pyx_r);
@@ -6388,9 +6387,9 @@ static PyObject *__pyx_pf_5yapic_3sql_4_ddl_10DDLReflect_2get_entities(CYTHON_UN
   return __pyx_r;
 }
 
-static PyObject *__pyx_gb_5yapic_3sql_4_ddl_10DDLReflect_4generator1(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
+static PyObject *__pyx_gb_5yapic_6entity_3sql_4_ddl_10DDLReflect_4generator1(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
 {
-  struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities *__pyx_cur_scope = ((struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities *)__pyx_generator->closure);
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities *__pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities *)__pyx_generator->closure);
   PyObject *__pyx_r = NULL;
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannyDeclarations
@@ -6404,7 +6403,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_10DDLReflect_4generator1(__pyx_Corou
   __pyx_L3_first_run:;
   if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 181, __pyx_L1_error)
 
-  /* "yapic/sql/_ddl.pyx":182
+  /* "yapic/entity/sql/_ddl.pyx":182
  * 
  *     async def get_entities(self, Connection conn, Registry registry):
  *         raise NotImplementedError()             # <<<<<<<<<<<<<<
@@ -6416,7 +6415,7 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_10DDLReflect_4generator1(__pyx_Corou
   __PYX_ERR(0, 182, __pyx_L1_error)
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "yapic/sql/_ddl.pyx":181
+  /* "yapic/entity/sql/_ddl.pyx":181
  *         self.entity_base = entity_base
  * 
  *     async def get_entities(self, Connection conn, Registry registry):             # <<<<<<<<<<<<<<
@@ -6437,8 +6436,8 @@ static PyObject *__pyx_gb_5yapic_3sql_4_ddl_10DDLReflect_4generator1(__pyx_Corou
   return __pyx_r;
 }
 
-static PyObject *__pyx_tp_new_5yapic_3sql_4_ddl_DDLCompiler(PyTypeObject *t, PyObject *a, PyObject *k) {
-  struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *p;
+static PyObject *__pyx_tp_new_5yapic_6entity_3sql_4_ddl_DDLCompiler(PyTypeObject *t, PyObject *a, PyObject *k) {
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *p;
   PyObject *o;
   if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
     o = (*t->tp_alloc)(t, 0);
@@ -6446,17 +6445,17 @@ static PyObject *__pyx_tp_new_5yapic_3sql_4_ddl_DDLCompiler(PyTypeObject *t, PyO
     o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
   }
   if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *)o);
-  p->dialect = ((struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *)Py_None); Py_INCREF(Py_None);
-  if (unlikely(__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_1__cinit__(o, a, k) < 0)) goto bad;
+  p = ((struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *)o);
+  p->dialect = ((struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *)Py_None); Py_INCREF(Py_None);
+  if (unlikely(__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_1__cinit__(o, a, k) < 0)) goto bad;
   return o;
   bad:
   Py_DECREF(o); o = 0;
   return NULL;
 }
 
-static void __pyx_tp_dealloc_5yapic_3sql_4_ddl_DDLCompiler(PyObject *o) {
-  struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *p = (struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *)o;
+static void __pyx_tp_dealloc_5yapic_6entity_3sql_4_ddl_DDLCompiler(PyObject *o) {
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *p = (struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *)o;
   #if CYTHON_USE_TP_FINALIZE
   if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && !_PyGC_FINALIZED(o)) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
@@ -6467,50 +6466,50 @@ static void __pyx_tp_dealloc_5yapic_3sql_4_ddl_DDLCompiler(PyObject *o) {
   (*Py_TYPE(o)->tp_free)(o);
 }
 
-static int __pyx_tp_traverse_5yapic_3sql_4_ddl_DDLCompiler(PyObject *o, visitproc v, void *a) {
+static int __pyx_tp_traverse_5yapic_6entity_3sql_4_ddl_DDLCompiler(PyObject *o, visitproc v, void *a) {
   int e;
-  struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *p = (struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *)o;
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *p = (struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *)o;
   if (p->dialect) {
     e = (*v)(((PyObject *)p->dialect), a); if (e) return e;
   }
   return 0;
 }
 
-static int __pyx_tp_clear_5yapic_3sql_4_ddl_DDLCompiler(PyObject *o) {
+static int __pyx_tp_clear_5yapic_6entity_3sql_4_ddl_DDLCompiler(PyObject *o) {
   PyObject* tmp;
-  struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *p = (struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler *)o;
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *p = (struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler *)o;
   tmp = ((PyObject*)p->dialect);
-  p->dialect = ((struct __pyx_obj_5yapic_3sql_8_dialect_Dialect *)Py_None); Py_INCREF(Py_None);
+  p->dialect = ((struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   return 0;
 }
 
-static PyObject *__pyx_getprop_5yapic_3sql_4_ddl_11DDLCompiler_dialect(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_7dialect_1__get__(o);
+static PyObject *__pyx_getprop_5yapic_6entity_3sql_4_ddl_11DDLCompiler_dialect(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_7dialect_1__get__(o);
 }
 
-static PyMethodDef __pyx_methods_5yapic_3sql_4_ddl_DDLCompiler[] = {
-  {"compile_entity", (PyCFunction)__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_3compile_entity, METH_O, 0},
-  {"compile_field", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_5compile_field, METH_VARARGS|METH_KEYWORDS, 0},
-  {"compile_foreign_keys", (PyCFunction)__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_7compile_foreign_keys, METH_O, 0},
-  {"compile_registry_diff", (PyCFunction)__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_10compile_registry_diff, METH_O, 0},
-  {"compile_entity_diff", (PyCFunction)__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_12compile_entity_diff, METH_O, 0},
-  {"compile_field_diff", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_14compile_field_diff, METH_VARARGS|METH_KEYWORDS, 0},
-  {"drop_entity", (PyCFunction)__pyx_pw_5yapic_3sql_4_ddl_11DDLCompiler_16drop_entity, METH_O, 0},
+static PyMethodDef __pyx_methods_5yapic_6entity_3sql_4_ddl_DDLCompiler[] = {
+  {"compile_entity", (PyCFunction)__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_3compile_entity, METH_O, 0},
+  {"compile_field", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_5compile_field, METH_VARARGS|METH_KEYWORDS, 0},
+  {"compile_foreign_keys", (PyCFunction)__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_7compile_foreign_keys, METH_O, 0},
+  {"compile_registry_diff", (PyCFunction)__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_10compile_registry_diff, METH_O, 0},
+  {"compile_entity_diff", (PyCFunction)__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_12compile_entity_diff, METH_O, 0},
+  {"compile_field_diff", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_14compile_field_diff, METH_VARARGS|METH_KEYWORDS, 0},
+  {"drop_entity", (PyCFunction)__pyx_pw_5yapic_6entity_3sql_4_ddl_11DDLCompiler_16drop_entity, METH_O, 0},
   {0, 0, 0, 0}
 };
 
-static struct PyGetSetDef __pyx_getsets_5yapic_3sql_4_ddl_DDLCompiler[] = {
-  {(char *)"dialect", __pyx_getprop_5yapic_3sql_4_ddl_11DDLCompiler_dialect, 0, (char *)0, 0},
+static struct PyGetSetDef __pyx_getsets_5yapic_6entity_3sql_4_ddl_DDLCompiler[] = {
+  {(char *)"dialect", __pyx_getprop_5yapic_6entity_3sql_4_ddl_11DDLCompiler_dialect, 0, (char *)0, 0},
   {0, 0, 0, 0, 0}
 };
 
-static PyTypeObject __pyx_type_5yapic_3sql_4_ddl_DDLCompiler = {
+static PyTypeObject __pyx_type_5yapic_6entity_3sql_4_ddl_DDLCompiler = {
   PyVarObject_HEAD_INIT(0, 0)
-  "yapic.sql._ddl.DDLCompiler", /*tp_name*/
-  sizeof(struct __pyx_obj_5yapic_3sql_4_ddl_DDLCompiler), /*tp_basicsize*/
+  "yapic.entity.sql._ddl.DDLCompiler", /*tp_name*/
+  sizeof(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5yapic_3sql_4_ddl_DDLCompiler, /*tp_dealloc*/
+  __pyx_tp_dealloc_5yapic_6entity_3sql_4_ddl_DDLCompiler, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -6532,15 +6531,15 @@ static PyTypeObject __pyx_type_5yapic_3sql_4_ddl_DDLCompiler = {
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
   0, /*tp_doc*/
-  __pyx_tp_traverse_5yapic_3sql_4_ddl_DDLCompiler, /*tp_traverse*/
-  __pyx_tp_clear_5yapic_3sql_4_ddl_DDLCompiler, /*tp_clear*/
+  __pyx_tp_traverse_5yapic_6entity_3sql_4_ddl_DDLCompiler, /*tp_traverse*/
+  __pyx_tp_clear_5yapic_6entity_3sql_4_ddl_DDLCompiler, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
   0, /*tp_iternext*/
-  __pyx_methods_5yapic_3sql_4_ddl_DDLCompiler, /*tp_methods*/
+  __pyx_methods_5yapic_6entity_3sql_4_ddl_DDLCompiler, /*tp_methods*/
   0, /*tp_members*/
-  __pyx_getsets_5yapic_3sql_4_ddl_DDLCompiler, /*tp_getset*/
+  __pyx_getsets_5yapic_6entity_3sql_4_ddl_DDLCompiler, /*tp_getset*/
   0, /*tp_base*/
   0, /*tp_dict*/
   0, /*tp_descr_get*/
@@ -6548,7 +6547,7 @@ static PyTypeObject __pyx_type_5yapic_3sql_4_ddl_DDLCompiler = {
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_5yapic_3sql_4_ddl_DDLCompiler, /*tp_new*/
+  __pyx_tp_new_5yapic_6entity_3sql_4_ddl_DDLCompiler, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -6563,8 +6562,8 @@ static PyTypeObject __pyx_type_5yapic_3sql_4_ddl_DDLCompiler = {
   #endif
 };
 
-static PyObject *__pyx_tp_new_5yapic_3sql_4_ddl_DDLReflect(PyTypeObject *t, PyObject *a, PyObject *k) {
-  struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect *p;
+static PyObject *__pyx_tp_new_5yapic_6entity_3sql_4_ddl_DDLReflect(PyTypeObject *t, PyObject *a, PyObject *k) {
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect *p;
   PyObject *o;
   if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
     o = (*t->tp_alloc)(t, 0);
@@ -6572,17 +6571,17 @@ static PyObject *__pyx_tp_new_5yapic_3sql_4_ddl_DDLReflect(PyTypeObject *t, PyOb
     o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
   }
   if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect *)o);
+  p = ((struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect *)o);
   p->entity_base = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)Py_None); Py_INCREF(Py_None);
-  if (unlikely(__pyx_pw_5yapic_3sql_4_ddl_10DDLReflect_1__cinit__(o, a, k) < 0)) goto bad;
+  if (unlikely(__pyx_pw_5yapic_6entity_3sql_4_ddl_10DDLReflect_1__cinit__(o, a, k) < 0)) goto bad;
   return o;
   bad:
   Py_DECREF(o); o = 0;
   return NULL;
 }
 
-static void __pyx_tp_dealloc_5yapic_3sql_4_ddl_DDLReflect(PyObject *o) {
-  struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect *p = (struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect *)o;
+static void __pyx_tp_dealloc_5yapic_6entity_3sql_4_ddl_DDLReflect(PyObject *o) {
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect *p = (struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect *)o;
   #if CYTHON_USE_TP_FINALIZE
   if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && !_PyGC_FINALIZED(o)) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
@@ -6593,35 +6592,35 @@ static void __pyx_tp_dealloc_5yapic_3sql_4_ddl_DDLReflect(PyObject *o) {
   (*Py_TYPE(o)->tp_free)(o);
 }
 
-static int __pyx_tp_traverse_5yapic_3sql_4_ddl_DDLReflect(PyObject *o, visitproc v, void *a) {
+static int __pyx_tp_traverse_5yapic_6entity_3sql_4_ddl_DDLReflect(PyObject *o, visitproc v, void *a) {
   int e;
-  struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect *p = (struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect *)o;
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect *p = (struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect *)o;
   if (p->entity_base) {
     e = (*v)(((PyObject *)p->entity_base), a); if (e) return e;
   }
   return 0;
 }
 
-static int __pyx_tp_clear_5yapic_3sql_4_ddl_DDLReflect(PyObject *o) {
+static int __pyx_tp_clear_5yapic_6entity_3sql_4_ddl_DDLReflect(PyObject *o) {
   PyObject* tmp;
-  struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect *p = (struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect *)o;
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect *p = (struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect *)o;
   tmp = ((PyObject*)p->entity_base);
   p->entity_base = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   return 0;
 }
 
-static PyMethodDef __pyx_methods_5yapic_3sql_4_ddl_DDLReflect[] = {
-  {"get_entities", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5yapic_3sql_4_ddl_10DDLReflect_3get_entities, METH_VARARGS|METH_KEYWORDS, 0},
+static PyMethodDef __pyx_methods_5yapic_6entity_3sql_4_ddl_DDLReflect[] = {
+  {"get_entities", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5yapic_6entity_3sql_4_ddl_10DDLReflect_3get_entities, METH_VARARGS|METH_KEYWORDS, 0},
   {0, 0, 0, 0}
 };
 
-static PyTypeObject __pyx_type_5yapic_3sql_4_ddl_DDLReflect = {
+static PyTypeObject __pyx_type_5yapic_6entity_3sql_4_ddl_DDLReflect = {
   PyVarObject_HEAD_INIT(0, 0)
-  "yapic.sql._ddl.DDLReflect", /*tp_name*/
-  sizeof(struct __pyx_obj_5yapic_3sql_4_ddl_DDLReflect), /*tp_basicsize*/
+  "yapic.entity.sql._ddl.DDLReflect", /*tp_name*/
+  sizeof(struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5yapic_3sql_4_ddl_DDLReflect, /*tp_dealloc*/
+  __pyx_tp_dealloc_5yapic_6entity_3sql_4_ddl_DDLReflect, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -6643,13 +6642,13 @@ static PyTypeObject __pyx_type_5yapic_3sql_4_ddl_DDLReflect = {
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
   0, /*tp_doc*/
-  __pyx_tp_traverse_5yapic_3sql_4_ddl_DDLReflect, /*tp_traverse*/
-  __pyx_tp_clear_5yapic_3sql_4_ddl_DDLReflect, /*tp_clear*/
+  __pyx_tp_traverse_5yapic_6entity_3sql_4_ddl_DDLReflect, /*tp_traverse*/
+  __pyx_tp_clear_5yapic_6entity_3sql_4_ddl_DDLReflect, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
   0, /*tp_iternext*/
-  __pyx_methods_5yapic_3sql_4_ddl_DDLReflect, /*tp_methods*/
+  __pyx_methods_5yapic_6entity_3sql_4_ddl_DDLReflect, /*tp_methods*/
   0, /*tp_members*/
   0, /*tp_getset*/
   0, /*tp_base*/
@@ -6659,7 +6658,7 @@ static PyTypeObject __pyx_type_5yapic_3sql_4_ddl_DDLReflect = {
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_5yapic_3sql_4_ddl_DDLReflect, /*tp_new*/
+  __pyx_tp_new_5yapic_6entity_3sql_4_ddl_DDLReflect, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -6674,14 +6673,14 @@ static PyTypeObject __pyx_type_5yapic_3sql_4_ddl_DDLReflect = {
   #endif
 };
 
-static struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *__pyx_freelist_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys[8];
-static int __pyx_freecount_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys = 0;
+static struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *__pyx_freelist_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys[8];
+static int __pyx_freecount_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys = 0;
 
-static PyObject *__pyx_tp_new_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+static PyObject *__pyx_tp_new_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
   PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys)))) {
-    o = (PyObject*)__pyx_freelist_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys[--__pyx_freecount_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys];
-    memset(o, 0, sizeof(struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys));
+  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys)))) {
+    o = (PyObject*)__pyx_freelist_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys[--__pyx_freecount_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys];
+    memset(o, 0, sizeof(struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys));
     (void) PyObject_INIT(o, t);
     PyObject_GC_Track(o);
   } else {
@@ -6691,8 +6690,8 @@ static PyObject *__pyx_tp_new_5yapic_3sql_4_ddl___pyx_scope_struct__compile_fore
   return o;
 }
 
-static void __pyx_tp_dealloc_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys(PyObject *o) {
-  struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *p = (struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *)o;
+static void __pyx_tp_dealloc_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys(PyObject *o) {
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *p = (struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *)o;
   PyObject_GC_UnTrack(o);
   Py_CLEAR(p->__pyx_v_fk);
   Py_CLEAR(p->__pyx_v_fks);
@@ -6701,16 +6700,16 @@ static void __pyx_tp_dealloc_5yapic_3sql_4_ddl___pyx_scope_struct__compile_forei
   Py_CLEAR(p->__pyx_v_res);
   Py_CLEAR(p->__pyx_v_self);
   Py_CLEAR(p->__pyx_t_0);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys)))) {
-    __pyx_freelist_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys[__pyx_freecount_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys++] = ((struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *)o);
+  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys)))) {
+    __pyx_freelist_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys[__pyx_freecount_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys++] = ((struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *)o);
   } else {
     (*Py_TYPE(o)->tp_free)(o);
   }
 }
 
-static int __pyx_tp_traverse_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys(PyObject *o, visitproc v, void *a) {
+static int __pyx_tp_traverse_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys(PyObject *o, visitproc v, void *a) {
   int e;
-  struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *p = (struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *)o;
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *p = (struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys *)o;
   if (p->__pyx_v_fk) {
     e = (*v)(((PyObject *)p->__pyx_v_fk), a); if (e) return e;
   }
@@ -6732,12 +6731,12 @@ static int __pyx_tp_traverse_5yapic_3sql_4_ddl___pyx_scope_struct__compile_forei
   return 0;
 }
 
-static PyTypeObject __pyx_type_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys = {
+static PyTypeObject __pyx_type_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys = {
   PyVarObject_HEAD_INIT(0, 0)
-  "yapic.sql._ddl.__pyx_scope_struct__compile_foreign_keys", /*tp_name*/
-  sizeof(struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys), /*tp_basicsize*/
+  "yapic.entity.sql._ddl.__pyx_scope_struct__compile_foreign_keys", /*tp_name*/
+  sizeof(struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys, /*tp_dealloc*/
+  __pyx_tp_dealloc_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -6759,7 +6758,7 @@ static PyTypeObject __pyx_type_5yapic_3sql_4_ddl___pyx_scope_struct__compile_for
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
   0, /*tp_doc*/
-  __pyx_tp_traverse_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys, /*tp_traverse*/
+  __pyx_tp_traverse_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys, /*tp_traverse*/
   0, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
@@ -6775,7 +6774,7 @@ static PyTypeObject __pyx_type_5yapic_3sql_4_ddl___pyx_scope_struct__compile_for
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys, /*tp_new*/
+  __pyx_tp_new_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -6790,14 +6789,14 @@ static PyTypeObject __pyx_type_5yapic_3sql_4_ddl___pyx_scope_struct__compile_for
   #endif
 };
 
-static struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities *__pyx_freelist_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities[8];
-static int __pyx_freecount_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities = 0;
+static struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities *__pyx_freelist_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities[8];
+static int __pyx_freecount_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities = 0;
 
-static PyObject *__pyx_tp_new_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+static PyObject *__pyx_tp_new_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
   PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities)))) {
-    o = (PyObject*)__pyx_freelist_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities[--__pyx_freecount_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities];
-    memset(o, 0, sizeof(struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities));
+  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities)))) {
+    o = (PyObject*)__pyx_freelist_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities[--__pyx_freecount_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities];
+    memset(o, 0, sizeof(struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities));
     (void) PyObject_INIT(o, t);
     PyObject_GC_Track(o);
   } else {
@@ -6807,22 +6806,22 @@ static PyObject *__pyx_tp_new_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entitie
   return o;
 }
 
-static void __pyx_tp_dealloc_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities(PyObject *o) {
-  struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities *p = (struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities *)o;
+static void __pyx_tp_dealloc_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities(PyObject *o) {
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities *p = (struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities *)o;
   PyObject_GC_UnTrack(o);
   Py_CLEAR(p->__pyx_v_conn);
   Py_CLEAR(p->__pyx_v_registry);
   Py_CLEAR(p->__pyx_v_self);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities)))) {
-    __pyx_freelist_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities[__pyx_freecount_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities++] = ((struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities *)o);
+  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities)))) {
+    __pyx_freelist_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities[__pyx_freecount_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities++] = ((struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities *)o);
   } else {
     (*Py_TYPE(o)->tp_free)(o);
   }
 }
 
-static int __pyx_tp_traverse_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities(PyObject *o, visitproc v, void *a) {
+static int __pyx_tp_traverse_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities(PyObject *o, visitproc v, void *a) {
   int e;
-  struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities *p = (struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities *)o;
+  struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities *p = (struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities *)o;
   if (p->__pyx_v_conn) {
     e = (*v)(((PyObject *)p->__pyx_v_conn), a); if (e) return e;
   }
@@ -6835,12 +6834,12 @@ static int __pyx_tp_traverse_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities
   return 0;
 }
 
-static PyTypeObject __pyx_type_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities = {
+static PyTypeObject __pyx_type_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities = {
   PyVarObject_HEAD_INIT(0, 0)
-  "yapic.sql._ddl.__pyx_scope_struct_1_get_entities", /*tp_name*/
-  sizeof(struct __pyx_obj_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities), /*tp_basicsize*/
+  "yapic.entity.sql._ddl.__pyx_scope_struct_1_get_entities", /*tp_name*/
+  sizeof(struct __pyx_obj_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities, /*tp_dealloc*/
+  __pyx_tp_dealloc_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -6862,7 +6861,7 @@ static PyTypeObject __pyx_type_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entiti
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
   0, /*tp_doc*/
-  __pyx_tp_traverse_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities, /*tp_traverse*/
+  __pyx_tp_traverse_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities, /*tp_traverse*/
   0, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
@@ -6878,7 +6877,7 @@ static PyTypeObject __pyx_type_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entiti
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities, /*tp_new*/
+  __pyx_tp_new_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -7032,7 +7031,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_values, __pyx_k_values, sizeof(__pyx_k_values), 0, 0, 1, 1},
   {&__pyx_n_s_yapic_entity__entity_diff, __pyx_k_yapic_entity__entity_diff, sizeof(__pyx_k_yapic_entity__entity_diff), 0, 0, 1, 1},
   {&__pyx_n_s_yapic_entity__registry, __pyx_k_yapic_entity__registry, sizeof(__pyx_k_yapic_entity__registry), 0, 0, 1, 1},
-  {&__pyx_n_s_yapic_sql__ddl, __pyx_k_yapic_sql__ddl, sizeof(__pyx_k_yapic_sql__ddl), 0, 0, 1, 1},
+  {&__pyx_n_s_yapic_entity_sql__ddl, __pyx_k_yapic_entity_sql__ddl, sizeof(__pyx_k_yapic_entity_sql__ddl), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
@@ -7049,7 +7048,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "yapic/sql/_ddl.pyx":106
+  /* "yapic/entity/sql/_ddl.pyx":106
  *     def compile_registry_diff(self, RegistryDiff diff):
  *         lines = []
  *         schemas_created = {ent.__meta__.get("schema", "public") for ent in diff.a.values()}             # <<<<<<<<<<<<<<
@@ -7111,32 +7110,32 @@ static int __Pyx_modinit_type_init_code(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_5yapic_3sql_4_ddl_DDLCompiler) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
-  __pyx_type_5yapic_3sql_4_ddl_DDLCompiler.tp_print = 0;
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_3sql_4_ddl_DDLCompiler.tp_dictoffset && __pyx_type_5yapic_3sql_4_ddl_DDLCompiler.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_5yapic_3sql_4_ddl_DDLCompiler.tp_getattro = __Pyx_PyObject_GenericGetAttr;
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_4_ddl_DDLCompiler) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_type_5yapic_6entity_3sql_4_ddl_DDLCompiler.tp_print = 0;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_4_ddl_DDLCompiler.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_4_ddl_DDLCompiler.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_5yapic_6entity_3sql_4_ddl_DDLCompiler.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DDLCompiler, (PyObject *)&__pyx_type_5yapic_3sql_4_ddl_DDLCompiler) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
-  __pyx_ptype_5yapic_3sql_4_ddl_DDLCompiler = &__pyx_type_5yapic_3sql_4_ddl_DDLCompiler;
-  if (PyType_Ready(&__pyx_type_5yapic_3sql_4_ddl_DDLReflect) < 0) __PYX_ERR(0, 177, __pyx_L1_error)
-  __pyx_type_5yapic_3sql_4_ddl_DDLReflect.tp_print = 0;
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_3sql_4_ddl_DDLReflect.tp_dictoffset && __pyx_type_5yapic_3sql_4_ddl_DDLReflect.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_5yapic_3sql_4_ddl_DDLReflect.tp_getattro = __Pyx_PyObject_GenericGetAttr;
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DDLCompiler, (PyObject *)&__pyx_type_5yapic_6entity_3sql_4_ddl_DDLCompiler) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_3sql_4_ddl_DDLCompiler = &__pyx_type_5yapic_6entity_3sql_4_ddl_DDLCompiler;
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_4_ddl_DDLReflect) < 0) __PYX_ERR(0, 177, __pyx_L1_error)
+  __pyx_type_5yapic_6entity_3sql_4_ddl_DDLReflect.tp_print = 0;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_4_ddl_DDLReflect.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_4_ddl_DDLReflect.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_5yapic_6entity_3sql_4_ddl_DDLReflect.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DDLReflect, (PyObject *)&__pyx_type_5yapic_3sql_4_ddl_DDLReflect) < 0) __PYX_ERR(0, 177, __pyx_L1_error)
-  __pyx_ptype_5yapic_3sql_4_ddl_DDLReflect = &__pyx_type_5yapic_3sql_4_ddl_DDLReflect;
-  if (PyType_Ready(&__pyx_type_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys) < 0) __PYX_ERR(0, 74, __pyx_L1_error)
-  __pyx_type_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys.tp_print = 0;
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys.tp_dictoffset && __pyx_type_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DDLReflect, (PyObject *)&__pyx_type_5yapic_6entity_3sql_4_ddl_DDLReflect) < 0) __PYX_ERR(0, 177, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_3sql_4_ddl_DDLReflect = &__pyx_type_5yapic_6entity_3sql_4_ddl_DDLReflect;
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys) < 0) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_type_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys.tp_print = 0;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
-  __pyx_ptype_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys = &__pyx_type_5yapic_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys;
-  if (PyType_Ready(&__pyx_type_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities) < 0) __PYX_ERR(0, 181, __pyx_L1_error)
-  __pyx_type_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities.tp_print = 0;
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities.tp_dictoffset && __pyx_type_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
+  __pyx_ptype_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys = &__pyx_type_5yapic_6entity_3sql_4_ddl___pyx_scope_struct__compile_foreign_keys;
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities) < 0) __PYX_ERR(0, 181, __pyx_L1_error)
+  __pyx_type_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities.tp_print = 0;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
-  __pyx_ptype_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities = &__pyx_type_5yapic_3sql_4_ddl___pyx_scope_struct_1_get_entities;
+  __pyx_ptype_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities = &__pyx_type_5yapic_6entity_3sql_4_ddl___pyx_scope_struct_1_get_entities;
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -7267,22 +7266,22 @@ static int __Pyx_modinit_type_import_code(void) {
    if (!__pyx_ptype_5yapic_6entity_6_query_QueryFinalizer) __PYX_ERR(7, 26, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_6_query_QueryFinalizer = (struct __pyx_vtabstruct_5yapic_6entity_6_query_QueryFinalizer*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_6_query_QueryFinalizer->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_6_query_QueryFinalizer)) __PYX_ERR(7, 26, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyImport_ImportModule("yapic.sql._query_compiler"); if (unlikely(!__pyx_t_1)) __PYX_ERR(8, 7, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("yapic.entity.sql._query_compiler"); if (unlikely(!__pyx_t_1)) __PYX_ERR(8, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_ptype_5yapic_3sql_15_query_compiler_QueryCompiler = __Pyx_ImportType(__pyx_t_1, "yapic.sql._query_compiler", "QueryCompiler", sizeof(struct __pyx_obj_5yapic_3sql_15_query_compiler_QueryCompiler), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_3sql_15_query_compiler_QueryCompiler) __PYX_ERR(8, 7, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_3sql_15_query_compiler_QueryCompiler = (struct __pyx_vtabstruct_5yapic_3sql_15_query_compiler_QueryCompiler*)__Pyx_GetVtable(__pyx_ptype_5yapic_3sql_15_query_compiler_QueryCompiler->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_3sql_15_query_compiler_QueryCompiler)) __PYX_ERR(8, 7, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_3sql_15_query_compiler_QueryCompiler = __Pyx_ImportType(__pyx_t_1, "yapic.entity.sql._query_compiler", "QueryCompiler", sizeof(struct __pyx_obj_5yapic_6entity_3sql_15_query_compiler_QueryCompiler), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_3sql_15_query_compiler_QueryCompiler) __PYX_ERR(8, 7, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_3sql_15_query_compiler_QueryCompiler = (struct __pyx_vtabstruct_5yapic_6entity_3sql_15_query_compiler_QueryCompiler*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_15_query_compiler_QueryCompiler->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_15_query_compiler_QueryCompiler)) __PYX_ERR(8, 7, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyImport_ImportModule("yapic.sql._dialect"); if (unlikely(!__pyx_t_1)) __PYX_ERR(9, 9, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("yapic.entity.sql._dialect"); if (unlikely(!__pyx_t_1)) __PYX_ERR(9, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_ptype_5yapic_3sql_8_dialect_Dialect = __Pyx_ImportType(__pyx_t_1, "yapic.sql._dialect", "Dialect", sizeof(struct __pyx_obj_5yapic_3sql_8_dialect_Dialect), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_3sql_8_dialect_Dialect) __PYX_ERR(9, 9, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_3sql_8_dialect_Dialect = (struct __pyx_vtabstruct_5yapic_3sql_8_dialect_Dialect*)__Pyx_GetVtable(__pyx_ptype_5yapic_3sql_8_dialect_Dialect->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_3sql_8_dialect_Dialect)) __PYX_ERR(9, 9, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_3sql_8_dialect_Dialect = __Pyx_ImportType(__pyx_t_1, "yapic.entity.sql._dialect", "Dialect", sizeof(struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_3sql_8_dialect_Dialect) __PYX_ERR(9, 9, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_3sql_8_dialect_Dialect = (struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_8_dialect_Dialect->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_8_dialect_Dialect)) __PYX_ERR(9, 9, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyImport_ImportModule("yapic.sql._connection"); if (unlikely(!__pyx_t_1)) __PYX_ERR(10, 7, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("yapic.entity.sql._connection"); if (unlikely(!__pyx_t_1)) __PYX_ERR(10, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_ptype_5yapic_3sql_11_connection_Connection = __Pyx_ImportType(__pyx_t_1, "yapic.sql._connection", "Connection", sizeof(struct __pyx_obj_5yapic_3sql_11_connection_Connection), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_3sql_11_connection_Connection) __PYX_ERR(10, 7, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_3sql_11_connection_Connection = __Pyx_ImportType(__pyx_t_1, "yapic.entity.sql._connection", "Connection", sizeof(struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_3sql_11_connection_Connection) __PYX_ERR(10, 7, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;
@@ -7487,14 +7486,14 @@ if (!__Pyx_RefNanny) {
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_yapic__sql___ddl) {
+  if (__pyx_module_is_main_yapic__entity__sql___ddl) {
     if (PyObject_SetAttr(__pyx_m, __pyx_n_s_name_2, __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "yapic.sql._ddl")) {
-      if (unlikely(PyDict_SetItemString(modules, "yapic.sql._ddl", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "yapic.entity.sql._ddl")) {
+      if (unlikely(PyDict_SetItemString(modules, "yapic.entity.sql._ddl", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -7515,7 +7514,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "yapic/sql/_ddl.pyx":3
+  /* "yapic/entity/sql/_ddl.pyx":3
  * from yapic.entity._entity cimport EntityType
  * from yapic.entity._entity_diff cimport EntityDiff
  * from yapic.entity._entity_diff import EntityDiffKind             # <<<<<<<<<<<<<<
@@ -7536,7 +7535,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "yapic/sql/_ddl.pyx":5
+  /* "yapic/entity/sql/_ddl.pyx":5
  * from yapic.entity._entity_diff import EntityDiffKind
  * from yapic.entity._registry cimport RegistryDiff
  * from yapic.entity._registry import RegistryDiffKind             # <<<<<<<<<<<<<<
@@ -7557,7 +7556,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "yapic/sql/_ddl.pyx":1
+  /* "yapic/entity/sql/_ddl.pyx":1
  * from yapic.entity._entity cimport EntityType             # <<<<<<<<<<<<<<
  * from yapic.entity._entity_diff cimport EntityDiff
  * from yapic.entity._entity_diff import EntityDiffKind
@@ -7575,11 +7574,11 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_2);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init yapic.sql._ddl", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init yapic.entity.sql._ddl", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_CLEAR(__pyx_m);
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init yapic.sql._ddl");
+    PyErr_SetString(PyExc_ImportError, "init yapic.entity.sql._ddl");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();

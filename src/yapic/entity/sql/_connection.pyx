@@ -91,7 +91,7 @@ cdef class Connection:
 
 cpdef wrap_connection(conn, dialect):
     if isinstance(dialect, str):
-        package = __import__(f"yapic.sql.{dialect}", fromlist=["Dialect", "Connection"])
+        package = __import__(f"yapic.entity.sql.{dialect}", fromlist=["Dialect", "Connection"])
         dialect = getattr(package, "Dialect")
         connection = getattr(package, "Connection")
     else:

@@ -1,5 +1,5 @@
 import pytest
-from yapic.sql import wrap_connection, Entity, sync
+from yapic.entity.sql import wrap_connection, Entity, sync
 from yapic.entity import (Serial, Int, String, ForeignKey, One, Many, ManyAcross, Registry, DependencyList,
                           save_operations)
 

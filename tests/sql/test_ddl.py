@@ -2,7 +2,7 @@ from enum import Enum, Flag
 
 from yapic.entity import (Int, Serial, String, Choice, Field, PrimaryKey, ForeignKey, Date, DateTime,
                           DateTimeTz, Bool, func, const, Registry)
-from yapic.sql import PostgreDialect, Entity
+from yapic.entity.sql import PostgreDialect, Entity
 
 dialect = PostgreDialect()
 ddl = dialect.create_ddl_compiler()
