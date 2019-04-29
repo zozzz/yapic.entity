@@ -111,7 +111,7 @@ cdef class PostgreDDLReflect(DDLReflect):
         cdef bint is_nullable = record["is_nullable"] == "YES"
         default = record["column_default"]
 
-        if data_type == "integer":
+        if data_type == "integer" or data_type == "smallint" or data_type == "bigint":
             field = Field(IntImpl(), size=int(record["numeric_precision"] / 8), nullable=is_nullable)
 
             if default is not None:
