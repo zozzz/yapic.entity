@@ -58,8 +58,9 @@ cdef class EntityDiff:
 cdef inline dict field_eq(Field a, Field b, object expression_eq):
     result = {}
 
-    if a._index_ != b._index_:
-        result["_index_"] = b._index_
+    # XXX: implement field order change in pgsql
+    # if a._index_ != b._index_:
+    #     result["_index_"] = b._index_
 
     if a._name_ != b._name_:
         result["_name_"] = b._name_

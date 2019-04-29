@@ -22,3 +22,5 @@ cdef class RegistryDiff:
     cdef readonly Registry b
 
     cdef readonly list changes
+
+    cpdef list compare_data(self, list a_ents, list b_ents)

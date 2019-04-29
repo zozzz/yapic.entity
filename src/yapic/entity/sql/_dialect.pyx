@@ -33,3 +33,18 @@ cdef class Dialect:
 
     cpdef EntityDiff entity_diff(self, EntityType a, EntityType b):
         return EntityDiff(a, b, self.expression_eq)
+
+    cpdef str compile_insert(self, EntityType entity, dict data):
+        field_names = [self.quote_ident(k) for k in data.keys()]
+        values = [self.quote_value(v) for v in data.values()]
+        return f"INSERT INTO {self.table_qname(entity)} ({', '.join(field_names)}) VALUES ({', '.join(values)});"
+
+    cpdef str compile_update(self, EntityType entity, dict data):
+        pk_names = [attr._name_ for attr in entity.__pk__]
+        update = [f"{self.quote_ident(k)}={self.quote_value(v)}" for k, v in data.items() if k not in pk_names]
+        where = [f"{self.quote_ident(k)}={self.quote_value(v)}" for k, v in data.items() if k in pk_names]
+        return f"UPDATE {self.table_qname(entity)} SET {', '.join(update)} WHERE {' AND '.join(where)};"
+
+    cpdef str compile_delete(self, EntityType entity, dict data):
+        where = [f"{self.quote_ident(k)}={self.quote_value(v)}" for k, v in data.items()]
+        return f"DELETE FROM {self.table_qname(entity)} WHERE {' AND '.join(where)};"

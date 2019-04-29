@@ -1,4 +1,4 @@
 - EntityType.registry = WeakRef
 - Field.entity = WeakRef
 - Extension.attr = WeakRef
-- Use Relation default value as custom join expression or db.RelationJoin extension
+- Lock insert / update on tables with `__fix_entries__` (CREATE TRIGGER, ALTER TABLE DISABLE / ENABLE TRIGGER)

@@ -1035,6 +1035,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityType {
   PyObject *__fields__;
   PyObject *__pk__;
   PyObject *__deferred__;
+  PyObject *__fix_entries__;
   PyObject *registry;
   PyObject *meta;
   PyObject *deps;
@@ -1042,7 +1043,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityType {
 };
 
 
-/* "_entity.pxd":29
+/* "_entity.pxd":30
  * 
  * 
  * cdef class EntityBase:             # <<<<<<<<<<<<<<
@@ -1056,7 +1057,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityBase {
 };
 
 
-/* "_entity.pxd":34
+/* "_entity.pxd":35
  * 
  * 
  * cdef class EntityAttribute(Expression):             # <<<<<<<<<<<<<<
@@ -1077,7 +1078,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute {
 };
 
 
-/* "_entity.pxd":52
+/* "_entity.pxd":53
  * 
  * 
  * cdef class EntityAttributeExt:             # <<<<<<<<<<<<<<
@@ -1093,7 +1094,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt {
 };
 
 
-/* "_entity.pxd":62
+/* "_entity.pxd":63
  * 
  * 
  * cdef class EntityAttributeImpl:             # <<<<<<<<<<<<<<
@@ -1107,7 +1108,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl {
 };
 
 
-/* "_entity.pxd":76
+/* "_entity.pxd":77
  * @cython.final
  * @cython.freelist(1000)
  * cdef class EntityState:             # <<<<<<<<<<<<<<
@@ -1124,7 +1125,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityState {
 };
 
 
-/* "_entity.pxd":103
+/* "_entity.pxd":104
  * 
  * @cython.final
  * cdef class DependencyList(list):             # <<<<<<<<<<<<<<
@@ -1284,13 +1285,14 @@ struct __pyx_obj_5yapic_6entity_9_registry_Registry {
  */
 struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff {
   PyObject_HEAD
+  struct __pyx_vtabstruct_5yapic_6entity_9_registry_RegistryDiff *__pyx_vtab;
   struct __pyx_obj_5yapic_6entity_9_registry_Registry *a;
   struct __pyx_obj_5yapic_6entity_9_registry_Registry *b;
   PyObject *changes;
 };
 
 
-/* "yapic/entity/_registry.pyx":62
+/* "yapic/entity/_registry.pyx":66
  * @cython.final
  * cdef class RegistryDiff:
  *     def __cinit__(self, Registry a, Registry b, object entity_diff):             # <<<<<<<<<<<<<<
@@ -1462,7 +1464,7 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityType {
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityType *__pyx_vtabptr_5yapic_6entity_7_entity_EntityType;
 
 
-/* "_entity.pxd":34
+/* "_entity.pxd":35
  * 
  * 
  * cdef class EntityAttribute(Expression):             # <<<<<<<<<<<<<<
@@ -1480,7 +1482,7 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute {
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute *__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttribute;
 
 
-/* "_entity.pxd":52
+/* "_entity.pxd":53
  * 
  * 
  * cdef class EntityAttributeExt:             # <<<<<<<<<<<<<<
@@ -1495,7 +1497,7 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt {
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt *__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt;
 
 
-/* "_entity.pxd":62
+/* "_entity.pxd":63
  * 
  * 
  * cdef class EntityAttributeImpl:             # <<<<<<<<<<<<<<
@@ -1513,7 +1515,7 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl {
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl *__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeImpl;
 
 
-/* "_entity.pxd":76
+/* "_entity.pxd":77
  * @cython.final
  * @cython.freelist(1000)
  * cdef class EntityState:             # <<<<<<<<<<<<<<
@@ -1537,7 +1539,7 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState {
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *__pyx_vtabptr_5yapic_6entity_7_entity_EntityState;
 
 
-/* "_entity.pxd":103
+/* "_entity.pxd":104
  * 
  * @cython.final
  * cdef class DependencyList(list):             # <<<<<<<<<<<<<<
@@ -1685,6 +1687,21 @@ static PyObject *__pyx_f_5yapic_6entity_9_registry_8Registry_keys(struct __pyx_o
 static PyObject *__pyx_f_5yapic_6entity_9_registry_8Registry_values(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, int __pyx_skip_dispatch);
 static PyObject *__pyx_f_5yapic_6entity_9_registry_8Registry_items(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, int __pyx_skip_dispatch);
 static PyObject *__pyx_f_5yapic_6entity_9_registry_8Registry_resolve_deferred(struct __pyx_obj_5yapic_6entity_9_registry_Registry *);
+
+
+/* "yapic/entity/_registry.pyx":65
+ * 
+ * @cython.final
+ * cdef class RegistryDiff:             # <<<<<<<<<<<<<<
+ *     def __cinit__(self, Registry a, Registry b, object entity_diff):
+ *         self.a = a
+ */
+
+struct __pyx_vtabstruct_5yapic_6entity_9_registry_RegistryDiff {
+  PyObject *(*compare_data)(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *, PyObject *, PyObject *, int __pyx_skip_dispatch);
+};
+static struct __pyx_vtabstruct_5yapic_6entity_9_registry_RegistryDiff *__pyx_vtabptr_5yapic_6entity_9_registry_RegistryDiff;
+static PyObject *__pyx_f_5yapic_6entity_9_registry_12RegistryDiff_compare_data(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *, PyObject *, PyObject *, int __pyx_skip_dispatch);
 
 /* --- Runtime support code (head) --- */
 /* Refnanny.proto */
@@ -1956,35 +1973,6 @@ static int __Pyx_IternextUnpackEndCheck(PyObject *retval, Py_ssize_t expected);
 /* None.proto */
 static CYTHON_INLINE void __Pyx_RaiseClosureNameError(const char *varname);
 
-/* GetItemInt.proto */
-#define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_Fast(o, (Py_ssize_t)i, is_list, wraparound, boundscheck) :\
-    (is_list ? (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL) :\
-               __Pyx_GetItemInt_Generic(o, to_py_func(i))))
-#define __Pyx_GetItemInt_List(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_List_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
-    (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL))
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
-                                                              int wraparound, int boundscheck);
-#define __Pyx_GetItemInt_Tuple(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_Tuple_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
-    (PyErr_SetString(PyExc_IndexError, "tuple index out of range"), (PyObject*)NULL))
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
-                                                              int wraparound, int boundscheck);
-static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
-                                                     int is_list, int wraparound, int boundscheck);
-
-/* ObjectGetItem.proto */
-#if CYTHON_USE_TYPE_SLOTS
-static CYTHON_INLINE PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* key);
-#else
-#define __Pyx_PyObject_GetItem(obj, key)  PyObject_GetItem(obj, key)
-#endif
-
 /* PyDictVersioning.proto */
 #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
 #define __PYX_DICT_VERSION_INIT  ((PY_UINT64_T) -1)
@@ -2030,6 +2018,35 @@ static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_ve
 #define __Pyx_GetModuleGlobalName(var, name)  (var) = __Pyx__GetModuleGlobalName(name)
 #define __Pyx_GetModuleGlobalNameUncached(var, name)  (var) = __Pyx__GetModuleGlobalName(name)
 static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name);
+#endif
+
+/* GetItemInt.proto */
+#define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Fast(o, (Py_ssize_t)i, is_list, wraparound, boundscheck) :\
+    (is_list ? (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL) :\
+               __Pyx_GetItemInt_Generic(o, to_py_func(i))))
+#define __Pyx_GetItemInt_List(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_List_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+#define __Pyx_GetItemInt_Tuple(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Tuple_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "tuple index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
+                                                     int is_list, int wraparound, int boundscheck);
+
+/* ObjectGetItem.proto */
+#if CYTHON_USE_TYPE_SLOTS
+static CYTHON_INLINE PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* key);
+#else
+#define __Pyx_PyObject_GetItem(obj, key)  PyObject_GetItem(obj, key)
 #endif
 
 /* FetchCommonType.proto */
@@ -2088,6 +2105,31 @@ static CYTHON_INLINE void __Pyx_CyFunction_SetDefaultsKwDict(PyObject *m,
 static CYTHON_INLINE void __Pyx_CyFunction_SetAnnotationsDict(PyObject *m,
                                                               PyObject *dict);
 static int __pyx_CyFunction_init(void);
+
+/* set_iter.proto */
+static CYTHON_INLINE PyObject* __Pyx_set_iterator(PyObject* iterable, int is_set,
+                                                  Py_ssize_t* p_orig_length, int* p_source_is_set);
+static CYTHON_INLINE int __Pyx_set_iter_next(
+        PyObject* iter_obj, Py_ssize_t orig_length,
+        Py_ssize_t* ppos, PyObject **value,
+        int source_is_set);
+
+/* UnpackUnboundCMethod.proto */
+typedef struct {
+    PyObject *type;
+    PyObject **method_name;
+    PyCFunction func;
+    PyObject *method;
+    int flag;
+} __Pyx_CachedCFunction;
+
+/* CallUnboundCMethod1.proto */
+static PyObject* __Pyx__CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg);
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg);
+#else
+#define __Pyx_CallUnboundCMethod1(cfunc, self, arg)  __Pyx__CallUnboundCMethod1(cfunc, self, arg)
+#endif
 
 /* IncludeStringH.proto */
 #include <string.h>
@@ -2171,14 +2213,14 @@ static void __Pyx_AddTraceback(const char *funcname, int c_line,
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
+/* CIntFromPy.proto */
+static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
+
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
-
-/* CIntFromPy.proto */
-static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
 
 /* FastTypeChecks.proto */
 #if CYTHON_COMPILING_IN_CPYTHON
@@ -2204,6 +2246,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_registry_8Registry_keys(struct __pyx_o
 static PyObject *__pyx_f_5yapic_6entity_9_registry_8Registry_values(struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx_v_self, CYTHON_UNUSED int __pyx_skip_dispatch); /* proto*/
 static PyObject *__pyx_f_5yapic_6entity_9_registry_8Registry_items(struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx_v_self, CYTHON_UNUSED int __pyx_skip_dispatch); /* proto*/
 static PyObject *__pyx_f_5yapic_6entity_9_registry_8Registry_resolve_deferred(struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx_v_self); /* proto*/
+static PyObject *__pyx_f_5yapic_6entity_9_registry_12RegistryDiff_compare_data(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_self, PyObject *__pyx_v_a_ents, PyObject *__pyx_v_b_ents, CYTHON_UNUSED int __pyx_skip_dispatch); /* proto*/
 
 /* Module declarations from 'cython' */
 
@@ -2259,12 +2302,14 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_12_entity_diff_EntityDiff = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_9_registry_Registry = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_9_registry_RegistryDiff = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_9_registry___pyx_scope_struct____cinit__ = 0;
+static PyObject *__pyx_f_5yapic_6entity_9_registry_entity_data_is_eq(struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *, struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *); /*proto*/
 #define __Pyx_MODULE_NAME "yapic.entity._registry"
 extern int __pyx_module_is_main_yapic__entity___registry;
 int __pyx_module_is_main_yapic__entity___registry = 0;
 
 /* Implementation of 'yapic.entity._registry' */
 static PyObject *__pyx_builtin_ValueError;
+static PyObject *__pyx_builtin_range;
 static const char __pyx_k_a[] = "a";
 static const char __pyx_k_b[] = "b";
 static const char __pyx_k_doc[] = "__doc__";
@@ -2282,6 +2327,9 @@ static const char __pyx_k_sort[] = "sort";
 static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_index[] = "index";
 static const char __pyx_k_items[] = "items";
+static const char __pyx_k_range[] = "range";
+static const char __pyx_k_a_ents[] = "a_ents";
+static const char __pyx_k_b_ents[] = "b_ents";
 static const char __pyx_k_entity[] = "entity";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_module[] = "__module__";
@@ -2298,7 +2346,12 @@ static const char __pyx_k_metaclass[] = "__metaclass__";
 static const char __pyx_k_ValueError[] = "ValueError";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static const char __pyx_k_entity_diff[] = "entity_diff";
+static const char __pyx_k_fix_entries[] = "__fix_entries__";
+static const char __pyx_k_COMPARE_DATA[] = "COMPARE_DATA";
 static const char __pyx_k_RegistryDiff[] = "RegistryDiff";
+static const char __pyx_k_INSERT_ENTITY[] = "INSERT_ENTITY";
+static const char __pyx_k_REMOVE_ENTITY[] = "REMOVE_ENTITY";
+static const char __pyx_k_UPDATE_ENTITY[] = "UPDATE_ENTITY";
 static const char __pyx_k_RegistryDiffKind[] = "RegistryDiffKind";
 static const char __pyx_k_cinit___locals_key[] = "__cinit__.<locals>.key";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
@@ -2307,16 +2360,22 @@ static const char __pyx_k_yapic_entity__registry[] = "yapic.entity._registry";
 static const char __pyx_k_entity_already_registered_r[] = "entity already registered: %r";
 static const char __pyx_k_src_yapic_entity__registry_pyx[] = "src\\yapic\\entity\\_registry.pyx";
 static PyObject *__pyx_n_s_CHANGED;
+static PyObject *__pyx_n_s_COMPARE_DATA;
 static PyObject *__pyx_n_s_CREATED;
 static PyObject *__pyx_n_s_Enum;
+static PyObject *__pyx_n_s_INSERT_ENTITY;
 static PyObject *__pyx_n_s_REMOVED;
+static PyObject *__pyx_n_s_REMOVE_ENTITY;
 static PyObject *__pyx_n_s_Registry;
 static PyObject *__pyx_n_s_RegistryDiff;
 static PyObject *__pyx_n_s_RegistryDiffKind;
+static PyObject *__pyx_n_s_UPDATE_ENTITY;
 static PyObject *__pyx_n_s_ValueError;
 static PyObject *__pyx_n_s_WeakValueDictionary;
 static PyObject *__pyx_n_s_a;
+static PyObject *__pyx_n_s_a_ents;
 static PyObject *__pyx_n_s_b;
+static PyObject *__pyx_n_s_b_ents;
 static PyObject *__pyx_n_s_cinit___locals_key;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_doc;
@@ -2324,6 +2383,7 @@ static PyObject *__pyx_n_s_entity;
 static PyObject *__pyx_kp_u_entity_already_registered_r;
 static PyObject *__pyx_n_s_entity_diff;
 static PyObject *__pyx_n_s_enum;
+static PyObject *__pyx_n_s_fix_entries;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_index;
 static PyObject *__pyx_n_s_item;
@@ -2340,6 +2400,7 @@ static PyObject *__pyx_n_s_pop;
 static PyObject *__pyx_n_s_prepare;
 static PyObject *__pyx_n_s_pyx_vtable;
 static PyObject *__pyx_n_s_qualname;
+static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_sort;
 static PyObject *__pyx_kp_s_src_yapic_entity__registry_pyx;
 static PyObject *__pyx_n_s_test;
@@ -2360,15 +2421,21 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
 static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_2__bool__(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_self); /* proto */
 static Py_ssize_t __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_4__len__(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_6__iter__(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_8compare_data(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_self, PyObject *__pyx_v_a_ents, PyObject *__pyx_v_b_ents); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_1a___get__(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_1b___get__(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_7changes___get__(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_5yapic_6entity_9_registry_Registry(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5yapic_6entity_9_registry_RegistryDiff(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5yapic_6entity_9_registry___pyx_scope_struct____cinit__(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static __Pyx_CachedCFunction __pyx_umethod_PyList_Type_index = {0, &__pyx_n_s_index, 0, 0, 0};
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_2;
 static PyObject *__pyx_int_3;
+static PyObject *__pyx_int_4;
+static PyObject *__pyx_int_5;
+static PyObject *__pyx_int_6;
+static PyObject *__pyx_int_7;
 static PyObject *__pyx_tuple_;
 static PyObject *__pyx_codeobj__2;
 /* Late includes */
@@ -3297,7 +3364,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_8Registry_8entities___get__(
   return __pyx_r;
 }
 
-/* "yapic/entity/_registry.pyx":62
+/* "yapic/entity/_registry.pyx":66
  * @cython.final
  * cdef class RegistryDiff:
  *     def __cinit__(self, Registry a, Registry b, object entity_diff):             # <<<<<<<<<<<<<<
@@ -3339,17 +3406,17 @@ static int __pyx_pw_5yapic_6entity_9_registry_12RegistryDiff_1__cinit__(PyObject
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_b)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 1); __PYX_ERR(0, 62, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 1); __PYX_ERR(0, 66, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_entity_diff)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 2); __PYX_ERR(0, 62, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 2); __PYX_ERR(0, 66, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 62, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 66, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -3364,14 +3431,14 @@ static int __pyx_pw_5yapic_6entity_9_registry_12RegistryDiff_1__cinit__(PyObject
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 62, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 66, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("yapic.entity._registry.RegistryDiff.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_a), __pyx_ptype_5yapic_6entity_9_registry_Registry, 1, "a", 0))) __PYX_ERR(0, 62, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_b), __pyx_ptype_5yapic_6entity_9_registry_Registry, 1, "b", 0))) __PYX_ERR(0, 62, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_a), __pyx_ptype_5yapic_6entity_9_registry_Registry, 1, "a", 0))) __PYX_ERR(0, 66, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_b), __pyx_ptype_5yapic_6entity_9_registry_Registry, 1, "b", 0))) __PYX_ERR(0, 66, __pyx_L1_error)
   __pyx_r = __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(((struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *)__pyx_v_self), __pyx_v_a, __pyx_v_b, __pyx_v_entity_diff);
 
   /* function exit code */
@@ -3383,8 +3450,8 @@ static int __pyx_pw_5yapic_6entity_9_registry_12RegistryDiff_1__cinit__(PyObject
   return __pyx_r;
 }
 
-/* "yapic/entity/_registry.pyx":88
- *                 order.add(val)
+/* "yapic/entity/_registry.pyx":102
+ * 
  * 
  *         def key(item):             # <<<<<<<<<<<<<<
  *             kind, val = item
@@ -3408,7 +3475,7 @@ static PyObject *__pyx_pw_5yapic_6entity_9_registry_12RegistryDiff_9__cinit___1k
 static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_9__cinit___key(PyObject *__pyx_self, PyObject *__pyx_v_item) {
   struct __pyx_obj_5yapic_6entity_9_registry___pyx_scope_struct____cinit__ *__pyx_cur_scope;
   struct __pyx_obj_5yapic_6entity_9_registry___pyx_scope_struct____cinit__ *__pyx_outer_scope;
-  CYTHON_UNUSED PyObject *__pyx_v_kind = NULL;
+  PyObject *__pyx_v_kind = NULL;
   PyObject *__pyx_v_val = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -3422,7 +3489,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_9__cinit___ke
   __pyx_outer_scope = (struct __pyx_obj_5yapic_6entity_9_registry___pyx_scope_struct____cinit__ *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
 
-  /* "yapic/entity/_registry.pyx":89
+  /* "yapic/entity/_registry.pyx":103
  * 
  *         def key(item):
  *             kind, val = item             # <<<<<<<<<<<<<<
@@ -3435,7 +3502,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_9__cinit___ke
     if (unlikely(size != 2)) {
       if (size > 2) __Pyx_RaiseTooManyValuesError(2);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 89, __pyx_L1_error)
+      __PYX_ERR(0, 103, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
@@ -3448,21 +3515,21 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_9__cinit___ke
     __Pyx_INCREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_t_2);
     #else
-    __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_2 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 103, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     #endif
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_3 = PyObject_GetIter(__pyx_v_item); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_3 = PyObject_GetIter(__pyx_v_item); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = Py_TYPE(__pyx_t_3)->tp_iternext;
     index = 0; __pyx_t_1 = __pyx_t_4(__pyx_t_3); if (unlikely(!__pyx_t_1)) goto __pyx_L3_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_1);
     index = 1; __pyx_t_2 = __pyx_t_4(__pyx_t_3); if (unlikely(!__pyx_t_2)) goto __pyx_L3_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_2);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_4(__pyx_t_3), 2) < 0) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_4(__pyx_t_3), 2) < 0) __PYX_ERR(0, 103, __pyx_L1_error)
     __pyx_t_4 = NULL;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     goto __pyx_L4_unpacking_done;
@@ -3470,7 +3537,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_9__cinit___ke
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 89, __pyx_L1_error)
+    __PYX_ERR(0, 103, __pyx_L1_error)
     __pyx_L4_unpacking_done:;
   }
   __pyx_v_kind = __pyx_t_1;
@@ -3478,27 +3545,27 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_9__cinit___ke
   __pyx_v_val = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "yapic/entity/_registry.pyx":90
+  /* "yapic/entity/_registry.pyx":104
  *         def key(item):
  *             kind, val = item
  *             if isinstance(val, EntityDiff):             # <<<<<<<<<<<<<<
  *                 return order.index((<EntityDiff>val).b)
- *             else:
+ *             elif kind is RegistryDiffKind.INSERT_ENTITY:
  */
   __pyx_t_5 = __Pyx_TypeCheck(__pyx_v_val, __pyx_ptype_5yapic_6entity_12_entity_diff_EntityDiff); 
   __pyx_t_6 = (__pyx_t_5 != 0);
   if (__pyx_t_6) {
 
-    /* "yapic/entity/_registry.pyx":91
+    /* "yapic/entity/_registry.pyx":105
  *             kind, val = item
  *             if isinstance(val, EntityDiff):
  *                 return order.index((<EntityDiff>val).b)             # <<<<<<<<<<<<<<
- *             else:
- *                 return order.index(val)
+ *             elif kind is RegistryDiffKind.INSERT_ENTITY:
+ *                 return order.index(type(val))
  */
     __Pyx_XDECREF(__pyx_r);
-    if (unlikely(!__pyx_cur_scope->__pyx_v_order)) { __Pyx_RaiseClosureNameError("order"); __PYX_ERR(0, 91, __pyx_L1_error) }
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_order), __pyx_n_s_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
+    if (unlikely(!__pyx_cur_scope->__pyx_v_order)) { __Pyx_RaiseClosureNameError("order"); __PYX_ERR(0, 105, __pyx_L1_error) }
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_order), __pyx_n_s_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_3 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -3512,24 +3579,80 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_9__cinit___ke
     }
     __pyx_t_2 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_3, ((PyObject *)((struct __pyx_obj_5yapic_6entity_12_entity_diff_EntityDiff *)__pyx_v_val)->b)) : __Pyx_PyObject_CallOneArg(__pyx_t_1, ((PyObject *)((struct __pyx_obj_5yapic_6entity_12_entity_diff_EntityDiff *)__pyx_v_val)->b));
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 91, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_r = __pyx_t_2;
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "yapic/entity/_registry.pyx":90
+    /* "yapic/entity/_registry.pyx":104
  *         def key(item):
  *             kind, val = item
  *             if isinstance(val, EntityDiff):             # <<<<<<<<<<<<<<
  *                 return order.index((<EntityDiff>val).b)
+ *             elif kind is RegistryDiffKind.INSERT_ENTITY:
+ */
+  }
+
+  /* "yapic/entity/_registry.pyx":106
+ *             if isinstance(val, EntityDiff):
+ *                 return order.index((<EntityDiff>val).b)
+ *             elif kind is RegistryDiffKind.INSERT_ENTITY:             # <<<<<<<<<<<<<<
+ *                 return order.index(type(val))
+ *             else:
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_INSERT_ENTITY); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_6 = (__pyx_v_kind == __pyx_t_1);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_5 = (__pyx_t_6 != 0);
+  if (__pyx_t_5) {
+
+    /* "yapic/entity/_registry.pyx":107
+ *                 return order.index((<EntityDiff>val).b)
+ *             elif kind is RegistryDiffKind.INSERT_ENTITY:
+ *                 return order.index(type(val))             # <<<<<<<<<<<<<<
+ *             else:
+ *                 return order.index(val)
+ */
+    __Pyx_XDECREF(__pyx_r);
+    if (unlikely(!__pyx_cur_scope->__pyx_v_order)) { __Pyx_RaiseClosureNameError("order"); __PYX_ERR(0, 107, __pyx_L1_error) }
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_order), __pyx_n_s_index); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 107, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_3 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+      __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+      if (likely(__pyx_t_3)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+        __Pyx_INCREF(__pyx_t_3);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_2, function);
+      }
+    }
+    __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, ((PyObject *)Py_TYPE(__pyx_v_val))) : __Pyx_PyObject_CallOneArg(__pyx_t_2, ((PyObject *)Py_TYPE(__pyx_v_val)));
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_r = __pyx_t_1;
+    __pyx_t_1 = 0;
+    goto __pyx_L0;
+
+    /* "yapic/entity/_registry.pyx":106
+ *             if isinstance(val, EntityDiff):
+ *                 return order.index((<EntityDiff>val).b)
+ *             elif kind is RegistryDiffKind.INSERT_ENTITY:             # <<<<<<<<<<<<<<
+ *                 return order.index(type(val))
  *             else:
  */
   }
 
-  /* "yapic/entity/_registry.pyx":93
- *                 return order.index((<EntityDiff>val).b)
+  /* "yapic/entity/_registry.pyx":109
+ *                 return order.index(type(val))
  *             else:
  *                 return order.index(val)             # <<<<<<<<<<<<<<
  * 
@@ -3537,31 +3660,31 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_9__cinit___ke
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    if (unlikely(!__pyx_cur_scope->__pyx_v_order)) { __Pyx_RaiseClosureNameError("order"); __PYX_ERR(0, 93, __pyx_L1_error) }
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_order), __pyx_n_s_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
+    if (unlikely(!__pyx_cur_scope->__pyx_v_order)) { __Pyx_RaiseClosureNameError("order"); __PYX_ERR(0, 109, __pyx_L1_error) }
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_order), __pyx_n_s_index); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 109, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_3 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-      __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_1);
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+      __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
       if (likely(__pyx_t_3)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
         __Pyx_INCREF(__pyx_t_3);
         __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_1, function);
+        __Pyx_DECREF_SET(__pyx_t_2, function);
       }
     }
-    __pyx_t_2 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_3, __pyx_v_val) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_v_val);
+    __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_v_val) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_val);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 93, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_r = __pyx_t_2;
-    __pyx_t_2 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_r = __pyx_t_1;
+    __pyx_t_1 = 0;
     goto __pyx_L0;
   }
 
-  /* "yapic/entity/_registry.pyx":88
- *                 order.add(val)
+  /* "yapic/entity/_registry.pyx":102
+ * 
  * 
  *         def key(item):             # <<<<<<<<<<<<<<
  *             kind, val = item
@@ -3583,7 +3706,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_9__cinit___ke
   return __pyx_r;
 }
 
-/* "yapic/entity/_registry.pyx":62
+/* "yapic/entity/_registry.pyx":66
  * @cython.final
  * cdef class RegistryDiff:
  *     def __cinit__(self, Registry a, Registry b, object entity_diff):             # <<<<<<<<<<<<<<
@@ -3593,6 +3716,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_9__cinit___ke
 
 static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_self, struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx_v_a, struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx_v_b, PyObject *__pyx_v_entity_diff) {
   struct __pyx_obj_5yapic_6entity_9_registry___pyx_scope_struct____cinit__ *__pyx_cur_scope;
+  struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *__pyx_v_fix = 0;
   PyObject *__pyx_v_a_names = NULL;
   PyObject *__pyx_v_b_names = NULL;
   PyObject *__pyx_v_removed = NULL;
@@ -3608,22 +3732,24 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
   PyObject *__pyx_t_3 = NULL;
   int __pyx_t_4;
   Py_ssize_t __pyx_t_5;
-  PyObject *__pyx_t_6 = NULL;
-  PyObject *__pyx_t_7 = NULL;
-  int __pyx_t_8;
+  int __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
+  PyObject *(*__pyx_t_8)(PyObject *);
   PyObject *__pyx_t_9 = NULL;
-  int __pyx_t_10;
+  PyObject *__pyx_t_10 = NULL;
+  int __pyx_t_11;
+  PyObject *__pyx_t_12 = NULL;
   __Pyx_RefNannySetupContext("__cinit__", 0);
   __pyx_cur_scope = (struct __pyx_obj_5yapic_6entity_9_registry___pyx_scope_struct____cinit__ *)__pyx_tp_new_5yapic_6entity_9_registry___pyx_scope_struct____cinit__(__pyx_ptype_5yapic_6entity_9_registry___pyx_scope_struct____cinit__, __pyx_empty_tuple, NULL);
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_9_registry___pyx_scope_struct____cinit__ *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 62, __pyx_L1_error)
+    __PYX_ERR(0, 66, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
 
-  /* "yapic/entity/_registry.pyx":63
+  /* "yapic/entity/_registry.pyx":67
  * cdef class RegistryDiff:
  *     def __cinit__(self, Registry a, Registry b, object entity_diff):
  *         self.a = a             # <<<<<<<<<<<<<<
@@ -3636,7 +3762,7 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
   __Pyx_DECREF(((PyObject *)__pyx_v_self->a));
   __pyx_v_self->a = __pyx_v_a;
 
-  /* "yapic/entity/_registry.pyx":64
+  /* "yapic/entity/_registry.pyx":68
  *     def __cinit__(self, Registry a, Registry b, object entity_diff):
  *         self.a = a
  *         self.b = b             # <<<<<<<<<<<<<<
@@ -3649,14 +3775,14 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
   __Pyx_DECREF(((PyObject *)__pyx_v_self->b));
   __pyx_v_self->b = __pyx_v_b;
 
-  /* "yapic/entity/_registry.pyx":65
+  /* "yapic/entity/_registry.pyx":69
  *         self.a = a
  *         self.b = b
  *         self.changes = []             # <<<<<<<<<<<<<<
  *         cdef DependencyList order = DependencyList()
- * 
+ *         cdef EntityBase fix
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->changes);
@@ -3664,94 +3790,94 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
   __pyx_v_self->changes = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/entity/_registry.pyx":66
+  /* "yapic/entity/_registry.pyx":70
  *         self.b = b
  *         self.changes = []
  *         cdef DependencyList order = DependencyList()             # <<<<<<<<<<<<<<
+ *         cdef EntityBase fix
  * 
- *         a_names = set(a.keys())
  */
-  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_5yapic_6entity_7_entity_DependencyList)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_5yapic_6entity_7_entity_DependencyList)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_cur_scope->__pyx_v_order = ((struct __pyx_obj_5yapic_6entity_7_entity_DependencyList *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/entity/_registry.pyx":68
- *         cdef DependencyList order = DependencyList()
+  /* "yapic/entity/_registry.pyx":73
+ *         cdef EntityBase fix
  * 
  *         a_names = set(a.keys())             # <<<<<<<<<<<<<<
  *         b_names = set(b.keys())
  * 
  */
-  __pyx_t_1 = __pyx_f_5yapic_6entity_9_registry_8Registry_keys(__pyx_v_a, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_9_registry_8Registry_keys(__pyx_v_a, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PySet_New(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_t_2 = PySet_New(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_a_names = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "yapic/entity/_registry.pyx":69
+  /* "yapic/entity/_registry.pyx":74
  * 
  *         a_names = set(a.keys())
  *         b_names = set(b.keys())             # <<<<<<<<<<<<<<
  * 
  *         for removed in sorted(a_names - b_names):
  */
-  __pyx_t_2 = __pyx_f_5yapic_6entity_9_registry_8Registry_keys(__pyx_v_b, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_5yapic_6entity_9_registry_8Registry_keys(__pyx_v_b, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 74, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = PySet_New(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_t_1 = PySet_New(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_b_names = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/entity/_registry.pyx":71
+  /* "yapic/entity/_registry.pyx":76
  *         b_names = set(b.keys())
  * 
  *         for removed in sorted(a_names - b_names):             # <<<<<<<<<<<<<<
  *             val = a[removed]
  *             self.changes.append((RegistryDiffKind.REMOVED, val))
  */
-  __pyx_t_2 = PyNumber_Subtract(__pyx_v_a_names, __pyx_v_b_names); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_Subtract(__pyx_v_a_names, __pyx_v_b_names); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PySequence_List(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_3 = PySequence_List(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_1 = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_4 = PyList_Sort(__pyx_t_1); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_4 = PyList_Sort(__pyx_t_1); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 76, __pyx_L1_error)
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 71, __pyx_L1_error)
+    __PYX_ERR(0, 76, __pyx_L1_error)
   }
   __pyx_t_3 = __pyx_t_1; __Pyx_INCREF(__pyx_t_3); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
     if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_3)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_1 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 71, __pyx_L1_error)
+    __pyx_t_1 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 76, __pyx_L1_error)
     #else
-    __pyx_t_1 = PySequence_ITEM(__pyx_t_3, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
+    __pyx_t_1 = PySequence_ITEM(__pyx_t_3, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     #endif
     __Pyx_XDECREF_SET(__pyx_v_removed, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "yapic/entity/_registry.pyx":72
+    /* "yapic/entity/_registry.pyx":77
  * 
  *         for removed in sorted(a_names - b_names):
  *             val = a[removed]             # <<<<<<<<<<<<<<
  *             self.changes.append((RegistryDiffKind.REMOVED, val))
  *             order.add(val)
  */
-    __pyx_t_1 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_v_removed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 72, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_v_removed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_XDECREF_SET(__pyx_v_val, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "yapic/entity/_registry.pyx":73
+    /* "yapic/entity/_registry.pyx":78
  *         for removed in sorted(a_names - b_names):
  *             val = a[removed]
  *             self.changes.append((RegistryDiffKind.REMOVED, val))             # <<<<<<<<<<<<<<
@@ -3760,14 +3886,14 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
  */
     if (unlikely(__pyx_v_self->changes == Py_None)) {
       PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
-      __PYX_ERR(0, 73, __pyx_L1_error)
+      __PYX_ERR(0, 78, __pyx_L1_error)
     }
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_REMOVED); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_REMOVED); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
+    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_2);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
@@ -3775,22 +3901,22 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
     __Pyx_GIVEREF(__pyx_v_val);
     PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_val);
     __pyx_t_2 = 0;
-    __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_self->changes, __pyx_t_1); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 73, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_self->changes, __pyx_t_1); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 78, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "yapic/entity/_registry.pyx":74
+    /* "yapic/entity/_registry.pyx":79
  *             val = a[removed]
  *             self.changes.append((RegistryDiffKind.REMOVED, val))
  *             order.add(val)             # <<<<<<<<<<<<<<
  * 
  *         for created in sorted(b_names - a_names):
  */
-    if (!(likely(((__pyx_v_val) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_val, __pyx_ptype_5yapic_6entity_7_entity_EntityType))))) __PYX_ERR(0, 74, __pyx_L1_error)
-    __pyx_t_1 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList *)__pyx_cur_scope->__pyx_v_order->__pyx_vtab)->add(__pyx_cur_scope->__pyx_v_order, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_v_val), 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)
+    if (!(likely(((__pyx_v_val) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_val, __pyx_ptype_5yapic_6entity_7_entity_EntityType))))) __PYX_ERR(0, 79, __pyx_L1_error)
+    __pyx_t_1 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList *)__pyx_cur_scope->__pyx_v_order->__pyx_vtab)->add(__pyx_cur_scope->__pyx_v_order, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_v_val), 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "yapic/entity/_registry.pyx":71
+    /* "yapic/entity/_registry.pyx":76
  *         b_names = set(b.keys())
  * 
  *         for removed in sorted(a_names - b_names):             # <<<<<<<<<<<<<<
@@ -3800,51 +3926,51 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "yapic/entity/_registry.pyx":76
+  /* "yapic/entity/_registry.pyx":81
  *             order.add(val)
  * 
  *         for created in sorted(b_names - a_names):             # <<<<<<<<<<<<<<
  *             val = b[created]
  *             self.changes.append((RegistryDiffKind.CREATED, val))
  */
-  __pyx_t_1 = PyNumber_Subtract(__pyx_v_b_names, __pyx_v_a_names); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_1 = PyNumber_Subtract(__pyx_v_b_names, __pyx_v_a_names); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PySequence_List(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_2 = PySequence_List(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_4 = PyList_Sort(__pyx_t_3); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_4 = PyList_Sort(__pyx_t_3); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 81, __pyx_L1_error)
   if (unlikely(__pyx_t_3 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 76, __pyx_L1_error)
+    __PYX_ERR(0, 81, __pyx_L1_error)
   }
   __pyx_t_2 = __pyx_t_3; __Pyx_INCREF(__pyx_t_2); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   for (;;) {
     if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_2)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_3); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 76, __pyx_L1_error)
+    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_3); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 81, __pyx_L1_error)
     #else
-    __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 76, __pyx_L1_error)
+    __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     #endif
     __Pyx_XDECREF_SET(__pyx_v_created, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "yapic/entity/_registry.pyx":77
+    /* "yapic/entity/_registry.pyx":82
  * 
  *         for created in sorted(b_names - a_names):
  *             val = b[created]             # <<<<<<<<<<<<<<
  *             self.changes.append((RegistryDiffKind.CREATED, val))
  *             order.add(val)
  */
-    __pyx_t_3 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_b), __pyx_v_created); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 77, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_b), __pyx_v_created); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 82, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_XDECREF_SET(__pyx_v_val, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "yapic/entity/_registry.pyx":78
+    /* "yapic/entity/_registry.pyx":83
  *         for created in sorted(b_names - a_names):
  *             val = b[created]
  *             self.changes.append((RegistryDiffKind.CREATED, val))             # <<<<<<<<<<<<<<
@@ -3853,14 +3979,14 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
  */
     if (unlikely(__pyx_v_self->changes == Py_None)) {
       PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
-      __PYX_ERR(0, 78, __pyx_L1_error)
+      __PYX_ERR(0, 83, __pyx_L1_error)
     }
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 78, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 83, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_CREATED); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_CREATED); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 78, __pyx_L1_error)
+    __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 83, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_GIVEREF(__pyx_t_1);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
@@ -3868,22 +3994,134 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
     __Pyx_GIVEREF(__pyx_v_val);
     PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_v_val);
     __pyx_t_1 = 0;
-    __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_self->changes, __pyx_t_3); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 78, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_self->changes, __pyx_t_3); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 83, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "yapic/entity/_registry.pyx":79
+    /* "yapic/entity/_registry.pyx":84
  *             val = b[created]
  *             self.changes.append((RegistryDiffKind.CREATED, val))
  *             order.add(val)             # <<<<<<<<<<<<<<
  * 
- *         for maybe_changed in sorted(a_names & b_names):
+ *             if val.__fix_entries__:
  */
-    if (!(likely(((__pyx_v_val) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_val, __pyx_ptype_5yapic_6entity_7_entity_EntityType))))) __PYX_ERR(0, 79, __pyx_L1_error)
-    __pyx_t_3 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList *)__pyx_cur_scope->__pyx_v_order->__pyx_vtab)->add(__pyx_cur_scope->__pyx_v_order, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_v_val), 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 79, __pyx_L1_error)
+    if (!(likely(((__pyx_v_val) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_val, __pyx_ptype_5yapic_6entity_7_entity_EntityType))))) __PYX_ERR(0, 84, __pyx_L1_error)
+    __pyx_t_3 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList *)__pyx_cur_scope->__pyx_v_order->__pyx_vtab)->add(__pyx_cur_scope->__pyx_v_order, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_v_val), 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 84, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "yapic/entity/_registry.pyx":76
+    /* "yapic/entity/_registry.pyx":86
+ *             order.add(val)
+ * 
+ *             if val.__fix_entries__:             # <<<<<<<<<<<<<<
+ *                 for fix in val.__fix_entries__:
+ *                     self.changes.append((RegistryDiffKind.INSERT_ENTITY, fix))
+ */
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_val, __pyx_n_s_fix_entries); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 86, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 86, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    if (__pyx_t_6) {
+
+      /* "yapic/entity/_registry.pyx":87
+ * 
+ *             if val.__fix_entries__:
+ *                 for fix in val.__fix_entries__:             # <<<<<<<<<<<<<<
+ *                     self.changes.append((RegistryDiffKind.INSERT_ENTITY, fix))
+ * 
+ */
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_val, __pyx_n_s_fix_entries); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 87, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
+        __pyx_t_1 = __pyx_t_3; __Pyx_INCREF(__pyx_t_1); __pyx_t_7 = 0;
+        __pyx_t_8 = NULL;
+      } else {
+        __pyx_t_7 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_8 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 87, __pyx_L1_error)
+      }
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      for (;;) {
+        if (likely(!__pyx_t_8)) {
+          if (likely(PyList_CheckExact(__pyx_t_1))) {
+            if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_1)) break;
+            #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+            __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 87, __pyx_L1_error)
+            #else
+            __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 87, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_3);
+            #endif
+          } else {
+            if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
+            #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+            __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 87, __pyx_L1_error)
+            #else
+            __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 87, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_3);
+            #endif
+          }
+        } else {
+          __pyx_t_3 = __pyx_t_8(__pyx_t_1);
+          if (unlikely(!__pyx_t_3)) {
+            PyObject* exc_type = PyErr_Occurred();
+            if (exc_type) {
+              if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+              else __PYX_ERR(0, 87, __pyx_L1_error)
+            }
+            break;
+          }
+          __Pyx_GOTREF(__pyx_t_3);
+        }
+        if (!(likely(((__pyx_t_3) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_3, __pyx_ptype_5yapic_6entity_7_entity_EntityBase))))) __PYX_ERR(0, 87, __pyx_L1_error)
+        __Pyx_XDECREF_SET(__pyx_v_fix, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *)__pyx_t_3));
+        __pyx_t_3 = 0;
+
+        /* "yapic/entity/_registry.pyx":88
+ *             if val.__fix_entries__:
+ *                 for fix in val.__fix_entries__:
+ *                     self.changes.append((RegistryDiffKind.INSERT_ENTITY, fix))             # <<<<<<<<<<<<<<
+ * 
+ *         for maybe_changed in sorted(a_names & b_names):
+ */
+        if (unlikely(__pyx_v_self->changes == Py_None)) {
+          PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
+          __PYX_ERR(0, 88, __pyx_L1_error)
+        }
+        __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 88, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_INSERT_ENTITY); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 88, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_9);
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 88, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __Pyx_GIVEREF(__pyx_t_9);
+        PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_9);
+        __Pyx_INCREF(((PyObject *)__pyx_v_fix));
+        __Pyx_GIVEREF(((PyObject *)__pyx_v_fix));
+        PyTuple_SET_ITEM(__pyx_t_3, 1, ((PyObject *)__pyx_v_fix));
+        __pyx_t_9 = 0;
+        __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_self->changes, __pyx_t_3); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 88, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+        /* "yapic/entity/_registry.pyx":87
+ * 
+ *             if val.__fix_entries__:
+ *                 for fix in val.__fix_entries__:             # <<<<<<<<<<<<<<
+ *                     self.changes.append((RegistryDiffKind.INSERT_ENTITY, fix))
+ * 
+ */
+      }
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+      /* "yapic/entity/_registry.pyx":86
+ *             order.add(val)
+ * 
+ *             if val.__fix_entries__:             # <<<<<<<<<<<<<<
+ *                 for fix in val.__fix_entries__:
+ *                     self.changes.append((RegistryDiffKind.INSERT_ENTITY, fix))
+ */
+    }
+
+    /* "yapic/entity/_registry.pyx":81
  *             order.add(val)
  * 
  *         for created in sorted(b_names - a_names):             # <<<<<<<<<<<<<<
@@ -3893,121 +4131,121 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "yapic/entity/_registry.pyx":81
- *             order.add(val)
+  /* "yapic/entity/_registry.pyx":90
+ *                     self.changes.append((RegistryDiffKind.INSERT_ENTITY, fix))
  * 
  *         for maybe_changed in sorted(a_names & b_names):             # <<<<<<<<<<<<<<
  *             val = b[maybe_changed]
  *             diff = entity_diff(a[maybe_changed], val)
  */
-  __pyx_t_3 = PyNumber_And(__pyx_v_a_names, __pyx_v_b_names); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = PySequence_List(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
+  __pyx_t_1 = PyNumber_And(__pyx_v_a_names, __pyx_v_b_names); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_2 = ((PyObject*)__pyx_t_1);
-  __pyx_t_1 = 0;
-  __pyx_t_4 = PyList_Sort(__pyx_t_2); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 81, __pyx_L1_error)
+  __pyx_t_3 = PySequence_List(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 90, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = ((PyObject*)__pyx_t_3);
+  __pyx_t_3 = 0;
+  __pyx_t_4 = PyList_Sort(__pyx_t_2); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 90, __pyx_L1_error)
   if (unlikely(__pyx_t_2 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 81, __pyx_L1_error)
+    __PYX_ERR(0, 90, __pyx_L1_error)
   }
-  __pyx_t_1 = __pyx_t_2; __Pyx_INCREF(__pyx_t_1); __pyx_t_5 = 0;
+  __pyx_t_3 = __pyx_t_2; __Pyx_INCREF(__pyx_t_3); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   for (;;) {
-    if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_1)) break;
+    if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_3)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_2); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 81, __pyx_L1_error)
+    __pyx_t_2 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_5); __Pyx_INCREF(__pyx_t_2); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 90, __pyx_L1_error)
     #else
-    __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 81, __pyx_L1_error)
+    __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     #endif
     __Pyx_XDECREF_SET(__pyx_v_maybe_changed, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "yapic/entity/_registry.pyx":82
+    /* "yapic/entity/_registry.pyx":91
  * 
  *         for maybe_changed in sorted(a_names & b_names):
  *             val = b[maybe_changed]             # <<<<<<<<<<<<<<
  *             diff = entity_diff(a[maybe_changed], val)
  *             if diff:
  */
-    __pyx_t_2 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_b), __pyx_v_maybe_changed); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_b), __pyx_v_maybe_changed); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 91, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_XDECREF_SET(__pyx_v_val, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "yapic/entity/_registry.pyx":83
+    /* "yapic/entity/_registry.pyx":92
  *         for maybe_changed in sorted(a_names & b_names):
  *             val = b[maybe_changed]
  *             diff = entity_diff(a[maybe_changed], val)             # <<<<<<<<<<<<<<
  *             if diff:
  *                 self.changes.append((RegistryDiffKind.CHANGED, diff))
  */
-    __pyx_t_3 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_v_maybe_changed); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 83, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_1 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_a), __pyx_v_maybe_changed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_v_entity_diff);
-    __pyx_t_6 = __pyx_v_entity_diff; __pyx_t_7 = NULL;
-    __pyx_t_8 = 0;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_6))) {
-      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_6);
-      if (likely(__pyx_t_7)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
-        __Pyx_INCREF(__pyx_t_7);
+    __pyx_t_9 = __pyx_v_entity_diff; __pyx_t_10 = NULL;
+    __pyx_t_11 = 0;
+    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_9))) {
+      __pyx_t_10 = PyMethod_GET_SELF(__pyx_t_9);
+      if (likely(__pyx_t_10)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_9);
+        __Pyx_INCREF(__pyx_t_10);
         __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_6, function);
-        __pyx_t_8 = 1;
+        __Pyx_DECREF_SET(__pyx_t_9, function);
+        __pyx_t_11 = 1;
       }
     }
     #if CYTHON_FAST_PYCALL
-    if (PyFunction_Check(__pyx_t_6)) {
-      PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_t_3, __pyx_v_val};
-      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 83, __pyx_L1_error)
-      __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+    if (PyFunction_Check(__pyx_t_9)) {
+      PyObject *__pyx_temp[3] = {__pyx_t_10, __pyx_t_1, __pyx_v_val};
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_9, __pyx_temp+1-__pyx_t_11, 2+__pyx_t_11); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
       __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     } else
     #endif
     #if CYTHON_FAST_PYCCALL
-    if (__Pyx_PyFastCFunction_Check(__pyx_t_6)) {
-      PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_t_3, __pyx_v_val};
-      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 83, __pyx_L1_error)
-      __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+    if (__Pyx_PyFastCFunction_Check(__pyx_t_9)) {
+      PyObject *__pyx_temp[3] = {__pyx_t_10, __pyx_t_1, __pyx_v_val};
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_9, __pyx_temp+1-__pyx_t_11, 2+__pyx_t_11); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
       __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     } else
     #endif
     {
-      __pyx_t_9 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 83, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_9);
-      if (__pyx_t_7) {
-        __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_7); __pyx_t_7 = NULL;
+      __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 92, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_12);
+      if (__pyx_t_10) {
+        __Pyx_GIVEREF(__pyx_t_10); PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_10); __pyx_t_10 = NULL;
       }
-      __Pyx_GIVEREF(__pyx_t_3);
-      PyTuple_SET_ITEM(__pyx_t_9, 0+__pyx_t_8, __pyx_t_3);
+      __Pyx_GIVEREF(__pyx_t_1);
+      PyTuple_SET_ITEM(__pyx_t_12, 0+__pyx_t_11, __pyx_t_1);
       __Pyx_INCREF(__pyx_v_val);
       __Pyx_GIVEREF(__pyx_v_val);
-      PyTuple_SET_ITEM(__pyx_t_9, 1+__pyx_t_8, __pyx_v_val);
-      __pyx_t_3 = 0;
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_9, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 83, __pyx_L1_error)
+      PyTuple_SET_ITEM(__pyx_t_12, 1+__pyx_t_11, __pyx_v_val);
+      __pyx_t_1 = 0;
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_9, __pyx_t_12, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
     }
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_XDECREF_SET(__pyx_v_diff, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "yapic/entity/_registry.pyx":84
+    /* "yapic/entity/_registry.pyx":93
  *             val = b[maybe_changed]
  *             diff = entity_diff(a[maybe_changed], val)
  *             if diff:             # <<<<<<<<<<<<<<
  *                 self.changes.append((RegistryDiffKind.CHANGED, diff))
  *                 order.add(val)
  */
-    __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_v_diff); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 84, __pyx_L1_error)
-    if (__pyx_t_10) {
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_diff); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 93, __pyx_L1_error)
+    if (__pyx_t_6) {
 
-      /* "yapic/entity/_registry.pyx":85
+      /* "yapic/entity/_registry.pyx":94
  *             diff = entity_diff(a[maybe_changed], val)
  *             if diff:
  *                 self.changes.append((RegistryDiffKind.CHANGED, diff))             # <<<<<<<<<<<<<<
@@ -4016,37 +4254,37 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
  */
       if (unlikely(__pyx_v_self->changes == Py_None)) {
         PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
-        __PYX_ERR(0, 85, __pyx_L1_error)
+        __PYX_ERR(0, 94, __pyx_L1_error)
       }
-      __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 85, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 94, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_CHANGED); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 85, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_CHANGED); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 94, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 85, __pyx_L1_error)
+      __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 94, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_GIVEREF(__pyx_t_6);
-      PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_6);
+      __Pyx_GIVEREF(__pyx_t_9);
+      PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_9);
       __Pyx_INCREF(__pyx_v_diff);
       __Pyx_GIVEREF(__pyx_v_diff);
       PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_v_diff);
-      __pyx_t_6 = 0;
-      __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_self->changes, __pyx_t_2); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 85, __pyx_L1_error)
+      __pyx_t_9 = 0;
+      __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_self->changes, __pyx_t_2); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 94, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "yapic/entity/_registry.pyx":86
+      /* "yapic/entity/_registry.pyx":95
  *             if diff:
  *                 self.changes.append((RegistryDiffKind.CHANGED, diff))
  *                 order.add(val)             # <<<<<<<<<<<<<<
  * 
- *         def key(item):
+ *             if val.__fix_entries__:
  */
-      if (!(likely(((__pyx_v_val) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_val, __pyx_ptype_5yapic_6entity_7_entity_EntityType))))) __PYX_ERR(0, 86, __pyx_L1_error)
-      __pyx_t_2 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList *)__pyx_cur_scope->__pyx_v_order->__pyx_vtab)->add(__pyx_cur_scope->__pyx_v_order, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_v_val), 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 86, __pyx_L1_error)
+      if (!(likely(((__pyx_v_val) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_val, __pyx_ptype_5yapic_6entity_7_entity_EntityType))))) __PYX_ERR(0, 95, __pyx_L1_error)
+      __pyx_t_2 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList *)__pyx_cur_scope->__pyx_v_order->__pyx_vtab)->add(__pyx_cur_scope->__pyx_v_order, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_v_val), 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 95, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "yapic/entity/_registry.pyx":84
+      /* "yapic/entity/_registry.pyx":93
  *             val = b[maybe_changed]
  *             diff = entity_diff(a[maybe_changed], val)
  *             if diff:             # <<<<<<<<<<<<<<
@@ -4055,47 +4293,108 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
  */
     }
 
-    /* "yapic/entity/_registry.pyx":81
- *             order.add(val)
+    /* "yapic/entity/_registry.pyx":97
+ *                 order.add(val)
+ * 
+ *             if val.__fix_entries__:             # <<<<<<<<<<<<<<
+ *                 self.changes.append((RegistryDiffKind.COMPARE_DATA, val))
+ *                 order.add(val)
+ */
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_val, __pyx_n_s_fix_entries); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (__pyx_t_6) {
+
+      /* "yapic/entity/_registry.pyx":98
+ * 
+ *             if val.__fix_entries__:
+ *                 self.changes.append((RegistryDiffKind.COMPARE_DATA, val))             # <<<<<<<<<<<<<<
+ *                 order.add(val)
+ * 
+ */
+      if (unlikely(__pyx_v_self->changes == Py_None)) {
+        PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
+        __PYX_ERR(0, 98, __pyx_L1_error)
+      }
+      __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 98, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_COMPARE_DATA); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 98, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_9);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 98, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_GIVEREF(__pyx_t_9);
+      PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_9);
+      __Pyx_INCREF(__pyx_v_val);
+      __Pyx_GIVEREF(__pyx_v_val);
+      PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_v_val);
+      __pyx_t_9 = 0;
+      __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_self->changes, __pyx_t_2); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 98, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+      /* "yapic/entity/_registry.pyx":99
+ *             if val.__fix_entries__:
+ *                 self.changes.append((RegistryDiffKind.COMPARE_DATA, val))
+ *                 order.add(val)             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+      if (!(likely(((__pyx_v_val) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_val, __pyx_ptype_5yapic_6entity_7_entity_EntityType))))) __PYX_ERR(0, 99, __pyx_L1_error)
+      __pyx_t_2 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList *)__pyx_cur_scope->__pyx_v_order->__pyx_vtab)->add(__pyx_cur_scope->__pyx_v_order, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_v_val), 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 99, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+      /* "yapic/entity/_registry.pyx":97
+ *                 order.add(val)
+ * 
+ *             if val.__fix_entries__:             # <<<<<<<<<<<<<<
+ *                 self.changes.append((RegistryDiffKind.COMPARE_DATA, val))
+ *                 order.add(val)
+ */
+    }
+
+    /* "yapic/entity/_registry.pyx":90
+ *                     self.changes.append((RegistryDiffKind.INSERT_ENTITY, fix))
  * 
  *         for maybe_changed in sorted(a_names & b_names):             # <<<<<<<<<<<<<<
  *             val = b[maybe_changed]
  *             diff = entity_diff(a[maybe_changed], val)
  */
   }
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "yapic/entity/_registry.pyx":88
- *                 order.add(val)
+  /* "yapic/entity/_registry.pyx":102
+ * 
  * 
  *         def key(item):             # <<<<<<<<<<<<<<
  *             kind, val = item
  *             if isinstance(val, EntityDiff):
  */
-  __pyx_t_1 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5yapic_6entity_9_registry_12RegistryDiff_9__cinit___1key, 0, __pyx_n_s_cinit___locals_key, ((PyObject*)__pyx_cur_scope), __pyx_n_s_yapic_entity__registry, __pyx_d, ((PyObject *)__pyx_codeobj__2)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_v_key = __pyx_t_1;
-  __pyx_t_1 = 0;
+  __pyx_t_3 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5yapic_6entity_9_registry_12RegistryDiff_9__cinit___1key, 0, __pyx_n_s_cinit___locals_key, ((PyObject*)__pyx_cur_scope), __pyx_n_s_yapic_entity__registry, __pyx_d, ((PyObject *)__pyx_codeobj__2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_v_key = __pyx_t_3;
+  __pyx_t_3 = 0;
 
-  /* "yapic/entity/_registry.pyx":95
+  /* "yapic/entity/_registry.pyx":111
  *                 return order.index(val)
  * 
  *         self.changes.sort(key=key)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->changes, __pyx_n_s_sort); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 95, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 95, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->changes, __pyx_n_s_sort); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 111, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_key, __pyx_v_key) < 0) __PYX_ERR(0, 95, __pyx_L1_error)
-  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_empty_tuple, __pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 95, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_key, __pyx_v_key) < 0) __PYX_ERR(0, 111, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_empty_tuple, __pyx_t_2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 111, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_9);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-  /* "yapic/entity/_registry.pyx":62
+  /* "yapic/entity/_registry.pyx":66
  * @cython.final
  * cdef class RegistryDiff:
  *     def __cinit__(self, Registry a, Registry b, object entity_diff):             # <<<<<<<<<<<<<<
@@ -4110,12 +4409,13 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_12);
   __Pyx_AddTraceback("yapic.entity._registry.RegistryDiff.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
+  __Pyx_XDECREF((PyObject *)__pyx_v_fix);
   __Pyx_XDECREF(__pyx_v_a_names);
   __Pyx_XDECREF(__pyx_v_b_names);
   __Pyx_XDECREF(__pyx_v_removed);
@@ -4129,7 +4429,7 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff___cinit__(struct __
   return __pyx_r;
 }
 
-/* "yapic/entity/_registry.pyx":98
+/* "yapic/entity/_registry.pyx":114
  * 
  * 
  *     def __bool__(self):             # <<<<<<<<<<<<<<
@@ -4157,7 +4457,7 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_2__bool__(struct __
   Py_ssize_t __pyx_t_2;
   __Pyx_RefNannySetupContext("__bool__", 0);
 
-  /* "yapic/entity/_registry.pyx":99
+  /* "yapic/entity/_registry.pyx":115
  * 
  *     def __bool__(self):
  *         return len(self.changes) > 0             # <<<<<<<<<<<<<<
@@ -4168,14 +4468,14 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_2__bool__(struct __
   __Pyx_INCREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 99, __pyx_L1_error)
+    __PYX_ERR(0, 115, __pyx_L1_error)
   }
-  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = (__pyx_t_2 > 0);
   goto __pyx_L0;
 
-  /* "yapic/entity/_registry.pyx":98
+  /* "yapic/entity/_registry.pyx":114
  * 
  * 
  *     def __bool__(self):             # <<<<<<<<<<<<<<
@@ -4193,7 +4493,7 @@ static int __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_2__bool__(struct __
   return __pyx_r;
 }
 
-/* "yapic/entity/_registry.pyx":101
+/* "yapic/entity/_registry.pyx":117
  *         return len(self.changes) > 0
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -4221,7 +4521,7 @@ static Py_ssize_t __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_4__len__(str
   Py_ssize_t __pyx_t_2;
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "yapic/entity/_registry.pyx":102
+  /* "yapic/entity/_registry.pyx":118
  * 
  *     def __len__(self):
  *         return len(self.changes)             # <<<<<<<<<<<<<<
@@ -4232,14 +4532,14 @@ static Py_ssize_t __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_4__len__(str
   __Pyx_INCREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 102, __pyx_L1_error)
+    __PYX_ERR(0, 118, __pyx_L1_error)
   }
-  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   goto __pyx_L0;
 
-  /* "yapic/entity/_registry.pyx":101
+  /* "yapic/entity/_registry.pyx":117
  *         return len(self.changes) > 0
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -4257,11 +4557,12 @@ static Py_ssize_t __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_4__len__(str
   return __pyx_r;
 }
 
-/* "yapic/entity/_registry.pyx":104
+/* "yapic/entity/_registry.pyx":120
  *         return len(self.changes)
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
  *         return iter(self.changes)
+ * 
  */
 
 /* Python wrapper */
@@ -4284,26 +4585,29 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_6__iter__(str
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__iter__", 0);
 
-  /* "yapic/entity/_registry.pyx":105
+  /* "yapic/entity/_registry.pyx":121
  * 
  *     def __iter__(self):
  *         return iter(self.changes)             # <<<<<<<<<<<<<<
+ * 
+ *     cpdef list compare_data(self, list a_ents, list b_ents):
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __pyx_v_self->changes;
   __Pyx_INCREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 121, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "yapic/entity/_registry.pyx":104
+  /* "yapic/entity/_registry.pyx":120
  *         return len(self.changes)
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
  *         return iter(self.changes)
+ * 
  */
 
   /* function exit code */
@@ -4311,6 +4615,488 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_6__iter__(str
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_AddTraceback("yapic.entity._registry.RegistryDiff.__iter__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "yapic/entity/_registry.pyx":123
+ *         return iter(self.changes)
+ * 
+ *     cpdef list compare_data(self, list a_ents, list b_ents):             # <<<<<<<<<<<<<<
+ *         cdef list result = []
+ *         a_values = set(a_ents)
+ */
+
+static PyObject *__pyx_pw_5yapic_6entity_9_registry_12RegistryDiff_9compare_data(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_5yapic_6entity_9_registry_12RegistryDiff_compare_data(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_self, PyObject *__pyx_v_a_ents, PyObject *__pyx_v_b_ents, CYTHON_UNUSED int __pyx_skip_dispatch) {
+  PyObject *__pyx_v_result = 0;
+  PyObject *__pyx_v_a_values = NULL;
+  PyObject *__pyx_v_b_values = NULL;
+  PyObject *__pyx_v_removed = NULL;
+  PyObject *__pyx_v_created = NULL;
+  PyObject *__pyx_v_maybe_changed = NULL;
+  PyObject *__pyx_v_a_ent = NULL;
+  PyObject *__pyx_v_b_ent = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  Py_ssize_t __pyx_t_3;
+  PyObject *(*__pyx_t_4)(PyObject *);
+  PyObject *__pyx_t_5 = NULL;
+  int __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
+  int __pyx_t_8;
+  int __pyx_t_9;
+  int __pyx_t_10;
+  int __pyx_t_11;
+  __Pyx_RefNannySetupContext("compare_data", 0);
+
+  /* "yapic/entity/_registry.pyx":124
+ * 
+ *     cpdef list compare_data(self, list a_ents, list b_ents):
+ *         cdef list result = []             # <<<<<<<<<<<<<<
+ *         a_values = set(a_ents)
+ *         b_values = set(b_ents)
+ */
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 124, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_result = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "yapic/entity/_registry.pyx":125
+ *     cpdef list compare_data(self, list a_ents, list b_ents):
+ *         cdef list result = []
+ *         a_values = set(a_ents)             # <<<<<<<<<<<<<<
+ *         b_values = set(b_ents)
+ * 
+ */
+  __pyx_t_1 = PySet_New(__pyx_v_a_ents); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 125, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_a_values = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "yapic/entity/_registry.pyx":126
+ *         cdef list result = []
+ *         a_values = set(a_ents)
+ *         b_values = set(b_ents)             # <<<<<<<<<<<<<<
+ * 
+ *         for removed in a_values - b_values:
+ */
+  __pyx_t_1 = PySet_New(__pyx_v_b_ents); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 126, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_b_values = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "yapic/entity/_registry.pyx":128
+ *         b_values = set(b_ents)
+ * 
+ *         for removed in a_values - b_values:             # <<<<<<<<<<<<<<
+ *             result.append((RegistryDiffKind.REMOVE_ENTITY, removed))
+ * 
+ */
+  __pyx_t_1 = PyNumber_Subtract(__pyx_v_a_values, __pyx_v_b_values); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
+    __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
+    __pyx_t_4 = NULL;
+  } else {
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 128, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 128, __pyx_L1_error)
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  for (;;) {
+    if (likely(!__pyx_t_4)) {
+      if (likely(PyList_CheckExact(__pyx_t_2))) {
+        if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 128, __pyx_L1_error)
+        #else
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 128, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        #endif
+      } else {
+        if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 128, __pyx_L1_error)
+        #else
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 128, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        #endif
+      }
+    } else {
+      __pyx_t_1 = __pyx_t_4(__pyx_t_2);
+      if (unlikely(!__pyx_t_1)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else __PYX_ERR(0, 128, __pyx_L1_error)
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_1);
+    }
+    __Pyx_XDECREF_SET(__pyx_v_removed, __pyx_t_1);
+    __pyx_t_1 = 0;
+
+    /* "yapic/entity/_registry.pyx":129
+ * 
+ *         for removed in a_values - b_values:
+ *             result.append((RegistryDiffKind.REMOVE_ENTITY, removed))             # <<<<<<<<<<<<<<
+ * 
+ *         for created in b_values - a_values:
+ */
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 129, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_REMOVE_ENTITY); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 129, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 129, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_GIVEREF(__pyx_t_5);
+    PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_5);
+    __Pyx_INCREF(__pyx_v_removed);
+    __Pyx_GIVEREF(__pyx_v_removed);
+    PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_removed);
+    __pyx_t_5 = 0;
+    __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_result, __pyx_t_1); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 129, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+    /* "yapic/entity/_registry.pyx":128
+ *         b_values = set(b_ents)
+ * 
+ *         for removed in a_values - b_values:             # <<<<<<<<<<<<<<
+ *             result.append((RegistryDiffKind.REMOVE_ENTITY, removed))
+ * 
+ */
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "yapic/entity/_registry.pyx":131
+ *             result.append((RegistryDiffKind.REMOVE_ENTITY, removed))
+ * 
+ *         for created in b_values - a_values:             # <<<<<<<<<<<<<<
+ *             result.append((RegistryDiffKind.INSERT_ENTITY, created))
+ * 
+ */
+  __pyx_t_2 = PyNumber_Subtract(__pyx_v_b_values, __pyx_v_a_values); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (likely(PyList_CheckExact(__pyx_t_2)) || PyTuple_CheckExact(__pyx_t_2)) {
+    __pyx_t_1 = __pyx_t_2; __Pyx_INCREF(__pyx_t_1); __pyx_t_3 = 0;
+    __pyx_t_4 = NULL;
+  } else {
+    __pyx_t_3 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 131, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_4 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 131, __pyx_L1_error)
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  for (;;) {
+    if (likely(!__pyx_t_4)) {
+      if (likely(PyList_CheckExact(__pyx_t_1))) {
+        if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_1)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 131, __pyx_L1_error)
+        #else
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 131, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        #endif
+      } else {
+        if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 131, __pyx_L1_error)
+        #else
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 131, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        #endif
+      }
+    } else {
+      __pyx_t_2 = __pyx_t_4(__pyx_t_1);
+      if (unlikely(!__pyx_t_2)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else __PYX_ERR(0, 131, __pyx_L1_error)
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_2);
+    }
+    __Pyx_XDECREF_SET(__pyx_v_created, __pyx_t_2);
+    __pyx_t_2 = 0;
+
+    /* "yapic/entity/_registry.pyx":132
+ * 
+ *         for created in b_values - a_values:
+ *             result.append((RegistryDiffKind.INSERT_ENTITY, created))             # <<<<<<<<<<<<<<
+ * 
+ *         for maybe_changed in a_values & b_values:
+ */
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 132, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_INSERT_ENTITY); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 132, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 132, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_GIVEREF(__pyx_t_5);
+    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_5);
+    __Pyx_INCREF(__pyx_v_created);
+    __Pyx_GIVEREF(__pyx_v_created);
+    PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_v_created);
+    __pyx_t_5 = 0;
+    __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_result, __pyx_t_2); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 132, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+    /* "yapic/entity/_registry.pyx":131
+ *             result.append((RegistryDiffKind.REMOVE_ENTITY, removed))
+ * 
+ *         for created in b_values - a_values:             # <<<<<<<<<<<<<<
+ *             result.append((RegistryDiffKind.INSERT_ENTITY, created))
+ * 
+ */
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "yapic/entity/_registry.pyx":134
+ *             result.append((RegistryDiffKind.INSERT_ENTITY, created))
+ * 
+ *         for maybe_changed in a_values & b_values:             # <<<<<<<<<<<<<<
+ *             a_ent = a_ents[a_ents.index(maybe_changed)]
+ *             b_ent = b_ents[a_ents.index(maybe_changed)]
+ */
+  __pyx_t_3 = 0;
+  __pyx_t_2 = PyNumber_And(__pyx_v_a_values, __pyx_v_b_values); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_5 = __Pyx_set_iterator(__pyx_t_2, 1, (&__pyx_t_7), (&__pyx_t_8)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_XDECREF(__pyx_t_1);
+  __pyx_t_1 = __pyx_t_5;
+  __pyx_t_5 = 0;
+  while (1) {
+    __pyx_t_9 = __Pyx_set_iter_next(__pyx_t_1, __pyx_t_7, &__pyx_t_3, &__pyx_t_5, __pyx_t_8);
+    if (unlikely(__pyx_t_9 == 0)) break;
+    if (unlikely(__pyx_t_9 == -1)) __PYX_ERR(0, 134, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_XDECREF_SET(__pyx_v_maybe_changed, __pyx_t_5);
+    __pyx_t_5 = 0;
+
+    /* "yapic/entity/_registry.pyx":135
+ * 
+ *         for maybe_changed in a_values & b_values:
+ *             a_ent = a_ents[a_ents.index(maybe_changed)]             # <<<<<<<<<<<<<<
+ *             b_ent = b_ents[a_ents.index(maybe_changed)]
+ *             if not entity_data_is_eq(a_ent, b_ent):
+ */
+    if (unlikely(__pyx_v_a_ents == Py_None)) {
+      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+      __PYX_ERR(0, 135, __pyx_L1_error)
+    }
+    __pyx_t_5 = __Pyx_CallUnboundCMethod1(&__pyx_umethod_PyList_Type_index, __pyx_v_a_ents, __pyx_v_maybe_changed); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 135, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_v_a_ents, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 135, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_a_ent, __pyx_t_2);
+    __pyx_t_2 = 0;
+
+    /* "yapic/entity/_registry.pyx":136
+ *         for maybe_changed in a_values & b_values:
+ *             a_ent = a_ents[a_ents.index(maybe_changed)]
+ *             b_ent = b_ents[a_ents.index(maybe_changed)]             # <<<<<<<<<<<<<<
+ *             if not entity_data_is_eq(a_ent, b_ent):
+ *                 result.append((RegistryDiffKind.UPDATE_ENTITY, b_ent))
+ */
+    if (unlikely(__pyx_v_b_ents == Py_None)) {
+      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+      __PYX_ERR(0, 136, __pyx_L1_error)
+    }
+    __pyx_t_2 = __Pyx_CallUnboundCMethod1(&__pyx_umethod_PyList_Type_index, __pyx_v_a_ents, __pyx_v_maybe_changed); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 136, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_5 = __Pyx_PyObject_GetItem(__pyx_v_b_ents, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 136, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_b_ent, __pyx_t_5);
+    __pyx_t_5 = 0;
+
+    /* "yapic/entity/_registry.pyx":137
+ *             a_ent = a_ents[a_ents.index(maybe_changed)]
+ *             b_ent = b_ents[a_ents.index(maybe_changed)]
+ *             if not entity_data_is_eq(a_ent, b_ent):             # <<<<<<<<<<<<<<
+ *                 result.append((RegistryDiffKind.UPDATE_ENTITY, b_ent))
+ * 
+ */
+    if (!(likely(((__pyx_v_a_ent) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_a_ent, __pyx_ptype_5yapic_6entity_7_entity_EntityBase))))) __PYX_ERR(0, 137, __pyx_L1_error)
+    if (!(likely(((__pyx_v_b_ent) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_b_ent, __pyx_ptype_5yapic_6entity_7_entity_EntityBase))))) __PYX_ERR(0, 137, __pyx_L1_error)
+    __pyx_t_5 = __pyx_f_5yapic_6entity_9_registry_entity_data_is_eq(((struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *)__pyx_v_a_ent), ((struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *)__pyx_v_b_ent)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 137, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 137, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_11 = ((!__pyx_t_10) != 0);
+    if (__pyx_t_11) {
+
+      /* "yapic/entity/_registry.pyx":138
+ *             b_ent = b_ents[a_ents.index(maybe_changed)]
+ *             if not entity_data_is_eq(a_ent, b_ent):
+ *                 result.append((RegistryDiffKind.UPDATE_ENTITY, b_ent))             # <<<<<<<<<<<<<<
+ * 
+ *         return result
+ */
+      __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 138, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_UPDATE_ENTITY); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 138, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 138, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __Pyx_GIVEREF(__pyx_t_2);
+      PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_2);
+      __Pyx_INCREF(__pyx_v_b_ent);
+      __Pyx_GIVEREF(__pyx_v_b_ent);
+      PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_v_b_ent);
+      __pyx_t_2 = 0;
+      __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_result, __pyx_t_5); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 138, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+
+      /* "yapic/entity/_registry.pyx":137
+ *             a_ent = a_ents[a_ents.index(maybe_changed)]
+ *             b_ent = b_ents[a_ents.index(maybe_changed)]
+ *             if not entity_data_is_eq(a_ent, b_ent):             # <<<<<<<<<<<<<<
+ *                 result.append((RegistryDiffKind.UPDATE_ENTITY, b_ent))
+ * 
+ */
+    }
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "yapic/entity/_registry.pyx":140
+ *                 result.append((RegistryDiffKind.UPDATE_ENTITY, b_ent))
+ * 
+ *         return result             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_result);
+  __pyx_r = __pyx_v_result;
+  goto __pyx_L0;
+
+  /* "yapic/entity/_registry.pyx":123
+ *         return iter(self.changes)
+ * 
+ *     cpdef list compare_data(self, list a_ents, list b_ents):             # <<<<<<<<<<<<<<
+ *         cdef list result = []
+ *         a_values = set(a_ents)
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_AddTraceback("yapic.entity._registry.RegistryDiff.compare_data", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_result);
+  __Pyx_XDECREF(__pyx_v_a_values);
+  __Pyx_XDECREF(__pyx_v_b_values);
+  __Pyx_XDECREF(__pyx_v_removed);
+  __Pyx_XDECREF(__pyx_v_created);
+  __Pyx_XDECREF(__pyx_v_maybe_changed);
+  __Pyx_XDECREF(__pyx_v_a_ent);
+  __Pyx_XDECREF(__pyx_v_b_ent);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5yapic_6entity_9_registry_12RegistryDiff_9compare_data(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_9_registry_12RegistryDiff_9compare_data(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_a_ents = 0;
+  PyObject *__pyx_v_b_ents = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("compare_data (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_a_ents,&__pyx_n_s_b_ents,0};
+    PyObject* values[2] = {0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_a_ents)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_b_ents)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("compare_data", 1, 2, 2, 1); __PYX_ERR(0, 123, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "compare_data") < 0)) __PYX_ERR(0, 123, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+    }
+    __pyx_v_a_ents = ((PyObject*)values[0]);
+    __pyx_v_b_ents = ((PyObject*)values[1]);
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("compare_data", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 123, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("yapic.entity._registry.RegistryDiff.compare_data", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_a_ents), (&PyList_Type), 1, "a_ents", 1))) __PYX_ERR(0, 123, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_b_ents), (&PyList_Type), 1, "b_ents", 1))) __PYX_ERR(0, 123, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_8compare_data(((struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *)__pyx_v_self), __pyx_v_a_ents, __pyx_v_b_ents);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_8compare_data(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *__pyx_v_self, PyObject *__pyx_v_a_ents, PyObject *__pyx_v_b_ents) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("compare_data", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __pyx_f_5yapic_6entity_9_registry_12RegistryDiff_compare_data(__pyx_v_self, __pyx_v_a_ents, __pyx_v_b_ents, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 123, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("yapic.entity._registry.RegistryDiff.compare_data", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4396,6 +5182,8 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_1b___get__(st
  *     cdef readonly Registry b
  * 
  *     cdef readonly list changes             # <<<<<<<<<<<<<<
+ * 
+ *     cpdef list compare_data(self, list a_ents, list b_ents)
  */
 
 /* Python wrapper */
@@ -4422,6 +5210,193 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_7changes___ge
 
   /* function exit code */
   __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "yapic/entity/_registry.pyx":143
+ * 
+ * 
+ * cdef object entity_data_is_eq(EntityBase a, EntityBase b):             # <<<<<<<<<<<<<<
+ *     cdef EntityType entity_t = type(b)
+ *     cdef EntityAttribute attr
+ */
+
+static PyObject *__pyx_f_5yapic_6entity_9_registry_entity_data_is_eq(struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *__pyx_v_a, struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *__pyx_v_b) {
+  struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_entity_t = 0;
+  struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *__pyx_v_attr = 0;
+  int __pyx_v_length;
+  int __pyx_v_i;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  int __pyx_t_2;
+  PyObject *__pyx_t_3 = NULL;
+  Py_ssize_t __pyx_t_4;
+  int __pyx_t_5;
+  int __pyx_t_6;
+  int __pyx_t_7;
+  PyObject *__pyx_t_8 = NULL;
+  PyObject *__pyx_t_9 = NULL;
+  __Pyx_RefNannySetupContext("entity_data_is_eq", 0);
+
+  /* "yapic/entity/_registry.pyx":144
+ * 
+ * cdef object entity_data_is_eq(EntityBase a, EntityBase b):
+ *     cdef EntityType entity_t = type(b)             # <<<<<<<<<<<<<<
+ *     cdef EntityAttribute attr
+ * 
+ */
+  if (!(likely(__Pyx_TypeTest(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_b))), __pyx_ptype_5yapic_6entity_7_entity_EntityType)))) __PYX_ERR(0, 144, __pyx_L1_error)
+  __Pyx_INCREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_b))));
+  __pyx_v_entity_t = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)((PyObject *)Py_TYPE(((PyObject *)__pyx_v_b))));
+
+  /* "yapic/entity/_registry.pyx":147
+ *     cdef EntityAttribute attr
+ * 
+ *     if type(a) is not entity_t:             # <<<<<<<<<<<<<<
+ *         return False
+ * 
+ */
+  __pyx_t_1 = (((PyObject *)Py_TYPE(((PyObject *)__pyx_v_a))) != ((PyObject *)__pyx_v_entity_t));
+  __pyx_t_2 = (__pyx_t_1 != 0);
+  if (__pyx_t_2) {
+
+    /* "yapic/entity/_registry.pyx":148
+ * 
+ *     if type(a) is not entity_t:
+ *         return False             # <<<<<<<<<<<<<<
+ * 
+ *     cdef int length = len(entity_t.__fields__)
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __Pyx_INCREF(Py_False);
+    __pyx_r = Py_False;
+    goto __pyx_L0;
+
+    /* "yapic/entity/_registry.pyx":147
+ *     cdef EntityAttribute attr
+ * 
+ *     if type(a) is not entity_t:             # <<<<<<<<<<<<<<
+ *         return False
+ * 
+ */
+  }
+
+  /* "yapic/entity/_registry.pyx":150
+ *         return False
+ * 
+ *     cdef int length = len(entity_t.__fields__)             # <<<<<<<<<<<<<<
+ * 
+ *     for i in range(length):
+ */
+  __pyx_t_3 = __pyx_v_entity_t->__fields__;
+  __Pyx_INCREF(__pyx_t_3);
+  if (unlikely(__pyx_t_3 == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 150, __pyx_L1_error)
+  }
+  __pyx_t_4 = PyTuple_GET_SIZE(__pyx_t_3); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 150, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_v_length = __pyx_t_4;
+
+  /* "yapic/entity/_registry.pyx":152
+ *     cdef int length = len(entity_t.__fields__)
+ * 
+ *     for i in range(length):             # <<<<<<<<<<<<<<
+ *         attr = <EntityAttribute>entity_t.__fields__[i]
+ * 
+ */
+  __pyx_t_5 = __pyx_v_length;
+  __pyx_t_6 = __pyx_t_5;
+  for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
+    __pyx_v_i = __pyx_t_7;
+
+    /* "yapic/entity/_registry.pyx":153
+ * 
+ *     for i in range(length):
+ *         attr = <EntityAttribute>entity_t.__fields__[i]             # <<<<<<<<<<<<<<
+ * 
+ *         if a.__state__.get_value(attr) != b.__state__.get_value(attr):
+ */
+    if (unlikely(__pyx_v_entity_t->__fields__ == Py_None)) {
+      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+      __PYX_ERR(0, 153, __pyx_L1_error)
+    }
+    __pyx_t_3 = PyTuple_GET_ITEM(__pyx_v_entity_t->__fields__, __pyx_v_i);
+    __Pyx_INCREF(__pyx_t_3);
+    __Pyx_XDECREF_SET(__pyx_v_attr, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *)__pyx_t_3));
+    __pyx_t_3 = 0;
+
+    /* "yapic/entity/_registry.pyx":155
+ *         attr = <EntityAttribute>entity_t.__fields__[i]
+ * 
+ *         if a.__state__.get_value(attr) != b.__state__.get_value(attr):             # <<<<<<<<<<<<<<
+ *             return False
+ * 
+ */
+    __pyx_t_3 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *)__pyx_v_a->__state__->__pyx_vtab)->get_value(__pyx_v_a->__state__, __pyx_v_attr); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 155, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_8 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *)__pyx_v_b->__state__->__pyx_vtab)->get_value(__pyx_v_b->__state__, __pyx_v_attr); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 155, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_9 = PyObject_RichCompare(__pyx_t_3, __pyx_t_8, Py_NE); __Pyx_XGOTREF(__pyx_t_9); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 155, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 155, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    if (__pyx_t_2) {
+
+      /* "yapic/entity/_registry.pyx":156
+ * 
+ *         if a.__state__.get_value(attr) != b.__state__.get_value(attr):
+ *             return False             # <<<<<<<<<<<<<<
+ * 
+ *     return True
+ */
+      __Pyx_XDECREF(__pyx_r);
+      __Pyx_INCREF(Py_False);
+      __pyx_r = Py_False;
+      goto __pyx_L0;
+
+      /* "yapic/entity/_registry.pyx":155
+ *         attr = <EntityAttribute>entity_t.__fields__[i]
+ * 
+ *         if a.__state__.get_value(attr) != b.__state__.get_value(attr):             # <<<<<<<<<<<<<<
+ *             return False
+ * 
+ */
+    }
+  }
+
+  /* "yapic/entity/_registry.pyx":158
+ *             return False
+ * 
+ *     return True             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(Py_True);
+  __pyx_r = Py_True;
+  goto __pyx_L0;
+
+  /* "yapic/entity/_registry.pyx":143
+ * 
+ * 
+ * cdef object entity_data_is_eq(EntityBase a, EntityBase b):             # <<<<<<<<<<<<<<
+ *     cdef EntityType entity_t = type(b)
+ *     cdef EntityAttribute attr
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_8);
+  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_AddTraceback("yapic.entity._registry.entity_data_is_eq", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF((PyObject *)__pyx_v_entity_t);
+  __Pyx_XDECREF((PyObject *)__pyx_v_attr);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -4576,6 +5551,7 @@ static PyTypeObject __pyx_type_5yapic_6entity_9_registry_Registry = {
   0, /*tp_finalize*/
   #endif
 };
+static struct __pyx_vtabstruct_5yapic_6entity_9_registry_RegistryDiff __pyx_vtable_5yapic_6entity_9_registry_RegistryDiff;
 
 static PyObject *__pyx_tp_new_5yapic_6entity_9_registry_RegistryDiff(PyTypeObject *t, PyObject *a, PyObject *k) {
   struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *p;
@@ -4583,6 +5559,7 @@ static PyObject *__pyx_tp_new_5yapic_6entity_9_registry_RegistryDiff(PyTypeObjec
   o = (*t->tp_alloc)(t, 0);
   if (unlikely(!o)) return 0;
   p = ((struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *)o);
+  p->__pyx_vtab = __pyx_vtabptr_5yapic_6entity_9_registry_RegistryDiff;
   p->a = ((struct __pyx_obj_5yapic_6entity_9_registry_Registry *)Py_None); Py_INCREF(Py_None);
   p->b = ((struct __pyx_obj_5yapic_6entity_9_registry_Registry *)Py_None); Py_INCREF(Py_None);
   p->changes = ((PyObject*)Py_None); Py_INCREF(Py_None);
@@ -4645,6 +5622,7 @@ static PyObject *__pyx_getprop_5yapic_6entity_9_registry_12RegistryDiff_changes(
 }
 
 static PyMethodDef __pyx_methods_5yapic_6entity_9_registry_RegistryDiff[] = {
+  {"compare_data", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5yapic_6entity_9_registry_12RegistryDiff_9compare_data, METH_VARARGS|METH_KEYWORDS, 0},
   {0, 0, 0, 0}
 };
 
@@ -4945,16 +5923,22 @@ static struct PyModuleDef __pyx_moduledef = {
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_CHANGED, __pyx_k_CHANGED, sizeof(__pyx_k_CHANGED), 0, 0, 1, 1},
+  {&__pyx_n_s_COMPARE_DATA, __pyx_k_COMPARE_DATA, sizeof(__pyx_k_COMPARE_DATA), 0, 0, 1, 1},
   {&__pyx_n_s_CREATED, __pyx_k_CREATED, sizeof(__pyx_k_CREATED), 0, 0, 1, 1},
   {&__pyx_n_s_Enum, __pyx_k_Enum, sizeof(__pyx_k_Enum), 0, 0, 1, 1},
+  {&__pyx_n_s_INSERT_ENTITY, __pyx_k_INSERT_ENTITY, sizeof(__pyx_k_INSERT_ENTITY), 0, 0, 1, 1},
   {&__pyx_n_s_REMOVED, __pyx_k_REMOVED, sizeof(__pyx_k_REMOVED), 0, 0, 1, 1},
+  {&__pyx_n_s_REMOVE_ENTITY, __pyx_k_REMOVE_ENTITY, sizeof(__pyx_k_REMOVE_ENTITY), 0, 0, 1, 1},
   {&__pyx_n_s_Registry, __pyx_k_Registry, sizeof(__pyx_k_Registry), 0, 0, 1, 1},
   {&__pyx_n_s_RegistryDiff, __pyx_k_RegistryDiff, sizeof(__pyx_k_RegistryDiff), 0, 0, 1, 1},
   {&__pyx_n_s_RegistryDiffKind, __pyx_k_RegistryDiffKind, sizeof(__pyx_k_RegistryDiffKind), 0, 0, 1, 1},
+  {&__pyx_n_s_UPDATE_ENTITY, __pyx_k_UPDATE_ENTITY, sizeof(__pyx_k_UPDATE_ENTITY), 0, 0, 1, 1},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
   {&__pyx_n_s_WeakValueDictionary, __pyx_k_WeakValueDictionary, sizeof(__pyx_k_WeakValueDictionary), 0, 0, 1, 1},
   {&__pyx_n_s_a, __pyx_k_a, sizeof(__pyx_k_a), 0, 0, 1, 1},
+  {&__pyx_n_s_a_ents, __pyx_k_a_ents, sizeof(__pyx_k_a_ents), 0, 0, 1, 1},
   {&__pyx_n_s_b, __pyx_k_b, sizeof(__pyx_k_b), 0, 0, 1, 1},
+  {&__pyx_n_s_b_ents, __pyx_k_b_ents, sizeof(__pyx_k_b_ents), 0, 0, 1, 1},
   {&__pyx_n_s_cinit___locals_key, __pyx_k_cinit___locals_key, sizeof(__pyx_k_cinit___locals_key), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_doc, __pyx_k_doc, sizeof(__pyx_k_doc), 0, 0, 1, 1},
@@ -4962,6 +5946,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_entity_already_registered_r, __pyx_k_entity_already_registered_r, sizeof(__pyx_k_entity_already_registered_r), 0, 1, 0, 0},
   {&__pyx_n_s_entity_diff, __pyx_k_entity_diff, sizeof(__pyx_k_entity_diff), 0, 0, 1, 1},
   {&__pyx_n_s_enum, __pyx_k_enum, sizeof(__pyx_k_enum), 0, 0, 1, 1},
+  {&__pyx_n_s_fix_entries, __pyx_k_fix_entries, sizeof(__pyx_k_fix_entries), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_index, __pyx_k_index, sizeof(__pyx_k_index), 0, 0, 1, 1},
   {&__pyx_n_s_item, __pyx_k_item, sizeof(__pyx_k_item), 0, 0, 1, 1},
@@ -4978,6 +5963,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_prepare, __pyx_k_prepare, sizeof(__pyx_k_prepare), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},
   {&__pyx_n_s_qualname, __pyx_k_qualname, sizeof(__pyx_k_qualname), 0, 0, 1, 1},
+  {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
   {&__pyx_n_s_sort, __pyx_k_sort, sizeof(__pyx_k_sort), 0, 0, 1, 1},
   {&__pyx_kp_s_src_yapic_entity__registry_pyx, __pyx_k_src_yapic_entity__registry_pyx, sizeof(__pyx_k_src_yapic_entity__registry_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
@@ -4989,6 +5975,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 152, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -4998,17 +5985,17 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "yapic/entity/_registry.pyx":88
- *                 order.add(val)
+  /* "yapic/entity/_registry.pyx":102
+ * 
  * 
  *         def key(item):             # <<<<<<<<<<<<<<
  *             kind, val = item
  *             if isinstance(val, EntityDiff):
  */
-  __pyx_tuple_ = PyTuple_Pack(3, __pyx_n_s_item, __pyx_n_s_kind, __pyx_n_s_val); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(3, __pyx_n_s_item, __pyx_n_s_kind, __pyx_n_s_val); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
-  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_yapic_entity__registry_pyx, __pyx_n_s_key, 88, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_yapic_entity__registry_pyx, __pyx_n_s_key, 102, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -5017,10 +6004,15 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
 }
 
 static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
+  __pyx_umethod_PyList_Type_index.type = (PyObject*)&PyList_Type;
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_2 = PyInt_FromLong(2); if (unlikely(!__pyx_int_2)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_3 = PyInt_FromLong(3); if (unlikely(!__pyx_int_3)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_4 = PyInt_FromLong(4); if (unlikely(!__pyx_int_4)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_5 = PyInt_FromLong(5); if (unlikely(!__pyx_int_5)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_6 = PyInt_FromLong(6); if (unlikely(!__pyx_int_6)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_7 = PyInt_FromLong(7); if (unlikely(!__pyx_int_7)) __PYX_ERR(0, 1, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -5076,14 +6068,17 @@ static int __Pyx_modinit_type_init_code(void) {
   if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_9_registry_Registry.tp_dict, __pyx_vtabptr_5yapic_6entity_9_registry_Registry) < 0) __PYX_ERR(0, 10, __pyx_L1_error)
   if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Registry, (PyObject *)&__pyx_type_5yapic_6entity_9_registry_Registry) < 0) __PYX_ERR(0, 10, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_9_registry_Registry = &__pyx_type_5yapic_6entity_9_registry_Registry;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_9_registry_RegistryDiff) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_9_registry_RegistryDiff = &__pyx_vtable_5yapic_6entity_9_registry_RegistryDiff;
+  __pyx_vtable_5yapic_6entity_9_registry_RegistryDiff.compare_data = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *, PyObject *, PyObject *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_9_registry_12RegistryDiff_compare_data;
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_9_registry_RegistryDiff) < 0) __PYX_ERR(0, 65, __pyx_L1_error)
   __pyx_type_5yapic_6entity_9_registry_RegistryDiff.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_9_registry_RegistryDiff.tp_dictoffset && __pyx_type_5yapic_6entity_9_registry_RegistryDiff.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_9_registry_RegistryDiff.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_RegistryDiff, (PyObject *)&__pyx_type_5yapic_6entity_9_registry_RegistryDiff) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_9_registry_RegistryDiff.tp_dict, __pyx_vtabptr_5yapic_6entity_9_registry_RegistryDiff) < 0) __PYX_ERR(0, 65, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_RegistryDiff, (PyObject *)&__pyx_type_5yapic_6entity_9_registry_RegistryDiff) < 0) __PYX_ERR(0, 65, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_9_registry_RegistryDiff = &__pyx_type_5yapic_6entity_9_registry_RegistryDiff;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_9_registry___pyx_scope_struct____cinit__) < 0) __PYX_ERR(0, 62, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_9_registry___pyx_scope_struct____cinit__) < 0) __PYX_ERR(0, 66, __pyx_L1_error)
   __pyx_type_5yapic_6entity_9_registry___pyx_scope_struct____cinit__.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_9_registry___pyx_scope_struct____cinit__.tp_dictoffset && __pyx_type_5yapic_6entity_9_registry___pyx_scope_struct____cinit__.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_9_registry___pyx_scope_struct____cinit__.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
@@ -5153,22 +6148,22 @@ static int __Pyx_modinit_type_import_code(void) {
    if (!__pyx_ptype_5yapic_6entity_7_entity_EntityType) __PYX_ERR(3, 12, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_7_entity_EntityType = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityType*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityType->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityType)) __PYX_ERR(3, 12, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_EntityBase = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityBase", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityBase), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityBase) __PYX_ERR(3, 29, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityBase) __PYX_ERR(3, 30, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityAttribute", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttribute) __PYX_ERR(3, 34, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttribute = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttribute->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttribute)) __PYX_ERR(3, 34, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttribute) __PYX_ERR(3, 35, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttribute = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttribute->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttribute)) __PYX_ERR(3, 35, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityAttributeExt", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt) __PYX_ERR(3, 52, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt)) __PYX_ERR(3, 52, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt) __PYX_ERR(3, 53, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeExt)) __PYX_ERR(3, 53, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityAttributeImpl", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeImpl) __PYX_ERR(3, 62, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeImpl = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeImpl)) __PYX_ERR(3, 62, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeImpl) __PYX_ERR(3, 63, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeImpl = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityAttributeImpl)) __PYX_ERR(3, 63, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_EntityState = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "EntityState", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_EntityState), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityState) __PYX_ERR(3, 76, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_7_entity_EntityState = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityState->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityState)) __PYX_ERR(3, 76, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_EntityState) __PYX_ERR(3, 77, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_EntityState = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_EntityState->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_EntityState)) __PYX_ERR(3, 77, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_7_entity_DependencyList = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "DependencyList", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_DependencyList), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_7_entity_DependencyList) __PYX_ERR(3, 103, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_7_entity_DependencyList = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_DependencyList->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_DependencyList)) __PYX_ERR(3, 103, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_7_entity_DependencyList) __PYX_ERR(3, 104, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_DependencyList = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_DependencyList->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_DependencyList)) __PYX_ERR(3, 104, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("yapic.entity._field"); if (unlikely(!__pyx_t_1)) __PYX_ERR(4, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -5452,7 +6447,7 @@ if (!__Pyx_RefNanny) {
  * from enum import Enum
  * from weakref import WeakValueDictionary             # <<<<<<<<<<<<<<
  * 
- * from ._entity cimport DependencyList
+ * from ._entity cimport DependencyList, EntityBase, EntityType, EntityAttribute
  */
   __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -5501,7 +6496,7 @@ if (!__Pyx_RefNanny) {
  *     REMOVED = 1
  *     CREATED = 2             # <<<<<<<<<<<<<<
  *     CHANGED = 3
- * 
+ *     INSERT_ENTITY = 4
  */
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CREATED, __pyx_int_2) < 0) __PYX_ERR(0, 56, __pyx_L1_error)
 
@@ -5509,10 +6504,46 @@ if (!__Pyx_RefNanny) {
  *     REMOVED = 1
  *     CREATED = 2
  *     CHANGED = 3             # <<<<<<<<<<<<<<
+ *     INSERT_ENTITY = 4
+ *     UPDATE_ENTITY = 5
+ */
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CHANGED, __pyx_int_3) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
+
+  /* "yapic/entity/_registry.pyx":58
+ *     CREATED = 2
+ *     CHANGED = 3
+ *     INSERT_ENTITY = 4             # <<<<<<<<<<<<<<
+ *     UPDATE_ENTITY = 5
+ *     REMOVE_ENTITY = 6
+ */
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_INSERT_ENTITY, __pyx_int_4) < 0) __PYX_ERR(0, 58, __pyx_L1_error)
+
+  /* "yapic/entity/_registry.pyx":59
+ *     CHANGED = 3
+ *     INSERT_ENTITY = 4
+ *     UPDATE_ENTITY = 5             # <<<<<<<<<<<<<<
+ *     REMOVE_ENTITY = 6
+ *     COMPARE_DATA = 7
+ */
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_UPDATE_ENTITY, __pyx_int_5) < 0) __PYX_ERR(0, 59, __pyx_L1_error)
+
+  /* "yapic/entity/_registry.pyx":60
+ *     INSERT_ENTITY = 4
+ *     UPDATE_ENTITY = 5
+ *     REMOVE_ENTITY = 6             # <<<<<<<<<<<<<<
+ *     COMPARE_DATA = 7
+ * 
+ */
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_REMOVE_ENTITY, __pyx_int_6) < 0) __PYX_ERR(0, 60, __pyx_L1_error)
+
+  /* "yapic/entity/_registry.pyx":61
+ *     UPDATE_ENTITY = 5
+ *     REMOVE_ENTITY = 6
+ *     COMPARE_DATA = 7             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CHANGED, __pyx_int_3) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_COMPARE_DATA, __pyx_int_7) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
 
   /* "yapic/entity/_registry.pyx":54
  * 
@@ -6522,6 +7553,67 @@ static CYTHON_INLINE void __Pyx_RaiseClosureNameError(const char *varname) {
     PyErr_Format(PyExc_NameError, "free variable '%s' referenced before assignment in enclosing scope", varname);
 }
 
+/* PyDictVersioning */
+#if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
+static CYTHON_INLINE PY_UINT64_T __Pyx_get_tp_dict_version(PyObject *obj) {
+    PyObject *dict = Py_TYPE(obj)->tp_dict;
+    return likely(dict) ? __PYX_GET_DICT_VERSION(dict) : 0;
+}
+static CYTHON_INLINE PY_UINT64_T __Pyx_get_object_dict_version(PyObject *obj) {
+    PyObject **dictptr = NULL;
+    Py_ssize_t offset = Py_TYPE(obj)->tp_dictoffset;
+    if (offset) {
+#if CYTHON_COMPILING_IN_CPYTHON
+        dictptr = (likely(offset > 0)) ? (PyObject **) ((char *)obj + offset) : _PyObject_GetDictPtr(obj);
+#else
+        dictptr = _PyObject_GetDictPtr(obj);
+#endif
+    }
+    return (dictptr && *dictptr) ? __PYX_GET_DICT_VERSION(*dictptr) : 0;
+}
+static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UINT64_T tp_dict_version, PY_UINT64_T obj_dict_version) {
+    PyObject *dict = Py_TYPE(obj)->tp_dict;
+    if (unlikely(!dict) || unlikely(tp_dict_version != __PYX_GET_DICT_VERSION(dict)))
+        return 0;
+    return obj_dict_version == __Pyx_get_object_dict_version(obj);
+}
+#endif
+
+/* GetModuleGlobalName */
+#if CYTHON_USE_DICT_VERSIONS
+static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_version, PyObject **dict_cached_value)
+#else
+static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name)
+#endif
+{
+    PyObject *result;
+#if !CYTHON_AVOID_BORROWED_REFS
+#if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030500A1
+    result = _PyDict_GetItem_KnownHash(__pyx_d, name, ((PyASCIIObject *) name)->hash);
+    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
+    if (likely(result)) {
+        return __Pyx_NewRef(result);
+    } else if (unlikely(PyErr_Occurred())) {
+        return NULL;
+    }
+#else
+    result = PyDict_GetItem(__pyx_d, name);
+    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
+    if (likely(result)) {
+        return __Pyx_NewRef(result);
+    }
+#endif
+#else
+    result = PyObject_GetItem(__pyx_d, name);
+    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
+    if (likely(result)) {
+        return __Pyx_NewRef(result);
+    }
+    PyErr_Clear();
+#endif
+    return __Pyx_GetBuiltinName(name);
+}
+
 /* GetItemInt */
 static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j) {
     PyObject *r;
@@ -6637,67 +7729,6 @@ static PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* key) {
     return __Pyx_PyObject_GetIndex(obj, key);
 }
 #endif
-
-/* PyDictVersioning */
-#if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
-static CYTHON_INLINE PY_UINT64_T __Pyx_get_tp_dict_version(PyObject *obj) {
-    PyObject *dict = Py_TYPE(obj)->tp_dict;
-    return likely(dict) ? __PYX_GET_DICT_VERSION(dict) : 0;
-}
-static CYTHON_INLINE PY_UINT64_T __Pyx_get_object_dict_version(PyObject *obj) {
-    PyObject **dictptr = NULL;
-    Py_ssize_t offset = Py_TYPE(obj)->tp_dictoffset;
-    if (offset) {
-#if CYTHON_COMPILING_IN_CPYTHON
-        dictptr = (likely(offset > 0)) ? (PyObject **) ((char *)obj + offset) : _PyObject_GetDictPtr(obj);
-#else
-        dictptr = _PyObject_GetDictPtr(obj);
-#endif
-    }
-    return (dictptr && *dictptr) ? __PYX_GET_DICT_VERSION(*dictptr) : 0;
-}
-static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UINT64_T tp_dict_version, PY_UINT64_T obj_dict_version) {
-    PyObject *dict = Py_TYPE(obj)->tp_dict;
-    if (unlikely(!dict) || unlikely(tp_dict_version != __PYX_GET_DICT_VERSION(dict)))
-        return 0;
-    return obj_dict_version == __Pyx_get_object_dict_version(obj);
-}
-#endif
-
-/* GetModuleGlobalName */
-#if CYTHON_USE_DICT_VERSIONS
-static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_version, PyObject **dict_cached_value)
-#else
-static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name)
-#endif
-{
-    PyObject *result;
-#if !CYTHON_AVOID_BORROWED_REFS
-#if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030500A1
-    result = _PyDict_GetItem_KnownHash(__pyx_d, name, ((PyASCIIObject *) name)->hash);
-    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
-    if (likely(result)) {
-        return __Pyx_NewRef(result);
-    } else if (unlikely(PyErr_Occurred())) {
-        return NULL;
-    }
-#else
-    result = PyDict_GetItem(__pyx_d, name);
-    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
-    if (likely(result)) {
-        return __Pyx_NewRef(result);
-    }
-#endif
-#else
-    result = PyObject_GetItem(__pyx_d, name);
-    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
-    if (likely(result)) {
-        return __Pyx_NewRef(result);
-    }
-    PyErr_Clear();
-#endif
-    return __Pyx_GetBuiltinName(name);
-}
 
 /* FetchCommonType */
 static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type) {
@@ -7334,6 +8365,129 @@ static CYTHON_INLINE void __Pyx_CyFunction_SetAnnotationsDict(PyObject *func, Py
     Py_INCREF(dict);
 }
 
+/* set_iter */
+static CYTHON_INLINE PyObject* __Pyx_set_iterator(PyObject* iterable, int is_set,
+                                                  Py_ssize_t* p_orig_length, int* p_source_is_set) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    is_set = is_set || likely(PySet_CheckExact(iterable) || PyFrozenSet_CheckExact(iterable));
+    *p_source_is_set = is_set;
+    if (likely(is_set)) {
+        *p_orig_length = PySet_Size(iterable);
+        Py_INCREF(iterable);
+        return iterable;
+    }
+#else
+    (void)is_set;
+    *p_source_is_set = 0;
+#endif
+    *p_orig_length = 0;
+    return PyObject_GetIter(iterable);
+}
+static CYTHON_INLINE int __Pyx_set_iter_next(
+        PyObject* iter_obj, Py_ssize_t orig_length,
+        Py_ssize_t* ppos, PyObject **value,
+        int source_is_set) {
+    if (!CYTHON_COMPILING_IN_CPYTHON || unlikely(!source_is_set)) {
+        *value = PyIter_Next(iter_obj);
+        if (unlikely(!*value)) {
+            return __Pyx_IterFinish();
+        }
+        (void)orig_length;
+        (void)ppos;
+        return 1;
+    }
+#if CYTHON_COMPILING_IN_CPYTHON
+    if (unlikely(PySet_GET_SIZE(iter_obj) != orig_length)) {
+        PyErr_SetString(
+            PyExc_RuntimeError,
+            "set changed size during iteration");
+        return -1;
+    }
+    {
+        Py_hash_t hash;
+        int ret = _PySet_NextEntry(iter_obj, ppos, value, &hash);
+        assert (ret != -1);
+        if (likely(ret)) {
+            Py_INCREF(*value);
+            return 1;
+        }
+    }
+#endif
+    return 0;
+}
+
+/* UnpackUnboundCMethod */
+static int __Pyx_TryUnpackUnboundCMethod(__Pyx_CachedCFunction* target) {
+    PyObject *method;
+    method = __Pyx_PyObject_GetAttrStr(target->type, *target->method_name);
+    if (unlikely(!method))
+        return -1;
+    target->method = method;
+#if CYTHON_COMPILING_IN_CPYTHON
+    #if PY_MAJOR_VERSION >= 3
+    if (likely(__Pyx_TypeCheck(method, &PyMethodDescr_Type)))
+    #endif
+    {
+        PyMethodDescrObject *descr = (PyMethodDescrObject*) method;
+        target->func = descr->d_method->ml_meth;
+        target->flag = descr->d_method->ml_flags & ~(METH_CLASS | METH_STATIC | METH_COEXIST | METH_STACKLESS);
+    }
+#endif
+    return 0;
+}
+
+/* CallUnboundCMethod1 */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg) {
+    if (likely(cfunc->func)) {
+        int flag = cfunc->flag;
+        if (flag == METH_O) {
+            return (*(cfunc->func))(self, arg);
+        } else if (PY_VERSION_HEX >= 0x030600B1 && flag == METH_FASTCALL) {
+            if (PY_VERSION_HEX >= 0x030700A0) {
+                return (*(__Pyx_PyCFunctionFast)(void*)(PyCFunction)cfunc->func)(self, &arg, 1);
+            } else {
+                return (*(__Pyx_PyCFunctionFastWithKeywords)(void*)(PyCFunction)cfunc->func)(self, &arg, 1, NULL);
+            }
+        } else if (PY_VERSION_HEX >= 0x030700A0 && flag == (METH_FASTCALL | METH_KEYWORDS)) {
+            return (*(__Pyx_PyCFunctionFastWithKeywords)(void*)(PyCFunction)cfunc->func)(self, &arg, 1, NULL);
+        }
+    }
+    return __Pyx__CallUnboundCMethod1(cfunc, self, arg);
+}
+#endif
+static PyObject* __Pyx__CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg){
+    PyObject *args, *result = NULL;
+    if (unlikely(!cfunc->func && !cfunc->method) && unlikely(__Pyx_TryUnpackUnboundCMethod(cfunc) < 0)) return NULL;
+#if CYTHON_COMPILING_IN_CPYTHON
+    if (cfunc->func && (cfunc->flag & METH_VARARGS)) {
+        args = PyTuple_New(1);
+        if (unlikely(!args)) goto bad;
+        Py_INCREF(arg);
+        PyTuple_SET_ITEM(args, 0, arg);
+        if (cfunc->flag & METH_KEYWORDS)
+            result = (*(PyCFunctionWithKeywords)(void*)(PyCFunction)cfunc->func)(self, args, NULL);
+        else
+            result = (*cfunc->func)(self, args);
+    } else {
+        args = PyTuple_New(2);
+        if (unlikely(!args)) goto bad;
+        Py_INCREF(self);
+        PyTuple_SET_ITEM(args, 0, self);
+        Py_INCREF(arg);
+        PyTuple_SET_ITEM(args, 1, arg);
+        result = __Pyx_PyObject_Call(cfunc->method, args, NULL);
+    }
+#else
+    args = PyTuple_Pack(2, self, arg);
+    if (unlikely(!args)) goto bad;
+    result = __Pyx_PyObject_Call(cfunc->method, args, NULL);
+#endif
+bad:
+    Py_XDECREF(args);
+    return result;
+}
+
 /* PyObject_GenericGetAttrNoDict */
 #if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
 static PyObject *__Pyx_RaiseGenericGetAttributeError(PyTypeObject *tp, PyObject *attr_name) {
@@ -7896,37 +9050,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
     }
 }
 
-/* CIntToPy */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
-    const long neg_one = (long) ((long) 0 - (long) 1), const_zero = (long) 0;
-    const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(long) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(long) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
-            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
-#endif
-        }
-    } else {
-        if (sizeof(long) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
-            return PyLong_FromLongLong((PY_LONG_LONG) value);
-#endif
-        }
-    }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(long),
-                                     little, !is_unsigned);
-    }
-}
-
 /* CIntFromPyVerify */
 #define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\
     __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 0)
@@ -7948,195 +9071,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
         }\
         return (target_type) value;\
     }
-
-/* CIntFromPy */
-static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {
-    const long neg_one = (long) ((long) 0 - (long) 1), const_zero = (long) 0;
-    const int is_unsigned = neg_one > const_zero;
-#if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_Check(x))) {
-        if (sizeof(long) < sizeof(long)) {
-            __PYX_VERIFY_RETURN_INT(long, long, PyInt_AS_LONG(x))
-        } else {
-            long val = PyInt_AS_LONG(x);
-            if (is_unsigned && unlikely(val < 0)) {
-                goto raise_neg_overflow;
-            }
-            return (long) val;
-        }
-    } else
-#endif
-    if (likely(PyLong_Check(x))) {
-        if (is_unsigned) {
-#if CYTHON_USE_PYLONG_INTERNALS
-            const digit* digits = ((PyLongObject*)x)->ob_digit;
-            switch (Py_SIZE(x)) {
-                case  0: return (long) 0;
-                case  1: __PYX_VERIFY_RETURN_INT(long, digit, digits[0])
-                case 2:
-                    if (8 * sizeof(long) > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(long) >= 2 * PyLong_SHIFT) {
-                            return (long) (((((long)digits[1]) << PyLong_SHIFT) | (long)digits[0]));
-                        }
-                    }
-                    break;
-                case 3:
-                    if (8 * sizeof(long) > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(long) >= 3 * PyLong_SHIFT) {
-                            return (long) (((((((long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0]));
-                        }
-                    }
-                    break;
-                case 4:
-                    if (8 * sizeof(long) > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(long) >= 4 * PyLong_SHIFT) {
-                            return (long) (((((((((long)digits[3]) << PyLong_SHIFT) | (long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0]));
-                        }
-                    }
-                    break;
-            }
-#endif
-#if CYTHON_COMPILING_IN_CPYTHON
-            if (unlikely(Py_SIZE(x) < 0)) {
-                goto raise_neg_overflow;
-            }
-#else
-            {
-                int result = PyObject_RichCompareBool(x, Py_False, Py_LT);
-                if (unlikely(result < 0))
-                    return (long) -1;
-                if (unlikely(result == 1))
-                    goto raise_neg_overflow;
-            }
-#endif
-            if (sizeof(long) <= sizeof(unsigned long)) {
-                __PYX_VERIFY_RETURN_INT_EXC(long, unsigned long, PyLong_AsUnsignedLong(x))
-#ifdef HAVE_LONG_LONG
-            } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
-                __PYX_VERIFY_RETURN_INT_EXC(long, unsigned PY_LONG_LONG, PyLong_AsUnsignedLongLong(x))
-#endif
-            }
-        } else {
-#if CYTHON_USE_PYLONG_INTERNALS
-            const digit* digits = ((PyLongObject*)x)->ob_digit;
-            switch (Py_SIZE(x)) {
-                case  0: return (long) 0;
-                case -1: __PYX_VERIFY_RETURN_INT(long, sdigit, (sdigit) (-(sdigit)digits[0]))
-                case  1: __PYX_VERIFY_RETURN_INT(long,  digit, +digits[0])
-                case -2:
-                    if (8 * sizeof(long) - 1 > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(long, long, -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
-                            return (long) (((long)-1)*(((((long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
-                        }
-                    }
-                    break;
-                case 2:
-                    if (8 * sizeof(long) > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
-                            return (long) ((((((long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
-                        }
-                    }
-                    break;
-                case -3:
-                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(long, long, -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
-                            return (long) (((long)-1)*(((((((long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
-                        }
-                    }
-                    break;
-                case 3:
-                    if (8 * sizeof(long) > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
-                            return (long) ((((((((long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
-                        }
-                    }
-                    break;
-                case -4:
-                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(long, long, -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
-                            return (long) (((long)-1)*(((((((((long)digits[3]) << PyLong_SHIFT) | (long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
-                        }
-                    }
-                    break;
-                case 4:
-                    if (8 * sizeof(long) > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
-                            return (long) ((((((((((long)digits[3]) << PyLong_SHIFT) | (long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
-                        }
-                    }
-                    break;
-            }
-#endif
-            if (sizeof(long) <= sizeof(long)) {
-                __PYX_VERIFY_RETURN_INT_EXC(long, long, PyLong_AsLong(x))
-#ifdef HAVE_LONG_LONG
-            } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
-                __PYX_VERIFY_RETURN_INT_EXC(long, PY_LONG_LONG, PyLong_AsLongLong(x))
-#endif
-            }
-        }
-        {
-#if CYTHON_COMPILING_IN_PYPY && !defined(_PyLong_AsByteArray)
-            PyErr_SetString(PyExc_RuntimeError,
-                            "_PyLong_AsByteArray() not available in PyPy, cannot convert large numbers");
-#else
-            long val;
-            PyObject *v = __Pyx_PyNumber_IntOrLong(x);
- #if PY_MAJOR_VERSION < 3
-            if (likely(v) && !PyLong_Check(v)) {
-                PyObject *tmp = v;
-                v = PyNumber_Long(tmp);
-                Py_DECREF(tmp);
-            }
- #endif
-            if (likely(v)) {
-                int one = 1; int is_little = (int)*(unsigned char *)&one;
-                unsigned char *bytes = (unsigned char *)&val;
-                int ret = _PyLong_AsByteArray((PyLongObject *)v,
-                                              bytes, sizeof(val),
-                                              is_little, !is_unsigned);
-                Py_DECREF(v);
-                if (likely(!ret))
-                    return val;
-            }
-#endif
-            return (long) -1;
-        }
-    } else {
-        long val;
-        PyObject *tmp = __Pyx_PyNumber_IntOrLong(x);
-        if (!tmp) return (long) -1;
-        val = __Pyx_PyInt_As_long(tmp);
-        Py_DECREF(tmp);
-        return val;
-    }
-raise_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "value too large to convert to long");
-    return (long) -1;
-raise_neg_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "can't convert negative value to long");
-    return (long) -1;
-}
 
 /* CIntFromPy */
 static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *x) {
@@ -8325,6 +9259,226 @@ raise_neg_overflow:
     PyErr_SetString(PyExc_OverflowError,
         "can't convert negative value to int");
     return (int) -1;
+}
+
+/* CIntToPy */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
+    const long neg_one = (long) ((long) 0 - (long) 1), const_zero = (long) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(long) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(long) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(long) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(long),
+                                     little, !is_unsigned);
+    }
+}
+
+/* CIntFromPy */
+static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {
+    const long neg_one = (long) ((long) 0 - (long) 1), const_zero = (long) 0;
+    const int is_unsigned = neg_one > const_zero;
+#if PY_MAJOR_VERSION < 3
+    if (likely(PyInt_Check(x))) {
+        if (sizeof(long) < sizeof(long)) {
+            __PYX_VERIFY_RETURN_INT(long, long, PyInt_AS_LONG(x))
+        } else {
+            long val = PyInt_AS_LONG(x);
+            if (is_unsigned && unlikely(val < 0)) {
+                goto raise_neg_overflow;
+            }
+            return (long) val;
+        }
+    } else
+#endif
+    if (likely(PyLong_Check(x))) {
+        if (is_unsigned) {
+#if CYTHON_USE_PYLONG_INTERNALS
+            const digit* digits = ((PyLongObject*)x)->ob_digit;
+            switch (Py_SIZE(x)) {
+                case  0: return (long) 0;
+                case  1: __PYX_VERIFY_RETURN_INT(long, digit, digits[0])
+                case 2:
+                    if (8 * sizeof(long) > 1 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(long) >= 2 * PyLong_SHIFT) {
+                            return (long) (((((long)digits[1]) << PyLong_SHIFT) | (long)digits[0]));
+                        }
+                    }
+                    break;
+                case 3:
+                    if (8 * sizeof(long) > 2 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(long) >= 3 * PyLong_SHIFT) {
+                            return (long) (((((((long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0]));
+                        }
+                    }
+                    break;
+                case 4:
+                    if (8 * sizeof(long) > 3 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(long) >= 4 * PyLong_SHIFT) {
+                            return (long) (((((((((long)digits[3]) << PyLong_SHIFT) | (long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0]));
+                        }
+                    }
+                    break;
+            }
+#endif
+#if CYTHON_COMPILING_IN_CPYTHON
+            if (unlikely(Py_SIZE(x) < 0)) {
+                goto raise_neg_overflow;
+            }
+#else
+            {
+                int result = PyObject_RichCompareBool(x, Py_False, Py_LT);
+                if (unlikely(result < 0))
+                    return (long) -1;
+                if (unlikely(result == 1))
+                    goto raise_neg_overflow;
+            }
+#endif
+            if (sizeof(long) <= sizeof(unsigned long)) {
+                __PYX_VERIFY_RETURN_INT_EXC(long, unsigned long, PyLong_AsUnsignedLong(x))
+#ifdef HAVE_LONG_LONG
+            } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
+                __PYX_VERIFY_RETURN_INT_EXC(long, unsigned PY_LONG_LONG, PyLong_AsUnsignedLongLong(x))
+#endif
+            }
+        } else {
+#if CYTHON_USE_PYLONG_INTERNALS
+            const digit* digits = ((PyLongObject*)x)->ob_digit;
+            switch (Py_SIZE(x)) {
+                case  0: return (long) 0;
+                case -1: __PYX_VERIFY_RETURN_INT(long, sdigit, (sdigit) (-(sdigit)digits[0]))
+                case  1: __PYX_VERIFY_RETURN_INT(long,  digit, +digits[0])
+                case -2:
+                    if (8 * sizeof(long) - 1 > 1 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(long, long, -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                            return (long) (((long)-1)*(((((long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
+                        }
+                    }
+                    break;
+                case 2:
+                    if (8 * sizeof(long) > 1 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                            return (long) ((((((long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
+                        }
+                    }
+                    break;
+                case -3:
+                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(long, long, -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                            return (long) (((long)-1)*(((((((long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
+                        }
+                    }
+                    break;
+                case 3:
+                    if (8 * sizeof(long) > 2 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                            return (long) ((((((((long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
+                        }
+                    }
+                    break;
+                case -4:
+                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(long, long, -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
+                            return (long) (((long)-1)*(((((((((long)digits[3]) << PyLong_SHIFT) | (long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
+                        }
+                    }
+                    break;
+                case 4:
+                    if (8 * sizeof(long) > 3 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
+                            return (long) ((((((((((long)digits[3]) << PyLong_SHIFT) | (long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
+                        }
+                    }
+                    break;
+            }
+#endif
+            if (sizeof(long) <= sizeof(long)) {
+                __PYX_VERIFY_RETURN_INT_EXC(long, long, PyLong_AsLong(x))
+#ifdef HAVE_LONG_LONG
+            } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
+                __PYX_VERIFY_RETURN_INT_EXC(long, PY_LONG_LONG, PyLong_AsLongLong(x))
+#endif
+            }
+        }
+        {
+#if CYTHON_COMPILING_IN_PYPY && !defined(_PyLong_AsByteArray)
+            PyErr_SetString(PyExc_RuntimeError,
+                            "_PyLong_AsByteArray() not available in PyPy, cannot convert large numbers");
+#else
+            long val;
+            PyObject *v = __Pyx_PyNumber_IntOrLong(x);
+ #if PY_MAJOR_VERSION < 3
+            if (likely(v) && !PyLong_Check(v)) {
+                PyObject *tmp = v;
+                v = PyNumber_Long(tmp);
+                Py_DECREF(tmp);
+            }
+ #endif
+            if (likely(v)) {
+                int one = 1; int is_little = (int)*(unsigned char *)&one;
+                unsigned char *bytes = (unsigned char *)&val;
+                int ret = _PyLong_AsByteArray((PyLongObject *)v,
+                                              bytes, sizeof(val),
+                                              is_little, !is_unsigned);
+                Py_DECREF(v);
+                if (likely(!ret))
+                    return val;
+            }
+#endif
+            return (long) -1;
+        }
+    } else {
+        long val;
+        PyObject *tmp = __Pyx_PyNumber_IntOrLong(x);
+        if (!tmp) return (long) -1;
+        val = __Pyx_PyInt_As_long(tmp);
+        Py_DECREF(tmp);
+        return val;
+    }
+raise_overflow:
+    PyErr_SetString(PyExc_OverflowError,
+        "value too large to convert to long");
+    return (long) -1;
+raise_neg_overflow:
+    PyErr_SetString(PyExc_OverflowError,
+        "can't convert negative value to long");
+    return (long) -1;
 }
 
 /* FastTypeChecks */

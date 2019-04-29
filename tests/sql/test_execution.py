@@ -1,8 +1,8 @@
 import pytest
 from datetime import datetime
 from yapic.entity.sql import wrap_connection, Entity, sync
-from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Bool, ForeignKey, One, Query,
-                          func, EntityDiff, Registry)
+from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Bool, ForeignKey, PrimaryKey,
+                          One, Query, func, EntityDiff, Registry)
 
 pytestmark = pytest.mark.asyncio
 
@@ -167,10 +167,18 @@ async def test_diff(conn):
     class NewTable(Entity, registry=new_reg, schema="_private"):
         id: Serial
 
+    class Gender(Entity, registry=new_reg, schema="execution"):
+        value: String = PrimaryKey()
+        title: String
+
+    Gender.__fix_entries__ = [
+        Gender(value="male", title="Male"),
+        Gender(value="female", title="Female"),
+        Gender(value="other", title="Other"),
+    ]
+
     await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
 
-    # diff = conn.dialect.entity_diff(ent_reg["User"], User_changed)
-    # print(diff.changes)
     result = await sync(conn, new_reg)
 
     assert result == """DROP TABLE "execution"."Address" CASCADE;
@@ -180,6 +188,14 @@ CREATE TABLE "_private"."NewTable" (
   "id" SERIAL4 NOT NULL,
   PRIMARY KEY("id")
 );
+CREATE TABLE "execution"."Gender" (
+  "value" TEXT NOT NULL,
+  "title" TEXT,
+  PRIMARY KEY("value")
+);
+INSERT INTO "execution"."Gender" ("value", "title") VALUES ('male', 'Male');
+INSERT INTO "execution"."Gender" ("value", "title") VALUES ('female', 'Female');
+INSERT INTO "execution"."Gender" ("value", "title") VALUES ('other', 'Other');
 ALTER TABLE "execution"."User"
   DROP COLUMN "name",
   ADD COLUMN "name_x" VARCHAR(100),
@@ -194,3 +210,23 @@ ALTER TABLE "execution"."User"
 
     result = await sync(conn, new_reg)
     assert bool(result) is False
+
+    # remove gender value
+    Gender.__fix_entries__ = [
+        Gender(value="male", title="Male"),
+        Gender(value="female", title="Female"),
+    ]
+    result = await sync(conn, new_reg)
+    assert result == """DELETE FROM "execution"."Gender" WHERE "value"='other';"""
+    await conn.conn.execute(result)
+
+    Gender.__fix_entries__ = [
+        Gender(value="male", title="MaleX"),
+        Gender(value="female", title="FemaleY"),
+        Gender(value="insert"),
+    ]
+    result = await sync(conn, new_reg)
+    assert result == """INSERT INTO "execution"."Gender" ("value") VALUES ('insert');
+UPDATE "execution"."Gender" SET "title"='MaleX' WHERE "value"='male';
+UPDATE "execution"."Gender" SET "title"='FemaleY' WHERE "value"='female';"""
+    await conn.conn.execute(result)

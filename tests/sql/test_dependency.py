@@ -122,5 +122,5 @@ async def test_insert(conn):
     # await conn.insert(user)
 
 
-# async def test_cleanup(conn):
-#     await conn.conn.execute("""DROP SCHEMA IF EXISTS "deps" CASCADE""")
+async def test_cleanup(conn):
+    await conn.conn.execute("""DROP SCHEMA IF EXISTS "deps" CASCADE""")

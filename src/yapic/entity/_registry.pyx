@@ -2,7 +2,7 @@ import cython
 from enum import Enum
 from weakref import WeakValueDictionary
 
-from ._entity cimport DependencyList
+from ._entity cimport DependencyList, EntityBase, EntityType, EntityAttribute
 from ._entity_diff cimport EntityDiff
 
 
@@ -55,6 +55,10 @@ class RegistryDiffKind(Enum):
     REMOVED = 1
     CREATED = 2
     CHANGED = 3
+    INSERT_ENTITY = 4
+    UPDATE_ENTITY = 5
+    REMOVE_ENTITY = 6
+    COMPARE_DATA = 7
 
 
 @cython.final
@@ -64,6 +68,7 @@ cdef class RegistryDiff:
         self.b = b
         self.changes = []
         cdef DependencyList order = DependencyList()
+        cdef EntityBase fix
 
         a_names = set(a.keys())
         b_names = set(b.keys())
@@ -78,6 +83,10 @@ cdef class RegistryDiff:
             self.changes.append((RegistryDiffKind.CREATED, val))
             order.add(val)
 
+            if val.__fix_entries__:
+                for fix in val.__fix_entries__:
+                    self.changes.append((RegistryDiffKind.INSERT_ENTITY, fix))
+
         for maybe_changed in sorted(a_names & b_names):
             val = b[maybe_changed]
             diff = entity_diff(a[maybe_changed], val)
@@ -85,10 +94,17 @@ cdef class RegistryDiff:
                 self.changes.append((RegistryDiffKind.CHANGED, diff))
                 order.add(val)
 
+            if val.__fix_entries__:
+                self.changes.append((RegistryDiffKind.COMPARE_DATA, val))
+                order.add(val)
+
+
         def key(item):
             kind, val = item
             if isinstance(val, EntityDiff):
                 return order.index((<EntityDiff>val).b)
+            elif kind is RegistryDiffKind.INSERT_ENTITY:
+                return order.index(type(val))
             else:
                 return order.index(val)
 
@@ -103,3 +119,40 @@ cdef class RegistryDiff:
 
     def __iter__(self):
         return iter(self.changes)
+
+    cpdef list compare_data(self, list a_ents, list b_ents):
+        cdef list result = []
+        a_values = set(a_ents)
+        b_values = set(b_ents)
+
+        for removed in a_values - b_values:
+            result.append((RegistryDiffKind.REMOVE_ENTITY, removed))
+
+        for created in b_values - a_values:
+            result.append((RegistryDiffKind.INSERT_ENTITY, created))
+
+        for maybe_changed in a_values & b_values:
+            a_ent = a_ents[a_ents.index(maybe_changed)]
+            b_ent = b_ents[a_ents.index(maybe_changed)]
+            if not entity_data_is_eq(a_ent, b_ent):
+                result.append((RegistryDiffKind.UPDATE_ENTITY, b_ent))
+
+        return result
+
+
+cdef object entity_data_is_eq(EntityBase a, EntityBase b):
+    cdef EntityType entity_t = type(b)
+    cdef EntityAttribute attr
+
+    if type(a) is not entity_t:
+        return False
+
+    cdef int length = len(entity_t.__fields__)
+
+    for i in range(length):
+        attr = <EntityAttribute>entity_t.__fields__[i]
+
+        if a.__state__.get_value(attr) != b.__state__.get_value(attr):
+            return False
+
+    return True

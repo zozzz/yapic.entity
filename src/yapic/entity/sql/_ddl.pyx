@@ -105,20 +105,24 @@ cdef class DDLCompiler:
         lines = []
         schemas_created = {ent.__meta__.get("schema", "public") for ent in diff.a.values()}
 
-        # TODO: entity dependency order
-
         for kind, param in diff:
-            if kind == RegistryDiffKind.REMOVED:
+            if kind is RegistryDiffKind.REMOVED:
                 lines.append(self.drop_entity(param))
-            elif kind == RegistryDiffKind.CREATED:
+            elif kind is RegistryDiffKind.CREATED:
                 schema = param.__meta__.get("schema", "public")
                 if schema not in schemas_created:
                     schemas_created.add(schema)
                     lines.append(f"CREATE SCHEMA IF NOT EXISTS {self.dialect.quote_ident(schema)};")
 
                 lines.append(self.compile_entity(param))
-            elif kind == RegistryDiffKind.CHANGED:
+            elif kind is RegistryDiffKind.CHANGED:
                 lines.append(self.compile_entity_diff(param))
+            elif kind is RegistryDiffKind.INSERT_ENTITY:
+                lines.append(self.dialect.compile_insert(param[0], param[1]))
+            elif kind is RegistryDiffKind.UPDATE_ENTITY:
+                lines.append(self.dialect.compile_update(param[0], param[1]))
+            elif kind is RegistryDiffKind.REMOVE_ENTITY:
+                lines.append(self.dialect.compile_delete(param[0], param[1]))
 
         return "\n".join(lines)
 
@@ -172,6 +176,8 @@ cdef class DDLCompiler:
 
     def drop_entity(self, EntityType entity):
         return f"DROP TABLE {self.dialect.table_qname(entity)} CASCADE;"
+
+
 
 
 cdef class DDLReflect:

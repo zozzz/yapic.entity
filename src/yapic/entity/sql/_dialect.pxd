@@ -1,4 +1,4 @@
-from yapic.entity._entity cimport EntityType
+from yapic.entity._entity cimport EntityType, EntityBase
 from yapic.entity._field cimport Field, StorageTypeFactory, StorageType
 from yapic.entity._expression cimport Expression
 from yapic.entity._entity_diff cimport EntityDiff
@@ -19,3 +19,6 @@ cdef class Dialect:
     cpdef StorageType get_field_type(self, Field field)
     cpdef bint expression_eq(self, Expression a, Expression b)
     cpdef EntityDiff entity_diff(self, EntityType a, EntityType b)
+    cpdef str compile_insert(self, EntityType entity, dict data)
+    cpdef str compile_update(self, EntityType entity, dict data)
+    cpdef str compile_delete(self, EntityType entity, dict data)

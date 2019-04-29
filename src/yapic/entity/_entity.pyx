@@ -96,6 +96,7 @@ cdef class EntityType(type):
 
                         setattr(self, name, attr)
 
+        self.__fix_entries__ = None
         self.__deferred__ = []
         self.__fields__ = tuple(fields)
         self.__attrs__ = tuple(fields + __attrs__)

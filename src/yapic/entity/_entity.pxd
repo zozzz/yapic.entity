@@ -14,6 +14,7 @@ cdef class EntityType(type):
     cdef readonly tuple __fields__
     cdef readonly tuple __pk__
     cdef readonly list __deferred__
+    cdef public list __fix_entries__
     cdef PyObject* registry
     cdef PyObject* meta
     cdef set deps

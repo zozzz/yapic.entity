@@ -18,21 +18,19 @@ cdef class QueryContext:
             raise ValueError("Columns must be not empty")
 
     async def fetch(self, num=None, *, timeout=None):
-        cdef list rows
-
-        async with ensure_transaction(self.conn.conn):
-            cursor = await self.cursor_factory
-
-            rows = await cursor.fetch(num, timeout=timeout)
-            for i in range(len(rows)):
-                rows[i] = self.convert_row(rows[i])
-            return rows
+        cdef list rows = []
+        async for record in self:
+            rows.append(record)
+        return rows
 
     async def fetchrow(self, *, timeout=None):
         async with ensure_transaction(self.conn.conn):
             cursor = await self.cursor_factory
             row = await cursor.fetchrow(timeout=timeout)
-            return self.convert_row(row)
+            if row:
+                return self.convert_row(row)
+            else:
+                return None
 
     async def forward(self, num, *, timeout=None):
         async with ensure_transaction(self.conn.conn):
@@ -92,10 +90,11 @@ cdef class QueryContext:
 
     async def __aiter__(self):
         async with ensure_transaction(self.conn.conn):
-            return self.cursor_factory.__aiter__()
+            async for record in self.cursor_factory.__aiter__():
+                yield self.convert_row(record)
 
     def __await__(self):
-        return self.fetch()
+        return self.fetch().__await__()
 
 
 cdef inline object ensure_transaction(conn):
