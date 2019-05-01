@@ -33,19 +33,11 @@ cdef class Field(EntityAttribute):
             self.min_size = -1
             self.max_size = -1
 
-    # def __get__(self, instance, owner):
-    #     if instance is None:
-    #         return self
-    #     elif isinstance(instance, EntityBase):
-    #         return (<EntityBase>instance).__fstate__.get_value(self._index_)
-    #     else:
-    #         raise TypeError("Instance must be 'None' or 'EntityBase'")
+    def __getattr__(self, key):
+        return self._impl_.getattr(self, key)
 
-    # def __set__(self, EntityBase instance, value):
-    #     instance.__fstate__.set_value(self._index_, value)
-
-    # def __delete__(self, EntityBase instance):
-    #     instance.__fstate__.del_value(self._index_)
+    def __getitem__(self, key):
+        return self._impl_.getitem(self, key)
 
     cdef object bind(self, EntityType entity):
         if self.nullable is None:

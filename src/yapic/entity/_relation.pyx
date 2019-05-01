@@ -6,7 +6,7 @@ from cpython.tuple cimport PyTuple_SetItem, PyTuple_GetItem, PyTuple_New, PyTupl
 from cpython.module cimport PyImport_Import, PyModule_GetDict
 
 from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeImpl, get_alias_target, NOTSET
-from ._expression cimport Expression, Visitor
+from ._expression cimport Expression, Visitor, PathExpression
 from ._field cimport Field, ForeignKey, collect_foreign_keys
 from ._factory cimport Factory, ForwardDecl, new_instance_from_forward, is_forward_decl
 from ._visitors cimport replace_entity
@@ -30,7 +30,7 @@ cdef class Relation(EntityAttribute):
     def __getattr__(self, name):
         cdef EntityType joined = self._impl_.joined
         cdef EntityAttribute attr = getattr(joined, name)
-        return RelationAttribute(self, attr)
+        return PathExpression(self, [attr])
 
     cpdef visit(self, Visitor visitor):
         return visitor.visit_relation(self)
@@ -45,19 +45,22 @@ cdef class Relation(EntityAttribute):
         return res
 
 
-cdef class RelationAttribute(Expression):
-    def __cinit__(self, Relation relation, EntityAttribute attr):
-        self.relation = relation
-        self.attr = attr
+# cdef class RelationAttribute(Expression):
+#     def __cinit__(self, Relation relation, EntityAttribute attr):
+#         self.relation = relation
+#         self.attr = attr
 
-    cpdef visit(self, Visitor visitor):
-        return visitor.visit_relation_attribute(self)
+#     cpdef visit(self, Visitor visitor):
+#         return visitor.visit_relation_attribute(self)
 
-    def __getattr__(self, name):
-        return getattr(self.attr, name)
+#     def __getattr__(self, name):
+#         return getattr(self.attr, name)
 
-    def __repr__(self):
-        return "<RelationAttribute %s :: %s>" % (self.relation, self.attr._name_)
+#     def __getitem__(self, index):
+#         return self.attr[index]
+
+#     def __repr__(self):
+#         return "<RelationAttribute %s :: %s>" % (self.relation, self.attr._name_)
 
 
 cdef class RelationImpl(EntityAttributeImpl):

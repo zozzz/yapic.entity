@@ -2,9 +2,23 @@ import operator
 import pytest
 
 from yapic.entity.sql import PostgreDialect
-from yapic.entity import Query, Entity, Serial, String, DateTimeTz, and_, or_, Int, ForeignKey, One, ManyAcross, Field, func
+from yapic.entity import (Query, Entity, Serial, String, DateTimeTz, Json, Composite, and_, or_, Int, ForeignKey, One,
+                          ManyAcross, Field, func)
 
 dialect = PostgreDialect()
+
+
+class XYZ(Entity):
+    x: Int
+    y: Int
+    z: Int
+
+
+class FullName(Entity):
+    title: String
+    family: String
+    given: String
+    xyz: Json[XYZ]
 
 
 class Address(Entity):
@@ -336,3 +350,49 @@ def test_call():
 
     assert sql == f'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE DATE_FORMAT("t0"."created_time", $1) = $2'
     assert params == ("%Y-%m-%d", "2019-01-01")
+
+
+def test_json():
+    class UserJson(Entity):
+        id: Serial
+        name: Json[FullName]
+
+    class Article(Entity):
+        id: Serial
+        author_id: Int = ForeignKey(UserJson.id)
+        author: One[UserJson]
+
+    q = Query().select_from(UserJson).where(UserJson.name.family == "Kiss")
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."name" FROM "UserJson" "t0" WHERE jsonb_extract_path("t0"."name", 'family') = $1"""
+    assert params == ("Kiss", )
+
+    q = Query().select_from(Article) \
+        .where(Article.author.name.family == "Kiss") \
+        .where(Article.author.name.xyz.z == 1)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."author_id", "t1"."id", "t1"."name" FROM "Article" "t0" INNER JOIN "UserJson" "t1" ON "t0"."author_id" = "t1"."id" WHERE jsonb_extract_path("t1"."name", 'family') = $1 AND jsonb_extract_path("t1"."name", 'xyz', 'z') = $2"""
+    assert params == ("Kiss", 1)
+
+
+def test_composite():
+    class UserComp2(Entity):
+        id: Serial
+        name: Composite[FullName]
+
+    class Article2(Entity):
+        id: Serial
+        author_id: Int = ForeignKey(UserComp2.id)
+        author: One[UserComp2]
+
+    q = Query().select_from(UserComp2).where(UserComp2.name.family == "Kiss")
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."name" FROM "UserComp2" "t0" WHERE "t0"."name"."family" = $1"""
+    assert params == ("Kiss", )
+
+    q = Query().select_from(Article2) \
+        .where(Article2.author.name.family == "Kiss") \
+        .where(Article2.author.name.xyz.z == 1)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."author_id", "t1"."id", "t1"."name" FROM "Article2" "t0" INNER JOIN "UserComp2" "t1" ON "t0"."author_id" = "t1"."id" WHERE "t1"."name"."family" = $1 AND jsonb_extract_path("t1"."name"."xyz", 'z') = $2"""
+    assert params == ("Kiss", 1)

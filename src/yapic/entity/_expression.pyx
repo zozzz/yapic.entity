@@ -185,6 +185,70 @@ cdef class AliasExpression(Expression):
         return AliasExpression(self.expr, alias)
 
 
+cdef class PathExpression(Expression):
+    def __cinit__(self, Expression primary, list path):
+        self._primary_ = primary
+        self._path_ = path
+
+    @cython.wraparound(True)
+    def __getattr__(self, object key):
+        last_item = self._path_[-1]
+        new_path = list(self._path_)
+        if isinstance(last_item, Expression):
+            obj = getattr(last_item, key)
+            if isinstance(obj, PathExpression) and last_item is (<PathExpression>obj)._primary_:
+                new_path.extend((<PathExpression>obj)._path_)
+            else:
+                new_path.append(obj)
+        else:
+            new_path.append(key)
+        return PathExpression(self._primary_, new_path)
+
+    @cython.wraparound(True)
+    def __getitem__(self, object key):
+        last_item = self._path_[-1]
+        new_path = list(self._path_)
+        if isinstance(last_item, Expression):
+            obj = last_item[key]
+            if isinstance(obj, PathExpression) and last_item is (<PathExpression>obj)._primary_:
+                new_path.extend((<PathExpression>obj)._path_)
+            else:
+                new_path.append(obj)
+        else:
+            new_path.append(key)
+        return PathExpression(self._primary_, new_path)
+
+    cpdef visit(self, Visitor visitor):
+        return visitor.visit_path(self)
+
+    def __repr__(self):
+        return "<Path %s %r>" % (self._primary_, self._path_)
+
+
+# cdef class GetAttrExprisson(Expression):
+#     def __cinit__(self, Expression obj, object name):
+#         self.obj = obj
+#         self.name = name
+
+#     def __getattr__(self, name):
+#         if isinstance(self.name, str):
+#             return GetAttrExprisson(self, name)
+#         else:
+#             return getattr(self.name, name)
+
+#     cpdef visit(self, Visitor visitor):
+#         return visitor.visit_getattr(self)
+
+
+# cdef class GetItemExprisson(Expression):
+#     def __cinit__(self, Expression obj, object index):
+#         self.obj = obj
+#         self.index = index
+
+#     cpdef visit(self, Visitor visitor):
+#         return visitor.visit_getitem(self)
+
+
 cdef class Visitor:
     cpdef visit(self, Expression expr):
         return expr.visit(self)

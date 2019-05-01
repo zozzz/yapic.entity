@@ -15,6 +15,9 @@ cdef class Dialect:
     cpdef QueryCompiler create_query_compiler(self):
         raise NotImplementedError()
 
+    cpdef StorageTypeFactory create_type_factory(self):
+        raise NotImplementedError()
+
     cpdef str quote_ident(self, str ident):
         raise NotImplementedError()
 
@@ -25,7 +28,8 @@ cdef class Dialect:
         raise NotImplementedError()
 
     cpdef StorageType get_field_type(self, Field field):
-        return field.get_type(self.type_factory)
+        # XXX: optimalize...
+        return field.get_type(self.create_type_factory())
 
     cpdef bint expression_eq(self, Expression a, Expression b):
         qc = self.create_query_compiler()

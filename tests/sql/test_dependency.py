@@ -1,7 +1,7 @@
 import pytest
 from yapic.entity.sql import wrap_connection, Entity, sync
-from yapic.entity import (Serial, Int, String, ForeignKey, One, Many, ManyAcross, Registry, DependencyList,
-                          save_operations)
+from yapic.entity import (Serial, Int, String, ForeignKey, One, Many, ManyAcross, Registry, DependencyList, Json,
+                          Composite, save_operations)
 
 pytestmark = pytest.mark.asyncio  # type: ignore
 
@@ -120,6 +120,40 @@ async def test_insert(conn):
     assert user.tags[1].tag == "xyz"
 
     # await conn.insert(user)
+
+
+async def test_json():
+    class JName(BaseEntity):
+        family: String
+        given: String
+
+    class JUser(BaseEntity):
+        id: Serial
+        name: Json[JName]
+
+    def entity_deps(ent):
+        res = DependencyList()
+        res.add(ent)
+        return res
+
+    assert entity_deps(JUser) == [JName, JUser]
+
+
+async def test_composite():
+    class CName(BaseEntity):
+        family: String
+        given: String
+
+    class CUser(BaseEntity):
+        id: Serial
+        name: Composite[CName]
+
+    def entity_deps(ent):
+        res = DependencyList()
+        res.add(ent)
+        return res
+
+    assert entity_deps(CUser) == [CName, CUser]
 
 
 async def test_cleanup(conn):

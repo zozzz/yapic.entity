@@ -10,9 +10,9 @@ cdef class Relation(EntityAttribute):
     pass
 
 
-cdef class RelationAttribute(Expression):
-    cdef Relation relation
-    cdef EntityAttribute attr
+# cdef class RelationAttribute(Expression):
+#     cdef Relation relation
+#     cdef EntityAttribute attr
 
 
 cdef class RelationImpl(EntityAttributeImpl):

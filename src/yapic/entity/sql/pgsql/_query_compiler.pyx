@@ -12,11 +12,15 @@ from yapic.entity._expression cimport (
     DirectionExpression,
     AliasExpression,
     CallExpression,
-    RawExpression)
+    RawExpression,
+    PathExpression)
 from yapic.entity._expression import and_
-from yapic.entity._relation cimport RelationAttribute
+from yapic.entity._field cimport Field
+from yapic.entity._field_impl cimport JsonImpl, CompositeImpl
+from yapic.entity._relation cimport Relation
 
 from .._query_compiler cimport QueryCompiler
+from ._dialect cimport PostgreDialect
 
 
 cdef class PostgreQueryCompiler(QueryCompiler):
@@ -234,8 +238,6 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         e = (<DirectionExpression>expr).expr
         return f"{self.visit(e)} {'ASC' if (<DirectionExpression>expr).is_asc else 'DESC'}"
 
-
-
     def visit_alias(self, expr):
         return f"{self.visit((<AliasExpression>expr).expr)} as {self.dialect.quote_ident((<AliasExpression>expr).value)}"
 
@@ -245,8 +247,65 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         sql, params = qc.compile_select(expr)
         return f"({sql})"
 
-    def visit_relation_attribute(self, RelationAttribute expr):
-        return self.visit(expr.attr)
+    # def visit_relation_attribute(self, RelationAttribute expr):
+    #     return self.visit(expr.attr)
+
+    def visit_path(self, PathExpression expr):
+        cdef list path = [expr._primary_]  + expr._path_
+        cdef int i = 0
+        cdef int l = len(path)
+        cdef str compiled = None
+        cdef list attrs = []
+        cdef str state = None
+
+        while i < l:
+            item = (<list>path)[i]
+
+            if state == "relation":
+                if compiled:
+                    raise NotImplementedError()
+                else:
+                    compiled = self.visit(item)
+            elif state == "json":
+                if isinstance(item, Field):
+                    attrs.append((<Field>item)._name_)
+                elif isinstance(item, str):
+                    attrs.append(item)
+                elif isinstance(item, int):
+                    attrs.append(str(item))
+                else:
+                    raise ValueError("Invalid json path entry: %r" % item)
+            elif state == "composite":
+                if isinstance(item, Field):
+                    attrs.append((<Field>item)._name_)
+                else:
+                    raise ValueError("Invalid composite path entry: %r" % item)
+
+            if isinstance(item, Relation):
+                if compiled:
+                    raise NotImplementedError()
+                state = "relation"
+            elif isinstance(item, Field):
+                new_state = state
+                if isinstance((<Field>item)._impl_, JsonImpl):
+                    new_state = "json"
+                elif isinstance((<Field>item)._impl_, CompositeImpl):
+                    if state != "json":
+                        new_state = "composite"
+
+                if not new_state:
+                    raise ValueError("Unexpected field impl: %r", (<Field>item)._impl_)
+
+                if new_state != state:
+                    compiled = path_expr(self.dialect, state, compiled, attrs)
+                    attrs = []
+                    state = new_state
+                    if not compiled:
+                        compiled = self.visit(item)
+
+            i += 1
+
+        return path_expr(self.dialect, state, compiled, attrs)
 
     def visit_call(self, CallExpression expr):
         args = []
@@ -279,6 +338,15 @@ cdef visit_list(PostgreQueryCompiler qc, list items):
 
 cdef compile_binary(PostgreQueryCompiler qc, BinaryExpression expr, str op):
     return f"{qc.visit(expr.left)} {op} {qc.visit(expr.right)}"
+
+
+cdef str path_expr(object d, str type, str base, list path):
+    if path:
+        if type == "json":
+            return f"jsonb_extract_path({base}, {', '.join(map(d.quote_value, path))})"
+        elif type == "composite":
+            return f"{base}.{'.'.join(map(d.quote_ident, path))}"
+    return base
 
 
 cdef compile_eq(left, right, bint neg):

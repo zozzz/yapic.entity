@@ -362,6 +362,12 @@ cdef class EntityAttributeImpl:
     cpdef object clone(self):
         raise NotImplementedError()
 
+    cpdef object getattr(self, EntityAttribute attr, object key):
+        raise NotImplementedError()
+
+    cpdef object getitem(self, EntityAttribute attr, object index):
+        raise NotImplementedError()
+
     cdef object state_init(self, object initial):
         return NOTSET
 
@@ -379,166 +385,6 @@ cdef class EntityAttributeImpl:
 
     def __ne__(self, other):
         return type(self) is not type(other)
-
-
-# cdef class EntityAliasExpression(Expression):
-#     def __cinit__(self, EntityType entity, str alias):
-#         self.entity = entity
-#         self.value = alias
-#         self.__fields__ = tuple((<EntityAttribute>item).clone() for item in entity.__fields__)
-#         self.__relations__ = tuple((<EntityAttribute>item).clone() for item in entity.__relations__)
-
-#     def __repr__(self):
-#         return "<Alias %s AS %s>" % (self.entity, self.value)
-
-#     cpdef alias(self, str alias):
-#         return EntityAliasExpression(self.entity, self.value)
-
-#     cpdef visit(self, Visitor visitor):
-#         return visitor.visit_entity_alias(self)
-
-
-# @cython.final
-# @cython.freelist(1000)
-# cdef class FieldState:
-#     def __cinit__(self, tuple fields, tuple data):
-#         self.fields = fields
-#         self.data = data
-#         self.dirty = PyTuple_New(PyTuple_GET_SIZE(data))
-
-#     cdef bint set_value(self, int index, object value):
-#         cdef PyObject* fields = <PyObject*>self.fields
-#         cdef PyObject* data = <PyObject*>self.data
-#         cdef PyObject* dirty = <PyObject*>self.dirty
-#         cdef PyObject* cv
-#         cdef PyObject* newValue = <PyObject*>value
-#         cdef Field field
-
-#         cv = PyTuple_GET_ITEM(<object>data, index)
-#         if cv == NULL:
-#             Py_INCREF(<object>newValue)
-#             PyTuple_SET_ITEM(<object>dirty, index, <object>newValue)
-#         else:
-#             field = <Field>PyTuple_GET_ITEM(<object>fields, index)
-#             if not field.values_is_eq(<object>cv, <object>newValue):
-#                 cv = PyTuple_GET_ITEM(<object>dirty, index)
-#                 if cv != NULL:
-#                     Py_DECREF(<object>cv)
-#                 Py_INCREF(<object>newValue)
-#                 PyTuple_SET_ITEM(<object>dirty, index, <object>newValue)
-
-#     cdef object get_value(self, int index):
-#         cdef PyObject* container = <PyObject*>self.dirty
-#         cdef PyObject* cv = PyTuple_GET_ITEM(<object>container, index)
-
-#         if cv == NULL:
-#             container = <PyObject*>self.data
-#             cv = PyTuple_GET_ITEM(<object>container, index)
-#             if cv == NULL:
-#                 return None
-
-#         Py_INCREF(<object>cv)
-#         return <object>cv
-
-#     cdef void del_value(self, int index):
-#         cdef PyObject* container = <PyObject*>self.dirty
-#         cdef PyObject* cv = PyTuple_GET_ITEM(<object>container, index)
-#         if cv != NULL:
-#             Py_DECREF(<object>cv)
-#         PyTuple_SET_ITEM(<object>container, index, <object>NULL)
-
-#     @property
-#     def changes(self):
-#         cdef PyObject* fields = <PyObject*>self.fields
-#         cdef PyObject* data = <PyObject*>self.data
-#         cdef PyObject* dirty = <PyObject*>self.dirty
-#         cdef PyObject* cv
-#         cdef PyObject* ov
-#         cdef PyObject* field
-
-#         for i from 0 <= i < PyTuple_GET_SIZE(<object>dirty):
-#             cv = PyTuple_GET_ITEM(<object>dirty, i)
-#             if cv == NULL:
-#                 continue
-
-#             ov = PyTuple_GET_ITEM(<object>data, i)
-#             if ov == NULL:
-#                 ov = <PyObject*>None
-
-#             field = PyTuple_GET_ITEM(<object>fields, i)
-#             yield PyTuple_Pack(3, <PyObject*>field, ov, cv)
-
-#     cpdef reset(self):
-#         cdef PyObject* data = <PyObject*>self.data
-#         cdef PyObject* dirty = <PyObject*>self.dirty
-#         cdef PyObject* cv
-#         cdef int l = PyTuple_GET_SIZE(<object>dirty)
-
-#         for i from 0 <= i < l:
-#             cv = PyTuple_GET_ITEM(<object>dirty, i)
-#             if cv == NULL:
-#                 cv = PyTuple_GET_ITEM(<object>data, i)
-#                 if cv == NULL:
-#                     cv = <PyObject*>None
-#                 Py_INCREF(<object>cv)
-#                 PyTuple_SET_ITEM(<object>dirty, i, <object>cv)
-
-#         self.data = <tuple>dirty
-#         self.dirty = PyTuple_New(l)
-
-#     def __iter__(self):
-#         cdef PyObject* fields = <PyObject*>self.fields
-#         cdef PyObject* data = <PyObject*>self.data
-#         cdef PyObject* dirty = <PyObject*>self.dirty
-#         cdef PyObject* cv
-#         cdef PyObject* field
-
-#         for i from 0 <= i < PyTuple_GET_SIZE(<object>dirty):
-#             cv = PyTuple_GET_ITEM(<object>dirty, i)
-#             if cv == NULL:
-#                 cv = PyTuple_GET_ITEM(<object>data, i)
-#                 if cv == NULL:
-#                     cv = <PyObject*>None
-
-#             field = PyTuple_GET_ITEM(<object>fields, i)
-#             yield PyTuple_Pack(2, <PyObject*>(<EntityAttribute>field)._name_, cv)
-
-#     def __repr__(self):
-#         return "<FieldState %r>" % (dict(self),)
-
-
-
-
-#     # cdef bint set_value(self, int index, object value):
-#     #     cdef PyObject* data = <PyObject*>self.data
-#     #     cdef PyObject* cv = PyTuple_GET_ITEM(<object>data, index)
-
-#     #     if cv is not NULL:
-#     #         Py_DECREF(<object>cv)
-
-#     #     Py_INCREF(<object>value)
-#     #     PyTuple_SET_ITEM(<object>data, index, value)
-
-#     # cdef object get_value(self, int index):
-#     #     cdef PyObject* data = <PyObject*>self.data
-#     #     cdef PyObject* cv = PyTuple_GET_ITEM(<object>data, index)
-#     #     Py_INCREF(<object>cv)
-#     #     return <object>cv
-
-#     # cdef void del_value(self, int index):
-#     #     cdef PyObject* data = <PyObject*>self.data
-#     #     cdef PyObject* cv = PyTuple_GET_ITEM(<object>data, index)
-
-#     #     if cv is not NULL:
-#     #         Py_DECREF(<object>cv)
-
-#     #     PyTuple_SET_ITEM(<object>data, index, <object>NULL)
-
-#     # cpdef reset(self):
-#     #     self.data = PyTuple_New(PyTuple_GET_SIZE(self.relations))
-
-#     def __repr__(self):
-#         return "<RelationState>"
 
 
 cdef inline state_set_value(PyObject* initial, PyObject* current, EntityAttribute attr, object value):
@@ -821,7 +667,17 @@ cdef class EntityBase:
 
     @classmethod
     def __register__(cls):
-        (<Registry>cls.__registry__).register(cls.__name__, cls)
+        try:
+            schema = cls.__meta__["schema"]
+        except KeyError:
+            name = cls.__name__
+        else:
+            if schema is None:
+                name = cls.__name__
+            else:
+                name = f"{schema}.{cls.__name__}"
+
+        (<Registry>cls.__registry__).register(name, cls)
 
 
     @property

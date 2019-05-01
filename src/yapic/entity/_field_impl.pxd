@@ -1,4 +1,4 @@
-from ._entity cimport EntityAttributeImpl
+from ._entity cimport EntityType, EntityAttributeImpl
 from ._field cimport Field, FieldImpl
 
 
@@ -33,3 +33,11 @@ cdef class DateTimeTzImpl(FieldImpl):
 cdef class ChoiceImpl(FieldImpl):
     cdef object _enum
     cdef readonly bint is_multi
+
+
+cdef class JsonImpl(FieldImpl):
+    cdef EntityType _entity_
+
+
+cdef class CompositeImpl(FieldImpl):
+    cdef EntityType _entity_

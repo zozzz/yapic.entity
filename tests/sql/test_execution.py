@@ -2,7 +2,7 @@ import pytest
 from datetime import datetime
 from yapic.entity.sql import wrap_connection, Entity, sync
 from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Bool, ForeignKey, PrimaryKey,
-                          One, Query, func, EntityDiff, Registry)
+                          One, Query, func, EntityDiff, Registry, Json, Composite)
 
 pytestmark = pytest.mark.asyncio
 
@@ -230,3 +230,46 @@ ALTER TABLE "execution"."User"
 UPDATE "execution"."Gender" SET "title"='MaleX' WHERE "value"='male';
 UPDATE "execution"."Gender" SET "title"='FemaleY' WHERE "value"='female';"""
     await conn.conn.execute(result)
+
+
+async def test_json(conn):
+    await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
+    await conn.conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
+
+    reg_a = Registry()
+    reg_b = Registry()
+
+    class JsonName(Entity, registry=reg_a, schema="execution"):
+        given: String
+        family: String
+
+    class JsonUser(Entity, registry=reg_a, schema="execution"):
+        id: Serial
+        name: Json[JsonName]
+
+    result = await sync(conn, reg_a)
+    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE TABLE "execution"."JsonUser" (
+  "id" SERIAL4 NOT NULL,
+  "name" JSONB,
+  PRIMARY KEY("id")
+);"""
+
+
+async def test_composite(conn):
+    await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
+    await conn.conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
+
+    reg_a = Registry()
+    reg_b = Registry()
+
+    class CompName(Entity, registry=reg_a, schema="execution"):
+        given: String
+        family: String
+
+    class CompUser(Entity, registry=reg_a, schema="execution"):
+        id: Serial
+        name: Composite[CompName]
+
+    result = await sync(conn, reg_a)
+    assert result == ""

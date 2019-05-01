@@ -66,6 +66,8 @@ cdef class EntityAttributeImpl:
     # returns true when successfully bind, otherwise the system can try bind in the later time
     cpdef object init(self, EntityAttribute attr)
     cpdef object clone(self)
+    cpdef object getattr(self, EntityAttribute attr, object key)
+    cpdef object getitem(self, EntityAttribute attr, object index)
 
     cdef object state_init(self, object initial)
     cdef object state_set(self, object initial, object current, object value)

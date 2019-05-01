@@ -1,7 +1,7 @@
 from enum import Enum, Flag
 
-from yapic.entity import (Int, Serial, String, Choice, Field, PrimaryKey, ForeignKey, Date, DateTime,
-                          DateTimeTz, Bool, func, const, Registry)
+from yapic.entity import (Int, Serial, String, Choice, Field, PrimaryKey, ForeignKey, Date, DateTime, DateTimeTz, Bool,
+                          func, const, Registry, Json, Composite)
 from yapic.entity.sql import PostgreDialect, Entity
 
 dialect = PostgreDialect()
@@ -186,4 +186,39 @@ def test_bool():
     result = ddl.compile_entity(A5)
     assert result == """CREATE TABLE "A5" (
   "is_active" BOOLEAN NOT NULL DEFAULT TRUE
+);"""
+
+
+def test_json():
+    class Position(BaseEntity):
+        x: Int
+        y: Int
+
+    class JsonTable(BaseEntity):
+        id: Serial
+        pos: Json[Position]
+
+    result = ddl.compile_entity(JsonTable)
+    assert result == """CREATE TABLE "JsonTable" (
+  "id" SERIAL4 NOT NULL,
+  "pos" JSONB,
+  PRIMARY KEY("id")
+);"""
+
+
+def test_composite():
+    class FullName(BaseEntity):
+        title: String
+        family: String
+        given: String
+
+    class FNUser(BaseEntity):
+        id: Serial
+        name: Composite[FullName]
+
+    result = ddl.compile_entity(FNUser)
+    assert result == """CREATE TABLE "FNUser" (
+  "id" SERIAL4 NOT NULL,
+  "name" "FullName",
+  PRIMARY KEY("id")
 );"""

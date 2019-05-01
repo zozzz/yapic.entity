@@ -1,11 +1,28 @@
 from datetime import date, datetime
 
+from yapic.entity._entity cimport EntityType
 from yapic.entity._field cimport Field, PrimaryKey, StorageType, StorageTypeFactory
-from yapic.entity._field_impl cimport StringImpl, BytesImpl, IntImpl, BoolImpl, DateImpl, DateTimeImpl, DateTimeTzImpl, ChoiceImpl
+from yapic.entity._field_impl cimport (
+    StringImpl,
+    BytesImpl,
+    IntImpl,
+    BoolImpl,
+    DateImpl,
+    DateTimeImpl,
+    DateTimeTzImpl,
+    ChoiceImpl,
+    JsonImpl,
+    CompositeImpl
+)
 from yapic.entity._expression cimport RawExpression
+
+from ._dialect cimport PostgreDialect
 
 
 cdef class PostgreTypeFactory(StorageTypeFactory):
+    def __cinit__(self, PostgreDialect dialect):
+        self.dialect = dialect
+
     cpdef StorageType create(self, Field field):
         impl = field._impl_
 
@@ -25,17 +42,10 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
             return self.__date_time_tz_type(field, <DateTimeTzImpl>impl)
         elif isinstance(impl, ChoiceImpl):
             return self.__choice_type(field, <ChoiceImpl>impl)
-
-    cdef object quote_value(self, object value):
-        if isinstance(value, RawExpression):
-            return (<RawExpression>value).expr
-        elif isinstance(value, int) or isinstance(value, float):
-            return value
-        elif isinstance(value, bool):
-            return "TRUE" if value else "FALSE"
-        else:
-            value = str(value).replace("'", "''")
-            return f"'{value}'"
+        elif isinstance(impl, JsonImpl):
+            return self.__json_type(field, <JsonImpl>impl)
+        elif isinstance(impl, CompositeImpl):
+            return self.__composite_type(field, <CompositeImpl>impl)
 
     cdef StorageType __int_type(self, Field field, IntImpl impl):
         pk = field.get_ext(PrimaryKey)
@@ -100,9 +110,19 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
                 else:
                     return PostgreType("INT8")
             elif type is str:
-                values = [self.quote_value(entry.value) for entry in impl._enum]
+                values = [self.dialect.quote_value(entry.value) for entry in impl._enum]
 
                 return PostgreType(f"VARCHAR({str_max_len}) CHECK(\"{field._name_}\" IN ({', '.join(values)}))")
+
+    cdef StorageType __json_type(self, Field field, JsonImpl impl):
+        cdef JsonType t = JsonType("JSONB")
+        t.entity = impl._entity_
+        return t
+
+    cdef StorageType __composite_type(self, Field field, CompositeImpl impl):
+        cdef CompositeType t = CompositeType(self.dialect.table_qname(impl._entity_))
+        t.entity = impl._entity_
+        return t
 
 
 cdef class PostgreType(StorageType):
@@ -189,6 +209,26 @@ cdef class DateTimeTzType(PostgreType):
 
 
 cdef class ChoiceType(PostgreType):
+    cpdef object encode(self, object value):
+        pass
+
+    cpdef object decode(self, object value):
+        pass
+
+
+cdef class JsonType(PostgreType):
+    cdef EntityType entity
+
+    cpdef object encode(self, object value):
+        pass
+
+    cpdef object decode(self, object value):
+        pass
+
+
+cdef class CompositeType(PostgreType):
+    cdef EntityType entity
+
     cpdef object encode(self, object value):
         pass
 

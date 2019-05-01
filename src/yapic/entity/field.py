@@ -11,11 +11,13 @@ from ._field_impl import (
     DateImpl,
     DateTimeImpl,
     DateTimeTzImpl,
+    JsonImpl as _JsonImpl,
+    CompositeImpl as _CompositeImpl,
 )
 
 __all__ = [
-    "Field", "String", "Bytes", "Bool", "Date", "DateTime", "DateTimeTz", "Int", "Serial", "Choice", "PrimaryKey",
-    "Index", "ForeignKey"
+    "Field", "String", "Bytes", "Bool", "Date", "DateTime", "DateTimeTz", "Int", "Serial", "Choice", "Json",
+    "Composite", "PrimaryKey", "Index", "ForeignKey"
 ]
 
 Impl = TypeVar("Impl")
@@ -72,4 +74,29 @@ class ChoiceImpl(Generic[EnumT], _ChoiceImpl):
 
 
 class Choice(Generic[EnumT], Field[ChoiceImpl[EnumT], EnumT, Any]):
+    pass
+
+
+EntityT = TypeVar("EntityT", bound=Enum)
+
+
+class JsonImpl(Generic[EntityT], _JsonImpl):
+    _entity_: Type[EntityT]
+
+    def __init__(self, entity: Type[EntityT]):
+        pass
+
+
+class Json(Generic[EntityT], Field[JsonImpl[EntityT], EntityT, str]):
+    pass
+
+
+class CompositeImpl(Generic[EntityT], _CompositeImpl):
+    _entity_: Type[EntityT]
+
+    def __init__(self, entity: Type[EntityT]):
+        pass
+
+
+class Composite(Generic[EntityT], Field[CompositeImpl[EntityT], EntityT, str]):
     pass

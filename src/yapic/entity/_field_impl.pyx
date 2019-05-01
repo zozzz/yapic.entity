@@ -1,7 +1,8 @@
 from enum import Enum, Flag
 from datetime import date, datetime
 
-from ._entity cimport EntityType, EntityAttributeImpl
+from ._entity cimport EntityType, EntityAttributeImpl, EntityAttribute
+from ._expression cimport PathExpression
 
 
 cdef class StringImpl(FieldImpl):
@@ -53,3 +54,40 @@ cdef class DateTimeImpl(FieldImpl):
 cdef class DateTimeTzImpl(FieldImpl):
     def __repr__(self):
         return "DateTimeTz"
+
+
+cdef class JsonImpl(FieldImpl):
+    def __cinit__(self, entity):
+        entity.__meta__["is_type"] = True
+        entity.__meta__["is_virtual"] = True
+        self._entity_ = entity
+
+    cpdef object init(self, EntityAttribute attr):
+        attr._deps_.add(self._entity_)
+
+    cpdef getattr(self, EntityAttribute attr, object key):
+        return PathExpression(attr, [getattr(self._entity_, key)])
+
+    cpdef getitem(self, EntityAttribute attr, object index):
+        return PathExpression(attr, [index])
+
+    def __repr__(self):
+        return "Json(%r)" % self._entity_
+
+
+cdef class CompositeImpl(FieldImpl):
+    def __cinit__(self, entity):
+        entity.__meta__["is_type"] = True
+        self._entity_ = entity
+
+    cpdef object init(self, EntityAttribute attr):
+        attr._deps_.add(self._entity_)
+
+    cpdef getattr(self, EntityAttribute attr, object key):
+        return PathExpression(attr, [getattr(self._entity_, key)])
+
+    cpdef getitem(self, EntityAttribute attr, object index):
+        return PathExpression(attr, [index])
+
+    def __repr__(self):
+        return "Composite(%r)" % self._entity_

@@ -2,9 +2,10 @@ from contextlib import contextmanager
 
 from yapic.entity._entity cimport EntityType
 from yapic.entity._field cimport Field
-from yapic.entity._expression cimport Expression, AliasExpression, DirectionExpression, Visitor, BinaryExpression, UnaryExpression, CastExpression, CallExpression, RawExpression
+from yapic.entity._expression cimport (Expression, AliasExpression, DirectionExpression, Visitor, BinaryExpression,
+    UnaryExpression, CastExpression, CallExpression, RawExpression, PathExpression)
 from yapic.entity._expression import and_
-from yapic.entity._relation cimport Relation, RelationImpl, ManyToMany, determine_join_expr, RelationAttribute
+from yapic.entity._relation cimport Relation, RelationImpl, ManyToMany, determine_join_expr
 from yapic.entity._error cimport JoinError
 
 
@@ -265,8 +266,14 @@ cdef class QueryFinalizer(Visitor):
 #     cdef Relation relation
 #     cdef EntityAttribute attr
 
-    def visit_relation_attribute(self, RelationAttribute expr):
-        self.q.join(expr.relation)
+    # def visit_relation_attribute(self, RelationAttribute expr):
+    #     self.q.join(expr.relation)
+
+    def visit_path(self, PathExpression expr):
+        if isinstance(expr._primary_, Relation):
+            self.q.join(expr._primary_)
+
+        return PathExpression(expr._primary_, list(expr._path_))
 
     def auto_join(self, *expr_list):
         if self.q.columns: self._visit_list(self.q.columns)

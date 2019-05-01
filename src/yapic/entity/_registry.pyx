@@ -38,6 +38,15 @@ cdef class Registry:
     cpdef items(self):
         return self.entities.items()
 
+    cpdef filter(self, fn):
+        cdef dict res = {}
+        for k, v in self.entities.items():
+            if fn(v):
+                res[k] = v
+        reg = Registry()
+        reg.entities = res
+        return reg
+
     cdef resolve_deferred(self):
         cdef EntityType entity
         cdef list deferred = self.deferred
@@ -64,6 +73,8 @@ class RegistryDiffKind(Enum):
 @cython.final
 cdef class RegistryDiff:
     def __cinit__(self, Registry a, Registry b, object entity_diff):
+        a = a.filter(skip_virtual)
+        b = b.filter(skip_virtual)
         self.a = a
         self.b = b
         self.changes = []
@@ -138,6 +149,10 @@ cdef class RegistryDiff:
                 result.append((RegistryDiffKind.UPDATE_ENTITY, b_ent))
 
         return result
+
+
+def skip_virtual(EntityType ent):
+    return ent.__meta__.get("is_virtual", False) is False
 
 
 cdef object entity_data_is_eq(EntityBase a, EntityBase b):

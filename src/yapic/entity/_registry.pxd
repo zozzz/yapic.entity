@@ -12,6 +12,7 @@ cdef class Registry:
     cpdef keys(self)
     cpdef values(self)
     cpdef items(self)
+    cpdef filter(self, fn)
 
     cdef resolve_deferred(self)
 

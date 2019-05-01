@@ -1,10 +1,24 @@
 from yapic.entity._field cimport Field, StorageType, StorageTypeFactory
-from yapic.entity._field_impl cimport StringImpl, BytesImpl, IntImpl, BoolImpl, DateImpl, DateTimeImpl, DateTimeTzImpl, ChoiceImpl
+from yapic.entity._field_impl cimport (
+    StringImpl,
+    BytesImpl,
+    IntImpl,
+    BoolImpl,
+    DateImpl,
+    DateTimeImpl,
+    DateTimeTzImpl,
+    ChoiceImpl,
+    JsonImpl,
+    CompositeImpl
+)
+
+
+from ._dialect cimport PostgreDialect
 
 
 cdef class PostgreTypeFactory(StorageTypeFactory):
-    # XXX: maybe move into parent, and generalize
-    cdef object quote_value(self, object value)
+    cdef PostgreDialect dialect
+
     cdef StorageType __int_type(self, Field field, IntImpl impl)
     cdef StorageType __string_type(self, Field field, StringImpl impl)
     cdef StorageType __bytes_type(self, Field field, BytesImpl impl)
@@ -13,6 +27,8 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
     cdef StorageType __date_time_type(self, Field field, DateTimeImpl impl)
     cdef StorageType __date_time_tz_type(self, Field field, DateTimeTzImpl impl)
     cdef StorageType __choice_type(self, Field field, ChoiceImpl impl)
+    cdef StorageType __json_type(self, Field field, JsonImpl impl)
+    cdef StorageType __composite_type(self, Field field, CompositeImpl impl)
 
 
 cdef class PostgreType(StorageType):
