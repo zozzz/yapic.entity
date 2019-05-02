@@ -142,9 +142,9 @@ cdef class RegistryDiff:
         for created in b_values - a_values:
             result.append((RegistryDiffKind.INSERT_ENTITY, created))
 
-        for maybe_changed in a_values & b_values:
-            a_ent = a_ents[a_ents.index(maybe_changed)]
-            b_ent = b_ents[a_ents.index(maybe_changed)]
+        for i in sorted(map(b_ents.index, a_values & b_values)):
+            b_ent = b_ents[i]
+            a_ent = a_ents[a_ents.index(b_ent)]
             if not entity_data_is_eq(a_ent, b_ent):
                 result.append((RegistryDiffKind.UPDATE_ENTITY, b_ent))
 

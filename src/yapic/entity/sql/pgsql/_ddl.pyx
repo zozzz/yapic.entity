@@ -3,7 +3,7 @@
 from yapic.entity._entity import Entity
 from yapic.entity._entity cimport EntityType, EntityAttribute
 from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, StorageType
-from yapic.entity._field_impl cimport IntImpl, StringImpl, BytesImpl, ChoiceImpl, BoolImpl, DateImpl, DateTimeImpl, DateTimeTzImpl
+from yapic.entity._field_impl cimport IntImpl, StringImpl, BytesImpl, ChoiceImpl, BoolImpl, DateImpl, DateTimeImpl, DateTimeTzImpl, JsonImpl, CompositeImpl
 from yapic.entity._registry cimport Registry
 from yapic.entity._expression cimport RawExpression
 
@@ -15,20 +15,31 @@ cdef class PostgreDDLCompiler(DDLCompiler):
     pass
 
 
+
+
+
 cdef class PostgreDDLReflect(DDLReflect):
     async def get_entities(self, Connection conn, Registry registry):
-        tables = await conn.conn.fetch("""
-            SELECT "table_schema", "table_name"
-            FROM "information_schema"."tables"
-            WHERE "table_schema" != 'information_schema'
-                AND "table_schema" NOT LIKE 'pg_%'
-                AND "table_type" = 'BASE TABLE'""")
+        types = await conn.conn.fetch("""
+            SELECT
+                "pg_type"."typrelid" as "id",
+                "pg_namespace"."nspname" as "schema",
+                "pg_type"."typname" as "name",
+                "pg_class"."relkind" as "kind"
+            FROM pg_type
+                INNER JOIN pg_namespace ON pg_namespace.oid=pg_type.typnamespace
+                INNER JOIN pg_class ON pg_class.oid=pg_type.typrelid
+            WHERE "pg_class"."relkind" IN('r', 'c')
+                AND pg_namespace.nspname != 'information_schema'
+                AND pg_namespace.nspname NOT LIKE 'pg_%'
+            ORDER BY "pg_class"."relkind" = 'r' ASC, pg_type.typrelid ASC""")
 
         cdef EntityAttribute attr
 
-        for schema, table in tables:
-            fields = await self.get_fields(conn, schema, table)
+        for id, schema, table, kind in types:
+            fields = await self.get_fields(conn, registry, schema, table, id)
             entity = await self.create_entity(conn, registry, schema, table, fields)
+            entity.__meta__["is_type"] = kind == "c"
 
             for attr in entity.__fields__:
                 if attr._default_ is not None:
@@ -38,7 +49,7 @@ cdef class PostgreDDLReflect(DDLReflect):
                     except:
                         attr._default_ = RawExpression(str(attr._default_))
 
-        for schema, table in tables:
+        for id, schema, table, kind in types:
             fks = await self.update_foreign_keys(conn, schema, table, registry)
 
     async def create_entity(self, Connection conn, Registry registry, str schema, str table, list fields):
@@ -87,62 +98,81 @@ cdef class PostgreDDLReflect(DDLReflect):
             ORDER BY "kcu"."ordinal_position"
             """)
 
-    async def get_fields(self, Connection conn, str schema, str table):
+    async def get_fields(self, Connection conn, registry, str schema, str table, typeid):
         fields = await conn.conn.fetch(f"""
-            SELECT *
-            FROM "information_schema"."columns"
-            WHERE "table_name" = '{table}' AND table_schema = '{schema}'
-            ORDER BY "ordinal_position" """)
+            SELECT
+                "pg_attribute"."attname" as "name",
+                pg_get_expr(pg_attrdef.adbin, pg_attrdef.adrelid) as "default",
+                (
+                    CASE
+                        WHEN "pg_attribute"."attnotnull" OR ("pg_type"."typtype" = 'd' AND "pg_type"."typnotnull") THEN 'NO'
+                        ELSE 'YES'
+                    END
+                ) as "is_nullable",
+                typens.nspname as "typeschema",
+                pg_type.typname as "typename",
+                information_schema._pg_char_max_length(information_schema._pg_truetypid(pg_attribute.*, pg_type.*), information_schema._pg_truetypmod(pg_attribute.*, pg_type.*)) AS character_maximum_length,
+                pg_attribute.attlen as "size"
+            FROM pg_attribute
+                INNER JOIN pg_type ON pg_type.oid=pg_attribute.atttypid
+                INNER JOIN pg_namespace typens ON typens.oid=pg_type.typnamespace
+                LEFT JOIN pg_attrdef ON pg_attribute.attrelid = pg_attrdef.adrelid AND pg_attribute.attnum = pg_attrdef.adnum
+            WHERE attrelid={typeid} AND attnum > 0 ORDER BY attnum""")
 
         pks = await self.get_primary_keys(conn, schema, table)
 
         result = []
         for record in fields:
-            result.append(await self.create_field(conn, schema, table, record["column_name"] in pks, record))
+            result.append(await self.create_field(conn, registry, schema, table, record["name"] in pks, record))
 
         return result
 
-    async def create_field(self, Connection conn, str schema, str table, bint primary, record):
+    async def create_field(self, Connection conn, registry, str schema, str table, bint primary, record):
         cdef Field field
         cdef StorageType type_impl
         cdef bint skip_default = False
         cdef bint skip_primary = False
-        cdef str data_type = record["data_type"]
+        cdef str typename = record["typename"]
+        cdef str typeschema = record["typeschema"]
         cdef bint is_nullable = record["is_nullable"] == "YES"
-        default = record["column_default"]
+        default = record["default"]
 
-        if data_type == "integer" or data_type == "smallint" or data_type == "bigint":
-            field = Field(IntImpl(), size=int(record["numeric_precision"] / 8), nullable=is_nullable)
+        if typename == "int2" or typename == "int4" or typename == "int8":
+            field = Field(IntImpl(), size=int(record["size"]), nullable=is_nullable)
 
             if default is not None:
                 if primary:
                     prefix = f'"{schema}".' if schema != "public" else ''
-                    name = record["column_name"]
+                    name = record["name"]
                     auto_increment_default = f"""nextval('{prefix}"{table}_{name}_seq"'::regclass)"""
                     field // PrimaryKey(auto_increment=auto_increment_default == default)
                     skip_default = True
                     skip_primary = True
-        elif data_type == "text":
+        elif typename == "text":
             field = Field(StringImpl(), nullable=is_nullable)
-        elif data_type == "bytea":
+        elif typename == "bytea":
             field = Field(BytesImpl(), nullable=is_nullable)
-        elif data_type == "character varying":
+        elif typename == "varchar":
             field = Field(StringImpl(), size=record["character_maximum_length"], nullable=is_nullable)
-        elif data_type == "character":
+        elif typename == "bpchar":
             l = record["character_maximum_length"]
             field = Field(StringImpl(), size=[l, l], nullable=is_nullable)
-        elif data_type == "boolean":
+        elif typename == "bool":
             field = Field(BoolImpl(), nullable=is_nullable)
-        elif data_type == "date":
+        elif typename == "date":
             field = Field(DateImpl(), nullable=is_nullable)
-        elif data_type == "timestamp with time zone":
+        elif typename == "timestamptz":
             field = Field(DateTimeTzImpl(), nullable=is_nullable)
-        elif data_type == "timestamp without time zone":
+        elif typename == "timestamp":
             field = Field(DateTimeImpl(), nullable=is_nullable)
+        elif typeschema != "pg_catalog" and typeschema != "information_schema":
+            ctypename = f"{typeschema}.{typename}" if typeschema != "public" else f"{typename}"
+            centity = registry[ctypename]
+            field = Field(CompositeImpl(centity), nullable=is_nullable)
         else:
-            raise TypeError("Can't determine type from sql type: %r" % data_type)
+            raise TypeError("Can't determine type from sql type: %r" % typename)
 
-        field._name_ = record["column_name"]
+        field._name_ = record["name"]
 
         if skip_default is False and default is not None:
             # if isinstance(default, str):

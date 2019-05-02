@@ -272,4 +272,34 @@ async def test_composite(conn):
         name: Composite[CompName]
 
     result = await sync(conn, reg_a)
-    assert result == ""
+    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE TYPE "execution"."CompName" AS (
+  "given" TEXT,
+  "family" TEXT
+);
+CREATE TABLE "execution"."CompUser" (
+  "id" SERIAL4 NOT NULL,
+  "name" "execution"."CompName",
+  PRIMARY KEY("id")
+);"""
+    await conn.conn.execute(result)
+
+    class CompName(Entity, registry=reg_b, schema="execution"):
+        _given: String
+        family: String = Field(size=50)
+        new_column: Int
+
+    class CompUser(Entity, registry=reg_b, schema="execution"):
+        id: Serial
+        name: Composite[CompName]
+
+    result = await sync(conn, reg_b)
+    assert result == """ALTER TYPE "execution"."CompName"
+  DROP ATTRIBUTE "given",
+  ADD ATTRIBUTE "_given" TEXT,
+  ADD ATTRIBUTE "new_column" INT4,
+  ALTER ATTRIBUTE "family" TYPE VARCHAR(50);"""
+
+    await conn.conn.execute(result)
+    result = await sync(conn, reg_b)
+    assert result is None

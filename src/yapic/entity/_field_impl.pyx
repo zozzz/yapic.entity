@@ -71,6 +71,17 @@ cdef class JsonImpl(FieldImpl):
     cpdef getitem(self, EntityAttribute attr, object index):
         return PathExpression(attr, [index])
 
+    # def __eq__(self, other):
+    #     if isinstance(other, JsonImpl):
+    #         self_ent = entity_qname(self._entity_)
+    #         other_ent = entity_qname((<JsonImpl>other)._entity_)
+    #         return self_ent == other_ent
+    #     else:
+    #         return False
+
+    # def __ne__(self, other):
+    #     return not self.__eq__(other)
+
     def __repr__(self):
         return "Json(%r)" % self._entity_
 
@@ -89,5 +100,28 @@ cdef class CompositeImpl(FieldImpl):
     cpdef getitem(self, EntityAttribute attr, object index):
         return PathExpression(attr, [index])
 
+    def __eq__(self, other):
+        if isinstance(other, CompositeImpl):
+            self_ent = entity_qname(self._entity_)
+            other_ent = entity_qname((<CompositeImpl>other)._entity_)
+            return self_ent == other_ent
+        else:
+            return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __repr__(self):
         return "Composite(%r)" % self._entity_
+
+
+cdef str entity_qname(EntityType ent):
+    try:
+        schema = ent.__meta__["schema"]
+    except KeyError:
+        return ent.__name__
+    else:
+        if not schema or schema == "public":
+            return ent.__name__
+        else:
+            return f"{schema}.{ent.__name__}"

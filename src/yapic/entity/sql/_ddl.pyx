@@ -17,8 +17,12 @@ cdef class DDLCompiler:
         cdef list elements = []
         cdef list table_parts = []
         cdef list requirements = []
+        is_type = entity.__meta__.get("is_type", False) is True
 
-        table_parts.append(f"CREATE TABLE {self.dialect.table_qname(entity)} (\n")
+        if is_type is True:
+            table_parts.append(f"CREATE TYPE {self.dialect.table_qname(entity)} AS (\n")
+        else:
+            table_parts.append(f"CREATE TABLE {self.dialect.table_qname(entity)} (\n")
 
         length = len(entity.__fields__)
         for i, field in enumerate(entity.__fields__):
@@ -26,11 +30,15 @@ cdef class DDLCompiler:
 
         primary_keys = entity.__pk__
         if primary_keys:
+            if is_type:
+                raise ValueError("Primary Key is not supported on Composite Types")
             pk_names = [self.dialect.quote_ident(pk._name_) for pk in primary_keys]
             elements.append(f"PRIMARY KEY({', '.join(pk_names)})")
 
         cdef dict fks = collect_foreign_keys(entity)
         if fks:
+            if is_type:
+                raise ValueError("Foreign keys is not supported on Composite Types")
             elements.extend(self.compile_foreign_keys(fks))
 
         if elements:
@@ -116,7 +124,10 @@ cdef class DDLCompiler:
 
                 lines.append(self.compile_entity(param))
             elif kind is RegistryDiffKind.CHANGED:
-                lines.append(self.compile_entity_diff(param))
+                if param.b.__meta__.get("is_type", False) is True:
+                    lines.append(self.compile_type_diff(param))
+                else:
+                    lines.append(self.compile_entity_diff(param))
             elif kind is RegistryDiffKind.INSERT_ENTITY:
                 lines.append(self.dialect.compile_insert(param[0], param[1]))
             elif kind is RegistryDiffKind.UPDATE_ENTITY:
@@ -141,6 +152,31 @@ cdef class DDLCompiler:
         if alter:
             alter = ',\n  '.join(alter)
             return f"ALTER TABLE {self.dialect.table_qname(diff.b)}\n  {alter};"
+        else:
+            return ""
+
+    def compile_type_diff(self, EntityDiff diff):
+        requirements = []
+        alter = []
+
+        for kind, param in diff:
+            if kind == EntityDiffKind.REMOVED:
+                alter.append(f"DROP ATTRIBUTE {self.dialect.quote_ident(param._name_)}")
+            elif kind == EntityDiffKind.CREATED:
+                alter.append(f"ADD ATTRIBUTE {self.compile_field(param, requirements)}")
+            elif kind == EntityDiffKind.CHANGED:
+                field = param[1]
+                changes = param[2]
+                if "_impl_" in changes or "size" in changes:
+                    type = self.dialect.get_field_type(field)
+                    col_name = self.dialect.quote_ident(field._name_)
+                    if type is None:
+                        raise ValueError("Cannot determine the sql type of %r" % field)
+                    alter.append(f"ALTER ATTRIBUTE {col_name} TYPE {type.name}")
+
+        if alter:
+            alter = ',\n  '.join(alter)
+            return f"ALTER TYPE {self.dialect.table_qname(diff.b)}\n  {alter};"
         else:
             return ""
 
@@ -175,9 +211,10 @@ cdef class DDLCompiler:
         return result
 
     def drop_entity(self, EntityType entity):
-        return f"DROP TABLE {self.dialect.table_qname(entity)} CASCADE;"
-
-
+        if entity.__meta__.get("is_type", False) is True:
+            return f"DROP TYPE {self.dialect.table_qname(entity)} CASCADE;"
+        else:
+            return f"DROP TABLE {self.dialect.table_qname(entity)} CASCADE;"
 
 
 cdef class DDLReflect:
