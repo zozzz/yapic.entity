@@ -13,12 +13,8 @@ from ._field_impl import (
     DateTimeTzImpl,
     JsonImpl as _JsonImpl,
     CompositeImpl as _CompositeImpl,
+    AutoImpl,
 )
-
-__all__ = [
-    "Field", "String", "Bytes", "Bool", "Date", "DateTime", "DateTimeTz", "Int", "Serial", "Choice", "Json",
-    "Composite", "PrimaryKey", "Index", "ForeignKey"
-]
 
 Impl = TypeVar("Impl")
 PyType = TypeVar("PyType")
@@ -49,6 +45,7 @@ Bool = Field[BoolImpl, bool, int]
 Date = Field[DateImpl, date, str]
 DateTime = Field[DateTimeImpl, datetime, str]
 DateTimeTz = Field[DateTimeTzImpl, datetime, str]
+Auto = Field[AutoImpl, Any, Any]
 
 
 class Int(Field[IntImpl, int, int]):

@@ -66,7 +66,6 @@ cdef inline dict field_eq(Field a, Field b, object expression_eq):
         result["_name_"] = b._name_
 
     if a._impl_ != b._impl_:
-        print(a._impl_, "!=", b._impl_)
         result["_impl_"] = b._impl_
 
     if a.min_size != b.min_size or a.max_size != b.max_size:

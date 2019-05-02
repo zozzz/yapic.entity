@@ -899,6 +899,7 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_DateTimeTzImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_ChoiceImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_JsonImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_CompositeImpl;
+struct __pyx_obj_5yapic_6entity_11_field_impl_AutoImpl;
 struct __pyx_obj_5yapic_6entity_8_factory_Factory;
 struct __pyx_obj_5yapic_6entity_9_relation_Relation;
 struct __pyx_obj_5yapic_6entity_9_relation_RelationImpl;
@@ -1602,10 +1603,22 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_JsonImpl {
  * 
  * cdef class CompositeImpl(FieldImpl):             # <<<<<<<<<<<<<<
  *     cdef EntityType _entity_
+ * 
  */
 struct __pyx_obj_5yapic_6entity_11_field_impl_CompositeImpl {
   struct __pyx_obj_5yapic_6entity_6_field_FieldImpl __pyx_base;
   struct __pyx_obj_5yapic_6entity_7_entity_EntityType *_entity_;
+};
+
+
+/* "yapic/entity/_field_impl.pxd":46
+ * 
+ * 
+ * cdef class AutoImpl(FieldImpl):             # <<<<<<<<<<<<<<
+ *     pass
+ */
+struct __pyx_obj_5yapic_6entity_11_field_impl_AutoImpl {
+  struct __pyx_obj_5yapic_6entity_6_field_FieldImpl __pyx_base;
 };
 
 
@@ -2408,12 +2421,26 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_JsonImpl *__pyx_vtab
  * 
  * cdef class CompositeImpl(FieldImpl):             # <<<<<<<<<<<<<<
  *     cdef EntityType _entity_
+ * 
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_CompositeImpl {
   struct __pyx_vtabstruct_5yapic_6entity_6_field_FieldImpl __pyx_base;
 };
 static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_CompositeImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_CompositeImpl;
+
+
+/* "yapic/entity/_field_impl.pxd":46
+ * 
+ * 
+ * cdef class AutoImpl(FieldImpl):             # <<<<<<<<<<<<<<
+ *     pass
+ */
+
+struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_AutoImpl {
+  struct __pyx_vtabstruct_5yapic_6entity_6_field_FieldImpl __pyx_base;
+};
+static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_AutoImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_AutoImpl;
 
 
 /* "_factory.pxd":41
@@ -3237,6 +3264,7 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_DateTimeTzImpl = 0
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_ChoiceImpl = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_JsonImpl = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_CompositeImpl = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl = 0;
 
 /* Module declarations from 'yapic.entity._factory' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_8_factory_Factory = 0;
@@ -11193,6 +11221,9 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_5yapic_6entity_11_field_impl_CompositeImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "CompositeImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_CompositeImpl), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_6entity_11_field_impl_CompositeImpl) __PYX_ERR(11, 42, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_11_field_impl_CompositeImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_CompositeImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_CompositeImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_CompositeImpl)) __PYX_ERR(11, 42, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "AutoImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_AutoImpl), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl) __PYX_ERR(11, 46, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_AutoImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_AutoImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_AutoImpl)) __PYX_ERR(11, 46, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("yapic.entity._factory"); if (unlikely(!__pyx_t_1)) __PYX_ERR(12, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);

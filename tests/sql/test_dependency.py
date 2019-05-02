@@ -1,7 +1,7 @@
 import pytest
 from yapic.entity.sql import wrap_connection, Entity, sync
-from yapic.entity import (Serial, Int, String, ForeignKey, One, Many, ManyAcross, Registry, DependencyList, Json,
-                          Composite, save_operations)
+from yapic.entity import (Serial, Int, String, ForeignKey, PrimaryKey, One, Many, ManyAcross, Registry, DependencyList,
+                          Json, Composite, save_operations, Auto)
 
 pytestmark = pytest.mark.asyncio  # type: ignore
 
@@ -30,14 +30,14 @@ class Tag(BaseEntity, schema="deps"):
 
 class Backward(BaseEntity, schema="deps"):
     id: Serial
-    user_id: Int = ForeignKey("User.id")
+    user_id: Auto = ForeignKey("User.id")
 
 
 class User(BaseEntity, schema="deps"):
     id: Serial
     name: String
 
-    address_id: Int = ForeignKey(Address.id)
+    address_id: Auto = ForeignKey(Address.id)
     address: One[Address]
     caddress: One[Address] = "Address.id == User.address_id"
 
@@ -53,12 +53,12 @@ class User(BaseEntity, schema="deps"):
 
 class Forward(BaseEntity, schema="deps"):
     id: Serial
-    user_id: Int = ForeignKey(User.id)
+    user_id: Auto = ForeignKey(User.id)
 
 
 class UserTags(BaseEntity, name="user-tags", schema="deps"):
-    user_id: Serial = ForeignKey(User.id)
-    tag_id: Serial = ForeignKey(Tag.id)
+    user_id: Auto = ForeignKey(User.id) // PrimaryKey()
+    tag_id: Auto = ForeignKey(Tag.id) // PrimaryKey()
 
 
 async def test_creation(conn):
@@ -104,7 +104,7 @@ async def test_insert(conn):
     user.tags.append(Tag(tag="some tag"))
     user.tags.append(xyz_tag)
 
-    print("\n".join(map(repr, save_operations(user))))
+    # print("\n".join(map(repr, save_operations(user))))
 
     await conn.save(user)
 

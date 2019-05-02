@@ -178,7 +178,7 @@ cdef class EntityType(type):
         cdef list deferred = self.__deferred__
         cdef int index = len(deferred) - 1
 
-        if index <= 0:
+        if index < 0:
             return True
 
         while index >= 0:

@@ -41,3 +41,7 @@ cdef class JsonImpl(FieldImpl):
 
 cdef class CompositeImpl(FieldImpl):
     cdef EntityType _entity_
+
+
+cdef class AutoImpl(FieldImpl):
+    pass

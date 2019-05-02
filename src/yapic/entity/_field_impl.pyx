@@ -115,6 +115,11 @@ cdef class CompositeImpl(FieldImpl):
         return "Composite(%r)" % self._entity_
 
 
+cdef class AutoImpl(FieldImpl):
+    def __repr__(self):
+        return "Auto"
+
+
 cdef str entity_qname(EntityType ent):
     try:
         schema = ent.__meta__["schema"]

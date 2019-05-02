@@ -6,6 +6,7 @@ from cpython.module cimport PyImport_Import, PyModule_GetDict
 from ._expression cimport Expression, Visitor
 from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeExt, EntityAttributeImpl
 from ._factory cimport ForwardDecl, get_type_hints, new_instance, new_instance_from_forward, is_forward_decl
+from ._field_impl cimport AutoImpl
 
 
 cdef class Field(EntityAttribute):
@@ -139,6 +140,10 @@ cdef class ForeignKey(FieldExtension):
         if FieldExtension.bind(self, attr) is False:
             return False
 
+        cdef Field field = attr
+
+        print("FK.bind", self._ref)
+
         if self.ref is None:
             if not isinstance(self._ref, Field):
                 module = PyImport_Import(self.attr._entity_.__module__)
@@ -150,14 +155,25 @@ cdef class ForeignKey(FieldExtension):
             else:
                 self.ref = self._ref
 
+        print("resolved", self._ref)
+
+        attr._deps_.add(self.ref._entity_)
+
         if self.name is None:
             self.name = compute_fk_name(attr, self.ref)
-            attr._deps_.add(self.ref._entity_)
+
+        if isinstance(attr._impl_, AutoImpl):
+            field._impl_ = self.ref._impl_
+            field.min_size = self.ref.min_size
+            field.max_size = self.ref.max_size
 
         return True
 
     cpdef object clone(self):
         return type(self)(self.ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)
+
+    def __repr__(self):
+        return "<ForeignKey %r>" % self.ref
 
 
 cdef compute_fk_name(Field field_from, Field field_to):
