@@ -21,6 +21,7 @@ cdef class EntityType(type):
     cdef object __weakref__
 
     cdef object resolve_deferred(self)
+    cpdef object __entity_ready__(self)
 
 
 cpdef bint is_entity_alias(object o)
@@ -45,6 +46,7 @@ cdef class EntityAttribute(Expression):
 
     # returns true when successfully bind, otherwise the system can try bind in the later time
     cdef object bind(self, EntityType entity)
+    # cdef object entity_ready(self, EntityType entity)
     cpdef clone(self)
     cpdef get_ext(self, ext_type)
     cpdef clone_exts(self, EntityAttribute attr)
@@ -58,6 +60,7 @@ cdef class EntityAttributeExt:
     # returns true when successfully bind, otherwise the system can try bind in the later time
     cpdef object bind(self, EntityAttribute attr)
     cpdef object clone(self)
+    # cpdef object entity_ready(self, EntityType entity)
 
 
 cdef class EntityAttributeImpl:
@@ -68,6 +71,7 @@ cdef class EntityAttributeImpl:
     cpdef object clone(self)
     cpdef object getattr(self, EntityAttribute attr, object key)
     cpdef object getitem(self, EntityAttribute attr, object index)
+    # cpdef object entity_ready(self, EntityAttribute attr)
 
     cdef object state_init(self, object initial)
     cdef object state_set(self, object initial, object current, object value)

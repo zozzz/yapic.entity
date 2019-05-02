@@ -114,6 +114,9 @@ cdef class EntityType(type):
 
         self.__pk__ = tuple(pk)
 
+        if not self.__deferred__:
+            self.__entity_ready__()
+
     def __init__(self, *args, _root=False, __fields__=None, is_alias=False, **kwargs):
         type.__init__(self, *args)
 
@@ -175,13 +178,23 @@ cdef class EntityType(type):
         cdef list deferred = self.__deferred__
         cdef int index = len(deferred) - 1
 
+        if index <= 0:
+            return True
+
         while index >= 0:
             attr = deferred[index]
             if attr.bind(self):
                 deferred.pop(index)
             index -= 1
 
-        return len(deferred) == 0
+        if len(deferred) == 0:
+            self.__entity_ready__()
+            return True
+        else:
+            return False
+
+    cpdef object __entity_ready__(self):
+        pass
 
 
 cpdef bint is_entity_alias(object o):
