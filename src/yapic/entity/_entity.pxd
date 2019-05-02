@@ -109,3 +109,13 @@ cdef class EntityState:
 @cython.final
 cdef class DependencyList(list):
     cpdef add(self, EntityType item)
+
+
+@cython.final
+cdef class PolymorphMeta:
+    cdef readonly tuple id_fields
+    cdef readonly dict entities
+    cdef readonly dict joins
+
+    cdef object add(self, object id, EntityType entity, Expression join)
+    cdef tuple normalize_id(self, object id)

@@ -37,13 +37,27 @@ cdef class EntityType(type):
         cdef Factory factory
         cdef EntityAttribute attr
         cdef EntityType aliased
+        cdef EntityType base_entity = None
         cdef tuple hints
+        cdef object polymorph = self.__meta__.get("polymorph", None)
+
+        for base in bases:
+            if isinstance(base, EntityType):
+                if base_entity is None:
+                    base_entity = base
+                else:
+                    raise ValueError("More than one Entity base is not allowed")
 
         try:
             is_alias = self.__meta__["is_alias"] is True
             is_alias = is_alias and len(bases) == 1 and isinstance(bases[0], EntityType)
         except:
             is_alias = False
+
+        if polymorph:
+            if not isinstance(polymorph, PolymorphMeta):
+                polymorph = PolymorphMeta(self, polymorph)
+                self.__meta__["polymorph"] = polymorph
 
         if is_alias:
             aliased = <EntityType>bases[0]
@@ -66,8 +80,13 @@ cdef class EntityType(type):
         else:
             hints = get_type_hints(self)
 
+            # copy pk from base entity if polymorp
+
             if hints[1] is not None:
                 for name, type in (<dict>hints[1]).items():
+                    if polymorph and hasattr(base_entity, name):
+                        continue
+
                     factory = Factory.create(type)
                     if factory is None:
                         continue
@@ -85,10 +104,6 @@ cdef class EntityType(type):
                         if not attr._name_:
                             attr._name_ = name
 
-                        # if isinstance(attr, Field):
-                        #     fields.append(attr)
-                        # elif isinstance(attr, Relation):
-                        #     relations.append(attr)
                         if isinstance(attr, Field):
                             fields.append(attr)
                         else:
@@ -650,11 +665,20 @@ cdef class EntityBase:
     def __init_subclass__(cls, *, str name=None, Registry registry=None, bint _root=False, **meta):
         cdef EntityType ent = cls
         cdef EntityType parent
+        cdef int mro_length = len(cls.__mro__)
 
         if name is not None:
             ent.__name__ = name
 
-        meta_dict = dict(meta)
+        meta_dict = {}
+
+        for i in range(1, mro_length - 2):
+            parent = cls.__mro__[i]
+
+            if parent.meta is not NULL:
+                meta_dict.update(<object>parent.meta)
+
+        meta_dict.update(meta)
         meta_dict.pop("__fields__", None)
         Py_XDECREF(ent.meta)
         ent.meta = <PyObject*>(<object>meta_dict)
@@ -665,8 +689,7 @@ cdef class EntityBase:
             ent.registry = <PyObject*>(<object>registry)
             Py_XINCREF(ent.registry)
         else:
-            length = len(cls.__mro__)
-            for i in range(1, length - 2):
+            for i in range(1, mro_length - 2):
                 parent = cls.__mro__[i]
 
                 if parent.registry is not NULL:
@@ -786,3 +809,27 @@ cdef class DependencyList(list):
                 self.insert(idx, dep)
             self.add(dep)
 
+
+@cython.final
+cdef class PolymorphMeta:
+    def __cinit__(self, EntityType ent, object id):
+        self.id_fields = self.normalize_id(id)
+        self.entities = {}
+        self.joins = {}
+
+    cdef object add(self, object id, EntityType entity, Expression join):
+        id = self.normalize_id(id)
+
+        if id in self.entities:
+            raise ValueError("This polymorph_id is already registered: %r" % id)
+
+        self.entities[id] = entity
+        self.joins[id] = join
+
+    cdef tuple normalize_id(self, object id):
+        if not isinstance(id, tuple):
+            if isinstance(id, list):
+                return tuple(id)
+            else:
+                return (id,)
+        return id

@@ -865,6 +865,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt;
 struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl;
 struct __pyx_obj_5yapic_6entity_7_entity_EntityState;
 struct __pyx_obj_5yapic_6entity_7_entity_DependencyList;
+struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta;
 struct __pyx_obj_5yapic_6entity_8_factory_Factory;
 struct __pyx_obj_5yapic_6entity_9_relation_Relation;
 struct __pyx_obj_5yapic_6entity_9_relation_RelationImpl;
@@ -1219,10 +1220,27 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityState {
  * @cython.final
  * cdef class DependencyList(list):             # <<<<<<<<<<<<<<
  *     cpdef add(self, EntityType item)
+ * 
  */
 struct __pyx_obj_5yapic_6entity_7_entity_DependencyList {
   PyListObject __pyx_base;
   struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList *__pyx_vtab;
+};
+
+
+/* "_entity.pxd":115
+ * 
+ * @cython.final
+ * cdef class PolymorphMeta:             # <<<<<<<<<<<<<<
+ *     cdef readonly tuple id_fields
+ *     cdef readonly dict entities
+ */
+struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta {
+  PyObject_HEAD
+  struct __pyx_vtabstruct_5yapic_6entity_7_entity_PolymorphMeta *__pyx_vtab;
+  PyObject *id_fields;
+  PyObject *entities;
+  PyObject *joins;
 };
 
 
@@ -1701,12 +1719,28 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *__pyx_vtabpt
  * @cython.final
  * cdef class DependencyList(list):             # <<<<<<<<<<<<<<
  *     cpdef add(self, EntityType item)
+ * 
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList {
   PyObject *(*add)(struct __pyx_obj_5yapic_6entity_7_entity_DependencyList *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList *__pyx_vtabptr_5yapic_6entity_7_entity_DependencyList;
+
+
+/* "_entity.pxd":115
+ * 
+ * @cython.final
+ * cdef class PolymorphMeta:             # <<<<<<<<<<<<<<
+ *     cdef readonly tuple id_fields
+ *     cdef readonly dict entities
+ */
+
+struct __pyx_vtabstruct_5yapic_6entity_7_entity_PolymorphMeta {
+  PyObject *(*add)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, PyObject *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, struct __pyx_obj_5yapic_6entity_11_expression_Expression *);
+  PyObject *(*normalize_id)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, PyObject *);
+};
+static struct __pyx_vtabstruct_5yapic_6entity_7_entity_PolymorphMeta *__pyx_vtabptr_5yapic_6entity_7_entity_PolymorphMeta;
 
 
 /* "_factory.pxd":41
@@ -2328,6 +2362,7 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeImpl = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_EntityState = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_DependencyList = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_PolymorphMeta = 0;
 
 /* Module declarations from 'yapic.entity._factory' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_8_factory_Factory = 0;
@@ -6009,6 +6044,9 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_5yapic_6entity_7_entity_DependencyList = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "DependencyList", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_DependencyList), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_6entity_7_entity_DependencyList) __PYX_ERR(4, 110, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_7_entity_DependencyList = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_DependencyList->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_DependencyList)) __PYX_ERR(4, 110, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_7_entity_PolymorphMeta = __Pyx_ImportType(__pyx_t_1, "yapic.entity._entity", "PolymorphMeta", sizeof(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_7_entity_PolymorphMeta) __PYX_ERR(4, 115, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_7_entity_PolymorphMeta = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_PolymorphMeta*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_7_entity_PolymorphMeta->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_7_entity_PolymorphMeta)) __PYX_ERR(4, 115, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("yapic.entity._factory"); if (unlikely(!__pyx_t_1)) __PYX_ERR(5, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
