@@ -181,14 +181,14 @@ cdef class DDLCompiler:
             return ""
 
     def compile_field_diff(self, Field field, dict diff):
-        cdef StorageType type
+        cdef StorageType type = self.dialect.get_field_type(field)
         cdef str col_name = self.dialect.quote_ident(field._name_)
         result = []
 
+        if type is None:
+            raise ValueError("Cannot determine the sql type of %r" % field)
+
         if "_impl_" in diff or "size" in diff:
-            type = self.dialect.get_field_type(field)
-            if type is None:
-                raise ValueError("Cannot determine the sql type of %r" % field)
             result.append(f"ALTER COLUMN {col_name} TYPE {type.name} USING {col_name}::{type.name}")
 
         if "nullable" in diff:

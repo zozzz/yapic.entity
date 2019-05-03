@@ -165,6 +165,8 @@ cdef class PostgreDDLReflect(DDLReflect):
             field = Field(DateTimeTzImpl(), nullable=is_nullable)
         elif typename == "timestamp":
             field = Field(DateTimeImpl(), nullable=is_nullable)
+        elif typename == "jsonb":
+            field = Field(JsonImpl(self.entity_base), nullable=is_nullable)
         elif typeschema != "pg_catalog" and typeschema != "information_schema":
             ctypename = f"{typeschema}.{typename}" if typeschema != "public" else f"{typename}"
             centity = registry[ctypename]
