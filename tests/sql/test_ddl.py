@@ -1,7 +1,7 @@
 from enum import Enum, Flag
 
 from yapic.entity import (Int, Serial, String, Choice, Field, PrimaryKey, ForeignKey, Date, DateTime, DateTimeTz, Bool,
-                          func, const, Registry, Json, Composite)
+                          func, const, Registry, Json, Composite, Auto, One)
 from yapic.entity.sql import PostgreDialect, Entity
 
 dialect = PostgreDialect()
@@ -220,5 +220,37 @@ def test_composite():
     assert result == """CREATE TABLE "FNUser" (
   "id" SERIAL4 NOT NULL,
   "name" "FullName",
+  PRIMARY KEY("id")
+);"""
+
+
+def test_self_ref():
+    class Node(BaseEntity):
+        id: Serial
+        parent_id: Auto = ForeignKey("Node.id")
+        parent: One["Node"]
+
+    result = ddl.compile_entity(Node)
+    assert result == """CREATE TABLE "Node" (
+  "id" SERIAL4 NOT NULL,
+  "parent_id" INT4,
+  PRIMARY KEY("id"),
+  CONSTRAINT "fk_Node__parent_id-Node__id" FOREIGN KEY ("parent_id") REFERENCES "Node" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
+);"""
+
+
+def test_mixin():
+    class Mixin:
+        created_time: DateTimeTz = func.now()
+
+    class MEntity(BaseEntity, Mixin):
+        id: Serial
+        name: String = "Default Name"
+
+    result = ddl.compile_entity(MEntity)
+    assert result == """CREATE TABLE "MEntity" (
+  "id" SERIAL4 NOT NULL,
+  "name" TEXT NOT NULL DEFAULT 'Default Name',
+  "created_time" TIMESTAMPTZ NOT NULL DEFAULT now(),
   PRIMARY KEY("id")
 );"""

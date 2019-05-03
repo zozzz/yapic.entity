@@ -2702,7 +2702,6 @@ static const char __pyx_k_value[] = "value";
 static const char __pyx_k_Entity[] = "Entity";
 static const char __pyx_k_change[] = "change";
 static const char __pyx_k_column[] = "column";
-static const char __pyx_k_entity[] = "_entity";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_select[] = "select";
 static const char __pyx_k_changes[] = "changes";
@@ -2725,6 +2724,7 @@ static const char __pyx_k_UPDATE_ENTITY[] = "UPDATE_ENTITY";
 static const char __pyx_k_RegistryDiffKind[] = "RegistryDiffKind";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_convert_data_to_raw[] = "convert_data_to_raw";
+static const char __pyx_k_yapic_entity__entity[] = "yapic.entity._entity";
 static const char __pyx_k_compile_registry_diff[] = "compile_registry_diff";
 static const char __pyx_k_yapic_entity__registry[] = "yapic.entity._registry";
 static const char __pyx_k_yapic_entity_sql__sync[] = "yapic.entity.sql._sync";
@@ -2752,7 +2752,6 @@ static PyObject *__pyx_n_s_connection;
 static PyObject *__pyx_n_s_convert_data_to_raw;
 static PyObject *__pyx_n_s_data;
 static PyObject *__pyx_n_s_diff;
-static PyObject *__pyx_n_s_entity;
 static PyObject *__pyx_n_s_entity_base;
 static PyObject *__pyx_n_s_entity_t;
 static PyObject *__pyx_n_s_existing;
@@ -2777,6 +2776,7 @@ static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_throw;
 static PyObject *__pyx_n_s_value;
 static PyObject *__pyx_n_s_x;
+static PyObject *__pyx_n_s_yapic_entity__entity;
 static PyObject *__pyx_n_s_yapic_entity__registry;
 static PyObject *__pyx_n_s_yapic_entity_sql__sync;
 static PyObject *__pyx_pf_5yapic_6entity_3sql_5_sync_sync(CYTHON_UNUSED PyObject *__pyx_self, struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *__pyx_v_connection, struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx_v_registry, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_entity_base); /* proto */
@@ -4947,7 +4947,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_convert_data_to_raw, __pyx_k_convert_data_to_raw, sizeof(__pyx_k_convert_data_to_raw), 0, 0, 1, 1},
   {&__pyx_n_s_data, __pyx_k_data, sizeof(__pyx_k_data), 0, 0, 1, 1},
   {&__pyx_n_s_diff, __pyx_k_diff, sizeof(__pyx_k_diff), 0, 0, 1, 1},
-  {&__pyx_n_s_entity, __pyx_k_entity, sizeof(__pyx_k_entity), 0, 0, 1, 1},
   {&__pyx_n_s_entity_base, __pyx_k_entity_base, sizeof(__pyx_k_entity_base), 0, 0, 1, 1},
   {&__pyx_n_s_entity_t, __pyx_k_entity_t, sizeof(__pyx_k_entity_t), 0, 0, 1, 1},
   {&__pyx_n_s_existing, __pyx_k_existing, sizeof(__pyx_k_existing), 0, 0, 1, 1},
@@ -4972,6 +4971,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_throw, __pyx_k_throw, sizeof(__pyx_k_throw), 0, 0, 1, 1},
   {&__pyx_n_s_value, __pyx_k_value, sizeof(__pyx_k_value), 0, 0, 1, 1},
   {&__pyx_n_s_x, __pyx_k_x, sizeof(__pyx_k_x), 0, 0, 1, 1},
+  {&__pyx_n_s_yapic_entity__entity, __pyx_k_yapic_entity__entity, sizeof(__pyx_k_yapic_entity__entity), 0, 0, 1, 1},
   {&__pyx_n_s_yapic_entity__registry, __pyx_k_yapic_entity__registry, sizeof(__pyx_k_yapic_entity__registry), 0, 0, 1, 1},
   {&__pyx_n_s_yapic_entity_sql__sync, __pyx_k_yapic_entity_sql__sync, sizeof(__pyx_k_yapic_entity_sql__sync), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
@@ -5496,45 +5496,45 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "yapic/entity/sql/_sync.pyx":5
+  /* "yapic/entity/sql/_sync.pyx":4
+ * 
  * from yapic.entity._entity cimport EntityType, EntityState, EntityAttribute
+ * from yapic.entity._entity import Entity             # <<<<<<<<<<<<<<
+ * from yapic.entity._registry cimport Registry, RegistryDiff
+ * from yapic.entity._registry import RegistryDiffKind
+ */
+  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_n_s_Entity);
+  __Pyx_GIVEREF(__pyx_n_s_Entity);
+  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_Entity);
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_yapic_entity__entity, __pyx_t_2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_Entity); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Entity, __pyx_t_2) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "yapic/entity/sql/_sync.pyx":6
+ * from yapic.entity._entity import Entity
  * from yapic.entity._registry cimport Registry, RegistryDiff
  * from yapic.entity._registry import RegistryDiffKind             # <<<<<<<<<<<<<<
  * from yapic.entity._query cimport Query
  * 
  */
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 5, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 6, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_RegistryDiffKind);
   __Pyx_GIVEREF(__pyx_n_s_RegistryDiffKind);
-  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_RegistryDiffKind);
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_yapic_entity__registry, __pyx_t_2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 5, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 5, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_RegistryDiffKind, __pyx_t_2) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "yapic/entity/sql/_sync.pyx":9
- * 
- * from ._connection cimport Connection
- * from ._entity import Entity             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 9, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(__pyx_n_s_Entity);
-  __Pyx_GIVEREF(__pyx_n_s_Entity);
-  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_Entity);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_entity, __pyx_t_1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 9, __pyx_L1_error)
+  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_RegistryDiffKind);
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_yapic_entity__registry, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Entity); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 9, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_RegistryDiffKind); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Entity, __pyx_t_1) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_RegistryDiffKind, __pyx_t_1) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 

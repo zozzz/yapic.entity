@@ -2799,7 +2799,6 @@ static const char __pyx_k_REMOVE[] = "REMOVE";
 static const char __pyx_k_UPDATE[] = "UPDATE";
 static const char __pyx_k_cursor[] = "cursor";
 static const char __pyx_k_delete[] = "delete";
-static const char __pyx_k_entity[] = "_entity";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_insert[] = "insert";
 static const char __pyx_k_update[] = "update";
@@ -2831,6 +2830,7 @@ static const char __pyx_k_Connection_update[] = "Connection.update";
 static const char __pyx_k_Connection_reflect[] = "Connection.reflect";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_NotImplementedError[] = "NotImplementedError";
+static const char __pyx_k_yapic_entity__entity[] = "yapic.entity._entity";
 static const char __pyx_k_Connection_create_entity[] = "Connection.create_entity";
 static const char __pyx_k_Invalid_dialect_argument_r[] = "Invalid dialect argument: %r";
 static const char __pyx_k_Connection_insert_or_update[] = "Connection.insert_or_update";
@@ -2872,7 +2872,6 @@ static PyObject *__pyx_n_s_dialect;
 static PyObject *__pyx_n_s_diff;
 static PyObject *__pyx_n_s_drop;
 static PyObject *__pyx_n_s_ent;
-static PyObject *__pyx_n_s_entity;
 static PyObject *__pyx_n_s_entity_base;
 static PyObject *__pyx_n_s_entity_diff;
 static PyObject *__pyx_n_s_fromlist;
@@ -2894,6 +2893,7 @@ static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_throw;
 static PyObject *__pyx_n_s_timeout;
 static PyObject *__pyx_n_s_update;
+static PyObject *__pyx_n_s_yapic_entity__entity;
 static PyObject *__pyx_n_s_yapic_entity__entity_operation;
 static PyObject *__pyx_kp_u_yapic_entity_sql;
 static PyObject *__pyx_n_s_yapic_entity_sql__connection;
@@ -6773,7 +6773,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_diff, __pyx_k_diff, sizeof(__pyx_k_diff), 0, 0, 1, 1},
   {&__pyx_n_s_drop, __pyx_k_drop, sizeof(__pyx_k_drop), 0, 0, 1, 1},
   {&__pyx_n_s_ent, __pyx_k_ent, sizeof(__pyx_k_ent), 0, 0, 1, 1},
-  {&__pyx_n_s_entity, __pyx_k_entity, sizeof(__pyx_k_entity), 0, 0, 1, 1},
   {&__pyx_n_s_entity_base, __pyx_k_entity_base, sizeof(__pyx_k_entity_base), 0, 0, 1, 1},
   {&__pyx_n_s_entity_diff, __pyx_k_entity_diff, sizeof(__pyx_k_entity_diff), 0, 0, 1, 1},
   {&__pyx_n_s_fromlist, __pyx_k_fromlist, sizeof(__pyx_k_fromlist), 0, 0, 1, 1},
@@ -6795,6 +6794,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_throw, __pyx_k_throw, sizeof(__pyx_k_throw), 0, 0, 1, 1},
   {&__pyx_n_s_timeout, __pyx_k_timeout, sizeof(__pyx_k_timeout), 0, 0, 1, 1},
   {&__pyx_n_s_update, __pyx_k_update, sizeof(__pyx_k_update), 0, 0, 1, 1},
+  {&__pyx_n_s_yapic_entity__entity, __pyx_k_yapic_entity__entity, sizeof(__pyx_k_yapic_entity__entity), 0, 0, 1, 1},
   {&__pyx_n_s_yapic_entity__entity_operation, __pyx_k_yapic_entity__entity_operation, sizeof(__pyx_k_yapic_entity__entity_operation), 0, 0, 1, 1},
   {&__pyx_kp_u_yapic_entity_sql, __pyx_k_yapic_entity_sql, sizeof(__pyx_k_yapic_entity_sql), 0, 1, 0, 0},
   {&__pyx_n_s_yapic_entity_sql__connection, __pyx_k_yapic_entity_sql__connection, sizeof(__pyx_k_yapic_entity_sql__connection), 0, 0, 1, 1},
@@ -7338,24 +7338,24 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "yapic/entity/sql/_connection.pyx":14
- * from ._query_compiler cimport QueryCompiler
- * from ._dialect cimport Dialect
- * from ._entity import Entity             # <<<<<<<<<<<<<<
- * 
+  /* "yapic/entity/sql/_connection.pyx":9
+ * from yapic.entity._query cimport Query
+ * from yapic.entity._entity cimport EntityType, EntityBase, EntityState
+ * from yapic.entity._entity import Entity             # <<<<<<<<<<<<<<
+ * from yapic.entity._registry cimport Registry, RegistryDiff
  * 
  */
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_s_Entity);
   __Pyx_GIVEREF(__pyx_n_s_Entity);
   PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_Entity);
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_entity, __pyx_t_2, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_yapic_entity__entity, __pyx_t_2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_Entity); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_Entity); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Entity, __pyx_t_2) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Entity, __pyx_t_2) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 

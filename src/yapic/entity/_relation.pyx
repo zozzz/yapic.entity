@@ -89,7 +89,8 @@ cdef class RelationImpl(EntityAttributeImpl):
     cdef object _eval(self, Relation attr, str expr):
         module = PyImport_Import(attr._entity_.__module__)
         mdict = PyModule_GetDict(module)
-        return eval(expr, <object>mdict, None)
+        ldict = {attr._entity_.__qualname__.split(".").pop(): attr._entity_}
+        return eval(expr, <object>mdict, <object>ldict)
 
 
 cdef class ManyToOne(RelationImpl):
@@ -97,7 +98,7 @@ cdef class ManyToOne(RelationImpl):
         return "ManyToOne %r" % self.joined
 
     cdef object determine_join_expr(self, EntityType entity, Relation attr):
-        if self.joined.__deferred__:
+        if self.joined is not entity and self.joined.__deferred__:
             return False
 
         if attr._default_:
@@ -105,6 +106,7 @@ cdef class ManyToOne(RelationImpl):
         else:
             self.join_expr = determine_join_expr(entity, self.joined)
         attr._deps_.add(self.joined)
+        return True
 
     cdef object resolve_default(self, Relation attr):
         if isinstance(attr._default_, str):
@@ -125,13 +127,14 @@ cdef class OneToMany(RelationImpl):
         return "OneToMany %r" % self.joined
 
     cdef object determine_join_expr(self, EntityType entity, Relation attr):
-        if self.joined.__deferred__:
+        if self.joined is not entity and self.joined.__deferred__:
             return False
 
         if attr._default_:
             self.join_expr = attr._default_
         else:
             self.join_expr = determine_join_expr(self.joined, entity)
+        return True
 
     cdef object resolve_default(self, Relation attr):
         if isinstance(attr._default_, str):
@@ -154,7 +157,7 @@ cdef class ManyToMany(RelationImpl):
         return "ManyToMany %r => %r" % (self.across, self.joined)
 
     cdef object determine_join_expr(self, EntityType entity, Relation attr):
-        if self.joined.__deferred__ or self.across.__deferred__:
+        if self.joined is not entity and (self.joined.__deferred__ or self.across.__deferred__):
             return False
 
         if attr._default_:
@@ -163,6 +166,7 @@ cdef class ManyToMany(RelationImpl):
         else:
             self.across_join_expr = determine_join_expr(self.across, entity)
             self.join_expr = determine_join_expr(self.across, self.joined)
+        return True
 
     cdef object resolve_default(self, Relation attr):
         if isinstance(attr._default_, dict):

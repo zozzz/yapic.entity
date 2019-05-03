@@ -3322,7 +3322,7 @@ static PyObject *__pyx_n_s_await;
 static PyObject *__pyx_n_u_bool;
 static PyObject *__pyx_n_u_bpchar;
 static PyObject *__pyx_n_u_bytea;
-static PyObject *__pyx_n_u_c;
+static PyObject *__pyx_n_b_c;
 static PyObject *__pyx_n_u_character_maximum_length;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_close;
@@ -3735,7 +3735,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5pgsql_4_ddl_17PostgreDDLReflect_2
  *         for id, schema, table, kind in types:
  *             fields = await self.get_fields(conn, registry, schema, table, id)             # <<<<<<<<<<<<<<
  *             entity = await self.create_entity(conn, registry, schema, table, fields)
- *             entity.__meta__["is_type"] = kind == "c"
+ *             entity.__meta__["is_type"] = kind == b"c"
  */
     __pyx_t_8 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_get_fields); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 40, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
@@ -3829,7 +3829,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5pgsql_4_ddl_17PostgreDDLReflect_2
  *         for id, schema, table, kind in types:
  *             fields = await self.get_fields(conn, registry, schema, table, id)
  *             entity = await self.create_entity(conn, registry, schema, table, fields)             # <<<<<<<<<<<<<<
- *             entity.__meta__["is_type"] = kind == "c"
+ *             entity.__meta__["is_type"] = kind == b"c"
  * 
  */
     __pyx_t_8 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_create_entity); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 41, __pyx_L1_error)
@@ -3923,11 +3923,11 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5pgsql_4_ddl_17PostgreDDLReflect_2
     /* "yapic/entity/sql/pgsql/_ddl.pyx":42
  *             fields = await self.get_fields(conn, registry, schema, table, id)
  *             entity = await self.create_entity(conn, registry, schema, table, fields)
- *             entity.__meta__["is_type"] = kind == "c"             # <<<<<<<<<<<<<<
+ *             entity.__meta__["is_type"] = kind == b"c"             # <<<<<<<<<<<<<<
  * 
  *             for attr in entity.__fields__:
  */
-    __pyx_t_2 = PyObject_RichCompare(__pyx_cur_scope->__pyx_v_kind, __pyx_n_u_c, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 42, __pyx_L1_error)
+    __pyx_t_2 = PyObject_RichCompare(__pyx_cur_scope->__pyx_v_kind, __pyx_n_b_c, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 42, __pyx_L1_error)
     __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_entity, __pyx_n_s_meta); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 42, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     if (unlikely(PyObject_SetItem(__pyx_t_8, __pyx_n_u_is_type, __pyx_t_2) < 0)) __PYX_ERR(0, 42, __pyx_L1_error)
@@ -3935,7 +3935,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5pgsql_4_ddl_17PostgreDDLReflect_2
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
     /* "yapic/entity/sql/pgsql/_ddl.pyx":44
- *             entity.__meta__["is_type"] = kind == "c"
+ *             entity.__meta__["is_type"] = kind == b"c"
  * 
  *             for attr in entity.__fields__:             # <<<<<<<<<<<<<<
  *                 if attr._default_ is not None:
@@ -4134,7 +4134,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5pgsql_4_ddl_17PostgreDDLReflect_2
       }
 
       /* "yapic/entity/sql/pgsql/_ddl.pyx":44
- *             entity.__meta__["is_type"] = kind == "c"
+ *             entity.__meta__["is_type"] = kind == b"c"
  * 
  *             for attr in entity.__fields__:             # <<<<<<<<<<<<<<
  *                 if attr._default_ is not None:
@@ -8814,7 +8814,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_u_bool, __pyx_k_bool, sizeof(__pyx_k_bool), 0, 1, 0, 1},
   {&__pyx_n_u_bpchar, __pyx_k_bpchar, sizeof(__pyx_k_bpchar), 0, 1, 0, 1},
   {&__pyx_n_u_bytea, __pyx_k_bytea, sizeof(__pyx_k_bytea), 0, 1, 0, 1},
-  {&__pyx_n_u_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 1, 0, 1},
+  {&__pyx_n_b_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 0, 0, 1},
   {&__pyx_n_u_character_maximum_length, __pyx_k_character_maximum_length, sizeof(__pyx_k_character_maximum_length), 0, 1, 0, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_close, __pyx_k_close, sizeof(__pyx_k_close), 0, 0, 1, 1},

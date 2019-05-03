@@ -109,7 +109,6 @@ cdef class RegistryDiff:
                 self.changes.append((RegistryDiffKind.COMPARE_DATA, val))
                 order.add(val)
 
-
         def key(item):
             kind, val = item
             if isinstance(val, EntityDiff):

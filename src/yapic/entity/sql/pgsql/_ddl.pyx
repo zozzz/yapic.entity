@@ -39,7 +39,7 @@ cdef class PostgreDDLReflect(DDLReflect):
         for id, schema, table, kind in types:
             fields = await self.get_fields(conn, registry, schema, table, id)
             entity = await self.create_entity(conn, registry, schema, table, fields)
-            entity.__meta__["is_type"] = kind == "c"
+            entity.__meta__["is_type"] = kind == b"c"
 
             for attr in entity.__fields__:
                 if attr._default_ is not None:

@@ -6,12 +6,12 @@ from yapic.entity._entity_operation cimport save_operations
 from yapic.entity._entity_operation import EntityOperation
 from yapic.entity._query cimport Query
 from yapic.entity._entity cimport EntityType, EntityBase, EntityState
+from yapic.entity._entity import Entity
 from yapic.entity._registry cimport Registry, RegistryDiff
 
 from ._query_context cimport QueryContext
 from ._query_compiler cimport QueryCompiler
 from ._dialect cimport Dialect
-from ._entity import Entity
 
 
 cdef class Connection:

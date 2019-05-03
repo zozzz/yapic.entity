@@ -142,20 +142,17 @@ cdef class ForeignKey(FieldExtension):
 
         cdef Field field = attr
 
-        print("FK.bind", self._ref)
-
         if self.ref is None:
             if not isinstance(self._ref, Field):
                 module = PyImport_Import(self.attr._entity_.__module__)
                 mdict = PyModule_GetDict(module)
+                ldict = {attr._entity_.__qualname__.split(".").pop(): attr._entity_}
                 try:
-                    self.ref = eval(self._ref, <object>mdict, None)
+                    self.ref = eval(self._ref, <object>mdict, <object>ldict)
                 except NameError as e:
                     return False
             else:
                 self.ref = self._ref
-
-        print("resolved", self._ref)
 
         attr._deps_.add(self.ref._entity_)
 

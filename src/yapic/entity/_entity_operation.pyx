@@ -25,6 +25,10 @@ cpdef list save_operations(EntityBase entity):
     cdef list ops = []
 
     _collect_entities(entity, order, ops, determine_entity_op(entity))
+
+    # print("\n".join(map(repr, ops)))
+    # print(order)
+
     ops.sort(key=cmp_to_key(_comparator(order)))
     return ops
 

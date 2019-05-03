@@ -1,12 +1,12 @@
 from inspect import iscoroutine
 
 from yapic.entity._entity cimport EntityType, EntityState, EntityAttribute
+from yapic.entity._entity import Entity
 from yapic.entity._registry cimport Registry, RegistryDiff
 from yapic.entity._registry import RegistryDiffKind
 from yapic.entity._query cimport Query
 
 from ._connection cimport Connection
-from ._entity import Entity
 
 
 async def sync(Connection connection, Registry registry, EntityType entity_base=Entity):

@@ -94,7 +94,9 @@ cdef class EntityType(type):
                     try:
                         value = attrs[name]
                     except KeyError:
-                        value = None
+                        value = getattr(self, name, None)
+                        if isinstance(value, EntityAttribute):
+                            value = value.clone()
 
                     attr_type = factory.hints[0]
 
@@ -137,12 +139,12 @@ cdef class EntityType(type):
 
         if _root is False:
             # if __fields__ is present, this entitiy, not created normally
-            if not __fields__ and not is_alias:
-                module = PyImport_Import(self.__module__)
-                mdict = PyModule_GetDict(module)
+            # if not __fields__ and not is_alias:
+            #     module = PyImport_Import(self.__module__)
+            #     mdict = PyModule_GetDict(module)
 
-                # XXX little hacky, insert class instance into module dict before call register
-                (<object>mdict)[args[0]] = self
+            #     # XXX little hacky, insert class instance into module dict before call register
+            #     (<object>mdict)[args[0]] = self
 
             if not is_alias:
                 self.__register__()
@@ -637,6 +639,10 @@ cdef class EntityBase:
     def __cinit__(self, state=None, **values):
         cdef EntityType model = type(self)
 
+        if not model.resolve_deferred():
+            print(model.__deferred__)
+            raise RuntimeError("Entity is not resolved...")
+
         if state:
             if isinstance(state, EntityState):
                 self.__state__ = state
@@ -654,52 +660,41 @@ cdef class EntityBase:
         if not self.__state__:
             self.__state__ = EntityState(model)
 
-        # cdef tuple fields = <tuple>model.__fields__
-        # cdef tuple fdata = PyTuple_New(PyTuple_GET_SIZE(fields))
-        # self.__fstate__ = FieldState(fields, fdata)
-
-        # cdef tuple relations = <tuple>model.__relations__
-        # self.__rstate__ = RelationState(relations)
-
     @classmethod
     def __init_subclass__(cls, *, str name=None, Registry registry=None, bint _root=False, **meta):
         cdef EntityType ent = cls
-        cdef EntityType parent
+        cdef EntityType parent_entity
         cdef int mro_length = len(cls.__mro__)
+        cdef PyObject* _registry
 
         if name is not None:
             ent.__name__ = name
 
         meta_dict = {}
+        _registry = <PyObject*>(<object>registry)
 
         for i in range(1, mro_length - 2):
             parent = cls.__mro__[i]
+            if isinstance(parent, EntityType):
+                parent_entity = <EntityType>parent
 
-            if parent.meta is not NULL:
-                meta_dict.update(<object>parent.meta)
+                if parent_entity.meta is not NULL:
+                    meta_dict.update(<object>parent_entity.meta)
+
+                if _registry is <PyObject*>None:
+                    _registry = parent_entity.registry
 
         meta_dict.update(meta)
         meta_dict.pop("__fields__", None)
+
         Py_XDECREF(ent.meta)
         ent.meta = <PyObject*>(<object>meta_dict)
         Py_XINCREF(ent.meta)
 
-        if registry is not None:
-            Py_XDECREF(ent.registry)
-            ent.registry = <PyObject*>(<object>registry)
-            Py_XINCREF(ent.registry)
-        else:
-            for i in range(1, mro_length - 2):
-                parent = cls.__mro__[i]
+        Py_XDECREF(ent.registry)
+        ent.registry = _registry
+        Py_XINCREF(ent.registry)
 
-                if parent.registry is not NULL:
-                    Py_XDECREF(ent.registry)
-                    ent.registry = parent.registry
-                    Py_XINCREF(ent.registry)
-                    break
-
-        # if _root is False:
-        #     cls.__register__()
 
     @classmethod
     def __register__(cls):
@@ -807,7 +802,7 @@ cdef class DependencyList(list):
         for dep in sorted(item.__deps__, key=attrgetter("__name__")):
             if dep not in self:
                 self.insert(idx, dep)
-            self.add(dep)
+                self.add(dep)
 
 
 @cython.final
