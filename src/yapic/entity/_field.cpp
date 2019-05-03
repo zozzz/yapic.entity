@@ -6061,7 +6061,7 @@ static PyObject *__pyx_pf_5yapic_6entity_6_field_10ForeignKey_2bind(struct __pyx
  *         return True
  * 
  *     cpdef object clone(self):             # <<<<<<<<<<<<<<
- *         return type(self)(self.ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)
+ *         return type(self)(self._ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)
  * 
  */
 
@@ -6124,16 +6124,16 @@ static PyObject *__pyx_f_5yapic_6entity_6_field_10ForeignKey_clone(struct __pyx_
   /* "yapic/entity/_field.pyx":170
  * 
  *     cpdef object clone(self):
- *         return type(self)(self.ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)             # <<<<<<<<<<<<<<
+ *         return type(self)(self._ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)             # <<<<<<<<<<<<<<
  * 
  *     def __repr__(self):
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 170, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(((PyObject *)__pyx_v_self->ref));
-  __Pyx_GIVEREF(((PyObject *)__pyx_v_self->ref));
-  PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self->ref));
+  __Pyx_INCREF(__pyx_v_self->_ref);
+  __Pyx_GIVEREF(__pyx_v_self->_ref);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_self->_ref);
   __pyx_t_2 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 170, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_name, __pyx_v_self->name) < 0) __PYX_ERR(0, 170, __pyx_L1_error)
@@ -6151,7 +6151,7 @@ static PyObject *__pyx_f_5yapic_6entity_6_field_10ForeignKey_clone(struct __pyx_
  *         return True
  * 
  *     cpdef object clone(self):             # <<<<<<<<<<<<<<
- *         return type(self)(self.ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)
+ *         return type(self)(self._ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)
  * 
  */
 
@@ -6206,7 +6206,7 @@ static PyObject *__pyx_pf_5yapic_6entity_6_field_10ForeignKey_4clone(struct __py
 }
 
 /* "yapic/entity/_field.pyx":172
- *         return type(self)(self.ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)
+ *         return type(self)(self._ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         return "<ForeignKey %r>" % self.ref
@@ -6247,7 +6247,7 @@ static PyObject *__pyx_pf_5yapic_6entity_6_field_10ForeignKey_6__repr__(struct _
   goto __pyx_L0;
 
   /* "yapic/entity/_field.pyx":172
- *         return type(self)(self.ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)
+ *         return type(self)(self._ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         return "<ForeignKey %r>" % self.ref

@@ -240,8 +240,12 @@ def test_self_ref():
 
 
 def test_mixin():
+    class FKUser(Entity):
+        id: Serial
+
     class Mixin:
         created_time: DateTimeTz = func.now()
+        user_id: Auto = ForeignKey(FKUser.id)
 
     class MEntity(BaseEntity, Mixin):
         id: Serial
@@ -252,5 +256,7 @@ def test_mixin():
   "id" SERIAL4 NOT NULL,
   "name" TEXT NOT NULL DEFAULT 'Default Name',
   "created_time" TIMESTAMPTZ NOT NULL DEFAULT now(),
-  PRIMARY KEY("id")
+  "user_id" INT4,
+  PRIMARY KEY("id"),
+  CONSTRAINT "fk_MEntity__user_id-FKUser__id" FOREIGN KEY ("user_id") REFERENCES "FKUser" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
 );"""

@@ -167,7 +167,7 @@ cdef class ForeignKey(FieldExtension):
         return True
 
     cpdef object clone(self):
-        return type(self)(self.ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)
+        return type(self)(self._ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)
 
     def __repr__(self):
         return "<ForeignKey %r>" % self.ref
