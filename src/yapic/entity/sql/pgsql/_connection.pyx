@@ -42,10 +42,6 @@ cdef class PostgreConnection(Connection):
         for i in range(1, len(names) + 1):
             placeholders.append(f"${i}")
 
-        print(attrs)
-        print(names)
-        print(values)
-
         fields_str = ", ".join(names)
         placeholder_str = ", ".join(placeholders)
 
