@@ -14,6 +14,7 @@ cdef class QueryContext:
         self.conn = conn
         self.cursor_factory = cursor_factory
         self.columns = columns
+        self.entities = {}
 
         if not columns:
             raise ValueError("Columns must be not empty")
@@ -29,7 +30,7 @@ cdef class QueryContext:
             cursor = await self.cursor_factory
             row = await cursor.fetchrow(timeout=timeout)
             if row:
-                return self.convert_row(row)
+                return await self.convert_row(row)
             else:
                 return None
 
@@ -49,11 +50,11 @@ cdef class QueryContext:
             cursor = await self.cursor_factory
             row = await cursor.fetchrow(timeout=timeout)
             if row is not None:
-                return self.convert_row(row)
+                return await self.convert_row(row)
             else:
                 return None
 
-    cdef object convert_row(self, object row):
+    async def convert_row(self, object row):
         cdef PyObject* columns = <PyObject*>self.columns
         cdef int length = PyList_GET_SIZE(<object>columns)
         # cdef tuple part
@@ -73,8 +74,6 @@ cdef class QueryContext:
         for i in range(length):
             col = PyList_GET_ITEM(<object>columns, i)
 
-            print(i, <object>col)
-
             if isinstance(<object>col, EntityType):
                 fc = len((<EntityType>col).__fields__)
                 entity = create_entity(<EntityType>col, row, c, c + fc)
@@ -89,10 +88,23 @@ cdef class QueryContext:
 
         return result
 
+    async def get_entity(self, EntityType ent, object record, int start, int end):
+        cdef EntityAttribute attr
+        cdef tuple pk = (record[start + attr._index_] for attr in ent.__pk__)
+        cdef tuple key = (ent, pk)
+
+        try:
+            return self.entities[key]
+        except KeyError:
+            entity = create_entity(EntityType ent, object record, int start, int end)
+            self.entities[key] = entity
+            return entity
+
+
     async def __aiter__(self):
         async with ensure_transaction(self.conn.conn):
             async for record in self.cursor_factory.__aiter__():
-                yield self.convert_row(record)
+                yield await self.convert_row(record)
 
     def __await__(self):
         return self.fetch().__await__()
@@ -108,7 +120,6 @@ cdef inline object ensure_transaction(conn):
             deferrable=conn._top_xact._deferrable)
 
 
-# TODO: asyncpg record optimalizálás
 cdef inline object create_entity(EntityType ent, object record, int start, int end):
     if record is None:
         return
@@ -131,8 +142,6 @@ cdef inline object create_entity(EntityType ent, object record, int start, int e
 
         state.set_initial_value(attr, val)
         c += 1
-
-    # state = EntityState(ent, data)
 
     return ent(state)
 

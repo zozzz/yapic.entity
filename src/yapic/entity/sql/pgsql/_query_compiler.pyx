@@ -47,8 +47,6 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
         if query.columns:
             self.parts.append(", ".join(self.visit_columns(query.columns)))
-        else:
-            self.parts.append(", ".join(self.visit_columns(query.entities.keys())))
 
         self.parts.append("FROM")
         self.parts.append(from_)

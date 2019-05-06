@@ -283,6 +283,9 @@ cdef class QueryFinalizer(Visitor):
         if self.q.havings: self._visit_list(self.q.havings)
         if self.q.distincts: self._visit_list(self.q.distincts)
 
+        if not self.q.columns:
+            self.q.columns = list(self.q.from_clause)
+
     def _visit_list(self, expr_list):
         for expr in expr_list:
             if isinstance(expr, EntityType):

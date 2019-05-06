@@ -62,6 +62,9 @@ cdef class EntityType(type):
         if is_alias:
             aliased = <EntityType>bases[0]
 
+            if not aliased.resolve_deferred():
+                raise RuntimeError("Can't alias deferred entity")
+
             for v in aliased.__attrs__:
                 if isinstance(v, EntityAttribute):
                     attr = (<EntityAttribute>v).clone()

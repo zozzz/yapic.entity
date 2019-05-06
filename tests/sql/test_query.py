@@ -205,8 +205,6 @@ def test_query_alias():
 def test_entity_alias():
     TEST = User.alias("TEST")
 
-    print(TEST.address._impl_.join_expr)
-
     q = Query().select_from(TEST).where(TEST.id == 12)
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == 'SELECT "TEST"."id", "TEST"."name", "TEST"."email", "TEST"."created_time", "TEST"."address_id" FROM "User" "TEST" WHERE "TEST"."id" = $1'
@@ -221,48 +219,56 @@ def test_entity_alias():
         .where(TEST.address.title == "OK") \
         .where(TEST.id == 42)
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == 'SELECT "TEST"."id", "TEST"."name", "TEST"."email", "TEST"."created_time", "TEST"."address_id", "t1"."id", "t1"."title" FROM "User" "TEST" INNER JOIN "Address" "t1" ON "TEST"."address_id" = "t1"."id" WHERE "t1"."title" = $1 AND "TEST"."id" = $2'
+    assert sql == 'SELECT "TEST"."id", "TEST"."name", "TEST"."email", "TEST"."created_time", "TEST"."address_id" FROM "User" "TEST" INNER JOIN "Address" "t1" ON "TEST"."address_id" = "t1"."id" WHERE "t1"."title" = $1 AND "TEST"."id" = $2'
     assert params == ("OK", 42)
 
     q = Query().select_from(TEST).join(TEST.tags).where(TEST.tags.value == 42)
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == 'SELECT "TEST"."id", "TEST"."name", "TEST"."email", "TEST"."created_time", "TEST"."address_id", "t2"."id", "t2"."value" FROM "User" "TEST" INNER JOIN "UserTags" "t1" ON "t1"."user_id" = "TEST"."id" INNER JOIN "Tag" "t2" ON "t1"."tag_id" = "t2"."id" WHERE "t2"."value" = $1'
+    assert sql == 'SELECT "TEST"."id", "TEST"."name", "TEST"."email", "TEST"."created_time", "TEST"."address_id" FROM "User" "TEST" INNER JOIN "UserTags" "t1" ON "t1"."user_id" = "TEST"."id" INNER JOIN "Tag" "t2" ON "t1"."tag_id" = "t2"."id" WHERE "t2"."value" = $1'
     assert params == (42, )
 
 
 def test_join_relation():
     q = Query().select_from(User).join(User.address)
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id", "t1"."id", "t1"."title" FROM "User" "t0" INNER JOIN "Address" "t1" ON "t0"."address_id" = "t1"."id"'
+    assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" INNER JOIN "Address" "t1" ON "t0"."address_id" = "t1"."id"'
 
 
 def test_join_across_relation():
     q = Query().select_from(User).join(User.tags).where(User.tags.value == "nice")
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id", "t2"."id", "t2"."value" FROM "User" "t0" INNER JOIN "UserTags" "t1" ON "t1"."user_id" = "t0"."id" INNER JOIN "Tag" "t2" ON "t1"."tag_id" = "t2"."id" WHERE "t2"."value" = $1'
+    assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" INNER JOIN "UserTags" "t1" ON "t1"."user_id" = "t0"."id" INNER JOIN "Tag" "t2" ON "t1"."tag_id" = "t2"."id" WHERE "t2"."value" = $1'
     assert params == ("nice", )
 
 
 def test_join_entity():
     q = Query().select_from(User).join(Address).where(Address.title == "address")
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id", "t1"."id", "t1"."title" FROM "User" "t0" INNER JOIN "Address" "t1" ON "t0"."address_id" = "t1"."id" WHERE "t1"."title" = $1'
+    assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" INNER JOIN "Address" "t1" ON "t0"."address_id" = "t1"."id" WHERE "t1"."title" = $1'
     assert params == ("address", )
 
 
 def test_join_entity_across():
     q = Query().select_from(User).join(UserTags).join(Tag).where(Tag.value == "address")
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id", "t1"."user_id", "t1"."tag_id", "t2"."id", "t2"."value" FROM "User" "t0" INNER JOIN "UserTags" "t1" ON "t1"."user_id" = "t0"."id" INNER JOIN "Tag" "t2" ON "t1"."tag_id" = "t2"."id" WHERE "t2"."value" = $1'
+    assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" INNER JOIN "UserTags" "t1" ON "t1"."user_id" = "t0"."id" INNER JOIN "Tag" "t2" ON "t1"."tag_id" = "t2"."id" WHERE "t2"."value" = $1'
     assert params == ("address", )
 
 
-# @pytest.mark.skip(reason="deferred")
 def test_auto_join_relation():
     q = Query().select_from(User).where(User.tags.value == "nice")
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id", "t2"."id", "t2"."value" FROM "User" "t0" INNER JOIN "UserTags" "t1" ON "t1"."user_id" = "t0"."id" INNER JOIN "Tag" "t2" ON "t1"."tag_id" = "t2"."id" WHERE "t2"."value" = $1'
+    assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" INNER JOIN "UserTags" "t1" ON "t1"."user_id" = "t0"."id" INNER JOIN "Tag" "t2" ON "t1"."tag_id" = "t2"."id" WHERE "t2"."value" = $1'
     assert params == ("nice", )
+
+
+@pytest.mark.skip(reason="deferred")
+def test_eager_load():
+    q = Query().select_from(User).column(User, User.address, User.tags)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    print(sql)
+    assert sql == ''
+    assert params == ()
 
 
 binary_operator_cases = [
@@ -371,7 +377,7 @@ def test_json():
         .where(Article.author.name.family == "Kiss") \
         .where(Article.author.name.xyz.z == 1)
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == """SELECT "t0"."id", "t0"."author_id", "t1"."id", "t1"."name" FROM "Article" "t0" INNER JOIN "UserJson" "t1" ON "t0"."author_id" = "t1"."id" WHERE jsonb_extract_path("t1"."name", 'family') = $1 AND jsonb_extract_path("t1"."name", 'xyz', 'z') = $2"""
+    assert sql == """SELECT "t0"."id", "t0"."author_id" FROM "Article" "t0" INNER JOIN "UserJson" "t1" ON "t0"."author_id" = "t1"."id" WHERE jsonb_extract_path("t1"."name", 'family') = $1 AND jsonb_extract_path("t1"."name", 'xyz', 'z') = $2"""
     assert params == ("Kiss", 1)
 
 
@@ -394,5 +400,5 @@ def test_composite():
         .where(Article2.author.name.family == "Kiss") \
         .where(Article2.author.name.xyz.z == 1)
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == """SELECT "t0"."id", "t0"."author_id", "t1"."id", "t1"."name" FROM "Article2" "t0" INNER JOIN "UserComp2" "t1" ON "t0"."author_id" = "t1"."id" WHERE "t1"."name"."family" = $1 AND jsonb_extract_path("t1"."name"."xyz", 'z') = $2"""
+    assert sql == """SELECT "t0"."id", "t0"."author_id" FROM "Article2" "t0" INNER JOIN "UserComp2" "t1" ON "t0"."author_id" = "t1"."id" WHERE "t1"."name"."family" = $1 AND jsonb_extract_path("t1"."name"."xyz", 'z') = $2"""
     assert params == ("Kiss", 1)
