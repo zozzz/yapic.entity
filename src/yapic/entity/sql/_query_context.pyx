@@ -3,7 +3,8 @@ from cpython.ref cimport Py_INCREF, Py_DECREF, Py_XINCREF, Py_XDECREF
 from cpython.list cimport PyList_GET_ITEM, PyList_GET_SIZE
 from cpython.tuple cimport PyTuple_New, PyTuple_SET_ITEM, PyTuple_GET_ITEM, _PyTuple_Resize
 
-from yapic.entity._entity cimport EntityType, EntityState
+from yapic.entity._entity cimport EntityType, EntityState, EntityAttribute
+from yapic.entity._field_impl cimport CompositeImpl
 
 from ._connection cimport Connection
 
@@ -112,21 +113,27 @@ cdef inline object create_entity(EntityType ent, object record, int start, int e
     if record is None:
         return
 
-    cdef int state_len = len(ent.__attrs__)
-    cdef tuple data = PyTuple_New(state_len)
-    cdef object item
+    cdef EntityState state = EntityState(ent)
+    cdef EntityAttribute attr
+    cdef tuple attrs = ent.__attrs__
+    cdef int state_len = len(attrs)
     cdef int c = 0
 
     if end - start > state_len:
         raise RuntimeError("Too many columns")
 
     for i in range(start, end):
-        item = record[i]
-        Py_INCREF(<object>item)
-        PyTuple_SET_ITEM(<object>data, c, <object>item)
+        attr = <EntityAttribute>attrs[c]
+        val = record[i]
+
+        if isinstance(attr._impl_, CompositeImpl):
+            val = create_entity((<CompositeImpl>attr._impl_)._entity_, val, 0, len(val))
+
+        state.set_initial_value(attr, val)
         c += 1
 
-    state = EntityState(ent, data)
+    # state = EntityState(ent, data)
+
     return ent(state)
 
 

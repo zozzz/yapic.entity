@@ -1,7 +1,7 @@
 from enum import Enum, Flag
 from datetime import date, datetime
 
-from ._entity cimport EntityType, EntityAttributeImpl, EntityAttribute
+from ._entity cimport EntityType, EntityBase, EntityAttributeImpl, EntityAttribute, NOTSET
 from ._expression cimport PathExpression
 
 
@@ -56,50 +56,56 @@ cdef class DateTimeTzImpl(FieldImpl):
         return "DateTimeTz"
 
 
-cdef class JsonImpl(FieldImpl):
+cdef class EntityTypeImpl(FieldImpl):
     def __cinit__(self, entity):
         entity.__meta__["is_type"] = True
-        entity.__meta__["is_virtual"] = True
         self._entity_ = entity
 
     cpdef object init(self, EntityAttribute attr):
         attr._deps_.add(self._entity_)
+        return True
 
     cpdef getattr(self, EntityAttribute attr, object key):
         return PathExpression(attr, [getattr(self._entity_, key)])
 
-    cpdef getitem(self, EntityAttribute attr, object index):
-        return PathExpression(attr, [index])
+    cdef object state_init(self, object initial):
+        if initial is NOTSET:
+            return self._entity_()
+        else:
+            return initial
 
-    # def __eq__(self, other):
-    #     if isinstance(other, JsonImpl):
-    #         self_ent = entity_qname(self._entity_)
-    #         other_ent = entity_qname((<JsonImpl>other)._entity_)
-    #         return self_ent == other_ent
-    #     else:
-    #         return False
+    cdef object state_set(self, object initial, object current, object value):
+        if value is None:
+            return None
+        elif current is NOTSET:
+            if isinstance(value, EntityBase):
+                return value
+        elif isinstance(value, EntityBase):
+            return value
 
-    # def __ne__(self, other):
-    #     return not self.__eq__(other)
+        return self._entity_(value)
+
+    cdef object state_get_dirty(self, object initial, object current):
+        if current is NOTSET:
+            if initial is NOTSET:
+                return NOTSET
+            elif initial.__state__.is_dirty:
+                return initial
+        elif initial is not current:
+            return current
+        elif current.__state__.is_dirty:
+            return current
+        return NOTSET
+
+cdef class JsonImpl(EntityTypeImpl):
+    def __cinit__(self, entity):
+        entity.__meta__["is_virtual"] = True
 
     def __repr__(self):
         return "Json(%r)" % self._entity_
 
 
-cdef class CompositeImpl(FieldImpl):
-    def __cinit__(self, entity):
-        entity.__meta__["is_type"] = True
-        self._entity_ = entity
-
-    cpdef object init(self, EntityAttribute attr):
-        attr._deps_.add(self._entity_)
-
-    cpdef getattr(self, EntityAttribute attr, object key):
-        return PathExpression(attr, [getattr(self._entity_, key)])
-
-    cpdef getitem(self, EntityAttribute attr, object index):
-        return PathExpression(attr, [index])
-
+cdef class CompositeImpl(EntityTypeImpl):
     def __eq__(self, other):
         if isinstance(other, CompositeImpl):
             self_ent = entity_qname(self._entity_)

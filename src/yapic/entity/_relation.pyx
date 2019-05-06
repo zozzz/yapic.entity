@@ -285,7 +285,10 @@ cdef class RelatedList(ValueStore):
             return list(initial)
 
     cpdef object state_set(self, object initial, object current, object value):
-        return value
+        if value is None or isinstance(value, list):
+            return value
+        else:
+            raise ValueError("Related list value must be list or None")
 
     cpdef object state_get_dirty(self, object initial, object current):
         if current is NOTSET:

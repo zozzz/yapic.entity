@@ -239,9 +239,14 @@ async def test_json(conn):
     reg_a = Registry()
     reg_b = Registry()
 
+    class JsonXY(Entity, registry=reg_a, schema="execution"):
+        x: Int
+        y: Int
+
     class JsonName(Entity, registry=reg_a, schema="execution"):
         given: String
         family: String
+        xy: Json[JsonXY]
 
     class JsonUser(Entity, registry=reg_a, schema="execution"):
         id: Serial
@@ -255,6 +260,15 @@ CREATE TABLE "execution"."JsonUser" (
   PRIMARY KEY("id")
 );"""
 
+    await conn.conn.execute(result)
+
+    user = JsonUser(name={"given": "Given", "family": "Family", "xy": {"x": 1, "y": 2}})
+    await conn.insert(user)
+    assert user.name.given == "Given"
+    assert user.name.family == "Family"
+    assert user.name.xy.x == 1
+    assert user.name.xy.y == 2
+
 
 async def test_composite(conn):
     await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
@@ -263,9 +277,14 @@ async def test_composite(conn):
     reg_a = Registry()
     reg_b = Registry()
 
+    class CompXY(Entity, registry=reg_a, schema="execution"):
+        x: String
+        y: String
+
     class CompName(Entity, registry=reg_a, schema="execution"):
         given: String
         family: String
+        xy: Composite[CompXY]
 
     class CompUser(Entity, registry=reg_a, schema="execution"):
         id: Serial
@@ -273,9 +292,14 @@ async def test_composite(conn):
 
     result = await sync(conn, reg_a)
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE TYPE "execution"."CompXY" AS (
+  "x" TEXT,
+  "y" TEXT
+);
 CREATE TYPE "execution"."CompName" AS (
   "given" TEXT,
-  "family" TEXT
+  "family" TEXT,
+  "xy" "execution"."CompXY"
 );
 CREATE TABLE "execution"."CompUser" (
   "id" SERIAL4 NOT NULL,
@@ -284,23 +308,67 @@ CREATE TABLE "execution"."CompUser" (
 );"""
     await conn.conn.execute(result)
 
-    class CompName(Entity, registry=reg_b, schema="execution"):
-        _given: String
-        family: String = Field(size=50)
-        new_column: Int
-
-    class CompUser(Entity, registry=reg_b, schema="execution"):
-        id: Serial
-        name: Composite[CompName]
-
-    result = await sync(conn, reg_b)
-    assert result == """ALTER TYPE "execution"."CompName"
-  DROP ATTRIBUTE "given",
-  ADD ATTRIBUTE "_given" TEXT,
-  ADD ATTRIBUTE "new_column" INT4,
-  ALTER ATTRIBUTE "family" TYPE VARCHAR(50);"""
-
     # TODO: kitalálni, hogyan lehet módosítani a composite typeot
-    # await conn.conn.execute(result)
-    # result = await sync(conn, reg_b)
-    # assert result is None
+    #     class CompName(Entity, registry=reg_b, schema="execution"):
+    #         _given: String
+    #         family: String = Field(size=50)
+    #         new_column: Int
+
+    #     class CompUser(Entity, registry=reg_b, schema="execution"):
+    #         id: Serial
+    #         name: Composite[CompName]
+
+    #     result = await sync(conn, reg_b)
+    #     assert result == """ALTER TYPE "execution"."CompName"
+    #   DROP ATTRIBUTE "given",
+    #   ADD ATTRIBUTE "_given" TEXT,
+    #   ADD ATTRIBUTE "new_column" INT4,
+    #   ALTER ATTRIBUTE "family" TYPE VARCHAR(50);"""
+
+    #     await conn.conn.execute(result)
+    #     result = await sync(conn, reg_b)
+    #     assert result is None
+
+    user = CompUser(name={"family": "Family", "given": "Given", "xy": {"x": "X", "y": "Y"}})
+    assert user.name.family == "Family"
+    assert user.name.given == "Given"
+    assert user.name.xy.x == "X"
+    assert user.name.xy.y == "Y"
+
+    await conn.insert(user)
+    assert user.name.family == "Family"
+    assert user.name.given == "Given"
+    assert user.name.xy.x == "X"
+    assert user.name.xy.y == "Y"
+    assert user.__state__.changes() == {}
+    assert user.name.__state__.changes() == {}
+
+    user.name.family = "FamilyModified"
+    user.name.xy.y = "Y MOD"
+    assert user.__state__.changes() == {"name": user.name}
+    assert user.name.__state__.changes() == {"family": "FamilyModified", "xy": user.name.xy}
+
+    await conn.update(user)
+    assert user.name.family == "FamilyModified"
+    assert user.name.given == "Given"
+    assert user.name.xy.x == "X"
+    assert user.name.xy.y == "Y MOD"
+    assert user.__state__.changes() == {}
+    assert user.name.__state__.changes() == {}
+
+    user.name.family = "Family IOU"
+    user.name.xy.y = "Y IOU"
+    await conn.insert_or_update(user)
+    assert user.name.family == "Family IOU"
+    assert user.name.given == "Given"
+    assert user.name.xy.x == "X"
+    assert user.name.xy.y == "Y IOU"
+    assert user.__state__.changes() == {}
+    assert user.name.__state__.changes() == {}
+
+    q = Query().select_from(CompUser).where(CompUser.id == user.id)
+    user = await conn.select(q).first()
+    assert user.name.family == "Family IOU"
+    assert user.name.given == "Given"
+    assert user.name.xy.x == "X"
+    assert user.name.xy.y == "Y IOU"

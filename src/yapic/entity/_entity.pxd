@@ -86,20 +86,21 @@ cdef class EntityState:
     cdef tuple current
     cdef int field_count
 
-    @staticmethod
-    cdef EntityState create_from_dict(EntityType entity, dict data)
+    # @staticmethod
+    # cdef EntityState create_from_dict(EntityType entity, dict data)
 
+    cdef object init(self)
     cdef object update(self, dict data, bint is_initial)
 
-    cdef bint set_value(self, EntityAttribute attr, object value)
+    cdef object set_value(self, EntityAttribute attr, object value)
+    cdef object set_initial_value(self, EntityAttribute attr, object value)
     cdef object get_value(self, EntityAttribute attr)
-    cdef void del_value(self, EntityAttribute attr)
+    cdef object del_value(self, EntityAttribute attr)
 
     cdef list data_for_insert(self)
     cdef list data_for_update(self)
 
     cdef object attr_changes(self, EntityAttribute attr)
-    cdef object init_current(self)
 
     cdef reset_all(self)
     cdef reset_attr(self, EntityAttribute attr)

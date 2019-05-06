@@ -1,6 +1,7 @@
 from datetime import date, datetime
 
-from yapic.entity._entity cimport EntityType
+from yapic import json
+from yapic.entity._entity cimport EntityType, EntityBase
 from yapic.entity._field cimport Field, PrimaryKey, StorageType, StorageTypeFactory
 from yapic.entity._field_impl cimport (
     StringImpl,
@@ -220,17 +221,24 @@ cdef class JsonType(PostgreType):
     cdef EntityType entity
 
     cpdef object encode(self, object value):
-        pass
+        if value is None:
+            return None
+        elif isinstance(value, EntityBase):
+            if type(value) is not self.entity:
+                raise ValueError("Missmatch entity type: %r expected %r" % (type(value), self.entity))
+            return json.dumps(value.as_dict())
+        else:
+            raise TypeError("Can convert value to json: %r" % value)
 
     cpdef object decode(self, object value):
-        pass
+        return self.entity(json.loads(value))
 
 
 cdef class CompositeType(PostgreType):
     cdef EntityType entity
 
     cpdef object encode(self, object value):
-        pass
+        return value
 
     cpdef object decode(self, object value):
-        pass
+        return value

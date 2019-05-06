@@ -35,12 +35,16 @@ cdef class ChoiceImpl(FieldImpl):
     cdef readonly bint is_multi
 
 
-cdef class JsonImpl(FieldImpl):
-    cdef EntityType _entity_
+cdef class EntityTypeImpl(FieldImpl):
+    cdef readonly EntityType _entity_
 
 
-cdef class CompositeImpl(FieldImpl):
-    cdef EntityType _entity_
+cdef class JsonImpl(EntityTypeImpl):
+    pass
+
+
+cdef class CompositeImpl(EntityTypeImpl):
+    pass
 
 
 cdef class AutoImpl(FieldImpl):

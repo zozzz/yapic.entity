@@ -1,9 +1,11 @@
 from inspect import iscoroutine
 
 import cython
+from asyncpg import Record
 
-from yapic.entity._entity cimport EntityType, EntityBase, EntityAttribute, EntityState
-from yapic.entity._field cimport Field
+from yapic.entity._entity cimport EntityType, EntityBase, EntityAttribute, EntityState, NOTSET
+from yapic.entity._field cimport Field, StorageType, PrimaryKey
+from yapic.entity._field_impl cimport CompositeImpl
 
 from .._connection cimport Connection
 
@@ -27,134 +29,171 @@ cdef class PostgreConnection(Connection):
 
     async def insert(self, EntityBase entity, timeout=None):
         cdef EntityType ent = type(entity)
-        cdef EntityAttribute attr
-        cdef EntityState state = entity.__state__
-        cdef list data = state.data_for_insert()
-        cdef int data_length = len(data)
-        cdef list fields = []
-        cdef list field_names = []
+        cdef list attrs = []
+        cdef list names = []
         cdef list values = []
-        cdef list subst = []
-        cdef int i
+        cdef list placeholders = []
 
-        for i in range(data_length):
-            attr, value = <tuple>data[i]
-            if isinstance(attr, Field):
-                if iscoroutine(value):
-                    value = await value
+        await self.__collect_attrs(entity, True, "", attrs, names, values)
 
-                fields.append(attr)
-                field_names.append(self.dialect.quote_ident(attr._name_))
-                values.append(value)
-                subst.append(f"${i + 1}")
+        if not values:
+            return entity
 
-        # INSERT INTO X (...) VALUES (...) RETURNING ...
-        fields_str = ", ".join(field_names)
-        q = ("INSERT INTO ", self.dialect.table_qname(ent),
-             " (", fields_str, ") VALUES (", ", ".join(subst), ")")
+        for i in range(1, len(names) + 1):
+            placeholders.append(f"${i}")
+
+        print(attrs)
+        print(names)
+        print(values)
+
+        fields_str = ", ".join(names)
+        placeholder_str = ", ".join(placeholders)
+
+        q = ["INSERT INTO ", self.dialect.table_qname(ent),
+            "(", fields_str, ") VALUES (", placeholder_str, ")"]
 
         return await self.__exec_iou(q, values, entity, ent, timeout)
 
     async def insert_or_update(self, EntityBase entity, timeout=None):
         cdef EntityType ent = type(entity)
-        cdef EntityAttribute attr
-        cdef EntityState state = entity.__state__
-        cdef tuple pk = entity.__pk__
-
-        if not pk:
-            return await self.insert(entity, timeout)
-
-        cdef list pk_names = [self.dialect.quote_ident(attr._name_) for attr in ent.__pk__]
-        cdef list fields = []
-        cdef list field_names = []
-        cdef list subst = []
+        cdef list attrs = []
+        cdef list names = []
         cdef list values = []
         cdef list updates = []
-        cdef int i = 1
+        cdef list placeholders = []
+        cdef list pk_names = [self.dialect.quote_ident(attr._name_) for attr in ent.__pk__]
 
-        for attr, value in state.data_for_insert():
-            if isinstance(attr, Field):
-                if iscoroutine(value):
-                    value = await value
+        await self.__collect_attrs(entity, True, "", attrs, names, values)
 
-                field_name = self.dialect.quote_ident(attr._name_)
-                fields.append(attr)
-                field_names.append(field_name)
-                values.append(value)
-                subst.append(f"${i}")
+        if not values:
+            return entity
 
-                if field_name not in pk_names:
-                    updates.append(f"{field_name}=${i}")
+        for i, name in enumerate(names):
+            attr = <EntityAttribute>attrs[i]
 
-                i += 1
+            placeholders.append(f"${i+1}")
 
-        # INSERT INTO X (...) VALUES (...) ON CONFLICT (pk) DO UPDATE SET field=value RETURNING ...
+            if not attr.get_ext(PrimaryKey):
+                updates.append(f"{name}=${i+1}")
 
-        fields_str = ", ".join(field_names)
-        q = ("INSERT INTO ", self.dialect.table_qname(ent),
-            " (", fields_str, ") VALUES (", ", ".join(subst), ")")
+        fields_str = ", ".join(names)
+        placeholder_str = ", ".join(placeholders)
 
-        if updates:
-            q += (" ON CONFLICT (", ", ".join(pk_names), ")", " DO UPDATE SET ", ", ".join(updates))
+        q = ["INSERT INTO ", self.dialect.table_qname(ent),
+            " (", fields_str, ") VALUES (", placeholder_str, ")"]
+
+        if pk_names:
+            q.extend([" ON CONFLICT (", ", ".join(pk_names), ") DO UPDATE SET ", ", ".join(updates)])
 
         return await self.__exec_iou(q, values, entity, ent, timeout)
 
     async def update(self, EntityBase entity, timeout=None):
         cdef EntityType ent = type(entity)
         cdef EntityAttribute attr
-        cdef EntityState state = entity.__state__
-        cdef tuple pk = entity.__pk__
+        cdef list attrs = []
+        cdef list names = []
+        cdef list values = []
+        cdef list updates = []
+        cdef list where = []
 
-        if not pk:
+        if not entity.__pk__:
             raise ValueError("Can't update entity without primary key")
 
-        fields = []
-        updates = []
-        values = []
-        i = 1
-        for attr, value in state.data_for_update():
-            if isinstance(attr, Field):
-                if iscoroutine(value):
-                    value = await value
+        await self.__collect_attrs(entity, False, "", attrs, names, values)
 
-                ident = self.dialect.quote_ident(attr._name_)
-                fields.append(attr)
-                updates.append(f"{ident}=${i}")
-                values.append(value)
-                i += 1
+        if not values:
+            return entity
 
-        if not fields:
-            return False
+        for i, name in enumerate(names):
+            attr = <EntityAttribute>attrs[i]
 
-        condition = []
-        for k, attr in enumerate(ent.__pk__):
-            condition.append(f"{self.dialect.quote_ident(attr._name_)}=${i}")
-            values.append(pk[k])
-            i += 1
+            if attr.get_ext(PrimaryKey):
+                where.append(f"{name}=${i+1}")
+            else:
+                updates.append(f"{name}=${i+1}")
 
-
-        q = ("UPDATE ", self.dialect.table_qname(ent), " SET ",
-             ", ".join(updates), " WHERE ", " AND ".join(condition))
+        q = ["UPDATE ", self.dialect.table_qname(ent), " SET ",
+            ", ".join(updates), " WHERE ", " AND ".join(where)]
 
         return await self.__exec_iou(q, values, entity, ent, timeout)
 
-    async def __exec_iou(self, tuple q, values, EntityBase entity, EntityType entity_t, timeout):
+    async def __exec_iou(self, list q, values, EntityBase entity, EntityType entity_t, timeout):
         cdef list field_names = [self.dialect.quote_ident(a._name_) for a in entity_t.__fields__]
         cdef EntityState state = entity.__state__
         cdef EntityAttribute attr
 
-        q += (" RETURNING ", ", ".join(field_names))
+        q.append(f" RETURNING {', '.join(field_names)}")
+
+        # print("".join(q))
 
         self.conn._check_open()
         res = await self.conn._execute("".join(q), values, 0, timeout)
         record = res[0]
 
-        for attr in entity_t.__fields__:
-            state.set_value(attr, record[attr._index_])
+        self.__set_rec_on_entity(entity, entity_t, record)
+
+        return True
+
+    def __set_rec_on_entity(self, EntityBase entity, EntityType entity_t, record):
+        cdef EntityState state = entity.__state__
+        cdef EntityAttribute attr
+        cdef StorageType field_type
+        cdef CompositeImpl cimpl
+
+        for k, v in record.items():
+            attr = getattr(entity_t, k)
+            if isinstance(v, Record):
+                cimpl = attr._impl_
+                nv = getattr(entity, k)
+                if not isinstance(nv, EntityBase):
+                    nv = cimpl._entity_()
+                self.__set_rec_on_entity(nv, cimpl._entity_, v)
+                v = nv
+            field_type = self.dialect.get_field_type(attr)
+            state.set_value(attr, field_type.decode(v))
 
         state.reset()
 
-        return True
+    async def __collect_attrs(self, EntityBase entity, bint for_insert, str prefix, list attrs, list names, list values):
+        cdef EntityType entity_type = type(entity)
+        cdef EntityState state = entity.__state__
+        cdef list data = state.data_for_insert() if for_insert else state.data_for_update()
+        cdef StorageType field_type
+
+        for i in range(len(data)):
+            attr, value = <tuple>data[i]
+            if isinstance(attr, Field):
+                field_name = f"{prefix}{self.dialect.quote_ident(attr._name_)}"
+
+                if iscoroutine(value):
+                    value = await value
+
+                if isinstance((<Field>attr)._impl_, CompositeImpl):
+                    if not isinstance(value, EntityBase):
+                        value = (<CompositeImpl>(<Field>attr)._impl_)._entity_(value)
+
+                    await self.__collect_attrs(value, for_insert, f"{field_name}.", attrs, names, values)
+                else:
+                    field_type = self.dialect.get_field_type(<Field>attr)
+
+                    attrs.append(attr)
+                    names.append(field_name)
+                    values.append(field_type.encode(value))
+
+        if not for_insert and not prefix:
+            for attr in entity_type.__pk__:
+                field_name = self.dialect.quote_ident(attr._name_)
+                if field_name not in names:
+                    value = state.get_value(attr)
+                    if value is NOTSET:
+                        continue
+
+                    field_type = self.dialect.get_field_type(attr)
+
+                    attrs.append(attr)
+                    names.append(field_name)
+                    values.append(field_type.encode(value))
+
 
     async def delete(self, EntityBase entity, timeout=None):
         cdef EntityType ent = type(entity)

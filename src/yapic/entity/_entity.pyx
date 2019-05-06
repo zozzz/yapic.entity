@@ -431,22 +431,22 @@ cdef inline state_set_value(PyObject* initial, PyObject* current, EntityAttribut
 @cython.freelist(1000)
 cdef class EntityState:
 
-    @staticmethod
-    cdef EntityState create_from_dict(EntityType entity, dict data):
-        state = EntityState(entity)
-        state.update(data, True)
-        return state
+    # @staticmethod
+    # cdef EntityState create_from_dict(EntityType entity, dict data):
+    #     state = EntityState(entity)
+    #     state.update(data, True)
+    #     return state
 
-    def __cinit__(self, EntityType entity, tuple initial_data=None):
+    #TODO: refactor, use dict instead of tuple
+    # remove create_from_dict
+    def __cinit__(self, EntityType entity):
         cdef int length = len(entity.__attrs__)
         self.entity = entity
-        self.initial = initial_data if initial_data is not None else PyTuple_New(length)
+        self.initial = PyTuple_New(length)
         self.current = PyTuple_New(length)
         self.field_count = len(entity.__fields__)
 
-        self.init_current()
-
-    cdef object init_current(self):
+    cdef object init(self):
         cdef int idx
         cdef EntityAttribute attr
         cdef PyObject* initial = <PyObject*>self.initial
@@ -463,6 +463,7 @@ cdef class EntityState:
                 PyTuple_SET_ITEM(<object>initial, idx, <object>cv)
 
             iv = (<EntityAttributeImpl>attr._impl_).state_init(<object>cv)
+
             Py_INCREF(<object>iv)
             cv = PyTuple_GET_ITEM(<object>current, idx)
             Py_XDECREF(cv)
@@ -472,16 +473,33 @@ cdef class EntityState:
     cdef object update(self, dict data, bint is_initial):
         cdef EntityAttribute attr
         cdef EntityType entity = self.entity
-        cdef PyObject* current = <PyObject*>self.initial if is_initial else <PyObject*>self.current
-        cdef PyObject* initial = <PyObject*>self.initial
 
-        for k, v in data.items():
-            attr = getattr(entity, k)
-            state_set_value(initial, current, attr, v)
+        if is_initial:
+            for k, v in data.items():
+                attr = getattr(entity, k)
+                self.set_initial_value(attr, v)
+        else:
+            for k, v in data.items():
+                attr = getattr(entity, k)
+                self.set_value(attr, v)
 
-    cdef bint set_value(self, EntityAttribute attr, object value):
+    cdef object set_value(self, EntityAttribute attr, object value):
         state_set_value(<PyObject*>self.initial, <PyObject*>self.current, attr, value)
-        return 1
+
+    cdef object set_initial_value(self, EntityAttribute attr, object value):
+        cdef int idx = attr._index_
+        cdef PyObject* initial = <PyObject*>self.initial
+        cdef PyObject* iv = PyTuple_GET_ITEM(<object>initial, idx)
+        cdef EntityAttributeImpl impl = <EntityAttributeImpl>attr._impl_
+
+        if iv is NULL:
+            iv = <PyObject*>NOTSET
+            Py_INCREF(<object>iv)
+
+        nv = impl.state_set(<object>iv, <object>iv, value)
+        Py_INCREF(<object>nv)
+        Py_XDECREF(iv)
+        PyTuple_SET_ITEM(<object>initial, idx, <object>nv)
 
     cdef object get_value(self, EntityAttribute attr):
         cdef PyObject* initial = <PyObject*>self.initial
@@ -490,9 +508,10 @@ cdef class EntityState:
 
         if cv is <PyObject*>NOTSET:
             cv = PyTuple_GET_ITEM(<object>initial, attr._index_)
+
         return <object>cv
 
-    cdef void del_value(self, EntityAttribute attr):
+    cdef object del_value(self, EntityAttribute attr):
         cdef PyObject* current = <PyObject*>self.current
         cdef PyObject* cv = PyTuple_GET_ITEM(<object>current, attr._index_)
         Py_XDECREF(cv)
@@ -600,7 +619,7 @@ cdef class EntityState:
 
         self.initial = self.current
         self.current = PyTuple_New(length)
-        self.init_current()
+        self.init()
 
     cdef reset_attr(self, EntityAttribute attr):
         cdef int idx = attr._index_
@@ -643,22 +662,22 @@ cdef class EntityBase:
             print(model.__deferred__)
             raise RuntimeError("Entity is not resolved...")
 
-        if state:
+        if state is not None:
             if isinstance(state, EntityState):
                 self.__state__ = state
             elif isinstance(state, dict):
-                self.__state__ = EntityState.create_from_dict(model, state)
+                self.__state__ = EntityState(model)
+                self.__state__.update(state, True)
             else:
                 raise TypeError("Unsupported state argumented: %r" % state)
 
-        if values:
-            if not self.__state__:
-                self.__state__ = EntityState.create_from_dict(model, values)
-            else:
-                self.__state__.update(values, True)
-
         if not self.__state__:
             self.__state__ = EntityState(model)
+
+        if values:
+            self.__state__.update(values, True)
+
+        self.__state__.init()
 
     @classmethod
     def __init_subclass__(cls, *, str name=None, Registry registry=None, bint _root=False, **meta):
@@ -780,14 +799,25 @@ cdef class EntityBase:
         cdef dict res = {}
 
         for attr, value in self:
-            res[attr._key_] = value
+            if isinstance(value, EntityBase):
+                res[attr._key_] = value.as_dict()
+            if isinstance(value, list):
+                res[attr._key_] = [v.as_dict() for v in value]
+            else:
+                res[attr._key_] = value
 
         return res
 
+    def __repr__(self):
+        is_type = (type(self).__meta__.get("is_type", False))
+        if is_type is True:
+            return "<%s %r>" % (type(self).__name__, self.as_dict())
+        else:
+            return "<%s %r>" % (type(self).__name__, self.__pk__)
+
 
 class Entity(EntityBase, metaclass=EntityType, registry=REGISTRY, _root=True):
-    def __repr__(self):
-        return "<%s %r>" % (type(self).__name__, self.__pk__)
+    pass
 
 
 @cython.final
