@@ -4,9 +4,11 @@ from cpython.list cimport PyList_GET_ITEM, PyList_GET_SIZE
 from cpython.tuple cimport PyTuple_New, PyTuple_SET_ITEM, PyTuple_GET_ITEM, _PyTuple_Resize
 
 from yapic.entity._entity cimport EntityType, EntityState, EntityAttribute
+from yapic.entity._field cimport StorageType
 from yapic.entity._field_impl cimport CompositeImpl
 
 from ._connection cimport Connection
+from ._dialect cimport Dialect
 
 
 cdef class QueryContext:
@@ -64,7 +66,7 @@ cdef class QueryContext:
         if length == 1:
             col = PyList_GET_ITEM(<object>columns, 0)
             if isinstance(<object>col, EntityType):
-                return create_entity(<EntityType>col, row, 0, len(row))
+                return create_entity(self.conn, <EntityType>col, row, 0, len(row))
 
         cdef tuple result = PyTuple_New(length)
         tmp_object = <PyObject*>result
@@ -76,7 +78,7 @@ cdef class QueryContext:
 
             if isinstance(<object>col, EntityType):
                 fc = len((<EntityType>col).__fields__)
-                entity = create_entity(<EntityType>col, row, c, c + fc)
+                entity = create_entity(self.conn, <EntityType>col, row, c, c + fc)
                 c += fc
                 Py_INCREF(<object>entity)
                 PyTuple_SET_ITEM(<object>tmp_object, i, <object>entity)
@@ -96,7 +98,7 @@ cdef class QueryContext:
         try:
             return self.entities[key]
         except KeyError:
-            entity = create_entity(ent, record, start, end)
+            entity = create_entity(self.conn, ent, record, start, end)
             self.entities[key] = entity
             return entity
 
@@ -120,7 +122,7 @@ cdef inline object ensure_transaction(conn):
             deferrable=conn._top_xact._deferrable)
 
 
-cdef inline object create_entity(EntityType ent, object record, int start, int end):
+cdef inline object create_entity(Connection conn, EntityType ent, object record, int start, int end):
     if record is None:
         return
 
@@ -129,6 +131,8 @@ cdef inline object create_entity(EntityType ent, object record, int start, int e
     cdef tuple attrs = ent.__attrs__
     cdef int state_len = len(attrs)
     cdef int c = 0
+    cdef Dialect dialect = conn.dialect
+    cdef StorageType stype
 
     if end - start > state_len:
         raise RuntimeError("Too many columns")
@@ -138,7 +142,10 @@ cdef inline object create_entity(EntityType ent, object record, int start, int e
         val = record[i]
 
         if isinstance(attr._impl_, CompositeImpl):
-            val = create_entity((<CompositeImpl>attr._impl_)._entity_, val, 0, len(val))
+            val = create_entity(conn, (<CompositeImpl>attr._impl_)._entity_, val, 0, len(val))
+        elif val is not None:
+            stype = dialect.get_field_type(attr)
+            val = stype.decode(val)
 
         state.set_initial_value(attr, val)
         c += 1

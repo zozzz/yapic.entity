@@ -78,7 +78,12 @@ cdef inline dict field_eq(Field a, Field b, object expression_eq):
         if not callable(a._default_) and not callable(b._default_):
             if a._default_ != b._default_:
                 result["_default_"] = b._default_
-        elif callable(a._default_) or callable(b._default_):
+        elif (a._default_ is None and callable(b._default_)) \
+                or (callable(a._default_) and b._default_ is None) \
+                or (callable(a._default_) and callable(b._default_)):
+            # default is not changed on db level
+            pass
+        else:
             result["_default_"] = b._default_
     elif not isinstance(a._default_, Expression) or not isinstance(b._default_, Expression):
         result["_default_"] = b._default_

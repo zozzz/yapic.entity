@@ -15,7 +15,7 @@ cdef class PostgreDDLCompiler(DDLCompiler):
     pass
 
 
-
+JSON_ENTITY_UID = 0
 
 
 cdef class PostgreDDLReflect(DDLReflect):
@@ -128,6 +128,8 @@ cdef class PostgreDDLReflect(DDLReflect):
         return result
 
     async def create_field(self, Connection conn, registry, str schema, str table, bint primary, record):
+        global JSON_ENTITY_UID
+
         cdef Field field
         cdef StorageType type_impl
         cdef bint skip_default = False
@@ -166,7 +168,9 @@ cdef class PostgreDDLReflect(DDLReflect):
         elif typename == "timestamp":
             field = Field(DateTimeImpl(), nullable=is_nullable)
         elif typename == "jsonb":
-            class JsonEntity(self.entity_base):
+            JSON_ENTITY_UID += 1
+
+            class JsonEntity(self.entity_base, name=f"JsonEntity{JSON_ENTITY_UID}"):
                 pass
             field = Field(JsonImpl(JsonEntity), nullable=is_nullable)
         elif typeschema != "pg_catalog" and typeschema != "information_schema":

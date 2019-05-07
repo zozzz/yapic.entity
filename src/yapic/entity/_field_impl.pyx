@@ -97,6 +97,7 @@ cdef class EntityTypeImpl(FieldImpl):
             return current
         return NOTSET
 
+
 cdef class JsonImpl(EntityTypeImpl):
     def __cinit__(self, entity):
         entity.__meta__["is_virtual"] = True

@@ -14,6 +14,7 @@ cdef class Field(EntityAttribute):
         self._default_ = default
         self._name_ = name
         self.type_cache = {}
+        self.nullable = nullable
 
         if size is not None:
             if isinstance(size, list) or isinstance(size, tuple):
@@ -42,10 +43,13 @@ cdef class Field(EntityAttribute):
 
     cdef object bind(self, EntityType entity):
         if self.nullable is None:
+            self.nullable = True
             if self.get_ext(PrimaryKey):
                 self.nullable = False
-            else:
+            elif not callable(self._default_):
                 self.nullable = bool(self._default_ is None)
+            elif isinstance(self._default_, Expression):
+                self.nullable = False
         return EntityAttribute.bind(self, entity)
 
     cpdef clone(self):

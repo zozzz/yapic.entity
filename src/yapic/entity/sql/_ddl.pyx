@@ -67,13 +67,15 @@ cdef class DDLCompiler:
 
         cdef str res = f"{self.dialect.quote_ident(field._name_)} {type.name}"
 
-        if not field.nullable:
+        if field.nullable is False:
             res += " NOT NULL"
 
         if field._default_ is not None:
             if isinstance(field._default_, Expression):
                 qc = self.dialect.create_query_compiler()
                 res += f" DEFAULT {qc.visit(field._default_)}"
+            if callable(field._default_):
+                pass  # no default value
             else:
                 res += f" DEFAULT {self.dialect.quote_value(type.encode(field._default_))}"
 

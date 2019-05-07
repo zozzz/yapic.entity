@@ -269,6 +269,9 @@ CREATE TABLE "execution"."JsonUser" (
     assert user.name.xy.x == 1
     assert user.name.xy.y == 2
 
+    result = await sync(conn, reg_a)
+    assert bool(result) is False
+
 
 async def test_json_fix(conn):
     await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
@@ -397,3 +400,38 @@ CREATE TABLE "execution"."CompUser" (
     assert user.name.given == "Given"
     assert user.name.xy.x == "X"
     assert user.name.xy.y == "Y IOU"
+
+
+async def test_callable_default(conn):
+    await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
+    await conn.conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
+    await conn.conn.execute("DROP SCHEMA IF EXISTS execution_private CASCADE")
+
+    reg = Registry()
+
+    class CallableDefault(Entity, registry=reg, schema="execution"):
+        id: Serial
+        creator_id: Int = lambda: 1
+
+    result = await sync(conn, reg)
+    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE TABLE "execution"."CallableDefault" (
+  "id" SERIAL4 NOT NULL,
+  "creator_id" INT4,
+  PRIMARY KEY("id")
+);"""
+
+    await conn.conn.execute(result)
+
+    result = await sync(conn, reg)
+    assert bool(result) is False
+
+    reg = Registry()
+
+    class CallableDefault(Entity, registry=reg, schema="execution"):
+        id: Serial
+        creator_id: Int = Field(size=4, nullable=False, default=lambda: 1)
+
+    result = await sync(conn, reg)
+    assert result == """ALTER TABLE "execution"."CallableDefault"
+  ALTER COLUMN "creator_id" SET NOT NULL;"""
