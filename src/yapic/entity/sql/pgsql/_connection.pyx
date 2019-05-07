@@ -145,8 +145,12 @@ cdef class PostgreConnection(Connection):
                     nv = cimpl._entity_()
                 self.__set_rec_on_entity(nv, cimpl._entity_, v)
                 v = nv
-            field_type = self.dialect.get_field_type(attr)
-            state.set_value(attr, field_type.decode(v))
+
+            if v is None:
+                state.set_value(attr, None)
+            else:
+                field_type = self.dialect.get_field_type(attr)
+                state.set_value(attr, field_type.decode(v))
 
         state.reset()
 

@@ -40,7 +40,7 @@ cdef class Dialect:
 
     cpdef str compile_insert(self, EntityType entity, dict data):
         field_names = [self.quote_ident(k) for k in data.keys()]
-        values = [self.quote_value(v) for v in data.values()]
+        values = [str(self.quote_value(v)) for v in data.values()]
         return f"INSERT INTO {self.table_qname(entity)} ({', '.join(field_names)}) VALUES ({', '.join(values)});"
 
     cpdef str compile_update(self, EntityType entity, dict data):

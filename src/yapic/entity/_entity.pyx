@@ -724,7 +724,6 @@ cdef class EntityBase:
 
     @classmethod
     def __register__(cls):
-        print("__register__", cls.__qname__)
         (<Registry>cls.__registry__).register(cls.__qname__, cls)
 
     @property

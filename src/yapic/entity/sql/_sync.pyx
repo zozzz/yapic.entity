@@ -13,7 +13,7 @@ from ._connection cimport Connection
 async def sync(Connection connection, Registry registry, EntityType entity_base=Entity):
     cdef RegistryDiff diff = await connection.diff(registry, entity_base)
 
-    print("\n".join(map(repr, diff.changes)))
+    # print("\n".join(map(repr, diff.changes)))
 
     if diff:
         changes = []

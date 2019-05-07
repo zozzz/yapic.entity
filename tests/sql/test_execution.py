@@ -286,7 +286,13 @@ async def test_json_fix(conn):
 
     JsonUser.__fix_entries__ = [JsonUser(id=1, name={"given": "Given", "family": "Family"})]
     result = await sync(conn, reg_a)
-    assert result == ""
+    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE TABLE "execution"."JsonUser" (
+  "id" SERIAL4 NOT NULL,
+  "name" JSONB,
+  PRIMARY KEY("id")
+);
+INSERT INTO "execution"."JsonUser" ("id", "name") VALUES (1, '{"given":"Given","family":"Family"}');"""
 
 
 async def test_composite(conn):

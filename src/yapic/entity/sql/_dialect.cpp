@@ -4183,7 +4183,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_8_dialect_7Dialect_18entity_diff(s
  * 
  *     cpdef str compile_insert(self, EntityType entity, dict data):             # <<<<<<<<<<<<<<
  *         field_names = [self.quote_ident(k) for k in data.keys()]
- *         values = [self.quote_value(v) for v in data.values()]
+ *         values = [str(self.quote_value(v)) for v in data.values()]
  */
 
 static PyObject *__pyx_pw_5yapic_6entity_3sql_8_dialect_7Dialect_21compile_insert(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
@@ -4287,7 +4287,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_8_dialect_7Dialect_compile_insert(s
  * 
  *     cpdef str compile_insert(self, EntityType entity, dict data):
  *         field_names = [self.quote_ident(k) for k in data.keys()]             # <<<<<<<<<<<<<<
- *         values = [self.quote_value(v) for v in data.values()]
+ *         values = [str(self.quote_value(v)) for v in data.values()]
  *         return f"INSERT INTO {self.table_qname(entity)} ({', '.join(field_names)}) VALUES ({', '.join(values)});"
  */
   { /* enter inner scope */
@@ -4330,7 +4330,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_8_dialect_7Dialect_compile_insert(s
   /* "yapic/entity/sql/_dialect.pyx":43
  *     cpdef str compile_insert(self, EntityType entity, dict data):
  *         field_names = [self.quote_ident(k) for k in data.keys()]
- *         values = [self.quote_value(v) for v in data.values()]             # <<<<<<<<<<<<<<
+ *         values = [str(self.quote_value(v)) for v in data.values()]             # <<<<<<<<<<<<<<
  *         return f"INSERT INTO {self.table_qname(entity)} ({', '.join(field_names)}) VALUES ({', '.join(values)});"
  * 
  */
@@ -4356,8 +4356,11 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_8_dialect_7Dialect_compile_insert(s
       __pyx_t_3 = 0;
       __pyx_t_3 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_v_self->__pyx_vtab)->quote_value(__pyx_v_self, __pyx_8genexpr1__pyx_v_v, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 43, __pyx_L11_error)
       __Pyx_GOTREF(__pyx_t_3);
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_3))) __PYX_ERR(0, 43, __pyx_L11_error)
+      __pyx_t_6 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 43, __pyx_L11_error)
+      __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 43, __pyx_L11_error)
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_XDECREF(__pyx_8genexpr1__pyx_v_v); __pyx_8genexpr1__pyx_v_v = 0;
@@ -4372,7 +4375,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_8_dialect_7Dialect_compile_insert(s
 
   /* "yapic/entity/sql/_dialect.pyx":44
  *         field_names = [self.quote_ident(k) for k in data.keys()]
- *         values = [self.quote_value(v) for v in data.values()]
+ *         values = [str(self.quote_value(v)) for v in data.values()]
  *         return f"INSERT INTO {self.table_qname(entity)} ({', '.join(field_names)}) VALUES ({', '.join(values)});"             # <<<<<<<<<<<<<<
  * 
  *     cpdef str compile_update(self, EntityType entity, dict data):
@@ -4388,45 +4391,45 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_8_dialect_7Dialect_compile_insert(s
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_INSERT_INTO);
   __pyx_t_2 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_v_self->__pyx_vtab)->table_qname(__pyx_v_self, __pyx_v_entity, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 44, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyUnicode_Unicode(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_6 = __Pyx_PyUnicode_Unicode(__pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 44, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_10 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) > __pyx_t_10) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) : __pyx_t_10;
-  __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_3);
-  __pyx_t_3 = 0;
+  __pyx_t_10 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_10) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_10;
+  __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
+  __Pyx_GIVEREF(__pyx_t_6);
+  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_6);
+  __pyx_t_6 = 0;
   __Pyx_INCREF(__pyx_kp_u_);
   __pyx_t_7 += 2;
   __Pyx_GIVEREF(__pyx_kp_u_);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_);
-  __pyx_t_3 = PyUnicode_Join(__pyx_kp_u__2, __pyx_v_field_names); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_10 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) > __pyx_t_10) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) : __pyx_t_10;
-  __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_1, 3, __pyx_t_3);
-  __pyx_t_3 = 0;
+  __pyx_t_6 = PyUnicode_Join(__pyx_kp_u__2, __pyx_v_field_names); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 44, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_10 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_10) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_10;
+  __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
+  __Pyx_GIVEREF(__pyx_t_6);
+  PyTuple_SET_ITEM(__pyx_t_1, 3, __pyx_t_6);
+  __pyx_t_6 = 0;
   __Pyx_INCREF(__pyx_kp_u_VALUES);
   __pyx_t_7 += 10;
   __Pyx_GIVEREF(__pyx_kp_u_VALUES);
   PyTuple_SET_ITEM(__pyx_t_1, 4, __pyx_kp_u_VALUES);
-  __pyx_t_3 = PyUnicode_Join(__pyx_kp_u__2, __pyx_v_values); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_10 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) > __pyx_t_10) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) : __pyx_t_10;
-  __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_1, 5, __pyx_t_3);
-  __pyx_t_3 = 0;
+  __pyx_t_6 = PyUnicode_Join(__pyx_kp_u__2, __pyx_v_values); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 44, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_10 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_10) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_10;
+  __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
+  __Pyx_GIVEREF(__pyx_t_6);
+  PyTuple_SET_ITEM(__pyx_t_1, 5, __pyx_t_6);
+  __pyx_t_6 = 0;
   __Pyx_INCREF(__pyx_kp_u__3);
   __pyx_t_7 += 2;
   __Pyx_GIVEREF(__pyx_kp_u__3);
   PyTuple_SET_ITEM(__pyx_t_1, 6, __pyx_kp_u__3);
-  __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_1, 7, __pyx_t_7, __pyx_t_10); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_1, 7, __pyx_t_7, __pyx_t_10); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 44, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_r = ((PyObject*)__pyx_t_3);
-  __pyx_t_3 = 0;
+  __pyx_r = ((PyObject*)__pyx_t_6);
+  __pyx_t_6 = 0;
   goto __pyx_L0;
 
   /* "yapic/entity/sql/_dialect.pyx":41
@@ -4434,7 +4437,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_8_dialect_7Dialect_compile_insert(s
  * 
  *     cpdef str compile_insert(self, EntityType entity, dict data):             # <<<<<<<<<<<<<<
  *         field_names = [self.quote_ident(k) for k in data.keys()]
- *         values = [self.quote_value(v) for v in data.values()]
+ *         values = [str(self.quote_value(v)) for v in data.values()]
  */
 
   /* function exit code */

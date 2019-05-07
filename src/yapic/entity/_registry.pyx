@@ -84,9 +84,6 @@ cdef class RegistryDiff:
         a_names = set(a.keys())
         b_names = set(b.keys())
 
-        print(sorted(a_names))
-        print(sorted(b_names))
-
         for removed in sorted(a_names - b_names):
             val = a[removed]
             self.changes.append((RegistryDiffKind.REMOVED, val))

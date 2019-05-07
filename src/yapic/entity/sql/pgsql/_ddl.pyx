@@ -37,12 +37,9 @@ cdef class PostgreDDLReflect(DDLReflect):
         cdef EntityAttribute attr
 
         for id, schema, table, kind in types:
-            print(id, schema, table, kind)
             fields = await self.get_fields(conn, registry, schema, table, id)
             entity = await self.create_entity(conn, registry, schema, table, fields)
             entity.__meta__["is_type"] = kind == b"c"
-
-            print(entity)
 
             for attr in entity.__fields__:
                 if attr._default_ is not None:
@@ -169,7 +166,9 @@ cdef class PostgreDDLReflect(DDLReflect):
         elif typename == "timestamp":
             field = Field(DateTimeImpl(), nullable=is_nullable)
         elif typename == "jsonb":
-            field = Field(JsonImpl(self.entity_base), nullable=is_nullable)
+            class JsonEntity(self.entity_base):
+                pass
+            field = Field(JsonImpl(JsonEntity), nullable=is_nullable)
         elif typeschema != "pg_catalog" and typeschema != "information_schema":
             ctypename = f"{typeschema}.{typename}" if typeschema != "public" else f"{typename}"
             centity = registry[ctypename]

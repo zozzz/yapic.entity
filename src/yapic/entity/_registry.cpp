@@ -5661,7 +5661,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_12RegistryDiff_7changes___ge
  * 
  * 
  * def skip_virtual(EntityType ent):             # <<<<<<<<<<<<<<
- *     return ent.__meta__.get("is_virtual", False) is False
+ *     return ent.__meta__.get("is_virtual", False) is not True
  * 
  */
 
@@ -5695,7 +5695,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_skip_virtual(CYTHON_UNUSED P
   /* "yapic/entity/_registry.pyx":154
  * 
  * def skip_virtual(EntityType ent):
- *     return ent.__meta__.get("is_virtual", False) is False             # <<<<<<<<<<<<<<
+ *     return ent.__meta__.get("is_virtual", False) is not True             # <<<<<<<<<<<<<<
  * 
  * 
  */
@@ -5708,7 +5708,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_skip_virtual(CYTHON_UNUSED P
   __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_3 = (__pyx_t_1 == Py_False);
+  __pyx_t_3 = (__pyx_t_1 != Py_True);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -5720,7 +5720,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_registry_skip_virtual(CYTHON_UNUSED P
  * 
  * 
  * def skip_virtual(EntityType ent):             # <<<<<<<<<<<<<<
- *     return ent.__meta__.get("is_virtual", False) is False
+ *     return ent.__meta__.get("is_virtual", False) is not True
  * 
  */
 
@@ -6529,7 +6529,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   /* "yapic/entity/_registry.pyx":154
  * 
  * def skip_virtual(EntityType ent):
- *     return ent.__meta__.get("is_virtual", False) is False             # <<<<<<<<<<<<<<
+ *     return ent.__meta__.get("is_virtual", False) is not True             # <<<<<<<<<<<<<<
  * 
  * 
  */
@@ -6541,7 +6541,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  * def skip_virtual(EntityType ent):             # <<<<<<<<<<<<<<
- *     return ent.__meta__.get("is_virtual", False) is False
+ *     return ent.__meta__.get("is_virtual", False) is not True
  * 
  */
   __pyx_tuple__4 = PyTuple_Pack(1, __pyx_n_s_ent); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 153, __pyx_L1_error)
@@ -7129,7 +7129,7 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  * def skip_virtual(EntityType ent):             # <<<<<<<<<<<<<<
- *     return ent.__meta__.get("is_virtual", False) is False
+ *     return ent.__meta__.get("is_virtual", False) is not True
  * 
  */
   __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_5yapic_6entity_9_registry_1skip_virtual, NULL, __pyx_n_s_yapic_entity__registry); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 153, __pyx_L1_error)
