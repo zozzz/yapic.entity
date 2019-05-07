@@ -84,6 +84,9 @@ cdef class RegistryDiff:
         a_names = set(a.keys())
         b_names = set(b.keys())
 
+        print(sorted(a_names))
+        print(sorted(b_names))
+
         for removed in sorted(a_names - b_names):
             val = a[removed]
             self.changes.append((RegistryDiffKind.REMOVED, val))
@@ -151,7 +154,7 @@ cdef class RegistryDiff:
 
 
 def skip_virtual(EntityType ent):
-    return ent.__meta__.get("is_virtual", False) is False
+    return ent.__meta__.get("is_virtual", False) is not True
 
 
 cdef object entity_data_is_eq(EntityBase a, EntityBase b):

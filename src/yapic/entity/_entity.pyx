@@ -141,14 +141,6 @@ cdef class EntityType(type):
         type.__init__(self, *args)
 
         if _root is False:
-            # if __fields__ is present, this entitiy, not created normally
-            # if not __fields__ and not is_alias:
-            #     module = PyImport_Import(self.__module__)
-            #     mdict = PyModule_GetDict(module)
-
-            #     # XXX little hacky, insert class instance into module dict before call register
-            #     (<object>mdict)[args[0]] = self
-
             if not is_alias:
                 self.__register__()
 
@@ -159,6 +151,18 @@ cdef class EntityType(type):
     @property
     def __registry__(self):
         return <object>self.registry
+
+    @property
+    def __qname__(self):
+        try:
+            schema = self.__meta__["schema"]
+        except KeyError:
+            return self.__name__
+        else:
+            if schema is None:
+                return self.__name__
+            else:
+                return f"{schema}.{self.__name__}"
 
     @property
     def __deps__(self):
@@ -180,7 +184,7 @@ cdef class EntityType(type):
         return scope
 
     def __repr__(self):
-        return "<Entity %s>" % self.__name__
+        return "<Entity %s>" % self.__qname__
 
     def alias(self, str alias = None):
         if alias is None:
@@ -720,18 +724,8 @@ cdef class EntityBase:
 
     @classmethod
     def __register__(cls):
-        try:
-            schema = cls.__meta__["schema"]
-        except KeyError:
-            name = cls.__name__
-        else:
-            if schema is None:
-                name = cls.__name__
-            else:
-                name = f"{schema}.{cls.__name__}"
-
-        (<Registry>cls.__registry__).register(name, cls)
-
+        print("__register__", cls.__qname__)
+        (<Registry>cls.__registry__).register(cls.__qname__, cls)
 
     @property
     def __pk__(self):
@@ -814,9 +808,9 @@ cdef class EntityBase:
     def __repr__(self):
         is_type = (type(self).__meta__.get("is_type", False))
         if is_type is True:
-            return "<%s %r>" % (type(self).__name__, self.as_dict())
+            return "<%s %r>" % (type(self).__qname__, self.as_dict())
         else:
-            return "<%s %r>" % (type(self).__name__, self.__pk__)
+            return "<%s %r>" % (type(self).__qname__, self.__pk__)
 
 
 class Entity(EntityBase, metaclass=EntityType, registry=REGISTRY, _root=True):

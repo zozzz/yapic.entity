@@ -5,6 +5,7 @@ from yapic.entity._entity import Entity
 from yapic.entity._registry cimport Registry, RegistryDiff
 from yapic.entity._registry import RegistryDiffKind
 from yapic.entity._query cimport Query
+from yapic.entity._field cimport StorageType
 
 from ._connection cimport Connection
 
@@ -12,10 +13,12 @@ from ._connection cimport Connection
 async def sync(Connection connection, Registry registry, EntityType entity_base=Entity):
     cdef RegistryDiff diff = await connection.diff(registry, entity_base)
 
+    print("\n".join(map(repr, diff.changes)))
+
     if diff:
         changes = []
         async for c in compare_data(connection, diff):
-            changes.append(await convert_data_to_raw(c))
+            changes.append(await convert_data_to_raw(connection, c))
         diff.changes = changes
 
         return connection.dialect.create_ddl_compiler().compile_registry_diff(diff)
@@ -33,10 +36,11 @@ async def compare_data(Connection connection, RegistryDiff diff):
             yield (kind, param)
 
 
-async def convert_data_to_raw(tuple change):
+async def convert_data_to_raw(Connection connection, tuple change):
     cdef EntityType entity_t
     cdef EntityState state
     cdef EntityAttribute attr
+    cdef StorageType stype
 
     kind, param = change
     if kind is RegistryDiffKind.INSERT_ENTITY or kind is RegistryDiffKind.UPDATE_ENTITY:
@@ -48,7 +52,9 @@ async def convert_data_to_raw(tuple change):
         for attr, value in state.data_for_insert():
             if iscoroutine(value):
                 value = await value
-            data[attr._name_] = value
+
+            stype = connection.dialect.get_field_type(attr)
+            data[attr._name_] = stype.encode(value)
 
         return (kind, (entity_t, data))
     elif kind is RegistryDiffKind.REMOVE_ENTITY:

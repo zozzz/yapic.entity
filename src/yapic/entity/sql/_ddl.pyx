@@ -204,9 +204,18 @@ cdef class DDLCompiler:
                 if isinstance(diff["_default_"], Expression):
                     qc = self.dialect.create_query_compiler()
                     default = qc.visit(diff['_default_'])
+                elif callable(diff["_default_"]):
+                    if field.nullable:
+                        default = "NULL"
+                    else:
+                        default = None
                 else:
                     default = self.dialect.quote_value(type.encode(diff["_default_"]))
-                result.append(f"ALTER COLUMN {col_name} SET DEFAULT {default}")
+
+                if default is None:
+                    result.append(f"ALTER COLUMN {col_name} DROP DEFAULT")
+                else:
+                    result.append(f"ALTER COLUMN {col_name} SET DEFAULT {default}")
 
         return result
 
