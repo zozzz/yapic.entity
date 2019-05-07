@@ -270,6 +270,25 @@ CREATE TABLE "execution"."JsonUser" (
     assert user.name.xy.y == 2
 
 
+async def test_json_fix(conn):
+    await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
+    await conn.conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
+
+    reg_a = Registry()
+
+    class JsonName(Entity, registry=reg_a, schema="execution"):
+        given: String
+        family: String
+
+    class JsonUser(Entity, registry=reg_a, schema="execution"):
+        id: Serial
+        name: Json[JsonName]
+
+    JsonUser.__fix_entries__ = [JsonUser(id=1, name={"given": "Given", "family": "Family"})]
+    result = await sync(conn, reg_a)
+    assert result == ""
+
+
 async def test_composite(conn):
     await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
     await conn.conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
