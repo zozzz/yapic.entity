@@ -96,7 +96,7 @@ cdef class QueryContext:
         try:
             return self.entities[key]
         except KeyError:
-            entity = create_entity(EntityType ent, object record, int start, int end)
+            entity = create_entity(ent, record, start, end)
             self.entities[key] = entity
             return entity
 

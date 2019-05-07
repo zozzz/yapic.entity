@@ -1473,10 +1473,10 @@ struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect {
  */
 struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext {
   PyObject_HEAD
-  struct __pyx_vtabstruct_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_vtab;
   PyObject *cursor_factory;
   PyObject *columns;
   struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *conn;
+  PyObject *entities;
 };
 
 
@@ -2142,20 +2142,6 @@ struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect {
   PyObject *(*compile_delete)(struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, PyObject *, int __pyx_skip_dispatch);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *__pyx_vtabptr_5yapic_6entity_3sql_8_dialect_Dialect;
-
-
-/* "_query_context.pxd":4
- * 
- * 
- * cdef class QueryContext:             # <<<<<<<<<<<<<<
- *     cdef object cursor_factory
- *     cdef list columns
- */
-
-struct __pyx_vtabstruct_5yapic_6entity_3sql_14_query_context_QueryContext {
-  PyObject *(*convert_row)(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *, PyObject *);
-};
-static struct __pyx_vtabstruct_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_vtabptr_5yapic_6entity_3sql_14_query_context_QueryContext;
 
 /* --- Runtime support code (head) --- */
 /* Refnanny.proto */
@@ -7086,7 +7072,6 @@ static int __Pyx_modinit_type_import_code(void) {
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_5yapic_6entity_3sql_14_query_context_QueryContext = __Pyx_ImportType(__pyx_t_1, "yapic.entity.sql._query_context", "QueryContext", sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_6entity_3sql_14_query_context_QueryContext) __PYX_ERR(11, 4, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_3sql_14_query_context_QueryContext = (struct __pyx_vtabstruct_5yapic_6entity_3sql_14_query_context_QueryContext*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_14_query_context_QueryContext->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_14_query_context_QueryContext)) __PYX_ERR(11, 4, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;
