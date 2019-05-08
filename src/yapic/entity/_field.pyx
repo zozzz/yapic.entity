@@ -118,9 +118,13 @@ cdef class PrimaryKey(FieldExtension):
     cpdef object clone(self):
         return type(self)(auto_increment=self.auto_increment)
 
+    def __repr__(self):
+        return "@PrimaryKey(auto_increment=%r)" % self.auto_increment
+
 
 cdef class Index(FieldExtension):
-    pass
+    def __repr__(self):
+        return "@Index()"
 
 
 # todo: faster eval, with Py_CompileString(ref, "<string>", Py_eval_input); PyEval_EvalCode
@@ -174,7 +178,7 @@ cdef class ForeignKey(FieldExtension):
         return type(self)(self._ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)
 
     def __repr__(self):
-        return "<ForeignKey %r>" % self.ref
+        return "@ForeignKey(%s, %r)" % (self.name, self.ref)
 
 
 cdef compute_fk_name(Field field_from, Field field_to):

@@ -388,6 +388,15 @@ cdef class EntityAttributeExt:
     cpdef object clone(self):
         return type(self)()
 
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __eq__(self, other):
+        return repr(self) == repr(other)
+
+    def __ne__(self, other):
+        return repr(self) == repr(other)
+
 
 cdef class EntityAttributeImpl:
     def __cinit__(self, *args, **kwargs):
@@ -752,7 +761,7 @@ cdef class EntityBase:
             return ()
 
     def __hash__(self):
-        return hash(type(self)) ^ hash(self.__pk__)
+        return hash(type(self).__qname__) ^ hash(self.__pk__)
 
     def __eq__(self, other):
         return isinstance(other, EntityBase) and self.__pk__ == other.__pk__
@@ -797,7 +806,7 @@ cdef class EntityBase:
         for attr, value in self:
             if isinstance(value, EntityBase):
                 res[attr._key_] = value.as_dict()
-            if isinstance(value, list):
+            elif isinstance(value, list):
                 res[attr._key_] = [v.as_dict() for v in value]
             else:
                 res[attr._key_] = value

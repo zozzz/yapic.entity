@@ -29,8 +29,8 @@ async def sync(Connection connection, Registry registry, EntityType entity_base=
 async def compare_data(Connection connection, RegistryDiff diff):
     for kind, param in diff:
         if kind is RegistryDiffKind.COMPARE_DATA:
-            existing = await connection.select(Query().select_from(param).column(param))
-            for x in diff.compare_data(existing, param.__fix_entries__):
+            existing = await connection.select(Query().select_from(param[0]).column(param[0]))
+            for x in diff.compare_data(existing, param[1].__fix_entries__):
                 yield x
         else:
             yield (kind, param)
@@ -38,37 +38,17 @@ async def compare_data(Connection connection, RegistryDiff diff):
 
 async def convert_data_to_raw(Connection connection, tuple change):
     cdef EntityType entity_t
-    cdef EntityState state
-    cdef EntityAttribute attr
-    cdef StorageType stype
+    cdef list attrs
+    cdef list names
+    cdef list values
 
     kind, param = change
-    if kind is RegistryDiffKind.INSERT_ENTITY or kind is RegistryDiffKind.UPDATE_ENTITY:
+    if kind is RegistryDiffKind.INSERT_ENTITY or kind is RegistryDiffKind.UPDATE_ENTITY or kind is RegistryDiffKind.REMOVE_ENTITY:
         entity_t = type(param)
-        state = param.__state__
-
-        data = {}
-
-        for attr, value in state.data_for_insert():
-            if iscoroutine(value):
-                value = await value
-
-            stype = connection.dialect.get_field_type(attr)
-            data[attr._name_] = stype.encode(value)
-
-        return (kind, (entity_t, data))
-    elif kind is RegistryDiffKind.REMOVE_ENTITY:
-        entity_t = type(param)
-        state = param.__state__
-
-        data = {}
-
-        for attr in entity_t.__pk__:
-            value = state.get_value(attr)
-            if iscoroutine(value):
-                value = await value
-            data[attr._name_] = value
-
-        return (kind, (entity_t, data))
+        attrs = []
+        names = []
+        values = []
+        await connection._collect_attrs(param, True, "", attrs, names, values)
+        return (kind, (entity_t, attrs, names, values))
     else:
         return kind, param

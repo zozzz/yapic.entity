@@ -1,4 +1,4 @@
-
+from inspect import iscoroutine
 
 from yapic.entity._entity cimport EntityType, NOTSET
 from yapic.entity._entity_diff cimport EntityDiff
@@ -8,6 +8,8 @@ from yapic.entity._query cimport Query
 from yapic.entity._entity cimport EntityType, EntityBase, EntityState
 from yapic.entity._entity import Entity
 from yapic.entity._registry cimport Registry, RegistryDiff
+from yapic.entity._field cimport Field, StorageType
+from yapic.entity._field_impl cimport CompositeImpl
 
 from ._query_context cimport QueryContext
 from ._query_compiler cimport QueryCompiler
@@ -87,6 +89,53 @@ cdef class Connection:
     async def diff(self, Registry new_reg, EntityType entity_base=Entity):
         registry = await self.reflect(entity_base)
         return self.registry_diff(registry, new_reg)
+
+
+    async def _collect_attrs(self, EntityBase entity, bint for_insert, str prefix, list attrs, list names, list values):
+        cdef EntityType entity_type = type(entity)
+        cdef EntityState state = entity.__state__
+        cdef list data = state.data_for_insert() if for_insert else state.data_for_update()
+        cdef StorageType field_type
+
+        for i in range(len(data)):
+            attr, value = <tuple>data[i]
+            if isinstance(attr, Field):
+                field_name = f"{prefix}{self.dialect.quote_ident(attr._name_)}"
+
+                if iscoroutine(value):
+                    value = await value
+
+                if isinstance((<Field>attr)._impl_, CompositeImpl):
+                    if not isinstance(value, EntityBase):
+                        value = (<CompositeImpl>(<Field>attr)._impl_)._entity_(value)
+
+                    await self._collect_attrs(value, for_insert, f"{field_name}.", attrs, names, values)
+                else:
+                    attrs.append(attr)
+                    names.append(field_name)
+
+                    if value is None:
+                        values.append(None)
+                    else:
+                        field_type = self.dialect.get_field_type(<Field>attr)
+                        values.append(field_type.encode(value))
+
+        if not for_insert and not prefix:
+            for attr in entity_type.__pk__:
+                field_name = self.dialect.quote_ident(attr._name_)
+                if field_name not in names:
+                    value = state.get_value(attr)
+                    if value is NOTSET:
+                        continue
+
+                    attrs.append(attr)
+                    names.append(field_name)
+
+                    if value is None:
+                        values.append(None)
+                    else:
+                        field_type = self.dialect.get_field_type(attr)
+                        values.append(field_type.encode(value))
 
 
 cpdef wrap_connection(conn, dialect):

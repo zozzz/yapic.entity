@@ -106,7 +106,7 @@ cdef class RegistryDiff:
                 order.add(val)
 
             if val.__fix_entries__:
-                self.changes.append((RegistryDiffKind.COMPARE_DATA, val))
+                self.changes.append((RegistryDiffKind.COMPARE_DATA, (a[maybe_changed], val)))
                 order.add(val)
 
         def key(item):
@@ -115,6 +115,8 @@ cdef class RegistryDiff:
                 return order.index((<EntityDiff>val).b)
             elif kind is RegistryDiffKind.INSERT_ENTITY:
                 return order.index(type(val))
+            elif kind is RegistryDiffKind.COMPARE_DATA:
+                return order.index(val[1])
             else:
                 return order.index(val)
 
@@ -155,18 +157,26 @@ def skip_virtual(EntityType ent):
 
 
 cdef object entity_data_is_eq(EntityBase a, EntityBase b):
-    cdef EntityType entity_t = type(b)
+    cdef EntityType entity_a = type(a)
+    cdef EntityType entity_b = type(b)
     cdef EntityAttribute attr
+    cdef EntityAttribute attr2
 
-    if type(a) is not entity_t:
+    field_names_a = {attr._name_ for attr in entity_a.__fields__}
+    field_names_b = {attr._name_ for attr in entity_b.__fields__}
+
+    if field_names_a.symmetric_difference(field_names_b):
         return False
 
-    cdef int length = len(entity_t.__fields__)
+    cdef int length = len(entity_b.__fields__)
 
     for i in range(length):
-        attr = <EntityAttribute>entity_t.__fields__[i]
+        attr = <EntityAttribute>entity_b.__fields__[i]
+        attr2 = getattr(entity_a, attr._key_, None)
+        if attr2 is None:
+            return False
 
-        if a.__state__.get_value(attr) != b.__state__.get_value(attr):
+        if a.__state__.get_value(attr2) != b.__state__.get_value(attr):
             return False
 
     return True

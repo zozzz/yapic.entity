@@ -2,7 +2,7 @@ import cython
 from enum import Enum
 
 from ._entity cimport EntityType
-from ._field cimport Field
+from ._field cimport Field, collect_foreign_keys
 from ._expression cimport Expression
 
 
@@ -11,6 +11,10 @@ class EntityDiffKind(Enum):
     CREATED = 2
     CHANGED = 3
     RENAMED = 4
+    REMOVE_PK = 5
+    CREATE_PK = 6
+    REMOVE_FK = 7
+    CREATE_FK = 8
 
 
 @cython.final
@@ -33,6 +37,17 @@ cdef class EntityDiff:
         for r in sorted([b_fields[n] for n in created], key=lambda f: f._index_):
             self.changes.append((EntityDiffKind.CREATED, r))
 
+        fk_changes = compare_fks(a, b)
+        if fk_changes:
+            self.changes.extend(fk_changes[0])
+
+        if a.__pk__ != b.__pk__:
+            recreate_pk = True
+            if a.__pk__:
+                self.changes.append((EntityDiffKind.REMOVE_PK, a))
+        else:
+            recreate_pk = False
+
         cdef Field a_field
         cdef Field b_field
 
@@ -44,6 +59,15 @@ cdef class EntityDiff:
             changed = field_eq(a_field, b_field, expression_eq)
             if changed:
                 self.changes.append((EntityDiffKind.CHANGED, (a_field, b_field, changed)))
+
+        if recreate_pk:
+            if b.__pk__:
+                self.changes.append((EntityDiffKind.CREATE_PK, b))
+
+        if fk_changes:
+            self.changes.extend(fk_changes[1])
+
+        print("\n".join(map(repr, self.changes)))
 
     def __bool__(self):
         return len(self.changes) > 0
@@ -90,13 +114,42 @@ cdef inline dict field_eq(Field a, Field b, object expression_eq):
     elif expression_eq is not None and not expression_eq(a._default_, b._default_):
         result["_default_"] = b._default_
 
-    exts = compare_exts(a._exts_, b._exts_)
-    if exts:
-        result["_exts_"] = exts
+
+
+    # exts = compare_exts(a._exts_, b._exts_)
+    # if exts:
+    #     result["_exts_"] = exts
 
     return result
 
 
 cdef inline list compare_exts(list a, list b):
-    return []
+    # exts_a = set(a)
+    # exts_b = set(b)
+
+    # removed = [() for x in exts_a - exts_b]
+    # created = [() for x in exts_b - exts_a]
+
+    # if removed or created:
+    #     return (removed, created)
+    # else:
+    #     return None
+    return None
+
+
+
+cdef inline list compare_fks(EntityType a, EntityType b):
+    removed = []
+    created = []
+
+    a_fks = set(collect_foreign_keys(a).items())
+    b_fks = set(collect_foreign_keys(b).items())
+
+    removed = [(EntityDiffKind.REMOVE_FK) for x in a_fks - b_fks]
+    created = [(EntityDiffKind.CREATE_FK) for x in b_fks - a_fks]
+
+    if removed or created:
+        return (removed, created)
+    else:
+        return None
 

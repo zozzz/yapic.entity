@@ -31,7 +31,7 @@ cdef class PostgreDialect(Dialect):
         if isinstance(value, RawExpression):
             return (<RawExpression>value).expr
         elif isinstance(value, int) or isinstance(value, float):
-            return value
+            return str(value)
         elif isinstance(value, bool):
             return "TRUE" if value else "FALSE"
         else:

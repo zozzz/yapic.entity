@@ -131,11 +131,20 @@ cdef class DDLCompiler:
                 else:
                     lines.append(self.compile_entity_diff(param))
             elif kind is RegistryDiffKind.INSERT_ENTITY:
-                lines.append(self.dialect.compile_insert(param[0], param[1]))
+                qc = self.dialect.create_query_compiler()
+                q = qc.compile_insert_or_update(param[0], param[1], param[2], param[3], True)
+                if q:
+                    lines.append(q + ";")
             elif kind is RegistryDiffKind.UPDATE_ENTITY:
-                lines.append(self.dialect.compile_update(param[0], param[1]))
+                qc = self.dialect.create_query_compiler()
+                q = qc.compile_update(param[0], param[1], param[2], param[3], True)
+                if q:
+                    lines.append(q + ";")
             elif kind is RegistryDiffKind.REMOVE_ENTITY:
-                lines.append(self.dialect.compile_delete(param[0], param[1]))
+                qc = self.dialect.create_query_compiler()
+                q, p = qc.compile_delete(param[0], param[1], param[2], param[3], True)
+                if q:
+                    lines.append(q + ";")
 
         return "\n".join(lines)
 
@@ -150,6 +159,11 @@ cdef class DDLCompiler:
                 alter.append(f"ADD COLUMN {self.compile_field(param, requirements)}")
             elif kind == EntityDiffKind.CHANGED:
                 alter.extend(self.compile_field_diff(param[1], param[2]))
+            elif kind == EntityDiffKind.REMOVE_PK:
+                alter.append(f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(param.__name__ + '_pkey')}")
+            elif kind == EntityDiffKind.CREATE_PK:
+                pk_names = [self.dialect.quote_ident(pk._name_) for pk in param.__pk__]
+                alter.append(f"ADD PRIMARY KEY({', '.join(pk_names)})")
 
         if alter:
             alter = ',\n  '.join(alter)
@@ -190,14 +204,19 @@ cdef class DDLCompiler:
         if type is None:
             raise ValueError("Cannot determine the sql type of %r" % field)
 
-        if "_impl_" in diff or "size" in diff:
-            result.append(f"ALTER COLUMN {col_name} TYPE {type.name} USING {col_name}::{type.name}")
-
         if "nullable" in diff:
             if diff["nullable"]:
                 result.append(f"ALTER COLUMN {col_name} DROP NOT NULL")
             else:
                 result.append(f"ALTER COLUMN {col_name} SET NOT NULL")
+
+        if "_impl_" in diff or "size" in diff:
+            # TODO: better handling of serial
+            if type.name.startswith("SERIAL"):
+                xt = f"INT{type.name[6] or ''}"
+                result.append(f"ALTER COLUMN {col_name} TYPE {xt} USING {col_name}::{xt}")
+            else:
+                result.append(f"ALTER COLUMN {col_name} TYPE {type.name} USING {col_name}::{type.name}")
 
         if "_default_" in diff:
             if diff["_default_"] is None:

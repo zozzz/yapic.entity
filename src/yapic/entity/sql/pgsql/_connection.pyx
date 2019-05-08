@@ -32,21 +32,14 @@ cdef class PostgreConnection(Connection):
         cdef list attrs = []
         cdef list names = []
         cdef list values = []
-        cdef list placeholders = []
 
-        await self.__collect_attrs(entity, True, "", attrs, names, values)
+        await self._collect_attrs(entity, True, "", attrs, names, values)
 
-        if not values:
+        q = self.dialect.create_query_compiler() \
+            .compile_insert(ent, attrs, names, values, False)
+
+        if not q:
             return entity
-
-        for i in range(1, len(names) + 1):
-            placeholders.append(f"${i}")
-
-        fields_str = ", ".join(names)
-        placeholder_str = ", ".join(placeholders)
-
-        q = ["INSERT INTO ", self.dialect.table_qname(ent),
-            "(", fields_str, ") VALUES (", placeholder_str, ")"]
 
         return await self.__exec_iou(q, values, entity, ent, timeout)
 
@@ -55,75 +48,64 @@ cdef class PostgreConnection(Connection):
         cdef list attrs = []
         cdef list names = []
         cdef list values = []
-        cdef list updates = []
-        cdef list placeholders = []
-        cdef list pk_names = [self.dialect.quote_ident(attr._name_) for attr in ent.__pk__]
 
-        await self.__collect_attrs(entity, True, "", attrs, names, values)
+        await self._collect_attrs(entity, True, "", attrs, names, values)
 
-        if not values:
+        q = self.dialect.create_query_compiler() \
+            .compile_insert_or_update(ent, attrs, names, values, False)
+
+        if not q:
             return entity
-
-        for i, name in enumerate(names):
-            attr = <EntityAttribute>attrs[i]
-
-            placeholders.append(f"${i+1}")
-
-            if not attr.get_ext(PrimaryKey):
-                updates.append(f"{name}=${i+1}")
-
-        fields_str = ", ".join(names)
-        placeholder_str = ", ".join(placeholders)
-
-        q = ["INSERT INTO ", self.dialect.table_qname(ent),
-            " (", fields_str, ") VALUES (", placeholder_str, ")"]
-
-        if pk_names:
-            q.extend([" ON CONFLICT (", ", ".join(pk_names), ") DO UPDATE SET ", ", ".join(updates)])
 
         return await self.__exec_iou(q, values, entity, ent, timeout)
 
     async def update(self, EntityBase entity, timeout=None):
         cdef EntityType ent = type(entity)
-        cdef EntityAttribute attr
         cdef list attrs = []
         cdef list names = []
         cdef list values = []
-        cdef list updates = []
-        cdef list where = []
 
-        if not entity.__pk__:
-            raise ValueError("Can't update entity without primary key")
+        await self._collect_attrs(entity, False, "", attrs, names, values)
 
-        await self.__collect_attrs(entity, False, "", attrs, names, values)
+        q = self.dialect.create_query_compiler() \
+            .compile_update(ent, attrs, names, values, False)
 
-        if not values:
+        if not q:
             return entity
-
-        for i, name in enumerate(names):
-            attr = <EntityAttribute>attrs[i]
-
-            if attr.get_ext(PrimaryKey):
-                where.append(f"{name}=${i+1}")
-            else:
-                updates.append(f"{name}=${i+1}")
-
-        q = ["UPDATE ", self.dialect.table_qname(ent), " SET ",
-            ", ".join(updates), " WHERE ", " AND ".join(where)]
 
         return await self.__exec_iou(q, values, entity, ent, timeout)
 
-    async def __exec_iou(self, list q, values, EntityBase entity, EntityType entity_t, timeout):
+    async def delete(self, EntityBase entity, timeout=None):
+        cdef EntityType ent = type(entity)
+        cdef list attrs = []
+        cdef list names = []
+        cdef list values = []
+
+        await self._collect_attrs(entity, True, "", attrs, names, values)
+
+        q, p = self.dialect.create_query_compiler() \
+            .compile_delete(ent, attrs, names, values, False)
+
+        if not q:
+            return entity
+
+        # print(q)
+
+        self.conn._check_open()
+        _, res, _ = await self.conn._execute(q, p, 0, timeout, True)
+        return res and int(res[7:]) > 0
+
+    async def __exec_iou(self, str q, values, EntityBase entity, EntityType entity_t, timeout):
         cdef list field_names = [self.dialect.quote_ident(a._name_) for a in entity_t.__fields__]
         cdef EntityState state = entity.__state__
         cdef EntityAttribute attr
 
-        q.append(f" RETURNING {', '.join(field_names)}")
+        q += f" RETURNING {', '.join(field_names)}"
 
-        # print("".join(q))
+        # print(q)
 
         self.conn._check_open()
-        res = await self.conn._execute("".join(q), values, 0, timeout)
+        res = await self.conn._execute(q, values, 0, timeout)
         record = res[0]
 
         self.__set_rec_on_entity(entity, entity_t, record)
@@ -153,65 +135,3 @@ cdef class PostgreConnection(Connection):
                 state.set_value(attr, field_type.decode(v))
 
         state.reset()
-
-    async def __collect_attrs(self, EntityBase entity, bint for_insert, str prefix, list attrs, list names, list values):
-        cdef EntityType entity_type = type(entity)
-        cdef EntityState state = entity.__state__
-        cdef list data = state.data_for_insert() if for_insert else state.data_for_update()
-        cdef StorageType field_type
-
-        for i in range(len(data)):
-            attr, value = <tuple>data[i]
-            if isinstance(attr, Field):
-                field_name = f"{prefix}{self.dialect.quote_ident(attr._name_)}"
-
-                if iscoroutine(value):
-                    value = await value
-
-                if isinstance((<Field>attr)._impl_, CompositeImpl):
-                    if not isinstance(value, EntityBase):
-                        value = (<CompositeImpl>(<Field>attr)._impl_)._entity_(value)
-
-                    await self.__collect_attrs(value, for_insert, f"{field_name}.", attrs, names, values)
-                else:
-                    field_type = self.dialect.get_field_type(<Field>attr)
-
-                    attrs.append(attr)
-                    names.append(field_name)
-                    values.append(field_type.encode(value))
-
-        if not for_insert and not prefix:
-            for attr in entity_type.__pk__:
-                field_name = self.dialect.quote_ident(attr._name_)
-                if field_name not in names:
-                    value = state.get_value(attr)
-                    if value is NOTSET:
-                        continue
-
-                    field_type = self.dialect.get_field_type(attr)
-
-                    attrs.append(attr)
-                    names.append(field_name)
-                    values.append(field_type.encode(value))
-
-
-    async def delete(self, EntityBase entity, timeout=None):
-        cdef EntityType ent = type(entity)
-        cdef tuple pk = entity.__pk__
-
-        if not pk:
-            raise ValueError("Can't update entity without primary key")
-
-        values = []
-        condition = []
-        for i, attr in enumerate(ent.__pk__):
-            condition.append(f"{self.dialect.quote_ident(attr._name_)}=${i+1}")
-            values.append(pk[i])
-            # values.append(12)
-
-        q = ("DELETE FROM ", self.dialect.table_qname(ent),
-             " WHERE ", " AND ".join(condition))
-
-        self.conn._check_open()
-        _, res, _ = await self.conn._execute("".join(q), values, 0, timeout, True)
-        return res and int(res[7:]) > 0

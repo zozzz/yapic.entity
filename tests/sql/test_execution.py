@@ -193,9 +193,9 @@ CREATE TABLE "execution"."Gender" (
   "title" TEXT,
   PRIMARY KEY("value")
 );
-INSERT INTO "execution"."Gender" ("value", "title") VALUES ('male', 'Male');
-INSERT INTO "execution"."Gender" ("value", "title") VALUES ('female', 'Female');
-INSERT INTO "execution"."Gender" ("value", "title") VALUES ('other', 'Other');
+INSERT INTO "execution"."Gender" ("value", "title") VALUES ('male', 'Male') ON CONFLICT ("value") DO UPDATE SET "title"='Male';
+INSERT INTO "execution"."Gender" ("value", "title") VALUES ('female', 'Female') ON CONFLICT ("value") DO UPDATE SET "title"='Female';
+INSERT INTO "execution"."Gender" ("value", "title") VALUES ('other', 'Other') ON CONFLICT ("value") DO UPDATE SET "title"='Other';
 ALTER TABLE "execution"."User"
   DROP COLUMN "name",
   ADD COLUMN "name_x" VARCHAR(100),
@@ -226,7 +226,7 @@ ALTER TABLE "execution"."User"
         Gender(value="insert"),
     ]
     result = await sync(conn, new_reg)
-    assert result == """INSERT INTO "execution"."Gender" ("value") VALUES ('insert');
+    assert result == """INSERT INTO "execution"."Gender" ("value") VALUES ('insert') ON CONFLICT ("value") DO NOTHING;
 UPDATE "execution"."Gender" SET "title"='MaleX' WHERE "value"='male';
 UPDATE "execution"."Gender" SET "title"='FemaleY' WHERE "value"='female';"""
     await conn.conn.execute(result)
@@ -295,7 +295,7 @@ CREATE TABLE "execution"."JsonUser" (
   "name" JSONB,
   PRIMARY KEY("id")
 );
-INSERT INTO "execution"."JsonUser" ("id", "name") VALUES (1, '{"given":"Given","family":"Family"}');"""
+INSERT INTO "execution"."JsonUser" ("id", "name") VALUES (1, '{"given":"Given","family":"Family"}') ON CONFLICT ("id") DO UPDATE SET "name"='{"given":"Given","family":"Family"}';"""
 
 
 async def test_composite(conn):
@@ -435,3 +435,75 @@ CREATE TABLE "execution"."CallableDefault" (
     result = await sync(conn, reg)
     assert result == """ALTER TABLE "execution"."CallableDefault"
   ALTER COLUMN "creator_id" SET NOT NULL;"""
+
+
+async def test_pk_change(conn):
+    await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
+    await conn.conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
+    await conn.conn.execute("DROP SCHEMA IF EXISTS execution_private CASCADE")
+
+    reg = Registry()
+
+    class Address(Entity, registry=reg, schema="execution"):
+        id: Int
+
+    result = await sync(conn, reg)
+    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE TABLE "execution"."Address" (
+  "id" INT4
+);"""
+    await conn.conn.execute(result)
+
+    # ADD PRIMARY KEY
+
+    reg = Registry()
+
+    class Address(Entity, registry=reg, schema="execution"):
+        id: Serial
+
+    result = await sync(conn, reg)
+    assert result == """ALTER TABLE "execution"."Address"
+  ALTER COLUMN "id" SET NOT NULL,
+  ADD PRIMARY KEY("id");"""
+    await conn.conn.execute(result)
+
+    # DROP PRIMARY KEY
+
+    reg = Registry()
+
+    class Address(Entity, registry=reg, schema="execution"):
+        id: String
+
+    result = await sync(conn, reg)
+    assert result == """ALTER TABLE "execution"."Address"
+  DROP CONSTRAINT IF EXISTS "Address_pkey",
+  ALTER COLUMN "id" DROP NOT NULL,
+  ALTER COLUMN "id" TYPE TEXT USING "id"::TEXT;"""
+    await conn.conn.execute(result)
+
+    # CHANGE PRIMARY KEY
+
+    reg = Registry()
+
+    class Address(Entity, registry=reg, schema="execution"):
+        id: Serial
+
+    result = await sync(conn, reg)
+    assert result == """ALTER TABLE "execution"."Address"
+  ALTER COLUMN "id" SET NOT NULL,
+  ALTER COLUMN "id" TYPE INT4 USING "id"::INT4,
+  ADD PRIMARY KEY("id");"""
+    await conn.conn.execute(result)
+
+    reg = Registry()
+
+    class Address(Entity, registry=reg, schema="execution"):
+        id: Serial
+        id2: Serial
+
+    result = await sync(conn, reg)
+    assert result == """ALTER TABLE "execution"."Address"
+  ADD COLUMN "id2" SERIAL4 NOT NULL,
+  DROP CONSTRAINT IF EXISTS "Address_pkey",
+  ADD PRIMARY KEY("id", "id2");"""
+    await conn.conn.execute(result)

@@ -1,6 +1,6 @@
 import operator
 
-from yapic.entity._entity cimport EntityType, get_alias_target
+from yapic.entity._entity cimport EntityType, EntityAttribute, get_alias_target
 from yapic.entity._query cimport Query
 from yapic.entity._expression cimport (
     Expression,
@@ -15,7 +15,7 @@ from yapic.entity._expression cimport (
     RawExpression,
     PathExpression)
 from yapic.entity._expression import and_
-from yapic.entity._field cimport Field
+from yapic.entity._field cimport Field, PrimaryKey
 from yapic.entity._field_impl cimport JsonImpl, CompositeImpl
 from yapic.entity._relation cimport Relation
 
@@ -325,6 +325,126 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                 alias = (self.dialect.table_qname(aliased), self.dialect.quote_ident(ent.__name__))
             self.table_alias[ent] = alias
             return alias
+
+    cpdef compile_insert(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
+        if not values:
+            return None
+
+        cdef list inserts = []
+
+        if inline_values:
+            for v in values:
+                inserts.append(self.dialect.quote_value(v))
+        else:
+            for i in range(1, len(names) + 1):
+                inserts.append(f"${i}")
+
+        return "".join(("INSERT INTO ", self.dialect.table_qname(entity),
+            "(", ", ".join(names), ") VALUES (", ", ".join(inserts), ")"))
+
+    cpdef compile_insert_or_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
+        if not values:
+            return None
+
+        cdef EntityAttribute attr
+        cdef list updates = []
+        cdef list inserts = []
+        cdef list pk_names = [self.dialect.quote_ident(attr._name_) for attr in entity.__pk__]
+
+        if inline_values:
+            for i, name in enumerate(names):
+                attr = <EntityAttribute>attrs[i]
+                val = self.dialect.quote_value(values[i])
+                inserts.append(val)
+                if not attr.get_ext(PrimaryKey):
+                    updates.append(f"{name}={val}")
+        else:
+            for i, name in enumerate(names):
+                attr = <EntityAttribute>attrs[i]
+                inserts.append(f"${i+1}")
+                if not attr.get_ext(PrimaryKey):
+                    updates.append(f"{name}=${i+1}")
+
+        q = ["INSERT INTO ", self.dialect.table_qname(entity),
+            " (", ", ".join(names), ") VALUES (", ", ".join(inserts), ")",
+            " ON CONFLICT "]
+
+        if pk_names:
+            q.extend(("(", ", ".join(pk_names), ") "))
+
+        if updates:
+            q.extend(("DO UPDATE SET ", ", ".join(updates)))
+        else:
+            q.append("DO NOTHING")
+        return "".join(q)
+
+    cpdef compile_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
+        if not values:
+            return None
+
+        cdef EntityAttribute attr
+        cdef list updates = []
+        cdef list where = []
+
+        if inline_values:
+            for i, name in enumerate(names):
+                attr = <EntityAttribute>attrs[i]
+                val = self.dialect.quote_value(values[i])
+
+                if attr.get_ext(PrimaryKey):
+                    where.append(f"{name}={val}")
+                else:
+                    updates.append(f"{name}={val}")
+        else:
+            for i, name in enumerate(names):
+                attr = <EntityAttribute>attrs[i]
+
+                if attr.get_ext(PrimaryKey):
+                    where.append(f"{name}=${i+1}")
+                else:
+                    updates.append(f"{name}=${i+1}")
+
+        if not where:
+            raise RuntimeError("TODO: ...")
+
+        return "".join(("UPDATE ", self.dialect.table_qname(entity), " SET ",
+            ", ".join(updates), " WHERE ", " AND ".join(where)))
+
+    cpdef compile_delete(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
+        """
+
+        Returns:
+            Returns with a 2 element tuple:
+                1. element is query string
+                2. element is params
+        """
+        cdef list where = []
+        cdef list params = []
+
+        if inline_values:
+            for i, attr in enumerate(attrs):
+                if attr.get_ext(PrimaryKey):
+                    where.append(f"{names[i]}={self.dialect.quote_value(values[i])}")
+        else:
+            for i, attr in enumerate(attrs):
+                if attr.get_ext(PrimaryKey):
+                    where.append(f"{names[i]}=${i+1}")
+                    params.append(values[i])
+
+        if not where:
+            if not values:
+                return (None, None)
+
+            if inline_values:
+                for i, attr in enumerate(attrs):
+                    where.append(f"{names[i]}={self.dialect.quote_value(values[i])}")
+            else:
+                for i, attr in enumerate(attrs):
+                    where.append(f"{names[i]}=${i+1}")
+                    params.append(values[i])
+
+        return "".join(("DELETE FROM ", self.dialect.table_qname(entity),
+             " WHERE ", " AND ".join(where))), params
 
 
 cdef visit_list(PostgreQueryCompiler qc, list items):
