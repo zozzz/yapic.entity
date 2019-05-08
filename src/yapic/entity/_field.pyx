@@ -131,15 +131,15 @@ cdef class Index(FieldExtension):
 
 cdef class ForeignKey(FieldExtension):
     def __cinit__(self, field, *, str name = None, str on_update = "RESTRICT", str on_delete = "RESTRICT"):
-        # self._field = field
+        self.ref = None
+
         if isinstance(field, str):
             self._ref = compile(field, "<string>", "eval")
         elif not isinstance(field, Field):
             raise TypeError("Incorrect argument for ForeignKey field parameter")
         else:
-            self._ref = field
+            self.ref = self._ref = field
 
-        self.ref = None
         self.name = name
         self.on_update = on_update
         self.on_delete = on_delete
@@ -151,16 +151,13 @@ cdef class ForeignKey(FieldExtension):
         cdef Field field = attr
 
         if self.ref is None:
-            if not isinstance(self._ref, Field):
-                module = PyImport_Import(self.attr._entity_.__module__)
-                mdict = PyModule_GetDict(module)
-                ldict = {attr._entity_.__qualname__.split(".").pop(): attr._entity_}
-                try:
-                    self.ref = eval(self._ref, <object>mdict, <object>ldict)
-                except NameError as e:
-                    return False
-            else:
-                self.ref = self._ref
+            module = PyImport_Import(self.attr._entity_.__module__)
+            mdict = PyModule_GetDict(module)
+            ldict = {attr._entity_.__qualname__.split(".").pop(): attr._entity_}
+            try:
+                self.ref = eval(self._ref, <object>mdict, <object>ldict)
+            except NameError as e:
+                return False
 
         attr._deps_.add(self.ref._entity_)
 
@@ -217,5 +214,8 @@ cdef dict collect_foreign_keys(EntityType entity):
                     fks[fk.name].append(fk)
                 else:
                     fks[fk.name] = [fk]
+
+    for k, v in fks.items():
+        fks[k] = tuple(v)
 
     return fks

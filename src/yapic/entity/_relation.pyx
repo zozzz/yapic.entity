@@ -203,7 +203,7 @@ cdef class ManyToMany(RelationImpl):
 cdef determine_join_expr(EntityType entity, EntityType joined):
     cdef dict fks = collect_foreign_keys(entity)
 
-    cdef list keys
+    cdef tuple keys
     cdef Field field
     cdef ForeignKey fk
     cdef object found = None

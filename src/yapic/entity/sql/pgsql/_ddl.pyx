@@ -198,8 +198,9 @@ cdef class PostgreDDLReflect(DDLReflect):
         return field
 
     async def update_foreign_keys(self, Connection conn, str schema, str table, Registry registry):
-        fks = await self.get_foreign_keys(conn, schema, table)
+        cdef ForeignKey fk
 
+        fks = await self.get_foreign_keys(conn, schema, table)
         entity = registry[f"{schema}.{table}" if schema != "public" else table]
 
         for fk_desc in fks:
@@ -210,10 +211,13 @@ cdef class PostgreDDLReflect(DDLReflect):
             else:
                 ref_entity = registry[f"{fk_desc['table_schema']}.{fk_desc['table_name']}"]
 
-            field // ForeignKey(getattr(ref_entity, fk_desc["column_name"]),
+            fk = ForeignKey(getattr(ref_entity, fk_desc["column_name"]),
                 name=fk_desc["constraint_name"],
                 on_update=fk_desc["update_rule"],
                 on_delete=fk_desc["delete_rule"])
+
+            field // fk
+            fk.bind(field)
 
 
 

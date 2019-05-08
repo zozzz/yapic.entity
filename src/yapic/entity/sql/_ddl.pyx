@@ -82,34 +82,33 @@ cdef class DDLCompiler:
         return res
 
     def compile_foreign_keys(self, dict fks):
-        cdef str res
-        cdef int length
-        cdef list foreign_keys
-        cdef ForeignKey fk
+        cdef str key_name
+        cdef tuple foreign_keys
 
         for key_name, foreign_keys in fks.items():
-            res = f"CONSTRAINT {self.dialect.quote_ident(key_name)} FOREIGN KEY ("
+            yield self.compile_foreign_key(key_name, foreign_keys)
 
-            length = len(foreign_keys)
-            for i in range(length):
-                fk = foreign_keys[i]
-                res += self.dialect.quote_ident(fk.attr._name_)
-                if i != length - 1:
-                    res += ", "
+    def compile_foreign_key(self, str name, tuple keys):
+        cdef str res = f"CONSTRAINT {self.dialect.quote_ident(name)} FOREIGN KEY ("
+        cdef int length = len(keys)
+        cdef ForeignKey fk
 
-            res += f") REFERENCES {self.dialect.table_qname(foreign_keys[0].ref._entity_)} ("
+        for i in range(length):
+            fk = keys[i]
+            res += self.dialect.quote_ident(fk.attr._name_)
+            if i != length - 1:
+                res += ", "
 
-            for i in range(length):
-                fk = foreign_keys[i]
-                res += self.dialect.quote_ident(fk.ref._name_)
-                if i != length - 1:
-                    res += ", "
+        res += f") REFERENCES {self.dialect.table_qname(keys[0].ref._entity_)} ("
 
-            res += ")"
+        for i in range(length):
+            fk = keys[i]
+            res += self.dialect.quote_ident(fk.ref._name_)
+            if i != length - 1:
+                res += ", "
 
-            res += f" ON UPDATE {foreign_keys[0].on_update} ON DELETE {foreign_keys[0].on_delete}"
+        return res + f") ON UPDATE {keys[0].on_update} ON DELETE {keys[0].on_delete}"
 
-            yield res
 
     def compile_registry_diff(self, RegistryDiff diff):
         lines = []
@@ -164,6 +163,10 @@ cdef class DDLCompiler:
             elif kind == EntityDiffKind.CREATE_PK:
                 pk_names = [self.dialect.quote_ident(pk._name_) for pk in param.__pk__]
                 alter.append(f"ADD PRIMARY KEY({', '.join(pk_names)})")
+            elif kind == EntityDiffKind.REMOVE_FK:
+                alter.append(f"DROP CONSTRAINT {self.dialect.quote_ident(param[0])}")
+            elif kind == EntityDiffKind.CREATE_FK:
+                alter.append(f"ADD {self.compile_foreign_key(param[0], param[1])}")
 
         if alter:
             alter = ',\n  '.join(alter)

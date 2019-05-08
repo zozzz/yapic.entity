@@ -148,6 +148,10 @@ async def test_reflect(conn):
 async def test_diff(conn):
     new_reg = Registry()
 
+    class Address(Entity, schema="execution", registry=new_reg):
+        id: Serial
+        title: String
+
     class User(Entity, schema="execution", registry=new_reg):
         id: Serial
         name_x: String = Field(size=100)
@@ -181,8 +185,7 @@ async def test_diff(conn):
 
     result = await sync(conn, new_reg)
 
-    assert result == """DROP TABLE "execution"."Address" CASCADE;
-DROP TABLE "execution_private"."User" CASCADE;
+    assert result == """DROP TABLE "execution_private"."User" CASCADE;
 CREATE SCHEMA IF NOT EXISTS "_private";
 CREATE TABLE "_private"."NewTable" (
   "id" SERIAL4 NOT NULL,
@@ -506,4 +509,65 @@ CREATE TABLE "execution"."Address" (
   ADD COLUMN "id2" SERIAL4 NOT NULL,
   DROP CONSTRAINT IF EXISTS "Address_pkey",
   ADD PRIMARY KEY("id", "id2");"""
+    await conn.conn.execute(result)
+
+
+async def test_fk_change(conn):
+    await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
+    await conn.conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
+    await conn.conn.execute("DROP SCHEMA IF EXISTS execution_private CASCADE")
+
+    reg = Registry()
+
+    class Address(Entity, registry=reg, schema="execution"):
+        id: Serial
+
+    class User(Entity, registry=reg, schema="execution"):
+        id: Serial
+        address_id: Auto = ForeignKey(Address.id)
+
+    result = await sync(conn, reg)
+    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE TABLE "execution"."Address" (
+  "id" SERIAL4 NOT NULL,
+  PRIMARY KEY("id")
+);
+CREATE TABLE "execution"."User" (
+  "id" SERIAL4 NOT NULL,
+  "address_id" INT4,
+  PRIMARY KEY("id"),
+  CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
+);"""
+    await conn.conn.execute(result)
+
+    # DROP FK
+
+    reg = Registry()
+
+    class Address(Entity, registry=reg, schema="execution"):
+        id: Serial
+
+    class User(Entity, registry=reg, schema="execution"):
+        id: Serial
+        address_id: Int
+
+    result = await sync(conn, reg)
+    assert result == """ALTER TABLE "execution"."User"
+  DROP CONSTRAINT "fk_User__address_id-Address__id";"""
+    await conn.conn.execute(result)
+
+    # ADD FK
+
+    reg = Registry()
+
+    class Address(Entity, registry=reg, schema="execution"):
+        id: Serial
+
+    class User(Entity, registry=reg, schema="execution"):
+        id: Serial
+        address_id: Auto = ForeignKey(Address.id)
+
+    result = await sync(conn, reg)
+    assert result == """ALTER TABLE "execution"."User"
+  ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
     await conn.conn.execute(result)

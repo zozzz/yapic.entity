@@ -6564,7 +6564,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_determine_join_expr(struct __
  * cdef determine_join_expr(EntityType entity, EntityType joined):
  *     cdef dict fks = collect_foreign_keys(entity)             # <<<<<<<<<<<<<<
  * 
- *     cdef list keys
+ *     cdef tuple keys
  */
   __pyx_t_1 = __pyx_f_5yapic_6entity_6_field_collect_foreign_keys(__pyx_v_entity); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -6604,7 +6604,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_determine_join_expr(struct __
     if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 211, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GOTREF(__pyx_t_6);
-    if (!(likely(PyList_CheckExact(__pyx_t_6))||((__pyx_t_6) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_6)->tp_name), 0))) __PYX_ERR(0, 211, __pyx_L1_error)
+    if (!(likely(PyTuple_CheckExact(__pyx_t_6))||((__pyx_t_6) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_t_6)->tp_name), 0))) __PYX_ERR(0, 211, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v_fk_name, __pyx_t_5);
     __pyx_t_5 = 0;
     __Pyx_XDECREF_SET(__pyx_v_keys, ((PyObject*)__pyx_t_6));
@@ -6621,7 +6621,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_determine_join_expr(struct __
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
       __PYX_ERR(0, 212, __pyx_L1_error)
     }
-    __pyx_t_6 = PyList_GET_ITEM(__pyx_v_keys, 0);
+    __pyx_t_6 = PyTuple_GET_ITEM(__pyx_v_keys, 0);
     __Pyx_INCREF(__pyx_t_6);
     __Pyx_XDECREF_SET(__pyx_v_fk, ((struct __pyx_obj_5yapic_6entity_6_field_ForeignKey *)__pyx_t_6));
     __pyx_t_6 = 0;
@@ -6722,7 +6722,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_determine_join_expr(struct __
         PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
         __PYX_ERR(0, 219, __pyx_L1_error)
       }
-      __pyx_t_10 = PyList_GET_SIZE(__pyx_v_keys); if (unlikely(__pyx_t_10 == ((Py_ssize_t)-1))) __PYX_ERR(0, 219, __pyx_L1_error)
+      __pyx_t_10 = PyTuple_GET_SIZE(__pyx_v_keys); if (unlikely(__pyx_t_10 == ((Py_ssize_t)-1))) __PYX_ERR(0, 219, __pyx_L1_error)
       __pyx_t_12 = __pyx_t_10;
       for (__pyx_t_13 = 1; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
         __pyx_v_i = __pyx_t_13;
@@ -6738,7 +6738,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_determine_join_expr(struct __
           PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
           __PYX_ERR(0, 220, __pyx_L1_error)
         }
-        __pyx_t_6 = PyList_GET_ITEM(__pyx_v_keys, __pyx_v_i);
+        __pyx_t_6 = PyTuple_GET_ITEM(__pyx_v_keys, __pyx_v_i);
         __Pyx_INCREF(__pyx_t_6);
         __Pyx_DECREF_SET(__pyx_v_fk, ((struct __pyx_obj_5yapic_6entity_6_field_ForeignKey *)__pyx_t_6));
         __pyx_t_6 = 0;

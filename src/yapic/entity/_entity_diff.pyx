@@ -138,15 +138,15 @@ cdef inline list compare_exts(list a, list b):
 
 
 
-cdef inline list compare_fks(EntityType a, EntityType b):
+cdef inline tuple compare_fks(EntityType a, EntityType b):
     removed = []
     created = []
 
-    a_fks = set(collect_foreign_keys(a).items())
-    b_fks = set(collect_foreign_keys(b).items())
+    a_fks = set(collect_foreign_keys(a).values())
+    b_fks = set(collect_foreign_keys(b).values())
 
-    removed = [(EntityDiffKind.REMOVE_FK) for x in a_fks - b_fks]
-    created = [(EntityDiffKind.CREATE_FK) for x in b_fks - a_fks]
+    removed = [(EntityDiffKind.REMOVE_FK, (x[0].name, x)) for x in a_fks - b_fks]
+    created = [(EntityDiffKind.CREATE_FK, (x[0].name, x)) for x in b_fks - a_fks]
 
     if removed or created:
         return (removed, created)
