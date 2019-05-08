@@ -13,4 +13,5 @@ cdef class DDLCompiler:
 
 
 cdef class DDLReflect:
+    cdef readonly Dialect dialect
     cdef EntityType entity_base

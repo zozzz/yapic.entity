@@ -15,7 +15,7 @@ cdef class PostgreDialect(Dialect):
         return PostgreDDLCompiler(self)
 
     cpdef DDLReflect create_ddl_reflect(self, EntityType base):
-        return PostgreDDLReflect(base)
+        return PostgreDDLReflect(self, base)
 
     cpdef QueryCompiler create_query_compiler(self):
         return PostgreQueryCompiler(self)

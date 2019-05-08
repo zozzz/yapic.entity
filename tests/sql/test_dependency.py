@@ -1,7 +1,7 @@
 import pytest
 from yapic.entity.sql import wrap_connection, Entity, sync
 from yapic.entity import (Serial, Int, String, ForeignKey, PrimaryKey, One, Many, ManyAcross, Registry, DependencyList,
-                          Json, Composite, save_operations, Auto)
+                          Json, Composite, save_operations, Auto, AutoIncrement)
 
 pytestmark = pytest.mark.asyncio  # type: ignore
 
@@ -64,11 +64,11 @@ class UserTags(BaseEntity, name="user-tags", schema="deps"):
 async def test_creation(conn):
     await conn.conn.execute("""DROP SCHEMA IF EXISTS "deps" CASCADE""")
 
-    assert Address.__deps__ == set()
-    assert Tag.__deps__ == set()
-    assert User.__deps__ == {Address}
-    assert Backward.__deps__ == {User}
-    assert Forward.__deps__ == {User}
+    assert Address.__deps__ == {Address.id.get_ext(AutoIncrement).sequence}
+    assert Tag.__deps__ == {Tag.id.get_ext(AutoIncrement).sequence}
+    assert User.__deps__ == {Address, User.id.get_ext(AutoIncrement).sequence}
+    assert Backward.__deps__ == {User, Backward.id.get_ext(AutoIncrement).sequence}
+    assert Forward.__deps__ == {User, Forward.id.get_ext(AutoIncrement).sequence}
     assert UserTags.__deps__ == {User, Tag}
 
     def entity_deps(ent):
@@ -76,11 +76,22 @@ async def test_creation(conn):
         res.add(ent)
         return res
 
-    assert entity_deps(Address) == [Address]
-    assert entity_deps(Tag) == [Tag]
-    assert entity_deps(User) == [Address, User]
-    assert entity_deps(Forward) == [Address, User, Forward]
-    assert entity_deps(UserTags) == [Address, User, Tag, UserTags]
+    assert entity_deps(Address) == [Address.id.get_ext(AutoIncrement).sequence, Address]
+    assert entity_deps(Tag) == [Tag.id.get_ext(AutoIncrement).sequence, Tag]
+    assert entity_deps(User) == [
+        User.id.get_ext(AutoIncrement).sequence,
+        Address.id.get_ext(AutoIncrement).sequence, Address, User
+    ]
+    assert entity_deps(Forward) == [
+        User.id.get_ext(AutoIncrement).sequence,
+        Address.id.get_ext(AutoIncrement).sequence, Address, User,
+        Forward.id.get_ext(AutoIncrement).sequence, Forward
+    ]
+    assert entity_deps(UserTags) == [
+        User.id.get_ext(AutoIncrement).sequence,
+        Address.id.get_ext(AutoIncrement).sequence, Address, User,
+        Tag.id.get_ext(AutoIncrement).sequence, Tag, UserTags
+    ]
 
     dl = DependencyList()
     dl.add(UserTags)
@@ -89,7 +100,13 @@ async def test_creation(conn):
     dl.add(User)
     dl.add(Backward)
     dl.add(Address)
-    assert dl == [Address, User, Tag, UserTags, Forward, Backward]
+    assert dl == [
+        User.id.get_ext(AutoIncrement).sequence,
+        Address.id.get_ext(AutoIncrement).sequence, Address, User,
+        Tag.id.get_ext(AutoIncrement).sequence, Tag, UserTags,
+        Forward.id.get_ext(AutoIncrement).sequence, Forward,
+        Backward.id.get_ext(AutoIncrement).sequence, Backward
+    ]
 
     result = await sync(conn, _registry)
     await conn.conn.execute(result)
@@ -136,7 +153,7 @@ async def test_json():
         res.add(ent)
         return res
 
-    assert entity_deps(JUser) == [JName, JUser]
+    assert entity_deps(JUser) == [JUser.id.get_ext(AutoIncrement).sequence, JName, JUser]
 
 
 async def test_composite():
@@ -153,7 +170,7 @@ async def test_composite():
         res.add(ent)
         return res
 
-    assert entity_deps(CUser) == [CName, CUser]
+    assert entity_deps(CUser) == [CUser.id.get_ext(AutoIncrement).sequence, CName, CUser]
 
 
 async def test_cleanup(conn):

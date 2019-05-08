@@ -397,6 +397,9 @@ cdef class EntityAttributeExt:
     def __ne__(self, other):
         return repr(self) == repr(other)
 
+    def __repr__(self):
+        return f"@{type(self).__name__}()"
+
 
 cdef class EntityAttributeImpl:
     def __cinit__(self, *args, **kwargs):

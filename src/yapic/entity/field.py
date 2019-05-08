@@ -1,7 +1,7 @@
 from typing import Generic, TypeVar, Union, Optional, List, Tuple, Type, Any
 from datetime import date, datetime
 from enum import Enum
-from ._field import Field as _Field, Index, ForeignKey, PrimaryKey
+from ._field import Field as _Field, Index, ForeignKey, PrimaryKey, AutoIncrement
 from ._field_impl import (
     StringImpl,
     BytesImpl,
@@ -56,7 +56,7 @@ class Int(Field[IntImpl, int, int]):
 
 class Serial(Int):
     def __new__(cls, *args, **kwargs):
-        return Int.__new__(cls, *args, **kwargs) // PrimaryKey(auto_increment=True)
+        return Int.__new__(cls, *args, **kwargs) // PrimaryKey() // AutoIncrement()
 
 
 EnumT = TypeVar("EnumT", bound=Enum)

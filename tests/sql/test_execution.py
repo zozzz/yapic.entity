@@ -46,9 +46,41 @@ async def test_ddl(conn):
     await conn.conn.execute("""DROP SCHEMA IF EXISTS "execution" CASCADE""")
     await conn.conn.execute("""DROP SCHEMA IF EXISTS "execution_private" CASCADE""")
 
-    await conn.create_entity(Address, drop=True)
-    await conn.create_entity(User, drop=True)
-    await conn.create_entity(User2, drop=True)
+    result = await sync(conn, Address.__registry__)
+    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE SEQUENCE "execution"."Address_id_seq";
+CREATE TABLE "execution"."Address" (
+  "id" INT4 NOT NULL DEFAULT nextval('"execution"."Address_id_seq"'::regclass),
+  "title" TEXT,
+  PRIMARY KEY("id")
+);
+CREATE SEQUENCE "execution"."User_id_seq";
+CREATE TABLE "execution"."User" (
+  "id" INT4 NOT NULL DEFAULT nextval('"execution"."User_id_seq"'::regclass),
+  "name" VARCHAR(100),
+  "bio" TEXT,
+  "fixed_char" CHAR(5),
+  "secret" BYTEA,
+  "address_id" INT4,
+  "is_active" BOOLEAN NOT NULL DEFAULT TRUE,
+  "birth_date" DATE,
+  "naive_date" TIMESTAMP NOT NULL DEFAULT '2019-01-01 12:34:55.000000',
+  "created_time" TIMESTAMPTZ NOT NULL DEFAULT now(),
+  "updated_time" TIMESTAMPTZ,
+  PRIMARY KEY("id"),
+  CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
+);
+CREATE SCHEMA IF NOT EXISTS "execution_private";
+CREATE SEQUENCE "execution_private"."User_id_seq";
+CREATE TABLE "execution_private"."User" (
+  "id" INT4 NOT NULL DEFAULT nextval('"execution_private"."User_id_seq"'::regclass),
+  "name" TEXT,
+  "email" TEXT,
+  "address_id" INT4,
+  PRIMARY KEY("id"),
+  CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
+);"""
+    await conn.conn.execute(result)
 
 
 async def test_basic_insert_update(conn):
@@ -185,10 +217,12 @@ async def test_diff(conn):
 
     result = await sync(conn, new_reg)
 
-    assert result == """DROP TABLE "execution_private"."User" CASCADE;
+    assert result == """DROP SEQUENCE "execution_private"."User_id_seq" CASCADE;
+DROP TABLE "execution_private"."User" CASCADE;
 CREATE SCHEMA IF NOT EXISTS "_private";
+CREATE SEQUENCE "_private"."NewTable_id_seq";
 CREATE TABLE "_private"."NewTable" (
-  "id" SERIAL4 NOT NULL,
+  "id" INT4 NOT NULL DEFAULT nextval('"_private"."NewTable_id_seq"'::regclass),
   PRIMARY KEY("id")
 );
 CREATE TABLE "execution"."Gender" (
@@ -257,8 +291,9 @@ async def test_json(conn):
 
     result = await sync(conn, reg_a)
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE SEQUENCE "execution"."JsonUser_id_seq";
 CREATE TABLE "execution"."JsonUser" (
-  "id" SERIAL4 NOT NULL,
+  "id" INT4 NOT NULL DEFAULT nextval('"execution"."JsonUser_id_seq"'::regclass),
   "name" JSONB,
   PRIMARY KEY("id")
 );"""
@@ -293,8 +328,9 @@ async def test_json_fix(conn):
     JsonUser.__fix_entries__ = [JsonUser(id=1, name={"given": "Given", "family": "Family"})]
     result = await sync(conn, reg_a)
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE SEQUENCE "execution"."JsonUser_id_seq";
 CREATE TABLE "execution"."JsonUser" (
-  "id" SERIAL4 NOT NULL,
+  "id" INT4 NOT NULL DEFAULT nextval('"execution"."JsonUser_id_seq"'::regclass),
   "name" JSONB,
   PRIMARY KEY("id")
 );
@@ -332,8 +368,9 @@ CREATE TYPE "execution"."CompName" AS (
   "family" TEXT,
   "xy" "execution"."CompXY"
 );
+CREATE SEQUENCE "execution"."CompUser_id_seq";
 CREATE TABLE "execution"."CompUser" (
-  "id" SERIAL4 NOT NULL,
+  "id" INT4 NOT NULL DEFAULT nextval('"execution"."CompUser_id_seq"'::regclass),
   "name" "execution"."CompName",
   PRIMARY KEY("id")
 );"""
@@ -418,8 +455,9 @@ async def test_callable_default(conn):
 
     result = await sync(conn, reg)
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE SEQUENCE "execution"."CallableDefault_id_seq";
 CREATE TABLE "execution"."CallableDefault" (
-  "id" SERIAL4 NOT NULL,
+  "id" INT4 NOT NULL DEFAULT nextval('"execution"."CallableDefault_id_seq"'::regclass),
   "creator_id" INT4,
   PRIMARY KEY("id")
 );"""
@@ -465,7 +503,9 @@ CREATE TABLE "execution"."Address" (
         id: Serial
 
     result = await sync(conn, reg)
-    assert result == """ALTER TABLE "execution"."Address"
+    assert result == """CREATE SEQUENCE "execution"."Address_id_seq";
+ALTER TABLE "execution"."Address"
+  ALTER COLUMN "id" SET DEFAULT nextval('"execution"."Address_id_seq"'::regclass),
   ALTER COLUMN "id" SET NOT NULL,
   ADD PRIMARY KEY("id");"""
     await conn.conn.execute(result)
@@ -478,10 +518,12 @@ CREATE TABLE "execution"."Address" (
         id: String
 
     result = await sync(conn, reg)
-    assert result == """ALTER TABLE "execution"."Address"
+    assert result == """DROP SEQUENCE "execution"."Address_id_seq" CASCADE;
+ALTER TABLE "execution"."Address"
   DROP CONSTRAINT IF EXISTS "Address_pkey",
   ALTER COLUMN "id" DROP NOT NULL,
-  ALTER COLUMN "id" TYPE TEXT USING "id"::TEXT;"""
+  ALTER COLUMN "id" TYPE TEXT USING "id"::TEXT,
+  ALTER COLUMN "id" DROP DEFAULT;"""
     await conn.conn.execute(result)
 
     # CHANGE PRIMARY KEY
@@ -492,9 +534,11 @@ CREATE TABLE "execution"."Address" (
         id: Serial
 
     result = await sync(conn, reg)
-    assert result == """ALTER TABLE "execution"."Address"
-  ALTER COLUMN "id" SET NOT NULL,
+    assert result == """CREATE SEQUENCE "execution"."Address_id_seq";
+ALTER TABLE "execution"."Address"
   ALTER COLUMN "id" TYPE INT4 USING "id"::INT4,
+  ALTER COLUMN "id" SET DEFAULT nextval('"execution"."Address_id_seq"'::regclass),
+  ALTER COLUMN "id" SET NOT NULL,
   ADD PRIMARY KEY("id");"""
     await conn.conn.execute(result)
 
@@ -505,8 +549,9 @@ CREATE TABLE "execution"."Address" (
         id2: Serial
 
     result = await sync(conn, reg)
-    assert result == """ALTER TABLE "execution"."Address"
-  ADD COLUMN "id2" SERIAL4 NOT NULL,
+    assert result == """CREATE SEQUENCE "execution"."Address_id2_seq";
+ALTER TABLE "execution"."Address"
+  ADD COLUMN "id2" INT4 NOT NULL DEFAULT nextval('"execution"."Address_id2_seq"'::regclass),
   DROP CONSTRAINT IF EXISTS "Address_pkey",
   ADD PRIMARY KEY("id", "id2");"""
     await conn.conn.execute(result)
@@ -528,12 +573,14 @@ async def test_fk_change(conn):
 
     result = await sync(conn, reg)
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE SEQUENCE "execution"."Address_id_seq";
 CREATE TABLE "execution"."Address" (
-  "id" SERIAL4 NOT NULL,
+  "id" INT4 NOT NULL DEFAULT nextval('"execution"."Address_id_seq"'::regclass),
   PRIMARY KEY("id")
 );
+CREATE SEQUENCE "execution"."User_id_seq";
 CREATE TABLE "execution"."User" (
-  "id" SERIAL4 NOT NULL,
+  "id" INT4 NOT NULL DEFAULT nextval('"execution"."User_id_seq"'::regclass),
   "address_id" INT4,
   PRIMARY KEY("id"),
   CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT

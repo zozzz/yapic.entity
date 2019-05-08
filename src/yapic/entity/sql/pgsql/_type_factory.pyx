@@ -49,10 +49,10 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
             return self.__composite_type(field, <CompositeImpl>impl)
 
     cdef StorageType __int_type(self, Field field, IntImpl impl):
-        pk = field.get_ext(PrimaryKey)
-        if pk is not None:
-            if (<PrimaryKey>pk).auto_increment:
-                return IntType("SERIAL" if field.max_size <= 0 else f"SERIAL{field.max_size}")
+        # pk = field.get_ext(PrimaryKey)
+        # if pk is not None:
+        #     if (<PrimaryKey>pk).auto_increment:
+        #         return IntType("SERIAL" if field.max_size <= 0 else f"SERIAL{field.max_size}")
 
         return IntType("INT" if field.max_size <= 0 else f"INT{field.max_size}")
 

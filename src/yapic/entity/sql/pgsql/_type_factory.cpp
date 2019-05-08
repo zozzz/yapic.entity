@@ -878,6 +878,7 @@ struct __pyx_obj_5yapic_6entity_6_field_FieldImpl;
 struct __pyx_obj_5yapic_6entity_6_field_StorageType;
 struct __pyx_obj_5yapic_6entity_6_field_StorageTypeFactory;
 struct __pyx_obj_5yapic_6entity_6_field_PrimaryKey;
+struct __pyx_obj_5yapic_6entity_6_field_AutoIncrement;
 struct __pyx_obj_5yapic_6entity_6_field_Index;
 struct __pyx_obj_5yapic_6entity_6_field_ForeignKey;
 struct __pyx_obj_5yapic_6entity_11_field_impl_StringImpl;
@@ -1390,16 +1391,28 @@ struct __pyx_obj_5yapic_6entity_6_field_StorageTypeFactory {
  * 
  * 
  * cdef class PrimaryKey(FieldExtension):             # <<<<<<<<<<<<<<
- *     cdef readonly bint auto_increment
+ *     pass
  * 
  */
 struct __pyx_obj_5yapic_6entity_6_field_PrimaryKey {
   struct __pyx_obj_5yapic_6entity_6_field_FieldExtension __pyx_base;
-  int auto_increment;
 };
 
 
 /* "yapic/entity/_field.pxd":38
+ * 
+ * 
+ * cdef class AutoIncrement(FieldExtension):             # <<<<<<<<<<<<<<
+ *     cdef readonly EntityType sequence
+ * 
+ */
+struct __pyx_obj_5yapic_6entity_6_field_AutoIncrement {
+  struct __pyx_obj_5yapic_6entity_6_field_FieldExtension __pyx_base;
+  struct __pyx_obj_5yapic_6entity_7_entity_EntityType *sequence;
+};
+
+
+/* "yapic/entity/_field.pxd":42
  * 
  * 
  * cdef class Index(FieldExtension):             # <<<<<<<<<<<<<<
@@ -1411,7 +1424,7 @@ struct __pyx_obj_5yapic_6entity_6_field_Index {
 };
 
 
-/* "yapic/entity/_field.pxd":42
+/* "yapic/entity/_field.pxd":46
  * 
  * 
  * cdef class ForeignKey(FieldExtension):             # <<<<<<<<<<<<<<
@@ -1656,10 +1669,12 @@ struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler {
  * 
  * 
  * cdef class DDLReflect:             # <<<<<<<<<<<<<<
+ *     cdef readonly Dialect dialect
  *     cdef EntityType entity_base
  */
 struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect {
   PyObject_HEAD
+  struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *dialect;
   struct __pyx_obj_5yapic_6entity_7_entity_EntityType *entity_base;
 };
 
@@ -2268,7 +2283,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_6_field_StorageTypeFactory *__pyx_
  * 
  * 
  * cdef class PrimaryKey(FieldExtension):             # <<<<<<<<<<<<<<
- *     cdef readonly bint auto_increment
+ *     pass
  * 
  */
 
@@ -2279,6 +2294,20 @@ static struct __pyx_vtabstruct_5yapic_6entity_6_field_PrimaryKey *__pyx_vtabptr_
 
 
 /* "yapic/entity/_field.pxd":38
+ * 
+ * 
+ * cdef class AutoIncrement(FieldExtension):             # <<<<<<<<<<<<<<
+ *     cdef readonly EntityType sequence
+ * 
+ */
+
+struct __pyx_vtabstruct_5yapic_6entity_6_field_AutoIncrement {
+  struct __pyx_vtabstruct_5yapic_6entity_6_field_FieldExtension __pyx_base;
+};
+static struct __pyx_vtabstruct_5yapic_6entity_6_field_AutoIncrement *__pyx_vtabptr_5yapic_6entity_6_field_AutoIncrement;
+
+
+/* "yapic/entity/_field.pxd":42
  * 
  * 
  * cdef class Index(FieldExtension):             # <<<<<<<<<<<<<<
@@ -2292,7 +2321,7 @@ struct __pyx_vtabstruct_5yapic_6entity_6_field_Index {
 static struct __pyx_vtabstruct_5yapic_6entity_6_field_Index *__pyx_vtabptr_5yapic_6entity_6_field_Index;
 
 
-/* "yapic/entity/_field.pxd":42
+/* "yapic/entity/_field.pxd":46
  * 
  * 
  * cdef class ForeignKey(FieldExtension):             # <<<<<<<<<<<<<<
@@ -3205,6 +3234,7 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_6_field_FieldImpl = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_field_StorageType = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_field_StorageTypeFactory = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_field_PrimaryKey = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_6_field_AutoIncrement = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_field_Index = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_field_ForeignKey = 0;
 
@@ -3301,7 +3331,6 @@ static const char __pyx_k_lower[] = "lower";
 static const char __pyx_k_value[] = "value";
 static const char __pyx_k_yapic[] = "yapic";
 static const char __pyx_k_CHAR_s[] = "CHAR(%s)";
-static const char __pyx_k_SERIAL[] = "SERIAL";
 static const char __pyx_k_create[] = "create";
 static const char __pyx_k_decode[] = "decode";
 static const char __pyx_k_encode[] = "encode";
@@ -3374,7 +3403,6 @@ static PyObject *__pyx_kp_u_Missmatch_entity_type;
 static PyObject *__pyx_kp_u_None;
 static PyObject *__pyx_n_s_PostgreType;
 static PyObject *__pyx_n_s_PostgreTypeFactory;
-static PyObject *__pyx_n_u_SERIAL;
 static PyObject *__pyx_n_s_StringType;
 static PyObject *__pyx_n_u_TEXT;
 static PyObject *__pyx_n_u_TIMESTAMP;
@@ -4063,101 +4091,20 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_18PostgreTy
  *             return self.__composite_type(field, <CompositeImpl>impl)
  * 
  *     cdef StorageType __int_type(self, Field field, IntImpl impl):             # <<<<<<<<<<<<<<
- *         pk = field.get_ext(PrimaryKey)
- *         if pk is not None:
+ *         # pk = field.get_ext(PrimaryKey)
+ *         # if pk is not None:
  */
 
 static struct __pyx_obj_5yapic_6entity_6_field_StorageType *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_18PostgreTypeFactory___int_type(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory *__pyx_v_self, struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_field, CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_11_field_impl_IntImpl *__pyx_v_impl) {
-  PyObject *__pyx_v_pk = NULL;
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  int __pyx_t_2;
-  int __pyx_t_3;
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("__int_type", 0);
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":52
- * 
- *     cdef StorageType __int_type(self, Field field, IntImpl impl):
- *         pk = field.get_ext(PrimaryKey)             # <<<<<<<<<<<<<<
- *         if pk is not None:
- *             if (<PrimaryKey>pk).auto_increment:
- */
-  __pyx_t_1 = ((struct __pyx_vtabstruct_5yapic_6entity_6_field_Field *)__pyx_v_field->__pyx_base.__pyx_base.__pyx_vtab)->__pyx_base.get_ext(((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *)__pyx_v_field), ((PyObject *)__pyx_ptype_5yapic_6entity_6_field_PrimaryKey), 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_v_pk = __pyx_t_1;
-  __pyx_t_1 = 0;
-
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":53
- *     cdef StorageType __int_type(self, Field field, IntImpl impl):
- *         pk = field.get_ext(PrimaryKey)
- *         if pk is not None:             # <<<<<<<<<<<<<<
- *             if (<PrimaryKey>pk).auto_increment:
- *                 return IntType("SERIAL" if field.max_size <= 0 else f"SERIAL{field.max_size}")
- */
-  __pyx_t_2 = (__pyx_v_pk != Py_None);
-  __pyx_t_3 = (__pyx_t_2 != 0);
-  if (__pyx_t_3) {
-
-    /* "yapic/entity/sql/pgsql/_type_factory.pyx":54
- *         pk = field.get_ext(PrimaryKey)
- *         if pk is not None:
- *             if (<PrimaryKey>pk).auto_increment:             # <<<<<<<<<<<<<<
- *                 return IntType("SERIAL" if field.max_size <= 0 else f"SERIAL{field.max_size}")
- * 
- */
-    __pyx_t_3 = (((struct __pyx_obj_5yapic_6entity_6_field_PrimaryKey *)__pyx_v_pk)->auto_increment != 0);
-    if (__pyx_t_3) {
-
-      /* "yapic/entity/sql/pgsql/_type_factory.pyx":55
- *         if pk is not None:
- *             if (<PrimaryKey>pk).auto_increment:
- *                 return IntType("SERIAL" if field.max_size <= 0 else f"SERIAL{field.max_size}")             # <<<<<<<<<<<<<<
- * 
- *         return IntType("INT" if field.max_size <= 0 else f"INT{field.max_size}")
- */
-      __Pyx_XDECREF(((PyObject *)__pyx_r));
-      if (((__pyx_v_field->max_size <= 0) != 0)) {
-        __Pyx_INCREF(__pyx_n_u_SERIAL);
-        __pyx_t_1 = __pyx_n_u_SERIAL;
-      } else {
-        __pyx_t_4 = __Pyx_PyUnicode_From_int(__pyx_v_field->max_size, 0, ' ', 'd'); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 55, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_5 = __Pyx_PyUnicode_Concat(__pyx_n_u_SERIAL, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 55, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_5);
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_1 = __pyx_t_5;
-        __pyx_t_5 = 0;
-      }
-      __pyx_t_5 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_IntType), __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 55, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_r = ((struct __pyx_obj_5yapic_6entity_6_field_StorageType *)__pyx_t_5);
-      __pyx_t_5 = 0;
-      goto __pyx_L0;
-
-      /* "yapic/entity/sql/pgsql/_type_factory.pyx":54
- *         pk = field.get_ext(PrimaryKey)
- *         if pk is not None:
- *             if (<PrimaryKey>pk).auto_increment:             # <<<<<<<<<<<<<<
- *                 return IntType("SERIAL" if field.max_size <= 0 else f"SERIAL{field.max_size}")
- * 
- */
-    }
-
-    /* "yapic/entity/sql/pgsql/_type_factory.pyx":53
- *     cdef StorageType __int_type(self, Field field, IntImpl impl):
- *         pk = field.get_ext(PrimaryKey)
- *         if pk is not None:             # <<<<<<<<<<<<<<
- *             if (<PrimaryKey>pk).auto_increment:
- *                 return IntType("SERIAL" if field.max_size <= 0 else f"SERIAL{field.max_size}")
- */
-  }
-
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":57
- *                 return IntType("SERIAL" if field.max_size <= 0 else f"SERIAL{field.max_size}")
+ *         #         return IntType("SERIAL" if field.max_size <= 0 else f"SERIAL{field.max_size}")
  * 
  *         return IntType("INT" if field.max_size <= 0 else f"INT{field.max_size}")             # <<<<<<<<<<<<<<
  * 
@@ -4166,40 +4113,39 @@ static struct __pyx_obj_5yapic_6entity_6_field_StorageType *__pyx_f_5yapic_6enti
   __Pyx_XDECREF(((PyObject *)__pyx_r));
   if (((__pyx_v_field->max_size <= 0) != 0)) {
     __Pyx_INCREF(__pyx_n_u_INT);
-    __pyx_t_5 = __pyx_n_u_INT;
+    __pyx_t_1 = __pyx_n_u_INT;
   } else {
-    __pyx_t_1 = __Pyx_PyUnicode_From_int(__pyx_v_field->max_size, 0, ' ', 'd'); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = __Pyx_PyUnicode_Concat(__pyx_n_u_INT, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 57, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_5 = __pyx_t_4;
-    __pyx_t_4 = 0;
+    __pyx_t_2 = __Pyx_PyUnicode_From_int(__pyx_v_field->max_size, 0, ' ', 'd'); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_n_u_INT, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_1 = __pyx_t_3;
+    __pyx_t_3 = 0;
   }
-  __pyx_t_4 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_IntType), __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 57, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_r = ((struct __pyx_obj_5yapic_6entity_6_field_StorageType *)__pyx_t_4);
-  __pyx_t_4 = 0;
+  __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_IntType), __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = ((struct __pyx_obj_5yapic_6entity_6_field_StorageType *)__pyx_t_3);
+  __pyx_t_3 = 0;
   goto __pyx_L0;
 
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":51
  *             return self.__composite_type(field, <CompositeImpl>impl)
  * 
  *     cdef StorageType __int_type(self, Field field, IntImpl impl):             # <<<<<<<<<<<<<<
- *         pk = field.get_ext(PrimaryKey)
- *         if pk is not None:
+ *         # pk = field.get_ext(PrimaryKey)
+ *         # if pk is not None:
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
   __Pyx_AddTraceback("yapic.entity.sql.pgsql._type_factory.PostgreTypeFactory.__int_type", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_pk);
   __Pyx_XGIVEREF((PyObject *)__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -10232,7 +10178,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_None, __pyx_k_None, sizeof(__pyx_k_None), 0, 1, 0, 0},
   {&__pyx_n_s_PostgreType, __pyx_k_PostgreType, sizeof(__pyx_k_PostgreType), 0, 0, 1, 1},
   {&__pyx_n_s_PostgreTypeFactory, __pyx_k_PostgreTypeFactory, sizeof(__pyx_k_PostgreTypeFactory), 0, 0, 1, 1},
-  {&__pyx_n_u_SERIAL, __pyx_k_SERIAL, sizeof(__pyx_k_SERIAL), 0, 1, 0, 1},
   {&__pyx_n_s_StringType, __pyx_k_StringType, sizeof(__pyx_k_StringType), 0, 0, 1, 1},
   {&__pyx_n_u_TEXT, __pyx_k_TEXT, sizeof(__pyx_k_TEXT), 0, 1, 0, 1},
   {&__pyx_n_u_TIMESTAMP, __pyx_k_TIMESTAMP, sizeof(__pyx_k_TIMESTAMP), 0, 1, 0, 1},
@@ -10780,12 +10725,15 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_5yapic_6entity_6_field_PrimaryKey = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field", "PrimaryKey", sizeof(struct __pyx_obj_5yapic_6entity_6_field_PrimaryKey), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_6entity_6_field_PrimaryKey) __PYX_ERR(5, 34, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_6_field_PrimaryKey = (struct __pyx_vtabstruct_5yapic_6entity_6_field_PrimaryKey*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_6_field_PrimaryKey->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_6_field_PrimaryKey)) __PYX_ERR(5, 34, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_6_field_AutoIncrement = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field", "AutoIncrement", sizeof(struct __pyx_obj_5yapic_6entity_6_field_AutoIncrement), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_6_field_AutoIncrement) __PYX_ERR(5, 38, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_6_field_AutoIncrement = (struct __pyx_vtabstruct_5yapic_6entity_6_field_AutoIncrement*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_6_field_AutoIncrement->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_6_field_AutoIncrement)) __PYX_ERR(5, 38, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_6_field_Index = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field", "Index", sizeof(struct __pyx_obj_5yapic_6entity_6_field_Index), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_6_field_Index) __PYX_ERR(5, 38, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_6_field_Index = (struct __pyx_vtabstruct_5yapic_6entity_6_field_Index*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_6_field_Index->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_6_field_Index)) __PYX_ERR(5, 38, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_6_field_Index) __PYX_ERR(5, 42, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_6_field_Index = (struct __pyx_vtabstruct_5yapic_6entity_6_field_Index*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_6_field_Index->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_6_field_Index)) __PYX_ERR(5, 42, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_6_field_ForeignKey = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field", "ForeignKey", sizeof(struct __pyx_obj_5yapic_6entity_6_field_ForeignKey), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_6_field_ForeignKey) __PYX_ERR(5, 42, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_6_field_ForeignKey = (struct __pyx_vtabstruct_5yapic_6entity_6_field_ForeignKey*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_6_field_ForeignKey->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_6_field_ForeignKey)) __PYX_ERR(5, 42, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_6_field_ForeignKey) __PYX_ERR(5, 46, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_6_field_ForeignKey = (struct __pyx_vtabstruct_5yapic_6entity_6_field_ForeignKey*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_6_field_ForeignKey->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_6_field_ForeignKey)) __PYX_ERR(5, 46, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("yapic.entity._field_impl"); if (unlikely(!__pyx_t_1)) __PYX_ERR(6, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);

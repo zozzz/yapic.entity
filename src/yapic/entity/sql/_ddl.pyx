@@ -1,9 +1,9 @@
-from yapic.entity._entity cimport EntityType
+from yapic.entity._entity cimport EntityType, EntityAttributeExt
 from yapic.entity._entity_diff cimport EntityDiff
 from yapic.entity._entity_diff import EntityDiffKind
 from yapic.entity._registry cimport RegistryDiff
 from yapic.entity._registry import RegistryDiffKind
-from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, collect_foreign_keys, StorageType
+from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, AutoIncrement, collect_foreign_keys, StorageType
 from yapic.entity._expression cimport Expression
 
 from ._dialect cimport Dialect
@@ -18,9 +18,12 @@ cdef class DDLCompiler:
         cdef list table_parts = []
         cdef list requirements = []
         is_type = entity.__meta__.get("is_type", False) is True
+        is_sequence = entity.__meta__.get("is_sequence", False) is True
 
         if is_type is True:
             table_parts.append(f"CREATE TYPE {self.dialect.table_qname(entity)} AS (\n")
+        elif is_sequence is True:
+            return f"CREATE SEQUENCE {self.dialect.table_qname(entity)};"
         else:
             table_parts.append(f"CREATE TABLE {self.dialect.table_qname(entity)} (\n")
 
@@ -56,6 +59,9 @@ cdef class DDLCompiler:
 
     def compile_field(self, Field field, list requirements):
         cdef StorageType type = self.dialect.get_field_type(field)
+        cdef EntityAttributeExt ext
+        cdef EntityType seq
+
         if type is None:
             raise ValueError("Cannot determine the sql type of %r" % field)
 
@@ -78,6 +84,11 @@ cdef class DDLCompiler:
                 pass  # no default value
             else:
                 res += f" DEFAULT {self.dialect.quote_value(type.encode(field._default_))}"
+        else:
+            ext = field.get_ext(AutoIncrement)
+            if ext:
+                seq = (<AutoIncrement>ext).sequence
+                res += f" DEFAULT nextval({self.dialect.quote_value(self.dialect.table_qname(seq))}::regclass)"
 
         return res
 
@@ -113,6 +124,7 @@ cdef class DDLCompiler:
     def compile_registry_diff(self, RegistryDiff diff):
         lines = []
         schemas_created = {ent.__meta__.get("schema", "public") for ent in diff.a.values()}
+        schemas_created.add("public")
 
         for kind, param in diff:
             if kind is RegistryDiffKind.REMOVED:
@@ -207,11 +219,8 @@ cdef class DDLCompiler:
         if type is None:
             raise ValueError("Cannot determine the sql type of %r" % field)
 
-        if "nullable" in diff:
-            if diff["nullable"]:
-                result.append(f"ALTER COLUMN {col_name} DROP NOT NULL")
-            else:
-                result.append(f"ALTER COLUMN {col_name} SET NOT NULL")
+        if "nullable" in diff and diff["nullable"]:
+            result.append(f"ALTER COLUMN {col_name} DROP NOT NULL")
 
         if "_impl_" in diff or "size" in diff:
             # TODO: better handling of serial
@@ -222,36 +231,49 @@ cdef class DDLCompiler:
                 result.append(f"ALTER COLUMN {col_name} TYPE {type.name} USING {col_name}::{type.name}")
 
         if "_default_" in diff:
-            if diff["_default_"] is None:
+            _default = diff["_default_"]
+            if _default is None:
                 result.append(f"ALTER COLUMN {col_name} DROP DEFAULT")
+            elif isinstance(_default, AutoIncrement):
+                seq = (<AutoIncrement>_default).sequence
+                default = f"nextval({self.dialect.quote_value(self.dialect.table_qname(seq))}::regclass)"
+                result.append(f"ALTER COLUMN {col_name} SET DEFAULT {default}")
             else:
-                if isinstance(diff["_default_"], Expression):
+                if isinstance(_default, Expression):
                     qc = self.dialect.create_query_compiler()
                     default = qc.visit(diff['_default_'])
-                elif callable(diff["_default_"]):
+                elif callable(_default):
                     if field.nullable:
                         default = "NULL"
                     else:
                         default = None
                 else:
-                    default = self.dialect.quote_value(type.encode(diff["_default_"]))
+                    default = self.dialect.quote_value(type.encode(_default))
 
                 if default is None:
                     result.append(f"ALTER COLUMN {col_name} DROP DEFAULT")
                 else:
                     result.append(f"ALTER COLUMN {col_name} SET DEFAULT {default}")
 
+        if "nullable" in diff and not diff["nullable"]:
+            result.append(f"ALTER COLUMN {col_name} SET NOT NULL")
+
         return result
 
     def drop_entity(self, EntityType entity):
-        if entity.__meta__.get("is_type", False) is True:
+        cdef bint is_type = entity.__meta__.get("is_type", False) is True
+        cdef bint is_sequence = entity.__meta__.get("is_sequence", False) is True
+        if is_type:
             return f"DROP TYPE {self.dialect.table_qname(entity)} CASCADE;"
+        elif is_sequence:
+            return f"DROP SEQUENCE {self.dialect.table_qname(entity)} CASCADE;"
         else:
             return f"DROP TABLE {self.dialect.table_qname(entity)} CASCADE;"
 
 
 cdef class DDLReflect:
-    def __cinit__(self, EntityType entity_base):
+    def __cinit__(self, Dialect dialect, EntityType entity_base):
+        self.dialect = dialect
         self.entity_base = entity_base
 
     async def get_entities(self, Connection conn, Registry registry):

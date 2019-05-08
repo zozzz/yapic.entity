@@ -2,7 +2,7 @@ import cython
 from enum import Enum
 
 from ._entity cimport EntityType
-from ._field cimport Field, collect_foreign_keys
+from ._field cimport Field, AutoIncrement, collect_foreign_keys
 from ._expression cimport Expression
 
 
@@ -67,7 +67,7 @@ cdef class EntityDiff:
         if fk_changes:
             self.changes.extend(fk_changes[1])
 
-        print("\n".join(map(repr, self.changes)))
+        # print("\n".join(map(repr, self.changes)))
 
     def __bool__(self):
         return len(self.changes) > 0
@@ -98,7 +98,17 @@ cdef inline dict field_eq(Field a, Field b, object expression_eq):
     if a.nullable is not b.nullable:
         result["nullable"] = b.nullable
 
-    if not isinstance(a._default_, Expression) and not isinstance(b._default_, Expression):
+    a_ac = a.get_ext(AutoIncrement)
+    b_ac = b.get_ext(AutoIncrement)
+
+    if a_ac or b_ac:
+        if a_ac and b_ac:
+            pass
+        elif a_ac:
+            result["_default_"] = None
+        else:
+            result["_default_"] = b_ac
+    elif not isinstance(a._default_, Expression) and not isinstance(b._default_, Expression):
         if not callable(a._default_) and not callable(b._default_):
             if a._default_ != b._default_:
                 result["_default_"] = b._default_

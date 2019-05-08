@@ -38,8 +38,8 @@ cdef class Connection:
             qc.select
         )
 
-    async def create_entity(self, EntityType ent, *, drop=False):
-        raise NotImplementedError()
+    # async def create_entity(self, EntityType ent, *, drop=False):
+    #     raise NotImplementedError()
 
     async def insert(self, EntityBase entity):
         raise NotImplementedError()

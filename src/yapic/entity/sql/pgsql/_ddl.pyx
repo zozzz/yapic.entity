@@ -2,7 +2,7 @@
 
 from yapic.entity._entity import Entity
 from yapic.entity._entity cimport EntityType, EntityAttribute
-from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, StorageType
+from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, AutoIncrement, StorageType
 from yapic.entity._field_impl cimport IntImpl, StringImpl, BytesImpl, ChoiceImpl, BoolImpl, DateImpl, DateTimeImpl, DateTimeTzImpl, JsonImpl, CompositeImpl
 from yapic.entity._registry cimport Registry
 from yapic.entity._expression cimport RawExpression
@@ -29,7 +29,7 @@ cdef class PostgreDDLReflect(DDLReflect):
             FROM pg_type
                 INNER JOIN pg_namespace ON pg_namespace.oid=pg_type.typnamespace
                 INNER JOIN pg_class ON pg_class.oid=pg_type.typrelid
-            WHERE "pg_class"."relkind" IN('r', 'c')
+            WHERE "pg_class"."relkind" IN('r', 'c', 'S')
                 AND pg_namespace.nspname != 'information_schema'
                 AND pg_namespace.nspname NOT LIKE 'pg_%'
             ORDER BY "pg_class"."relkind" = 'r' ASC, pg_type.typrelid ASC""")
@@ -37,9 +37,14 @@ cdef class PostgreDDLReflect(DDLReflect):
         cdef EntityAttribute attr
 
         for id, schema, table, kind in types:
-            fields = await self.get_fields(conn, registry, schema, table, id)
-            entity = await self.create_entity(conn, registry, schema, table, fields)
+            if kind == b"S":
+                fields = []
+                entity = await self.create_entity(conn, registry, schema, table, fields)
+            else:
+                fields = await self.get_fields(conn, registry, schema, table, id)
+                entity = await self.create_entity(conn, registry, schema, table, fields)
             entity.__meta__["is_type"] = kind == b"c"
+            entity.__meta__["is_sequence"] = kind == b"S"
 
             for attr in entity.__fields__:
                 if attr._default_ is not None:
@@ -144,12 +149,13 @@ cdef class PostgreDDLReflect(DDLReflect):
 
             if default is not None:
                 if primary:
-                    prefix = f'"{schema}".' if schema != "public" else ''
-                    name = record["name"]
-                    auto_increment_default = f"""nextval('{prefix}"{table}_{name}_seq"'::regclass)"""
-                    field // PrimaryKey(auto_increment=auto_increment_default == default)
-                    skip_default = True
+                    field // PrimaryKey()
                     skip_primary = True
+
+                ac = await self.get_auto_increment(conn, registry, schema, table, record["name"], default)
+                if ac:
+                    field // ac
+                    skip_default = True
         elif typename == "text":
             field = Field(StringImpl(), nullable=is_nullable)
         elif typename == "bytea":
@@ -219,6 +225,32 @@ cdef class PostgreDDLReflect(DDLReflect):
             field // fk
             fk.bind(field)
 
+    async def get_auto_increment(self, Connection conn, Registry registry, str schema, str table, str field, default):
+        if schema != "public":
+            prefix = await self.real_quote_ident(conn, schema)
+            prefix += "."
+            table_qname = f"{schema}."
+        else:
+            prefix = ""
+            table_qname = ""
+
+        seq_name = f"{table}_{field}_seq"
+        seq_name_q = await self.real_quote_ident(conn, seq_name)
+        auto_increment_default = f"""nextval('{prefix}{seq_name_q}'::regclass)"""
+        if auto_increment_default == default:
+            table_qname += seq_name
+
+            try:
+                seq = registry[table_qname]
+            except KeyError:
+                seq = None
+
+            return AutoIncrement(seq)
+        else:
+            return None
+
+    async def real_quote_ident(self, Connection conn, ident):
+        return await conn.conn.fetchval(f"SELECT quote_ident({self.dialect.quote_value(ident)})")
 
 
 

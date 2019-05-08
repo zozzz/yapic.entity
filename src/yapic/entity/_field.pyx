@@ -112,19 +112,36 @@ cdef class StorageTypeFactory:
 
 
 cdef class PrimaryKey(FieldExtension):
-    def __cinit__(self, *, bint auto_increment = False):
-        self.auto_increment = auto_increment
+    pass
 
-    cpdef object clone(self):
-        return type(self)(auto_increment=self.auto_increment)
+
+cdef class AutoIncrement(FieldExtension):
+    def __cinit__(self, EntityType sequence=None):
+        self.sequence = sequence
+
+    cpdef object bind(self, EntityAttribute attr):
+        cdef EntityType entity
+
+        if self.sequence is None:
+            entity = attr._entity_
+
+            try:
+                schema = entity.__meta__["schema"]
+            except KeyError:
+                schema = None
+
+            name = f"{entity.__name__}_{attr._name_}_seq"
+            self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=entity.__registry__, is_sequence=True)
+
+        attr._deps_.add(self.sequence)
+        return True
 
     def __repr__(self):
-        return "@PrimaryKey(auto_increment=%r)" % self.auto_increment
+        return "@AutoIncrement(%r)" % self.sequence
 
 
 cdef class Index(FieldExtension):
-    def __repr__(self):
-        return "@Index()"
+    pass
 
 
 # todo: faster eval, with Py_CompileString(ref, "<string>", Py_eval_input); PyEval_EvalCode

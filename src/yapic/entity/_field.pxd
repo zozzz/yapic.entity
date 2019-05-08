@@ -32,7 +32,11 @@ cdef class StorageTypeFactory:
 
 
 cdef class PrimaryKey(FieldExtension):
-    cdef readonly bint auto_increment
+    pass
+
+
+cdef class AutoIncrement(FieldExtension):
+    cdef readonly EntityType sequence
 
 
 cdef class Index(FieldExtension):

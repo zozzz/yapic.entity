@@ -404,6 +404,9 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                 else:
                     updates.append(f"{name}=${i+1}")
 
+        if not updates:
+            return None
+
         if not where:
             raise RuntimeError("TODO: ...")
 
