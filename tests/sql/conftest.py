@@ -57,3 +57,14 @@ async def pgsql(pgsql_docker):
         else:
             await connection.close()
             return
+
+
+@pytest.fixture
+async def pgclean(pgsql):
+    q = """SELECT 'DROP SCHEMA "' || nspname || '" CASCADE;'
+        FROM pg_namespace
+        WHERE nspname != 'information_schema'
+            AND nspname != 'public'
+            AND nspname NOT LIKE 'pg_%';"""
+    for r in await pgsql.fetch(q):
+        await pgsql.execute(r[0])

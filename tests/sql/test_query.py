@@ -3,7 +3,7 @@ import pytest
 
 from yapic.entity.sql import PostgreDialect
 from yapic.entity import (Query, Entity, Serial, String, DateTimeTz, Json, Composite, and_, or_, Int, ForeignKey, One,
-                          ManyAcross, Field, func)
+                          ManyAcross, Field, func, Registry, Auto)
 
 dialect = PostgreDialect()
 
@@ -402,3 +402,29 @@ def test_composite():
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == """SELECT "t0"."id", "t0"."author_id" FROM "Article2" "t0" INNER JOIN "UserComp2" "t1" ON "t0"."author_id" = "t1"."id" WHERE "t1"."name"."family" = $1 AND jsonb_extract_path("t1"."name"."xyz", 'z') = $2"""
     assert params == ("Kiss", 1)
+
+
+reg_ambiguous = Registry()
+
+
+class UserA(Entity, registry=reg_ambiguous):
+    id: Serial
+
+
+class ArticleA(Entity, registry=reg_ambiguous):
+    id: Serial
+
+    creator_id: Auto = ForeignKey(UserA.id)
+    creator: One[UserA] = "UserA.id == ArticleA.creator_id"
+
+    updater_id: Auto = ForeignKey(User.id)
+    updater: One[UserA] = "UserA.id == ArticleA.updater_id"
+
+
+def test_ambiguous():
+    q = Query().select_from(ArticleA) \
+        .where(ArticleA.creator.id == 1) \
+        .where(ArticleA.updater.id.is_null())
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == ""
+    assert params == ()

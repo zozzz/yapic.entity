@@ -117,7 +117,6 @@ cdef class DependencyList(list):
 cdef class PolymorphMeta:
     cdef readonly tuple id_fields
     cdef readonly dict entities
-    cdef readonly dict joins
 
-    cdef object add(self, object id, EntityType entity, Expression join)
+    cdef object add(self, object id, EntityType entity, object relation)
     cdef tuple normalize_id(self, object id)

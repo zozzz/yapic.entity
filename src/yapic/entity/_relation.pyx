@@ -78,7 +78,6 @@ cdef class RelatedField(Field):
             if self.__rfield__ is None:
                 self.__rfield__ = getattr(self.__relation__._impl_.joined, self._name_)
                 self.__rpath__ = getattr(self.__relation__, self._name_)
-                print("WTF ??? __rpath__", self.__rpath__)
         else:
             return False
 

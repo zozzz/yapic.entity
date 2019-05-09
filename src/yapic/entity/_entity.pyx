@@ -93,9 +93,10 @@ cdef class EntityType(type):
                 for attr in base_entity.__fields__:
                     if attr.get_ext(PrimaryKey):
                         self_pk = Field(AutoImpl(), name=attr._name_) \
-                            // ForeignKey(attr, on_delete="CASCADE", on_update="CASCADE") \
+                            // ForeignKey(attr, name="polymorph_fkey", on_delete="CASCADE", on_update="CASCADE") \
                             // PrimaryKey()
                         fields.append(self_pk)
+                        (<EntityAttribute>self_pk)._key_ = attr._key_
                         setattr(self, attr._key_, self_pk)
 
                         if poly_join is None:
@@ -105,11 +106,12 @@ cdef class EntityType(type):
                     else:
                         self_attr = RelatedField(poly_relation, name=attr._name_)
                         fields.append(self_attr)
+                        (<EntityAttribute>self_attr)._key_ = attr._key_
                         setattr(self, attr._key_, self_attr)
 
                 (<Relation>poly_relation)._default_ = poly_join
                 __attrs__.append(poly_relation)
-                poly_meta.add(self.__meta__["polymorph_id"], self, poly_join)
+                poly_meta.add(self.__meta__["polymorph_id"], self, poly_relation)
 
 
             # copy pk from base entity if polymorp
@@ -303,7 +305,7 @@ cdef class EntityAttribute(Expression):
             impl = args[0]
             if isinstance(impl, EntityAttributeImpl):
                 self._impl_ = impl
-                self._impl = None
+                self._impl = impl
             else:
                 self._impl_ = None
                 self._impl = impl
@@ -347,7 +349,7 @@ cdef class EntityAttribute(Expression):
 
         if self._impl_ is None:
             if self._impl is None:
-                raise TypeError("Missing attribute implementation")
+                raise TypeError("Missing attribute implementation: %r" % self)
 
             if is_forward_decl(self._impl):
                 try:
@@ -882,16 +884,14 @@ cdef class PolymorphMeta:
     def __cinit__(self, EntityType ent, object id):
         self.id_fields = self.normalize_id(id)
         self.entities = {}
-        self.joins = {}
 
-    cdef object add(self, object id, EntityType entity, Expression join):
+    cdef object add(self, object id, EntityType entity, object relation):
         id = self.normalize_id(id)
 
         if id in self.entities:
             raise ValueError("This polymorph_id is already registered: %r" % id)
 
-        self.entities[id] = entity
-        self.joins[id] = join
+        self.entities[entity] = (id, relation)
 
     cdef tuple normalize_id(self, object id):
         if not isinstance(id, tuple):

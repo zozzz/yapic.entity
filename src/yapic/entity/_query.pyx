@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 
-from yapic.entity._entity cimport EntityType
+from yapic.entity._entity cimport EntityType, PolymorphMeta, DependencyList
 from yapic.entity._field cimport Field
 from yapic.entity._expression cimport (Expression, AliasExpression, DirectionExpression, Visitor, BinaryExpression,
     UnaryExpression, CastExpression, CallExpression, RawExpression, PathExpression)
@@ -212,7 +212,7 @@ cdef class Query(Expression):
         cdef Query res = self.clone()
         cdef QueryFinalizer qf = QueryFinalizer(res)
 
-        qf.auto_join()
+        qf.finalize()
 
         return res
 
@@ -247,7 +247,7 @@ cdef class QueryFinalizer(Visitor):
         pass
 
     def visit_field(self, expr):
-        pass
+        self.q.join(expr._entity_)
 
     def visit_const(self, expr):
         pass
@@ -259,24 +259,14 @@ cdef class QueryFinalizer(Visitor):
     def visit_alias(self, AliasExpression expr):
         self.visit(expr.expr)
 
-    # def visit_entity_alias(self, EntityAliasExpression expr):
-    #     pass
-
-# cdef class RelationAttribute(Expression):
-#     cdef Relation relation
-#     cdef EntityAttribute attr
-
-    # def visit_relation_attribute(self, RelationAttribute expr):
-    #     self.q.join(expr.relation)
-
     def visit_path(self, PathExpression expr):
         if isinstance(expr._primary_, Relation):
             self.q.join(expr._primary_)
 
         return PathExpression(expr._primary_, list(expr._path_))
 
-    def auto_join(self, *expr_list):
-        if self.q.columns: self._visit_list(self.q.columns)
+    def finalize(self, *expr_list):
+        if self.q.columns: self._visit_columns(self.q.columns)
         if self.q.where_clause: self._visit_list(self.q.where_clause)
         if self.q.orders: self._visit_list(self.q.orders)
         if self.q.groups: self._visit_list(self.q.groups)
@@ -284,23 +274,70 @@ cdef class QueryFinalizer(Visitor):
         if self.q.distincts: self._visit_list(self.q.distincts)
 
         if not self.q.columns:
-            self.q.columns = list(self.q.from_clause)
+            self._visit_columns(self.q.from_clause)
+
+    def _visit_columns(self, expr_list):
+        cdef list columns = []
+
+        for expr in expr_list:
+            if isinstance(expr, EntityType):
+                columns.extend(self._select_entity(<EntityType>expr))
+            else:
+                columns.append(expr)
+                self.visit(expr)
+
+        self.q.columns = columns
 
     def _visit_list(self, expr_list):
         for expr in expr_list:
-            if isinstance(expr, EntityType):
-                self.q.join(expr)
-            else:
-                self.visit(expr)
+            self.visit(expr)
 
-    @contextmanager
-    def _replace_visitor(self, name, v):
-        original = getattr(self, name)
-        try:
-            setattr(self, name, v)
-            yield self
-        finally:
-            setattr(self, name, original)
+    def _select_entity(self, EntityType entity):
+        cdef PolymorphMeta polymorph = entity.__meta__.get("polymorph", None)
+        cdef DependencyList deps = DependencyList()
+        cdef EntityType pentity
+        cdef Field field
+
+        if polymorph:
+            pcols = {}
+            pentities = []
+            self._get_poly_entities(entity, polymorph, pentities, deps)
+            pentities.sort(key=deps.index)
+
+            for i in range(1, len(pentities)):
+                pentity = pentities[i]
+                self.q.join(pentity, polymorph.entities[pentity][1]._impl_.join_expr, "LEFT")
+
+            for pentity in pentities:
+                for field in pentity.__fields__:
+                    fname = field._name_
+                    if fname not in pcols:
+                        pcols[fname] = field
+
+            return pcols.values()
+        else:
+            return entity.__fields__
+
+    def _get_poly_entities(self, EntityType from_entity, PolymorphMeta polymorph, list result, DependencyList deps):
+        cdef Relation relation
+
+        if from_entity not in result:
+            result.append(from_entity)
+            deps.add(from_entity)
+
+        for id, relation in polymorph.entities.values():
+            if relation._impl_.joined is from_entity:
+                self._get_poly_entities(relation._entity_, polymorph, result, deps)
+
+
+    # @contextmanager
+    # def _replace_visitor(self, name, v):
+    #     original = getattr(self, name)
+    #     try:
+    #         setattr(self, name, v)
+    #         yield self
+    #     finally:
+    #         setattr(self, name, original)
 
 
 cdef inline determine_join(Query q, EntityType joined):

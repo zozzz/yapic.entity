@@ -99,7 +99,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
         for ent, condition, type in joins.values():
             qname, alias = self._add_entity_alias(ent)
-            result.append(f"{type} JOIN {qname} {alias} ON {self.visit(condition)}")
+            result.append(f"{type + ' ' if type else ''}JOIN {qname} {alias} ON {self.visit(condition)}")
 
         return " ".join(result)
 
