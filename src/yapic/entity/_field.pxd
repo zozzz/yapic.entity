@@ -13,6 +13,10 @@ cdef class Field(EntityAttribute):
     cpdef StorageType get_type(self, StorageTypeFactory factory)
 
 
+# cdef class FieldProxy(Field):
+#     cdef readonly Field __proxied__
+
+
 cdef class FieldExtension(EntityAttributeExt):
     pass
 

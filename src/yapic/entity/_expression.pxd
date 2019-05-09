@@ -61,14 +61,14 @@ cdef class PathExpression(Expression):
     cdef readonly list _path_
 
 
-cdef class GetAttrExprisson(Expression):
-    cdef readonly Expression obj
-    cdef readonly object path
+# cdef class GetAttrExprisson(Expression):
+#     cdef readonly Expression obj
+#     cdef readonly object path
 
 
-cdef class GetItemExprisson(Expression):
-    cdef readonly Expression obj
-    cdef object index
+# cdef class GetItemExprisson(Expression):
+#     cdef readonly Expression obj
+#     cdef object index
 
 
 cpdef direction(Expression expr, str dir)

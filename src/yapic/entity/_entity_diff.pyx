@@ -20,12 +20,13 @@ class EntityDiffKind(Enum):
 @cython.final
 cdef class EntityDiff:
     def __cinit__(self, EntityType a, EntityType b, object expression_eq=None):
+        cdef Field field
         self.a = a
         self.b = b
         self.changes = []
 
-        a_fields = {f._name_: f for f in a.__fields__}
-        b_fields = {f._name_: f for f in b.__fields__}
+        a_fields = {field._name_: field for field in a.__fields__ if not field._virtual_}
+        b_fields = {field._name_: field for field in b.__fields__ if not field._virtual_}
         a_field_names = set(a_fields.keys())
         b_field_names = set(b_fields.keys())
 

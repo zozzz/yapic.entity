@@ -10,8 +10,9 @@ from cpython.ref cimport Py_DECREF, Py_INCREF, Py_XDECREF, Py_XINCREF
 from cpython.tuple cimport PyTuple_SetItem, PyTuple_GetItem, PyTuple_New, PyTuple_GET_SIZE, PyTuple_SET_ITEM, PyTuple_GET_ITEM, PyTuple_Pack
 from cpython.module cimport PyImport_Import, PyModule_GetDict
 
-from ._field cimport Field, PrimaryKey
-from ._relation cimport Relation
+from ._field cimport Field, PrimaryKey, ForeignKey
+from ._field_impl cimport AutoImpl
+from ._relation cimport Relation, ManyToOne, RelatedItem, RelatedField
 from ._factory cimport Factory, get_type_hints, new_instance_from_forward, is_forward_decl
 from ._expression cimport Visitor, Expression
 from ._registry cimport Registry
@@ -38,6 +39,7 @@ cdef class EntityType(type):
         cdef EntityAttribute attr
         cdef EntityType aliased
         cdef EntityType base_entity = None
+        cdef PolymorphMeta poly_meta = None
         cdef tuple hints
         cdef object polymorph = self.__meta__.get("polymorph", None)
 
@@ -58,6 +60,7 @@ cdef class EntityType(type):
             if not isinstance(polymorph, PolymorphMeta):
                 polymorph = PolymorphMeta(self, polymorph)
                 self.__meta__["polymorph"] = polymorph
+            poly_meta = <PolymorphMeta>polymorph
 
         if is_alias:
             aliased = <EntityType>bases[0]
@@ -83,11 +86,37 @@ cdef class EntityType(type):
         else:
             hints = get_type_hints(self)
 
+            if poly_meta and base_entity.__fields__:
+                poly_join = None
+                poly_relation = Relation(ManyToOne(base_entity, RelatedItem()))
+
+                for attr in base_entity.__fields__:
+                    if attr.get_ext(PrimaryKey):
+                        self_pk = Field(AutoImpl(), name=attr._name_) \
+                            // ForeignKey(attr, on_delete="CASCADE", on_update="CASCADE") \
+                            // PrimaryKey()
+                        fields.append(self_pk)
+                        setattr(self, attr._key_, self_pk)
+
+                        if poly_join is None:
+                            poly_join = self_pk == attr
+                        else:
+                            poly_join &= self_pk == attr
+                    else:
+                        self_attr = RelatedField(poly_relation, name=attr._name_)
+                        fields.append(self_attr)
+                        setattr(self, attr._key_, self_attr)
+
+                (<Relation>poly_relation)._default_ = poly_join
+                __attrs__.append(poly_relation)
+                poly_meta.add(self.__meta__["polymorph_id"], self, poly_join)
+
+
             # copy pk from base entity if polymorp
 
             if hints[1] is not None:
                 for name, type in (<dict>hints[1]).items():
-                    if polymorph and hasattr(base_entity, name):
+                    if poly_meta and hasattr(base_entity, name):
                         continue
 
                     factory = Factory.create(type)
@@ -271,11 +300,16 @@ cdef EntityAttribute init_attribute(EntityAttribute by_type, object value):
 cdef class EntityAttribute(Expression):
     def __cinit__(self, *args, **kwargs):
         if args:
-            self._impl = args[0]
+            impl = args[0]
+            if isinstance(impl, EntityAttributeImpl):
+                self._impl_ = impl
+                self._impl = None
+            else:
+                self._impl_ = None
+                self._impl = impl
         else:
             self._impl = None
 
-        self._impl_ = None
         self._exts_ = []
         self._deps_ = set()
 
@@ -322,13 +356,13 @@ cdef class EntityAttribute(Expression):
                     return False
             else:
                 self._impl_ = self._impl
-
             self._impl = None
-            if not self._impl_.inited:
-                if self._impl_.init(self) is False:
-                    return False
-                else:
-                    self._impl_.inited = True
+
+        if not self._impl_.inited:
+            if self._impl_.init(self) is False:
+                return False
+            else:
+                self._impl_.inited = True
 
         cdef EntityAttributeExt ext
         for ext in self._exts_:

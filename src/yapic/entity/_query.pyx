@@ -5,7 +5,7 @@ from yapic.entity._field cimport Field
 from yapic.entity._expression cimport (Expression, AliasExpression, DirectionExpression, Visitor, BinaryExpression,
     UnaryExpression, CastExpression, CallExpression, RawExpression, PathExpression)
 from yapic.entity._expression import and_
-from yapic.entity._relation cimport Relation, RelationImpl, ManyToMany, determine_join_expr
+from yapic.entity._relation cimport Relation, RelationImpl, ManyToMany, RelatedField, determine_join_expr
 from yapic.entity._error cimport JoinError
 
 

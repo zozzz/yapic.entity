@@ -63,10 +63,6 @@ cdef class Field(EntityAttribute):
         res.type_cache = self.type_cache
         return res
 
-    # cdef bint values_is_eq(self, object a, object b):
-    #     # TODO: ...
-    #     return a == b
-
     cpdef StorageType get_type(self, StorageTypeFactory factory):
         try:
             return self.type_cache[factory]
@@ -85,9 +81,26 @@ cdef class Field(EntityAttribute):
         return visitor.visit_field(self)
 
 
-# cdef bint Field_init_attributes(object inst, dict attrs):
-#     print("Field_init_attributes (%s, %s)", inst, attrs)
-#     return True
+# field_proxy_attrs = ("__proxied__", "__repr__", "clone")
+
+# cdef class FieldProxy(Field):
+#     def __cinit__(self, Field field):
+#         self.__proxied__ = field
+
+#     def __getattribute__(self, key):
+#         if key in field_proxy_attrs:
+#             return object.__getattribute__(self, key)
+#         else:
+#             return getattr(self.__proxied__, key)
+
+#     def __getitem__(self, key):
+#         return self.__proxied__[key]
+
+#     def __repr__(self):
+#         return "<FieldProxy %r>" % self.__proxied__
+
+#     cpdef clone(self):
+#         return type(self)(self.__proxied__.clone())
 
 
 cdef class FieldExtension(EntityAttributeExt):

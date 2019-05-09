@@ -29,7 +29,8 @@ cdef class DDLCompiler:
 
         length = len(entity.__fields__)
         for i, field in enumerate(entity.__fields__):
-            elements.append(self.compile_field(<Field>field, requirements))
+            if not field._virtual_:
+                elements.append(self.compile_field(<Field>field, requirements))
 
         primary_keys = entity.__pk__
         if primary_keys:

@@ -850,8 +850,6 @@ struct __pyx_obj_5yapic_6entity_11_expression_DirectionExpression;
 struct __pyx_obj_5yapic_6entity_11_expression_CallExpression;
 struct __pyx_obj_5yapic_6entity_11_expression_RawExpression;
 struct __pyx_obj_5yapic_6entity_11_expression_PathExpression;
-struct __pyx_obj_5yapic_6entity_11_expression_GetAttrExprisson;
-struct __pyx_obj_5yapic_6entity_11_expression_GetItemExprisson;
 struct __pyx_obj_5yapic_6entity_11_expression_RawIdFactory;
 struct __pyx_obj_5yapic_6entity_11_expression___pyx_scope_struct____pyx_f_5yapic_6entity_11_expression_coerce_expression;
 struct __pyx_obj_5yapic_6entity_11_expression___pyx_scope_struct_1_genexpr;
@@ -1006,34 +1004,6 @@ struct __pyx_obj_5yapic_6entity_11_expression_PathExpression {
   struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
   struct __pyx_obj_5yapic_6entity_11_expression_Expression *_primary_;
   PyObject *_path_;
-};
-
-
-/* "yapic/entity/_expression.pxd":64
- * 
- * 
- * cdef class GetAttrExprisson(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly Expression obj
- *     cdef readonly object path
- */
-struct __pyx_obj_5yapic_6entity_11_expression_GetAttrExprisson {
-  struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
-  struct __pyx_obj_5yapic_6entity_11_expression_Expression *obj;
-  PyObject *path;
-};
-
-
-/* "yapic/entity/_expression.pxd":69
- * 
- * 
- * cdef class GetItemExprisson(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly Expression obj
- *     cdef object index
- */
-struct __pyx_obj_5yapic_6entity_11_expression_GetItemExprisson {
-  struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
-  struct __pyx_obj_5yapic_6entity_11_expression_Expression *obj;
-  PyObject *index;
 };
 
 
@@ -1249,34 +1219,6 @@ struct __pyx_vtabstruct_5yapic_6entity_11_expression_PathExpression {
   struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression __pyx_base;
 };
 static struct __pyx_vtabstruct_5yapic_6entity_11_expression_PathExpression *__pyx_vtabptr_5yapic_6entity_11_expression_PathExpression;
-
-
-/* "yapic/entity/_expression.pxd":64
- * 
- * 
- * cdef class GetAttrExprisson(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly Expression obj
- *     cdef readonly object path
- */
-
-struct __pyx_vtabstruct_5yapic_6entity_11_expression_GetAttrExprisson {
-  struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression __pyx_base;
-};
-static struct __pyx_vtabstruct_5yapic_6entity_11_expression_GetAttrExprisson *__pyx_vtabptr_5yapic_6entity_11_expression_GetAttrExprisson;
-
-
-/* "yapic/entity/_expression.pxd":69
- * 
- * 
- * cdef class GetItemExprisson(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly Expression obj
- *     cdef object index
- */
-
-struct __pyx_vtabstruct_5yapic_6entity_11_expression_GetItemExprisson {
-  struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression __pyx_base;
-};
-static struct __pyx_vtabstruct_5yapic_6entity_11_expression_GetItemExprisson *__pyx_vtabptr_5yapic_6entity_11_expression_GetItemExprisson;
 
 /* --- Runtime support code (head) --- */
 /* Refnanny.proto */
@@ -1920,8 +1862,6 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_DirectionExpressio
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_CallExpression = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_RawExpression = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_PathExpression = 0;
-static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_GetAttrExprisson = 0;
-static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_GetItemExprisson = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_RawIdFactory = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression___pyx_scope_struct____pyx_f_5yapic_6entity_11_expression_coerce_expression = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression___pyx_scope_struct_1_genexpr = 0;
@@ -2046,8 +1986,6 @@ static const char __pyx_k_visit_binary_in[] = "visit_binary_in";
 static const char __pyx_k_visit_binary_or[] = "visit_binary_or";
 static const char __pyx_k_visit_direction[] = "visit_direction";
 static const char __pyx_k_BinaryExpression[] = "BinaryExpression";
-static const char __pyx_k_GetAttrExprisson[] = "GetAttrExprisson";
-static const char __pyx_k_GetItemExprisson[] = "GetItemExprisson";
 static const char __pyx_k_visit_binary_and[] = "visit_binary_and";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_DirectionExpression[] = "DirectionExpression";
@@ -2076,8 +2014,6 @@ static PyObject *__pyx_kp_u_Expr;
 static PyObject *__pyx_kp_u_Expr_EMPTY;
 static PyObject *__pyx_n_s_Expression;
 static PyObject *__pyx_kp_u_Expression_must_not_be_empty;
-static PyObject *__pyx_n_s_GetAttrExprisson;
-static PyObject *__pyx_n_s_GetItemExprisson;
 static PyObject *__pyx_kp_u_None;
 static PyObject *__pyx_n_s_NotImplementedError;
 static PyObject *__pyx_kp_u_Path;
@@ -2283,8 +2219,6 @@ static PyObject *__pyx_tp_new_5yapic_6entity_11_expression_DirectionExpression(P
 static PyObject *__pyx_tp_new_5yapic_6entity_11_expression_CallExpression(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5yapic_6entity_11_expression_RawExpression(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5yapic_6entity_11_expression_PathExpression(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_5yapic_6entity_11_expression_GetAttrExprisson(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_5yapic_6entity_11_expression_GetItemExprisson(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5yapic_6entity_11_expression_RawIdFactory(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5yapic_6entity_11_expression___pyx_scope_struct____pyx_f_5yapic_6entity_11_expression_coerce_expression(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5yapic_6entity_11_expression___pyx_scope_struct_1_genexpr(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -13360,248 +13294,6 @@ static PyTypeObject __pyx_type_5yapic_6entity_11_expression_PathExpression = {
   0, /*tp_finalize*/
   #endif
 };
-static struct __pyx_vtabstruct_5yapic_6entity_11_expression_GetAttrExprisson __pyx_vtable_5yapic_6entity_11_expression_GetAttrExprisson;
-
-static PyObject *__pyx_tp_new_5yapic_6entity_11_expression_GetAttrExprisson(PyTypeObject *t, PyObject *a, PyObject *k) {
-  struct __pyx_obj_5yapic_6entity_11_expression_GetAttrExprisson *p;
-  PyObject *o = __pyx_tp_new_5yapic_6entity_11_expression_Expression(t, a, k);
-  if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_5yapic_6entity_11_expression_GetAttrExprisson *)o);
-  p->__pyx_base.__pyx_vtab = (struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression*)__pyx_vtabptr_5yapic_6entity_11_expression_GetAttrExprisson;
-  p->obj = ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)Py_None); Py_INCREF(Py_None);
-  p->path = Py_None; Py_INCREF(Py_None);
-  return o;
-}
-
-static void __pyx_tp_dealloc_5yapic_6entity_11_expression_GetAttrExprisson(PyObject *o) {
-  struct __pyx_obj_5yapic_6entity_11_expression_GetAttrExprisson *p = (struct __pyx_obj_5yapic_6entity_11_expression_GetAttrExprisson *)o;
-  #if CYTHON_USE_TP_FINALIZE
-  if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && !_PyGC_FINALIZED(o)) {
-    if (PyObject_CallFinalizerFromDealloc(o)) return;
-  }
-  #endif
-  PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->obj);
-  Py_CLEAR(p->path);
-  #if CYTHON_USE_TYPE_SLOTS
-  if (PyType_IS_GC(Py_TYPE(o)->tp_base))
-  #endif
-  PyObject_GC_Track(o);
-  __pyx_tp_dealloc_5yapic_6entity_11_expression_Expression(o);
-}
-
-static int __pyx_tp_traverse_5yapic_6entity_11_expression_GetAttrExprisson(PyObject *o, visitproc v, void *a) {
-  int e;
-  struct __pyx_obj_5yapic_6entity_11_expression_GetAttrExprisson *p = (struct __pyx_obj_5yapic_6entity_11_expression_GetAttrExprisson *)o;
-  e = ((likely(__pyx_ptype_5yapic_6entity_11_expression_Expression)) ? ((__pyx_ptype_5yapic_6entity_11_expression_Expression->tp_traverse) ? __pyx_ptype_5yapic_6entity_11_expression_Expression->tp_traverse(o, v, a) : 0) : __Pyx_call_next_tp_traverse(o, v, a, __pyx_tp_traverse_5yapic_6entity_11_expression_GetAttrExprisson)); if (e) return e;
-  if (p->obj) {
-    e = (*v)(((PyObject *)p->obj), a); if (e) return e;
-  }
-  if (p->path) {
-    e = (*v)(p->path, a); if (e) return e;
-  }
-  return 0;
-}
-
-static int __pyx_tp_clear_5yapic_6entity_11_expression_GetAttrExprisson(PyObject *o) {
-  PyObject* tmp;
-  struct __pyx_obj_5yapic_6entity_11_expression_GetAttrExprisson *p = (struct __pyx_obj_5yapic_6entity_11_expression_GetAttrExprisson *)o;
-  if (likely(__pyx_ptype_5yapic_6entity_11_expression_Expression)) { if (__pyx_ptype_5yapic_6entity_11_expression_Expression->tp_clear) __pyx_ptype_5yapic_6entity_11_expression_Expression->tp_clear(o); } else __Pyx_call_next_tp_clear(o, __pyx_tp_clear_5yapic_6entity_11_expression_GetAttrExprisson);
-  tmp = ((PyObject*)p->obj);
-  p->obj = ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)Py_None); Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->path);
-  p->path = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  return 0;
-}
-
-static PyTypeObject __pyx_type_5yapic_6entity_11_expression_GetAttrExprisson = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "yapic.entity._expression.GetAttrExprisson", /*tp_name*/
-  sizeof(struct __pyx_obj_5yapic_6entity_11_expression_GetAttrExprisson), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5yapic_6entity_11_expression_GetAttrExprisson, /*tp_dealloc*/
-  0, /*tp_print*/
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  #if CYTHON_COMPILING_IN_PYPY
-  __pyx_pw_5yapic_6entity_11_expression_10Expression_67__repr__, /*tp_repr*/
-  #else
-  0, /*tp_repr*/
-  #endif
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  #if CYTHON_COMPILING_IN_PYPY
-  __pyx_pw_5yapic_6entity_11_expression_10Expression_47__call__, /*tp_call*/
-  #else
-  0, /*tp_call*/
-  #endif
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
-  __pyx_tp_traverse_5yapic_6entity_11_expression_GetAttrExprisson, /*tp_traverse*/
-  __pyx_tp_clear_5yapic_6entity_11_expression_GetAttrExprisson, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  0, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_5yapic_6entity_11_expression_GetAttrExprisson, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-};
-static struct __pyx_vtabstruct_5yapic_6entity_11_expression_GetItemExprisson __pyx_vtable_5yapic_6entity_11_expression_GetItemExprisson;
-
-static PyObject *__pyx_tp_new_5yapic_6entity_11_expression_GetItemExprisson(PyTypeObject *t, PyObject *a, PyObject *k) {
-  struct __pyx_obj_5yapic_6entity_11_expression_GetItemExprisson *p;
-  PyObject *o = __pyx_tp_new_5yapic_6entity_11_expression_Expression(t, a, k);
-  if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_5yapic_6entity_11_expression_GetItemExprisson *)o);
-  p->__pyx_base.__pyx_vtab = (struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression*)__pyx_vtabptr_5yapic_6entity_11_expression_GetItemExprisson;
-  p->obj = ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)Py_None); Py_INCREF(Py_None);
-  p->index = Py_None; Py_INCREF(Py_None);
-  return o;
-}
-
-static void __pyx_tp_dealloc_5yapic_6entity_11_expression_GetItemExprisson(PyObject *o) {
-  struct __pyx_obj_5yapic_6entity_11_expression_GetItemExprisson *p = (struct __pyx_obj_5yapic_6entity_11_expression_GetItemExprisson *)o;
-  #if CYTHON_USE_TP_FINALIZE
-  if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && !_PyGC_FINALIZED(o)) {
-    if (PyObject_CallFinalizerFromDealloc(o)) return;
-  }
-  #endif
-  PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->obj);
-  Py_CLEAR(p->index);
-  #if CYTHON_USE_TYPE_SLOTS
-  if (PyType_IS_GC(Py_TYPE(o)->tp_base))
-  #endif
-  PyObject_GC_Track(o);
-  __pyx_tp_dealloc_5yapic_6entity_11_expression_Expression(o);
-}
-
-static int __pyx_tp_traverse_5yapic_6entity_11_expression_GetItemExprisson(PyObject *o, visitproc v, void *a) {
-  int e;
-  struct __pyx_obj_5yapic_6entity_11_expression_GetItemExprisson *p = (struct __pyx_obj_5yapic_6entity_11_expression_GetItemExprisson *)o;
-  e = ((likely(__pyx_ptype_5yapic_6entity_11_expression_Expression)) ? ((__pyx_ptype_5yapic_6entity_11_expression_Expression->tp_traverse) ? __pyx_ptype_5yapic_6entity_11_expression_Expression->tp_traverse(o, v, a) : 0) : __Pyx_call_next_tp_traverse(o, v, a, __pyx_tp_traverse_5yapic_6entity_11_expression_GetItemExprisson)); if (e) return e;
-  if (p->obj) {
-    e = (*v)(((PyObject *)p->obj), a); if (e) return e;
-  }
-  if (p->index) {
-    e = (*v)(p->index, a); if (e) return e;
-  }
-  return 0;
-}
-
-static int __pyx_tp_clear_5yapic_6entity_11_expression_GetItemExprisson(PyObject *o) {
-  PyObject* tmp;
-  struct __pyx_obj_5yapic_6entity_11_expression_GetItemExprisson *p = (struct __pyx_obj_5yapic_6entity_11_expression_GetItemExprisson *)o;
-  if (likely(__pyx_ptype_5yapic_6entity_11_expression_Expression)) { if (__pyx_ptype_5yapic_6entity_11_expression_Expression->tp_clear) __pyx_ptype_5yapic_6entity_11_expression_Expression->tp_clear(o); } else __Pyx_call_next_tp_clear(o, __pyx_tp_clear_5yapic_6entity_11_expression_GetItemExprisson);
-  tmp = ((PyObject*)p->obj);
-  p->obj = ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)Py_None); Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->index);
-  p->index = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  return 0;
-}
-
-static PyTypeObject __pyx_type_5yapic_6entity_11_expression_GetItemExprisson = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "yapic.entity._expression.GetItemExprisson", /*tp_name*/
-  sizeof(struct __pyx_obj_5yapic_6entity_11_expression_GetItemExprisson), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5yapic_6entity_11_expression_GetItemExprisson, /*tp_dealloc*/
-  0, /*tp_print*/
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  #if CYTHON_COMPILING_IN_PYPY
-  __pyx_pw_5yapic_6entity_11_expression_10Expression_67__repr__, /*tp_repr*/
-  #else
-  0, /*tp_repr*/
-  #endif
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  #if CYTHON_COMPILING_IN_PYPY
-  __pyx_pw_5yapic_6entity_11_expression_10Expression_47__call__, /*tp_call*/
-  #else
-  0, /*tp_call*/
-  #endif
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
-  __pyx_tp_traverse_5yapic_6entity_11_expression_GetItemExprisson, /*tp_traverse*/
-  __pyx_tp_clear_5yapic_6entity_11_expression_GetItemExprisson, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  0, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_5yapic_6entity_11_expression_GetItemExprisson, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-};
 
 static PyObject *__pyx_tp_new_5yapic_6entity_11_expression_RawIdFactory(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
   PyObject *o;
@@ -14046,8 +13738,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_Expr_EMPTY, __pyx_k_Expr_EMPTY, sizeof(__pyx_k_Expr_EMPTY), 0, 1, 0, 0},
   {&__pyx_n_s_Expression, __pyx_k_Expression, sizeof(__pyx_k_Expression), 0, 0, 1, 1},
   {&__pyx_kp_u_Expression_must_not_be_empty, __pyx_k_Expression_must_not_be_empty, sizeof(__pyx_k_Expression_must_not_be_empty), 0, 1, 0, 0},
-  {&__pyx_n_s_GetAttrExprisson, __pyx_k_GetAttrExprisson, sizeof(__pyx_k_GetAttrExprisson), 0, 0, 1, 1},
-  {&__pyx_n_s_GetItemExprisson, __pyx_k_GetItemExprisson, sizeof(__pyx_k_GetItemExprisson), 0, 0, 1, 1},
   {&__pyx_kp_u_None, __pyx_k_None, sizeof(__pyx_k_None), 0, 1, 0, 0},
   {&__pyx_n_s_NotImplementedError, __pyx_k_NotImplementedError, sizeof(__pyx_k_NotImplementedError), 0, 0, 1, 1},
   {&__pyx_kp_u_Path, __pyx_k_Path, sizeof(__pyx_k_Path), 0, 1, 0, 0},
@@ -14409,28 +14099,6 @@ static int __Pyx_modinit_type_init_code(void) {
   if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_expression_PathExpression.tp_dict, __pyx_vtabptr_5yapic_6entity_11_expression_PathExpression) < 0) __PYX_ERR(0, 188, __pyx_L1_error)
   if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PathExpression, (PyObject *)&__pyx_type_5yapic_6entity_11_expression_PathExpression) < 0) __PYX_ERR(0, 188, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_expression_PathExpression = &__pyx_type_5yapic_6entity_11_expression_PathExpression;
-  __pyx_vtabptr_5yapic_6entity_11_expression_GetAttrExprisson = &__pyx_vtable_5yapic_6entity_11_expression_GetAttrExprisson;
-  __pyx_vtable_5yapic_6entity_11_expression_GetAttrExprisson.__pyx_base = *__pyx_vtabptr_5yapic_6entity_11_expression_Expression;
-  __pyx_type_5yapic_6entity_11_expression_GetAttrExprisson.tp_base = __pyx_ptype_5yapic_6entity_11_expression_Expression;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_expression_GetAttrExprisson) < 0) __PYX_ERR(1, 64, __pyx_L1_error)
-  __pyx_type_5yapic_6entity_11_expression_GetAttrExprisson.tp_print = 0;
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_11_expression_GetAttrExprisson.tp_dictoffset && __pyx_type_5yapic_6entity_11_expression_GetAttrExprisson.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_5yapic_6entity_11_expression_GetAttrExprisson.tp_getattro = __Pyx_PyObject_GenericGetAttr;
-  }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_expression_GetAttrExprisson.tp_dict, __pyx_vtabptr_5yapic_6entity_11_expression_GetAttrExprisson) < 0) __PYX_ERR(1, 64, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_GetAttrExprisson, (PyObject *)&__pyx_type_5yapic_6entity_11_expression_GetAttrExprisson) < 0) __PYX_ERR(1, 64, __pyx_L1_error)
-  __pyx_ptype_5yapic_6entity_11_expression_GetAttrExprisson = &__pyx_type_5yapic_6entity_11_expression_GetAttrExprisson;
-  __pyx_vtabptr_5yapic_6entity_11_expression_GetItemExprisson = &__pyx_vtable_5yapic_6entity_11_expression_GetItemExprisson;
-  __pyx_vtable_5yapic_6entity_11_expression_GetItemExprisson.__pyx_base = *__pyx_vtabptr_5yapic_6entity_11_expression_Expression;
-  __pyx_type_5yapic_6entity_11_expression_GetItemExprisson.tp_base = __pyx_ptype_5yapic_6entity_11_expression_Expression;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_11_expression_GetItemExprisson) < 0) __PYX_ERR(1, 69, __pyx_L1_error)
-  __pyx_type_5yapic_6entity_11_expression_GetItemExprisson.tp_print = 0;
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_11_expression_GetItemExprisson.tp_dictoffset && __pyx_type_5yapic_6entity_11_expression_GetItemExprisson.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_5yapic_6entity_11_expression_GetItemExprisson.tp_getattro = __Pyx_PyObject_GenericGetAttr;
-  }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_11_expression_GetItemExprisson.tp_dict, __pyx_vtabptr_5yapic_6entity_11_expression_GetItemExprisson) < 0) __PYX_ERR(1, 69, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_GetItemExprisson, (PyObject *)&__pyx_type_5yapic_6entity_11_expression_GetItemExprisson) < 0) __PYX_ERR(1, 69, __pyx_L1_error)
-  __pyx_ptype_5yapic_6entity_11_expression_GetItemExprisson = &__pyx_type_5yapic_6entity_11_expression_GetItemExprisson;
   if (PyType_Ready(&__pyx_type_5yapic_6entity_11_expression_RawIdFactory) < 0) __PYX_ERR(0, 315, __pyx_L1_error)
   __pyx_type_5yapic_6entity_11_expression_RawIdFactory.tp_print = 0;
   if (PyObject_SetAttr(__pyx_m, __pyx_n_s_RawIdFactory, (PyObject *)&__pyx_type_5yapic_6entity_11_expression_RawIdFactory) < 0) __PYX_ERR(0, 315, __pyx_L1_error)

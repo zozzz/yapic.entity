@@ -113,7 +113,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
                 tbl = self.table_alias[col][1]
                 for field in (<EntityType>col).__fields__:
-                    result.append(f"{tbl}.{self.dialect.quote_ident(field._name_)}")
+                    result.append(self.visit(field))
             else:
                 result.append(self.visit(col))
 

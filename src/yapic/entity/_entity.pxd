@@ -43,6 +43,7 @@ cdef class EntityAttribute(Expression):
     cdef readonly EntityType _entity_
     cdef readonly list _exts_
     cdef readonly set _deps_
+    cdef readonly bint _virtual_
 
     # returns true when successfully bind, otherwise the system can try bind in the later time
     cdef object bind(self, EntityType entity)

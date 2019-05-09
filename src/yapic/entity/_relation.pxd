@@ -2,17 +2,20 @@ import cython
 from cpython.object cimport PyObject
 
 from ._entity cimport EntityType, EntityAttribute, EntityAttributeImpl
-from ._expression cimport Expression
+from ._expression cimport Expression, PathExpression
 from ._factory cimport Factory
+from ._field cimport Field
 
 
 cdef class Relation(EntityAttribute):
     pass
 
 
-# cdef class RelationAttribute(Expression):
-#     cdef Relation relation
-#     cdef EntityAttribute attr
+@cython.final
+cdef class RelatedField(Field):
+    cdef readonly Relation __relation__
+    cdef readonly Field __rfield__
+    cdef readonly PathExpression __rpath__
 
 
 cdef class RelationImpl(EntityAttributeImpl):

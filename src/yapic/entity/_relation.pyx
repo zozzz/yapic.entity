@@ -45,22 +45,45 @@ cdef class Relation(EntityAttribute):
         return res
 
 
-# cdef class RelationAttribute(Expression):
-#     def __cinit__(self, Relation relation, EntityAttribute attr):
-#         self.relation = relation
-#         self.attr = attr
+@cython.final
+cdef class RelatedField(Field):
+    def __cinit__(self, Relation rel, **kwargs):
+        self.__relation__ = rel
+        self._impl_ = None
+        self._virtual_ = True
 
-#     cpdef visit(self, Visitor visitor):
-#         return visitor.visit_relation_attribute(self)
+    def __getattribute__(self, key):
+        if key in ("__repr__", "_virtual_", "clone", "bind", "visit"):
+            return object.__getattribute__(self, key)
+        else:
+            return getattr(self.__rfield__, key)
 
-#     def __getattr__(self, name):
-#         return getattr(self.attr, name)
+    def __setattr__(self, name, value):
+        setattr(self.__rfield__, name, value)
 
-#     def __getitem__(self, index):
-#         return self.attr[index]
+    def __getitem__(self, key):
+        return self.__rpath__[key]
 
-#     def __repr__(self):
-#         return "<RelationAttribute %s :: %s>" % (self.relation, self.attr._name_)
+    def __repr__(self):
+        return "<RelatedField %r>" % self.__relation__
+
+    cpdef clone(self):
+        return type(self)(self.__relation__.clone())
+
+    cdef object bind(self, EntityType entity):
+        if self.__relation__.bind(entity):
+            if not isinstance(self.__relation__._impl_, ManyToOne):
+                raise ValueError("RelatedField only accepts ManyToOne type ralations")
+
+            if self.__rfield__ is None:
+                self.__rfield__ = getattr(self.__relation__._impl_.joined, self._name_)
+                self.__rpath__ = getattr(self.__relation__, self._name_)
+                print("WTF ??? __rpath__", self.__rpath__)
+        else:
+            return False
+
+    cpdef visit(self, Visitor visitor):
+        return self.__rpath__.visit(visitor)
 
 
 cdef class RelationImpl(EntityAttributeImpl):
