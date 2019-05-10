@@ -124,6 +124,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         try:
             tbl = self.table_alias[field._entity_][1]
         except KeyError:
+            # print("MISSING", field, field._entity_, get_alias_target(field._entity_), hash(field._entity_))
             raise RuntimeError("Entity is missing from query: %r" % field._entity_)
             # tbl = self.dialect.table_qname(field._entity_)
         if self.collect_select is True:

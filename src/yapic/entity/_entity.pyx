@@ -104,7 +104,7 @@ cdef class EntityType(type):
                         else:
                             poly_join &= self_pk == attr
                     else:
-                        self_attr = RelatedField(poly_relation, name=attr._name_)
+                        self_attr = RelatedField(poly_relation, name=attr._key_)
                         fields.append(self_attr)
                         (<EntityAttribute>self_attr)._key_ = attr._key_
                         setattr(self, attr._key_, self_attr)
@@ -215,7 +215,11 @@ cdef class EntityType(type):
         return scope
 
     def __repr__(self):
-        return "<Entity %s>" % self.__qname__
+        aliased = get_alias_target(self)
+        if aliased is self:
+            return "<Entity %s>" % self.__qname__
+        else:
+            return "<Alias of %r>" % aliased
 
     def alias(self, str alias = None):
         if alias is None:

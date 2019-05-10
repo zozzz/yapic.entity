@@ -26,6 +26,7 @@ cdef class Query(Expression):
 
 cdef class QueryFinalizer(Visitor):
     cdef readonly Query q
+    cdef readonly list rpks
 
 
 cdef class RowProcessor:

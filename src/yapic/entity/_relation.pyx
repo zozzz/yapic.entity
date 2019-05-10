@@ -88,7 +88,6 @@ cdef class RelatedField(Field):
 cdef class RelationImpl(EntityAttributeImpl):
     def __cinit__(self, joined, state_impl, *args):
         self._joined = joined
-        self.joined = joined.alias()
         self.state_impl = state_impl
 
     cdef object determine_join_expr(self, EntityType entity, Relation attr):
@@ -98,7 +97,9 @@ cdef class RelationImpl(EntityAttributeImpl):
         raise NotImplementedError()
 
     cpdef object clone(self):
-        return type(self)(self.joined, self.state_impl)
+        cdef RelationImpl c = type(self)(self._joined, self.state_impl)
+        c.joined = self.joined
+        return c
 
     cdef object state_init(self, object initial):
         return self.state_impl.state_init(initial)
@@ -124,6 +125,11 @@ cdef class ManyToOne(RelationImpl):
     cdef object determine_join_expr(self, EntityType entity, Relation attr):
         if self._joined is not entity and self._joined.__deferred__:
             return False
+
+        if self.joined is None:
+            self.joined = self._joined.alias()
+        else:
+            return True
 
         if attr._default_:
             self.join_expr = replace_entity(attr._default_, self._joined, self.joined)
@@ -154,6 +160,11 @@ cdef class OneToMany(RelationImpl):
         if self._joined is not entity and self._joined.__deferred__:
             return False
 
+        if self.joined is None:
+            self.joined = self._joined.alias()
+        else:
+            return True
+
         if attr._default_:
             self.join_expr = replace_entity(attr._default_, self._joined, self.joined)
         else:
@@ -176,7 +187,6 @@ cdef class OneToMany(RelationImpl):
 cdef class ManyToMany(RelationImpl):
     def __cinit__(self, joined, state_impl, across):
         self._across = across
-        self.across = across.alias()
 
     def __repr__(self):
         return "ManyToMany %r => %r" % (self._across, self._joined)
@@ -184,6 +194,13 @@ cdef class ManyToMany(RelationImpl):
     cdef object determine_join_expr(self, EntityType entity, Relation attr):
         if self._joined is not entity and (self._joined.__deferred__ or self._across.__deferred__):
             return False
+
+        if self.joined is None:
+            self.joined = self._joined.alias()
+        else:
+            return True
+
+        self.across = self._across.alias()
 
         if attr._default_:
             self.across_join_expr = attr._default_[self._across]

@@ -1,6 +1,7 @@
 from contextlib import contextmanager
+from enum import Enum
 
-from yapic.entity._entity cimport EntityType, PolymorphMeta, DependencyList
+from yapic.entity._entity cimport EntityType, PolymorphMeta, DependencyList, get_alias_target
 from yapic.entity._field cimport Field
 from yapic.entity._expression cimport (Expression, AliasExpression, DirectionExpression, Visitor, BinaryExpression,
     UnaryExpression, CastExpression, CallExpression, RawExpression, PathExpression)
@@ -230,9 +231,93 @@ cdef class Query(Expression):
     #         self._aliases[source] = f"t{len(self._aliases)}"
 
 
+
+class RPK(Enum):
+    """
+    Example:
+        * Load one entity::
+
+            rpk = [
+                (CREATE_ENTITY, User),
+                (SET_ATTR_FROM_RECORD, User.id, 0),
+                (SET_ATTR_FROM_RECORD, User.name, 1),
+                ...
+            ]
+
+        * Load polymorph entity::
+
+            rpk = [
+                (CREATE_ENTITY, BaseEntity),
+                (PUSH,),
+                (SET_ATTR_FROM_RECORD, BaseEntity.id, 0),
+                (SET_ATTR_FROM_RECORD, BaseEntity.variant, 1),
+                (CREATE_ENTITY, ChildEntity),
+                (SET_ATTR_FROM_RECORD, ChildEntity.field1, 2),
+                (SET_ATTR_FROM_RECORD, ChildEntity.field2, 3),
+                (POP,)
+                (SET_ATTR, <Relation to baseEntity>),
+            ]
+
+        * Load joind relations::
+
+            rpk = [
+                (CREATE_ENTITY, User), // author
+                (PUSH,)
+                (SET_ATTR_FROM_RECORD, User.id, 2),
+                (SET_ATTR_FROM_RECORD, User.name, 3),
+                (CREATE_ENTITY, User), // updater
+                (PUSH,)
+                (SET_ATTR_FROM_RECORD, User.id, 4),
+                (SET_ATTR_FROM_RECORD, User.name, 5),
+
+                (CREATE_ENTITY, Article),
+                (SET_ATTR_FROM_RECORD, Article.id, 0),
+                (SET_ATTR_FROM_RECORD, Article.title, 1),
+                (POP,)
+                (SET_ATTR, Article.updater),
+                (POP,)
+                (SET_ATTR, Article.author),
+            ]
+
+    """
+
+    # Push previous command result into stack, or any given value
+    # (PUSH,)
+    # (PUSH, AnyValue)
+    PUSH = 1
+
+    # Pop last item from stack
+    POP = 2
+
+    # Create new entity instance, and change context to it
+    # (CREATE_ENTITY, EntityType)
+    CREATE_ENTITY = 3
+
+    # Switch context to this entity
+    # (CHANGE_ENTITY, EntityBase)
+    CHANGE_ENTITY = 4
+
+    # Load entity from storage, and change to it
+    # (LOAD_ENTITY, EntityType, condition)
+    LOAD_ENTITY = 5
+
+    # Set attribute on current entity instance, from record
+    # (SET_ATTR_FROM_RECORD, EntityAttribute, record_index)
+    SET_ATTR_FROM_RECORD = 6
+
+    # Set attribute on current entity instance from previous command result
+    # (SET_ATTR, EntityAttribute)
+    SET_ATTR = 7
+
+    # Copy value from record, into current result value
+    # (VALUE_FROM_RECORD, record_index)
+    VALUE_FROM_RECORD = 8
+
+
 cdef class QueryFinalizer(Visitor):
     def __cinit__(self, Query q):
         self.q = q
+        self.rpks = []
 
     def visit_binary(self, BinaryExpression expr):
         self.visit(expr.left)
@@ -275,7 +360,7 @@ cdef class QueryFinalizer(Visitor):
         return PathExpression(expr._primary_, list(expr._path_))
 
     def finalize(self, *expr_list):
-        if self.q._columns:     self._visit_columns(self.q._columns)
+        if self.q._columns:     self._visit_columns(list(self.q._columns))
         if self.q._where:       self._visit_list(self.q._where)
         if self.q._order:       self._visit_list(self.q._order)
         if self.q._group:       self._visit_list(self.q._group)
@@ -285,17 +370,21 @@ cdef class QueryFinalizer(Visitor):
         if not self.q._columns:
             self._visit_columns(self.q._select_from)
 
+        print("="*40)
+        for rpk in self.rpks:
+            print("\n".join(map(repr, rpk)))
+        print("="*40)
+
     def _visit_columns(self, expr_list):
-        cdef list columns = []
+        self.q._columns = []
 
         for expr in expr_list:
             if isinstance(expr, EntityType):
-                columns.extend(self._select_entity(<EntityType>expr))
+                self._select_entity(<EntityType>expr)
             else:
-                columns.append(expr)
+                self.rpks.append([(RPK.VALUE_FROM_RECORD, len(self.q._columns))])
+                self.q._columns.append(expr)
                 self.visit(expr)
-
-        self.q._columns = columns
 
     def _visit_list(self, expr_list):
         for expr in expr_list:
@@ -306,26 +395,69 @@ cdef class QueryFinalizer(Visitor):
         cdef DependencyList deps = DependencyList()
         cdef EntityType pentity
         cdef Field field
+        cdef Relation relation
+        cdef list rpk = []
 
         if polymorph:
             pcols = {}
             pentities = []
             self._get_poly_entities(entity, polymorph, pentities, deps)
             pentities.sort(key=deps.index)
+            load_entitties = []
 
             for i in range(1, len(pentities)):
                 pentity = pentities[i]
-                self.q.join(pentity, polymorph.entities[pentity][1]._impl_.join_expr, "LEFT")
+                relation = polymorph.entities[pentity][1]
 
-            for pentity in pentities:
+                if relation.joined not in load_entitties:
+                    load_entitties.append(relation.joined)
+
+                self.q.join(relation, None, "LEFT")
+
+            for pentity in load_entitties:
                 for field in pentity.__fields__:
                     fname = field._name_
                     if fname not in pcols:
                         pcols[fname] = field
 
-            return pcols.values()
+            print(load_entitties)
+
+            pcol_list = list(pcols.values())
+            for pentity in reversed(load_entitties):
+                rpk.extend(self._rpk_for_entity(pentity, pcol_list))
+                rpk.append((RPK.PUSH,))
+
+            rpk.extend(self._rpk_for_entity(entity, entity.__fields__))
+
+            for pentity in pentities:
+                relation = polymorph.entities[pentity][1]
+                rpk.append((RPK.POP,))
+                rpk.append((RPK.SET_ATTR, relation))
         else:
-            return entity.__fields__
+            self.rpks.append(self._rpk_for_entity(entity, entity.__fields__))
+
+    def _rpk_for_entity(self, EntityType entity_type, fields):
+        res = [(RPK.CREATE_ENTITY, get_alias_target(entity_type))]
+
+        for f in fields:
+            if f._entity_ is entity_type:
+                try:
+                    idx = self._find_column_index(f)
+                except ValueError:
+                    idx = len(self.q._columns)
+                    self.q._columns.append(f)
+
+                res.append((RPK.SET_ATTR_FROM_RECORD, f, idx))
+
+        return res
+
+    def _find_column_index(self, Field field):
+        for i, c in enumerate(self.q._columns):
+            if isinstance(c, Field) \
+                    and (<Field>c)._entity_ is field._entity_ \
+                    and (<Field>c)._name_ == field._name_:
+                return i
+        raise ValueError()
 
     def _get_poly_entities(self, EntityType from_entity, PolymorphMeta polymorph, list result, DependencyList deps):
         cdef Relation relation
