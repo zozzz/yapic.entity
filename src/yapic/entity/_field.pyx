@@ -4,7 +4,7 @@ from cpython.weakref cimport PyWeakref_NewRef, PyWeakref_GetObject
 from cpython.module cimport PyImport_Import, PyModule_GetDict
 
 from ._expression cimport Expression, Visitor
-from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeExt, EntityAttributeImpl
+from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeExt, EntityAttributeImpl, get_alias_target
 from ._factory cimport ForwardDecl, get_type_hints, new_instance, new_instance_from_forward, is_forward_decl
 from ._field_impl cimport AutoImpl
 
@@ -134,17 +134,23 @@ cdef class AutoIncrement(FieldExtension):
 
     cpdef object bind(self, EntityAttribute attr):
         cdef EntityType entity
+        cdef EntityType aliased
+
 
         if self.sequence is None:
             entity = attr._entity_
+            aliased = get_alias_target(entity)
 
-            try:
-                schema = entity.__meta__["schema"]
-            except KeyError:
-                schema = None
+            if entity is aliased:
+                try:
+                    schema = entity.__meta__["schema"]
+                except KeyError:
+                    schema = None
 
-            name = f"{entity.__name__}_{attr._name_}_seq"
-            self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=entity.__registry__, is_sequence=True)
+                name = f"{entity.__name__}_{attr._name_}_seq"
+                self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=entity.__registry__, is_sequence=True)
+            else:
+                self.sequence = getattr(aliased, attr._key_).get_ext(AutoIncrement).sequence
 
         attr._deps_.add(self.sequence)
         return True

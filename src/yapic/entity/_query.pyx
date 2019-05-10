@@ -11,103 +11,90 @@ from yapic.entity._error cimport JoinError
 
 cdef class Query(Expression):
     def __cinit__(self):
-        self.entities = {}
+        self._entities = []
 
     cpdef visit(self, Visitor visitor):
         return visitor.visit_query(self)
 
     def select_from(self, from_):
-        if self.from_clause is None:
-            self.from_clause = []
+        if self._select_from is None:
+            self._select_from = []
 
-        if from_ not in self.from_clause:
-            self.from_clause.append(from_)
+        if from_ not in self._select_from:
+            self._select_from.append(from_)
 
-        if isinstance(from_, EntityType):
-            self._add_entity(<EntityType>from_)
+        if isinstance(from_, EntityType) and from_ not in self._entities:
+            self._entities.append(from_)
 
         return self
 
-    def column(self, *columns):
-        if self.columns is None:
-            self.columns = []
+    def columns(self, *columns):
+        if self._columns is None:
+            self._columns = []
 
         for col in columns:
-
-            # if isinstance(col, EntityType):
-            #     # if self.entity_columns is None:
-            #     #     self.entity_columns = []
-            #     # self.entity_columns.append((len(self.columns), col))
-            #     self.columns.append()
-            # elif isinstance(col, Field) or isinstance(col, AliasExpression):
-            #     self.columns.append(col)
-            # elif isinstance(col, RawExpression):
-            #     self.columns.append(col)
-            # else:
-            #     raise ValueError("Invalid value for column: %r" % col)
-
             if isinstance(col, EntityType) \
                     or isinstance(col, Field) \
                     or isinstance(col, AliasExpression) \
                     or isinstance(col, RawExpression):
-                self.columns.append(col)
+                self._columns.append(col)
             else:
                 raise ValueError("Invalid value for column: %r" % col)
 
         return self
 
     def where(self, *expr, **eq):
-        if self.where_clause is None:
-            self.where_clause = []
+        if self._where is None:
+            self._where = []
 
-        self.where_clause.append(and_(*expr))
+        self._where.append(and_(*expr))
         if eq:
             raise NotImplementedError()
         return self
 
 
     def order(self, *expr):
-        if self.orders is None:
-            self.orders = []
+        if self._order is None:
+            self._order = []
 
         for item in expr:
             if isinstance(item, DirectionExpression) or isinstance(item, RawExpression):
-                self.orders.append(item)
+                self._order.append(item)
             elif isinstance(item, Expression):
-                self.orders.append((<Expression>item).asc())
+                self._order.append((<Expression>item).asc())
             else:
                 raise ValueError("Invalid value for order: %r" % item)
 
         return self
 
     def group(self, *expr):
-        if self.groups is None:
-            self.groups = []
+        if self._group is None:
+            self._group = []
 
         for item in expr:
             if not isinstance(item, Expression):
                 raise ValueError("Invalid value for group: %r" % item)
             else:
-                self.groups.append(item)
+                self._group.append(item)
 
         return self
 
     def having(self, *expr, **eq):
-        if self.havings is None:
-            self.havings = []
+        if self._having is None:
+            self._having = []
 
-        self.havings.append(and_(*expr))
+        self._having.append(and_(*expr))
         if eq:
             raise NotImplementedError()
         return self
 
     def distinct(self, *expr):
-        if self.distincts is None:
-            self.distincts = []
+        if self._distinct is None:
+            self._distinct = []
 
         if expr:
             try:
-                self.prefixes.remove("DISTINCT")
+                self._prefix.remove("DISTINCT")
             except:
                 pass
         else:
@@ -115,96 +102,111 @@ cdef class Query(Expression):
         return self
 
     def prefix(self, *prefix):
-        if self.prefixes is None:
-            self.prefixes = []
+        if self._prefix is None:
+            self._prefix = []
 
         for p in prefix:
-            if p not in self.prefixes:
-                self.prefixes.append(p)
+            if p not in self._prefix:
+                self._prefix.append(p)
 
         return self
 
     def suffix(self, *suffix):
-        if self.suffixes is None:
-            self.suffixes = []
+        if self._suffix is None:
+            self._suffix = []
 
         for s in suffix:
-            if s not in self.suffixes:
-                self.suffixes.append(s)
+            if s not in self._suffix:
+                self._suffix.append(s)
 
         return self
 
     def join(self, what, condition = None, type = "INNER"):
         cdef RelationImpl impl
 
-        if self.joins is None:
-            self.joins = {}
+        if self._joins is None:
+            self._joins = {}
 
-        if what in self.entities:
-            return self
-
-        if isinstance(what, EntityType):
-            if condition is None:
-                condition = determine_join(self, <EntityType>what)
-            self.joins[what] = (what, condition, type)
-            self._add_entity(what)
-        elif isinstance(what, Relation):
+        if isinstance(what, Relation):
             impl = (<Relation>what)._impl_
 
             if isinstance(impl, ManyToMany):
                 cross_condition = (<ManyToMany>impl).across_join_expr
                 cross_what = (<ManyToMany>impl).across
 
-                if cross_what not in self.joins:
-                    self.joins[cross_what] = (cross_what, cross_condition, "INNER")
+                if cross_what not in self._entities:
+                    self._entities.append(cross_what)
 
-                condition = impl.join_expr
-                what = impl.joined
-            else:
-                condition = impl.join_expr
-                what = impl.joined
+                try:
+                    existing = self._joins[cross_what]
+                except KeyError:
+                    self._joins[cross_what] = [cross_what, cross_condition, type]
+                else:
+                    if type.upper().startswith("INNER"):
+                        existing[2] = type
+                type = "INNER"
 
-            self.joins[what] = (what, condition, type)
-            self._add_entity(what)
+            condition = impl.join_expr
+            what = impl.joined
+
+            if what in self._select_from:
+                return
+
+        elif isinstance(what, EntityType):
+            if what in self._select_from:
+                return
+
+            if condition is None:
+                condition = determine_join(self, <EntityType>what)
+
+        if what not in self._entities:
+            self._entities.append(what)
+
+        try:
+            existing = self._joins[what]
+        except KeyError:
+            self._joins[what] = [what, condition, type]
+        else:
+            if type.upper().startswith("INNER"):
+                existing[2] = type
 
         return self
 
     def limit(self, int count):
-        if self.range is None:
-            self.range = slice(0, count)
+        if self._range is None:
+            self._range = slice(0, count)
         else:
-            self.range = slice(self.range.start, self.range.start + count)
+            self._range = slice(self._range.start, self._range.start + count)
         return self
 
     def offset(self, int offset):
-        if self.range is None:
-            self.range = slice(offset, None)
+        if self._range is None:
+            self._range = slice(offset, None)
         else:
-            if self.range.stop:
-                count = self.range.stop - self.range.start
+            if self._range.stop:
+                count = self._range.stop - self._range.start
                 stop = offset + count
             else:
                 stop = None
 
-            self.range = slice(offset, stop)
+            self._range = slice(offset, stop)
         return self
 
     cpdef Query clone(self):
         cdef Query q = type(self)()
 
-        if self.from_clause: q.from_clause = list(self.from_clause)
-        if self.columns: q.columns = list(self.columns)
-        # if self.entity_columns: q.entity_columns = list(self.entity_columns)
-        if self.where_clause: q.where_clause = list(self.where_clause)
-        if self.orders: q.orders = list(self.orders)
-        if self.groups: q.groups = list(self.groups)
-        if self.havings: q.havings = list(self.havings)
-        if self.distincts: q.distincts = list(self.distincts)
-        if self.prefixes: q.prefixes = list(self.prefixes)
-        if self.suffixes: q.suffixes = list(self.suffixes)
-        if self.joins: q.joins = dict(self.joins)
-        if self.range: q.range = slice(self.range.start, self.range.stop, self.range.step)
-        if self.entities: q.entities = dict(self.entities)
+        if self._select_from: q._select_from = list(self._select_from)
+        if self._columns:     q._columns = list(self._columns)
+        if self._where:       q._where = list(self._where)
+        if self._order:       q._order = list(self._order)
+        if self._group:       q._group = list(self._group)
+        if self._having:      q._having = list(self._having)
+        if self._distinct:    q._distinct = list(self._distinct)
+        if self._prefix:      q._prefix = list(self._prefix)
+        if self._suffix:      q._suffix = list(self._suffix)
+        if self._joins:       q._joins = dict(self._joins)
+        if self._range:       q._range = slice(self._range.start, self._range.stop, self._range.step)
+        if self._entities:    q._entities = list(self._entities)
 
         return q
 
@@ -216,9 +218,16 @@ cdef class Query(Expression):
 
         return res
 
-    cdef _add_entity(self, EntityType ent):
-        if ent not in self.entities:
-            self.entities[ent] = f"t{len(self.entities)}"
+    # cdef _add_alias(self, source):
+    #     if source not in self._aliases:
+    #         if isinstance(source, EntityType):
+    #             if (<EntityType>source).__meta__.get("is_alias", False) is True:
+    #                 alias = (<EntityType>source).__name__
+    #                 if alias:
+    #                     self._aliases[source] = alias
+    #                     return
+
+    #         self._aliases[source] = f"t{len(self._aliases)}"
 
 
 cdef class QueryFinalizer(Visitor):
@@ -266,15 +275,15 @@ cdef class QueryFinalizer(Visitor):
         return PathExpression(expr._primary_, list(expr._path_))
 
     def finalize(self, *expr_list):
-        if self.q.columns: self._visit_columns(self.q.columns)
-        if self.q.where_clause: self._visit_list(self.q.where_clause)
-        if self.q.orders: self._visit_list(self.q.orders)
-        if self.q.groups: self._visit_list(self.q.groups)
-        if self.q.havings: self._visit_list(self.q.havings)
-        if self.q.distincts: self._visit_list(self.q.distincts)
+        if self.q._columns:     self._visit_columns(self.q._columns)
+        if self.q._where:       self._visit_list(self.q._where)
+        if self.q._order:       self._visit_list(self.q._order)
+        if self.q._group:       self._visit_list(self.q._group)
+        if self.q._having:      self._visit_list(self.q._having)
+        if self.q._distinct:    self._visit_list(self.q._distinct)
 
-        if not self.q.columns:
-            self._visit_columns(self.q.from_clause)
+        if not self.q._columns:
+            self._visit_columns(self.q._select_from)
 
     def _visit_columns(self, expr_list):
         cdef list columns = []
@@ -286,7 +295,7 @@ cdef class QueryFinalizer(Visitor):
                 columns.append(expr)
                 self.visit(expr)
 
-        self.q.columns = columns
+        self.q._columns = columns
 
     def _visit_list(self, expr_list):
         for expr in expr_list:
@@ -344,7 +353,7 @@ cdef inline determine_join(Query q, EntityType joined):
     cdef EntityType ent
     condition = None
 
-    for ent in q.entities:
+    for ent in q._entities:
         try:
             condition = determine_join_expr(ent, joined)
         except JoinError:

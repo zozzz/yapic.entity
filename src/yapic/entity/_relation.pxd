@@ -19,9 +19,10 @@ cdef class RelatedField(Field):
 
 
 cdef class RelationImpl(EntityAttributeImpl):
-    # cdef Factory value_store_factory
-    # cdef readonly object value_store_t
     cdef readonly ValueStore state_impl
+    # orignal joined entity
+    cdef readonly EntityType _joined
+    # entity alias for relation
     cdef readonly EntityType joined
     cdef readonly object join_expr
 
@@ -40,6 +41,7 @@ cdef class OneToMany(RelationImpl):
     pass
 
 cdef class ManyToMany(RelationImpl):
+    cdef readonly EntityType _across
     cdef readonly EntityType across
     cdef readonly object across_join_expr
 

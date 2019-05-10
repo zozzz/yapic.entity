@@ -87,7 +87,8 @@ cdef class RelatedField(Field):
 
 cdef class RelationImpl(EntityAttributeImpl):
     def __cinit__(self, joined, state_impl, *args):
-        self.joined = joined
+        self._joined = joined
+        self.joined = joined.alias()
         self.state_impl = state_impl
 
     cdef object determine_join_expr(self, EntityType entity, Relation attr):
@@ -115,19 +116,20 @@ cdef class RelationImpl(EntityAttributeImpl):
         return eval(expr, <object>mdict, <object>ldict)
 
 
+
 cdef class ManyToOne(RelationImpl):
     def __repr__(self):
-        return "ManyToOne %r" % self.joined
+        return "ManyToOne %r" % self._joined
 
     cdef object determine_join_expr(self, EntityType entity, Relation attr):
-        if self.joined is not entity and self.joined.__deferred__:
+        if self._joined is not entity and self._joined.__deferred__:
             return False
 
         if attr._default_:
-            self.join_expr = attr._default_
+            self.join_expr = replace_entity(attr._default_, self._joined, self.joined)
         else:
             self.join_expr = determine_join_expr(entity, self.joined)
-        attr._deps_.add(self.joined)
+        attr._deps_.add(self._joined)
         return True
 
     cdef object resolve_default(self, Relation attr):
@@ -146,14 +148,14 @@ cdef class ManyToOne(RelationImpl):
 
 cdef class OneToMany(RelationImpl):
     def __repr__(self):
-        return "OneToMany %r" % self.joined
+        return "OneToMany %r" % self._joined
 
     cdef object determine_join_expr(self, EntityType entity, Relation attr):
-        if self.joined is not entity and self.joined.__deferred__:
+        if self._joined is not entity and self._joined.__deferred__:
             return False
 
         if attr._default_:
-            self.join_expr = attr._default_
+            self.join_expr = replace_entity(attr._default_, self._joined, self.joined)
         else:
             self.join_expr = determine_join_expr(self.joined, entity)
         return True
@@ -173,18 +175,23 @@ cdef class OneToMany(RelationImpl):
 
 cdef class ManyToMany(RelationImpl):
     def __cinit__(self, joined, state_impl, across):
-        self.across = across
+        self._across = across
+        self.across = across.alias()
 
     def __repr__(self):
-        return "ManyToMany %r => %r" % (self.across, self.joined)
+        return "ManyToMany %r => %r" % (self._across, self._joined)
 
     cdef object determine_join_expr(self, EntityType entity, Relation attr):
-        if self.joined is not entity and (self.joined.__deferred__ or self.across.__deferred__):
+        if self._joined is not entity and (self._joined.__deferred__ or self._across.__deferred__):
             return False
 
         if attr._default_:
-            self.across_join_expr = attr._default_[self.across]
-            self.join_expr = attr._default_[self.joined]
+            self.across_join_expr = attr._default_[self._across]
+            self.across_join_expr = replace_entity(self.across_join_expr, self._across, self.across)
+            self.across_join_expr = replace_entity(self.across_join_expr, self._joined, self.joined)
+            self.join_expr = attr._default_[self._joined]
+            self.join_expr = replace_entity(self.join_expr, self._across, self.across)
+            self.join_expr = replace_entity(self.join_expr, self._joined, self.joined)
         else:
             self.across_join_expr = determine_join_expr(self.across, entity)
             self.join_expr = determine_join_expr(self.across, self.joined)
@@ -219,7 +226,7 @@ cdef class ManyToMany(RelationImpl):
             raise ValueError("Invalid value for join expression: %r" % attr._default_)
 
     cpdef object clone(self):
-        return type(self)(self.joined, self.state_impl, self.across)
+        return type(self)(self._joined, self.state_impl, self._across)
 
 
 cdef determine_join_expr(EntityType entity, EntityType joined):

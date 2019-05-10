@@ -870,6 +870,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_DependencyList;
 struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta;
 struct __pyx_obj_5yapic_6entity_6_query_Query;
 struct __pyx_obj_5yapic_6entity_6_query_QueryFinalizer;
+struct __pyx_obj_5yapic_6entity_6_query_RowProcessor;
 struct __pyx_obj_5yapic_6entity_6_field_Field;
 struct __pyx_obj_5yapic_6entity_6_field_FieldExtension;
 struct __pyx_obj_5yapic_6entity_6_field_FieldImpl;
@@ -1270,35 +1271,48 @@ struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta {
  * 
  * @cython.final
  * cdef class Query(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly list from_clause
- *     cdef readonly list columns
+ *     cdef readonly list _select_from
+ *     cdef readonly list _columns
  */
 struct __pyx_obj_5yapic_6entity_6_query_Query {
   struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
-  PyObject *from_clause;
-  PyObject *columns;
-  PyObject *where_clause;
-  PyObject *orders;
-  PyObject *groups;
-  PyObject *havings;
-  PyObject *distincts;
-  PyObject *prefixes;
-  PyObject *suffixes;
-  PyObject *joins;
-  PyObject *entities;
-  PyObject *range;
+  PyObject *_select_from;
+  PyObject *_columns;
+  PyObject *_where;
+  PyObject *_order;
+  PyObject *_group;
+  PyObject *_having;
+  PyObject *_distinct;
+  PyObject *_prefix;
+  PyObject *_suffix;
+  PyObject *_joins;
+  PyObject *_aliases;
+  PyObject *_range;
+  PyObject *_entities;
 };
 
 
-/* "yapic/entity/_query.pxd":26
+/* "yapic/entity/_query.pxd":27
  * 
  * 
  * cdef class QueryFinalizer(Visitor):             # <<<<<<<<<<<<<<
- *     cdef Query q
+ *     cdef readonly Query q
+ * 
  */
 struct __pyx_obj_5yapic_6entity_6_query_QueryFinalizer {
   struct __pyx_obj_5yapic_6entity_11_expression_Visitor __pyx_base;
   struct __pyx_obj_5yapic_6entity_6_query_Query *q;
+};
+
+
+/* "yapic/entity/_query.pxd":31
+ * 
+ * 
+ * cdef class RowProcessor:             # <<<<<<<<<<<<<<
+ *     pass
+ */
+struct __pyx_obj_5yapic_6entity_6_query_RowProcessor {
+  PyObject_HEAD
 };
 
 
@@ -1885,24 +1899,24 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_PolymorphMeta *__pyx_vtab
  * 
  * @cython.final
  * cdef class Query(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly list from_clause
- *     cdef readonly list columns
+ *     cdef readonly list _select_from
+ *     cdef readonly list _columns
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_6_query_Query {
   struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression __pyx_base;
   struct __pyx_obj_5yapic_6entity_6_query_Query *(*clone)(struct __pyx_obj_5yapic_6entity_6_query_Query *, int __pyx_skip_dispatch);
   struct __pyx_obj_5yapic_6entity_6_query_Query *(*finalize)(struct __pyx_obj_5yapic_6entity_6_query_Query *);
-  PyObject *(*_add_entity)(struct __pyx_obj_5yapic_6entity_6_query_Query *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_6_query_Query *__pyx_vtabptr_5yapic_6entity_6_query_Query;
 
 
-/* "yapic/entity/_query.pxd":26
+/* "yapic/entity/_query.pxd":27
  * 
  * 
  * cdef class QueryFinalizer(Visitor):             # <<<<<<<<<<<<<<
- *     cdef Query q
+ *     cdef readonly Query q
+ * 
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_6_query_QueryFinalizer {
@@ -2682,6 +2696,7 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_PolymorphMeta = 0;
 /* Module declarations from 'yapic.entity._query' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_query_Query = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_query_QueryFinalizer = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_6_query_RowProcessor = 0;
 
 /* Module declarations from 'yapic.entity._field' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_field_Field = 0;
@@ -5036,8 +5051,10 @@ static int __Pyx_modinit_type_import_code(void) {
    if (!__pyx_ptype_5yapic_6entity_6_query_Query) __PYX_ERR(5, 7, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_6_query_Query = (struct __pyx_vtabstruct_5yapic_6entity_6_query_Query*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_6_query_Query->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_6_query_Query)) __PYX_ERR(5, 7, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_6_query_QueryFinalizer = __Pyx_ImportType(__pyx_t_1, "yapic.entity._query", "QueryFinalizer", sizeof(struct __pyx_obj_5yapic_6entity_6_query_QueryFinalizer), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_6_query_QueryFinalizer) __PYX_ERR(5, 26, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_6_query_QueryFinalizer = (struct __pyx_vtabstruct_5yapic_6entity_6_query_QueryFinalizer*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_6_query_QueryFinalizer->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_6_query_QueryFinalizer)) __PYX_ERR(5, 26, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_6_query_QueryFinalizer) __PYX_ERR(5, 27, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_6_query_QueryFinalizer = (struct __pyx_vtabstruct_5yapic_6entity_6_query_QueryFinalizer*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_6_query_QueryFinalizer->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_6_query_QueryFinalizer)) __PYX_ERR(5, 27, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_6_query_RowProcessor = __Pyx_ImportType(__pyx_t_1, "yapic.entity._query", "RowProcessor", sizeof(struct __pyx_obj_5yapic_6entity_6_query_RowProcessor), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_6_query_RowProcessor) __PYX_ERR(5, 31, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("yapic.entity._field"); if (unlikely(!__pyx_t_1)) __PYX_ERR(6, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);

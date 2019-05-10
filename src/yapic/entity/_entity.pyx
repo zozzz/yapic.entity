@@ -219,7 +219,8 @@ cdef class EntityType(type):
 
     def alias(self, str alias = None):
         if alias is None:
-            alias = "".join(random.choices(string.ascii_letters, k=6))
+            # alias = "".join(random.choices(string.ascii_letters, k=6))
+            alias = ""
 
         aliased = get_alias_target(self)
         return EntityType(alias, (aliased,), {}, name=alias, schema=None, is_alias=True)

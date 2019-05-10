@@ -36,56 +36,56 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         self.collect_select = False
         self.select = []
 
-        from_ = self.visit_from_clause(query.from_clause)
-        if query.joins:
-            join = self.visit_joins(query.joins)
+        from_ = self.visit_select_from(query._select_from)
+        if query._joins:
+            join = self.visit_joins(query._joins)
         else:
             join = None
 
-        if query.prefixes:
-            self.parts.append(" ".join(query.prefixes))
+        if query._prefix:
+            self.parts.append(" ".join(query._prefix))
 
-        if query.columns:
-            self.parts.append(", ".join(self.visit_columns(query.columns)))
+        if query._columns:
+            self.parts.append(", ".join(self.visit_columns(query._columns)))
 
         self.parts.append("FROM")
         self.parts.append(from_)
         if join:
             self.parts.append(join)
 
-        if query.where_clause:
+        if query._where:
             self.parts.append("WHERE")
-            self.parts.append(self.visit(and_(*query.where_clause)))
+            self.parts.append(self.visit(and_(*query._where)))
 
-        if query.groups:
+        if query._group:
             self.parts.append("GROUP BY")
-            self.parts.append(", ".join(visit_list(self, query.groups)))
+            self.parts.append(", ".join(visit_list(self, query._group)))
 
-        if query.havings:
+        if query._having:
             self.parts.append("HAVING")
-            self.parts.append(self.visit(and_(*query.havings)))
+            self.parts.append(self.visit(and_(*query._having)))
 
         # TODO: window
 
-        if query.orders:
+        if query._order:
             self.parts.append("ORDER BY")
-            self.parts.append(", ".join(visit_list(self, query.orders)))
+            self.parts.append(", ".join(visit_list(self, query._order)))
 
-        if query.range:
-            if query.range.start:
-                self.parts.append(f"OFFSET {query.range.start}")
-            if query.range.stop is not None:
-                if query.range.stop == 1:
+        if query._range:
+            if query._range.start:
+                self.parts.append(f"OFFSET {query._range.start}")
+            if query._range.stop is not None:
+                if query._range.stop == 1:
                     self.parts.append(f"FETCH FIRST ROW ONLY")
                 else:
-                    self.parts.append(f"FETCH FIRST {query.range.stop - query.range.start} ROWS ONLY")
+                    self.parts.append(f"FETCH FIRST {query._range.stop - query._range.start} ROWS ONLY")
 
         return " ".join(self.parts), tuple(self.params)
 
-    def visit_from_clause(self, list from_clause):
+    def visit_select_from(self, list select_from):
         result = []
 
-        for i, expr in enumerate(from_clause):
+        for i, expr in enumerate(select_from):
             if isinstance(expr, EntityType):
                 qname, alias = self._add_entity_alias(<EntityType>expr)
                 result.append(f"{qname} {alias}")
@@ -245,9 +245,6 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         sql, params = qc.compile_select(expr)
         return f"({sql})"
 
-    # def visit_relation_attribute(self, RelationAttribute expr):
-    #     return self.visit(expr.attr)
-
     def visit_path(self, PathExpression expr):
         cdef list path = [expr._primary_]  + expr._path_
         cdef int i = 0
@@ -322,7 +319,8 @@ cdef class PostgreQueryCompiler(QueryCompiler):
             if aliased is ent:
                 alias = (self.dialect.table_qname(ent), self.dialect.quote_ident(f"t{len(self.table_alias)}"))
             else:
-                alias = (self.dialect.table_qname(aliased), self.dialect.quote_ident(ent.__name__))
+                aname = ent.__name__ if ent.__name__ else f"t{len(self.table_alias)}"
+                alias = (self.dialect.table_qname(aliased), self.dialect.quote_ident(aname))
             self.table_alias[ent] = alias
             return alias
 

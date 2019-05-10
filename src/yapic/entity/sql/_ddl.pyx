@@ -132,7 +132,7 @@ cdef class DDLCompiler:
                 lines.append(self.drop_entity(param))
             elif kind is RegistryDiffKind.CREATED:
                 schema = param.__meta__.get("schema", "public")
-                if schema not in schemas_created:
+                if schema and schema not in schemas_created:
                     schemas_created.add(schema)
                     lines.append(f"CREATE SCHEMA IF NOT EXISTS {self.dialect.quote_ident(schema)};")
 

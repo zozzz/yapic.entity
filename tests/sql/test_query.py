@@ -187,16 +187,16 @@ def test_limit_offset():
 
 def test_field_alias():
     q = Query()
-    q.select_from(User).column(User.id, User.id.alias("id2"))
+    q.select_from(User).columns(User.id, User.id.alias("id2"))
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == 'SELECT "t0"."id", "t0"."id" as "id2" FROM "User" "t0"'
 
 
 def test_query_alias():
-    sq = Query().select_from(User).column(User.email).where(User.id == 42)
+    sq = Query().select_from(User).columns(User.email).where(User.id == 42)
 
     q = Query()
-    q.select_from(User).column(User.id, User.id.alias("id2"), sq.alias("xyz_email")).where(User.id == 24)
+    q.select_from(User).columns(User.id, User.id.alias("id2"), sq.alias("xyz_email")).where(User.id == 24)
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == 'SELECT "t0"."id", "t0"."id" as "id2", (SELECT "t0"."email" FROM "User" "t0" WHERE "t0"."id" = $1) as "xyz_email" FROM "User" "t0" WHERE "t0"."id" = $2'
     assert params == (42, 24)
@@ -264,7 +264,7 @@ def test_auto_join_relation():
 
 @pytest.mark.skip(reason="deferred")
 def test_eager_load():
-    q = Query().select_from(User).column(User, User.address, User.tags)
+    q = Query().select_from(User).columns(User, User.address, User.tags)
     sql, params = dialect.create_query_compiler().compile_select(q)
     print(sql)
     assert sql == ''
@@ -426,5 +426,5 @@ def test_ambiguous():
         .where(ArticleA.creator.id == 1) \
         .where(ArticleA.updater.id.is_null())
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == ""
-    assert params == ()
+    assert sql == """SELECT "t0"."id", "t0"."creator_id", "t0"."updater_id" FROM "ArticleA" "t0" INNER JOIN "UserA" "t1" ON "t1"."id" = "t0"."creator_id" INNER JOIN "UserA" "t2" ON "t2"."id" = "t0"."updater_id" WHERE "t1"."id" = $1 AND "t2"."id" IS NULL"""
+    assert params == (1, )
