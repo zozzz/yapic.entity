@@ -32,10 +32,12 @@ cdef class Connection:
         cdef QueryCompiler qc = self.dialect.create_query_compiler()
         sql, params = qc.compile_select(q)
 
+        # print(sql)
+
         return QueryContext(
             self,
             self.conn.cursor(sql, *params, prefetch=prefetch, timeout=timeout),
-            qc.select
+            qc.rcos_list
         )
 
     # async def create_entity(self, EntityType ent, *, drop=False):

@@ -144,12 +144,12 @@ cdef class DDLCompiler:
                     lines.append(self.compile_entity_diff(param))
             elif kind is RegistryDiffKind.INSERT_ENTITY:
                 qc = self.dialect.create_query_compiler()
-                q = qc.compile_insert_or_update(param[0], param[1], param[2], param[3], True)
+                q, p = qc.compile_insert_or_update(param[0], param[1], param[2], param[3], True)
                 if q:
                     lines.append(q + ";")
             elif kind is RegistryDiffKind.UPDATE_ENTITY:
                 qc = self.dialect.create_query_compiler()
-                q = qc.compile_update(param[0], param[1], param[2], param[3], True)
+                q, p = qc.compile_update(param[0], param[1], param[2], param[3], True)
                 if q:
                     lines.append(q + ";")
             elif kind is RegistryDiffKind.REMOVE_ENTITY:

@@ -883,7 +883,7 @@ struct __pyx_obj_5yapic_6entity_6_field_ForeignKey;
 struct __pyx_obj_5yapic_6entity_12_entity_diff_EntityDiff;
 struct __pyx_obj_5yapic_6entity_6_query_Query;
 struct __pyx_obj_5yapic_6entity_6_query_QueryFinalizer;
-struct __pyx_obj_5yapic_6entity_6_query_RowProcessor;
+struct __pyx_obj_5yapic_6entity_6_query_RowConvertOp;
 struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection;
 struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLCompiler;
 struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect;
@@ -907,6 +907,26 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_AutoImpl;
 struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory;
 struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType;
 struct __pyx_obj_5yapic_6entity_3sql_5pgsql_8_dialect_PostgreDialect;
+
+/* "yapic/entity/_query.pxd":80
+ * """
+ * 
+ * ctypedef enum RCO:             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+enum __pyx_t_5yapic_6entity_6_query_RCO {
+  __pyx_e_5yapic_6entity_6_query_PUSH = 1,
+  __pyx_e_5yapic_6entity_6_query_POP = 2,
+  __pyx_e_5yapic_6entity_6_query_CREATE_STATE = 3,
+  __pyx_e_5yapic_6entity_6_query_CREATE_ENTITY = 4,
+  __pyx_e_5yapic_6entity_6_query_CREATE_POLYMORPH_ENTITY = 5,
+  __pyx_e_5yapic_6entity_6_query_LOAD_ENTITY = 6,
+  __pyx_e_5yapic_6entity_6_query_SET_ATTR = 7,
+  __pyx_e_5yapic_6entity_6_query_SET_ATTR_RECORD = 8,
+  __pyx_e_5yapic_6entity_6_query_GET_RECORD = 9
+};
+typedef enum __pyx_t_5yapic_6entity_6_query_RCO __pyx_t_5yapic_6entity_6_query_RCO;
 struct __pyx_opt_args_5yapic_6entity_3sql_15_query_compiler_13QueryCompiler_compile_insert;
 struct __pyx_opt_args_5yapic_6entity_3sql_15_query_compiler_13QueryCompiler_compile_insert_or_update;
 struct __pyx_opt_args_5yapic_6entity_3sql_15_query_compiler_13QueryCompiler_compile_update;
@@ -1451,23 +1471,27 @@ struct __pyx_obj_5yapic_6entity_6_query_Query {
  * 
  * cdef class QueryFinalizer(Visitor):             # <<<<<<<<<<<<<<
  *     cdef readonly Query q
- *     cdef readonly list rpks
+ *     cdef readonly list rcos
  */
 struct __pyx_obj_5yapic_6entity_6_query_QueryFinalizer {
   struct __pyx_obj_5yapic_6entity_11_expression_Visitor __pyx_base;
   struct __pyx_obj_5yapic_6entity_6_query_Query *q;
-  PyObject *rpks;
+  PyObject *rcos;
 };
 
 
-/* "yapic/entity/_query.pxd":32
- * 
- * 
- * cdef class RowProcessor:             # <<<<<<<<<<<<<<
- *     pass
+/* "yapic/entity/_query.pxd":133
+ * @cython.final
+ * @cython.freelist(1000)
+ * cdef class RowConvertOp:             # <<<<<<<<<<<<<<
+ *     cdef RCO op
+ *     cdef object param1
  */
-struct __pyx_obj_5yapic_6entity_6_query_RowProcessor {
+struct __pyx_obj_5yapic_6entity_6_query_RowConvertOp {
   PyObject_HEAD
+  __pyx_t_5yapic_6entity_6_query_RCO op;
+  PyObject *param1;
+  PyObject *param2;
 };
 
 
@@ -1574,8 +1598,8 @@ struct __pyx_obj_5yapic_6entity_3sql_5pgsql_15_query_compiler_PostgreQueryCompil
   PyObject *parts;
   PyObject *table_alias;
   PyObject *params;
-  int collect_select;
   struct __pyx_obj_5yapic_6entity_3sql_5pgsql_15_query_compiler_PostgreQueryCompiler *parent;
+  PyObject *rcos_list;
 };
 
 
@@ -2072,6 +2096,10 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList *__pyx_vta
 struct __pyx_vtabstruct_5yapic_6entity_7_entity_PolymorphMeta {
   PyObject *(*add)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, PyObject *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, PyObject *);
   PyObject *(*normalize_id)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, PyObject *);
+  PyObject *(*parents)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
+  PyObject *(*children)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
+  PyObject *(*_parents)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, PyObject *);
+  PyObject *(*_children)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, PyObject *);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_PolymorphMeta *__pyx_vtabptr_5yapic_6entity_7_entity_PolymorphMeta;
 
@@ -2215,7 +2243,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_6_field_ForeignKey *__pyx_vtabptr_
 struct __pyx_vtabstruct_5yapic_6entity_6_query_Query {
   struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression __pyx_base;
   struct __pyx_obj_5yapic_6entity_6_query_Query *(*clone)(struct __pyx_obj_5yapic_6entity_6_query_Query *, int __pyx_skip_dispatch);
-  struct __pyx_obj_5yapic_6entity_6_query_Query *(*finalize)(struct __pyx_obj_5yapic_6entity_6_query_Query *);
+  PyObject *(*finalize)(struct __pyx_obj_5yapic_6entity_6_query_Query *);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_6_query_Query *__pyx_vtabptr_5yapic_6entity_6_query_Query;
 
@@ -2225,7 +2253,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_6_query_Query *__pyx_vtabptr_5yapi
  * 
  * cdef class QueryFinalizer(Visitor):             # <<<<<<<<<<<<<<
  *     cdef readonly Query q
- *     cdef readonly list rpks
+ *     cdef readonly list rcos
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_6_query_QueryFinalizer {
@@ -2940,7 +2968,7 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_12_entity_diff_EntityDiff = 0;
 /* Module declarations from 'yapic.entity._query' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_query_Query = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_query_QueryFinalizer = 0;
-static PyTypeObject *__pyx_ptype_5yapic_6entity_6_query_RowProcessor = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_6_query_RowConvertOp = 0;
 
 /* Module declarations from 'yapic.entity.sql._connection' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_11_connection_Connection = 0;
@@ -4795,8 +4823,8 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_5yapic_6entity_6_query_QueryFinalizer = __Pyx_ImportType(__pyx_t_1, "yapic.entity._query", "QueryFinalizer", sizeof(struct __pyx_obj_5yapic_6entity_6_query_QueryFinalizer), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_6entity_6_query_QueryFinalizer) __PYX_ERR(7, 27, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_6_query_QueryFinalizer = (struct __pyx_vtabstruct_5yapic_6entity_6_query_QueryFinalizer*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_6_query_QueryFinalizer->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_6_query_QueryFinalizer)) __PYX_ERR(7, 27, __pyx_L1_error)
-  __pyx_ptype_5yapic_6entity_6_query_RowProcessor = __Pyx_ImportType(__pyx_t_1, "yapic.entity._query", "RowProcessor", sizeof(struct __pyx_obj_5yapic_6entity_6_query_RowProcessor), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_6_query_RowProcessor) __PYX_ERR(7, 32, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_6_query_RowConvertOp = __Pyx_ImportType(__pyx_t_1, "yapic.entity._query", "RowConvertOp", sizeof(struct __pyx_obj_5yapic_6entity_6_query_RowConvertOp), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_6_query_RowConvertOp) __PYX_ERR(7, 133, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("yapic.entity.sql._connection"); if (unlikely(!__pyx_t_1)) __PYX_ERR(8, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);

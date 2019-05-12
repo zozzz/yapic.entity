@@ -78,7 +78,8 @@ cdef class EntityType(type):
                     else:
                         __attrs__.append(attr)
 
-                    setattr(self, attr._key_, attr)
+                    if attr._key_:
+                        setattr(self, attr._key_, attr)
         elif fields:
             for attr in fields:
                 attr._key_ = attr._name_
@@ -103,9 +104,10 @@ cdef class EntityType(type):
                             poly_join = self_pk == attr
                         else:
                             poly_join &= self_pk == attr
-                    else:
+                    elif attr._key_:
+                        # TODO: stateless
                         self_attr = RelatedField(poly_relation, name=attr._key_)
-                        fields.append(self_attr)
+                        __attrs__.append(self_attr)
                         (<EntityAttribute>self_attr)._key_ = attr._key_
                         setattr(self, attr._key_, self_attr)
 
@@ -891,6 +893,9 @@ cdef class PolymorphMeta:
         self.entities = {}
 
     cdef object add(self, object id, EntityType entity, object relation):
+        if not isinstance(relation, Relation):
+            raise TypeError("Relation expected, but got: %r" % relation)
+
         id = self.normalize_id(id)
 
         if id in self.entities:
@@ -905,3 +910,35 @@ cdef class PolymorphMeta:
             else:
                 return (id,)
         return id
+
+    cpdef list parents(self, EntityType entity):
+        entity = get_alias_target(entity)
+        # cdef DependencyList deps = DependencyList()
+        cdef list result = []
+        self._parents(entity, result)
+        # result.sort(key=deps.index)
+        return result
+
+    cdef object _parents(self, EntityType entity, list result):
+        cdef Relation relation
+
+        for x in self.entities.values():
+            relation = <Relation>((<tuple>x)[1])
+            if relation._entity_ is entity:
+                result.append(relation)
+                self._parents(relation._impl_._joined, result)
+
+
+    cpdef list children(self, EntityType entity):
+        entity = get_alias_target(entity)
+        cdef list result = []
+        self._children(entity, result)
+        return result
+
+    cdef object _children(self, EntityType entity, list result):
+        cdef Relation relation
+
+        for x in self.entities.values():
+            relation = <Relation>((<tuple>x)[1])
+            if relation._impl_._joined is entity:
+                result.append(relation)

@@ -844,6 +844,7 @@ static const char *__pyx_f[] = {
   "src\\yapic\\entity\\sql\\_query_compiler.pxd",
   "src\\yapic\\entity\\sql\\_dialect.pxd",
   "src\\yapic\\entity\\sql\\_connection.pxd",
+  "src\\yapic\\entity\\sql\\_record_converter.pxd",
   "src\\yapic\\entity\\_field_impl.pxd",
 };
 
@@ -872,7 +873,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_DependencyList;
 struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta;
 struct __pyx_obj_5yapic_6entity_6_query_Query;
 struct __pyx_obj_5yapic_6entity_6_query_QueryFinalizer;
-struct __pyx_obj_5yapic_6entity_6_query_RowProcessor;
+struct __pyx_obj_5yapic_6entity_6_query_RowConvertOp;
 struct __pyx_obj_5yapic_6entity_6_field_Field;
 struct __pyx_obj_5yapic_6entity_6_field_FieldExtension;
 struct __pyx_obj_5yapic_6entity_6_field_FieldImpl;
@@ -888,6 +889,7 @@ struct __pyx_obj_5yapic_6entity_3sql_4_ddl_DDLReflect;
 struct __pyx_obj_5yapic_6entity_3sql_15_query_compiler_QueryCompiler;
 struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect;
 struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection;
+struct __pyx_obj_5yapic_6entity_3sql_17_record_converter_RCState;
 struct __pyx_obj_5yapic_6entity_11_field_impl_StringImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_BytesImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_IntImpl;
@@ -906,10 +908,27 @@ struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_1_fetch
 struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_2_forward;
 struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_3_fetchval;
 struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_4_first;
-struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row;
-struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity;
-struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr;
-struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__;
+struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__;
+
+/* "yapic/entity/_query.pxd":80
+ * """
+ * 
+ * ctypedef enum RCO:             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+enum __pyx_t_5yapic_6entity_6_query_RCO {
+  __pyx_e_5yapic_6entity_6_query_PUSH = 1,
+  __pyx_e_5yapic_6entity_6_query_POP = 2,
+  __pyx_e_5yapic_6entity_6_query_CREATE_STATE = 3,
+  __pyx_e_5yapic_6entity_6_query_CREATE_ENTITY = 4,
+  __pyx_e_5yapic_6entity_6_query_CREATE_POLYMORPH_ENTITY = 5,
+  __pyx_e_5yapic_6entity_6_query_LOAD_ENTITY = 6,
+  __pyx_e_5yapic_6entity_6_query_SET_ATTR = 7,
+  __pyx_e_5yapic_6entity_6_query_SET_ATTR_RECORD = 8,
+  __pyx_e_5yapic_6entity_6_query_GET_RECORD = 9
+};
+typedef enum __pyx_t_5yapic_6entity_6_query_RCO __pyx_t_5yapic_6entity_6_query_RCO;
 struct __pyx_opt_args_5yapic_6entity_3sql_15_query_compiler_13QueryCompiler_compile_insert;
 struct __pyx_opt_args_5yapic_6entity_3sql_15_query_compiler_13QueryCompiler_compile_insert_or_update;
 struct __pyx_opt_args_5yapic_6entity_3sql_15_query_compiler_13QueryCompiler_compile_update;
@@ -1318,23 +1337,27 @@ struct __pyx_obj_5yapic_6entity_6_query_Query {
  * 
  * cdef class QueryFinalizer(Visitor):             # <<<<<<<<<<<<<<
  *     cdef readonly Query q
- *     cdef readonly list rpks
+ *     cdef readonly list rcos
  */
 struct __pyx_obj_5yapic_6entity_6_query_QueryFinalizer {
   struct __pyx_obj_5yapic_6entity_11_expression_Visitor __pyx_base;
   struct __pyx_obj_5yapic_6entity_6_query_Query *q;
-  PyObject *rpks;
+  PyObject *rcos;
 };
 
 
-/* "yapic/entity/_query.pxd":32
- * 
- * 
- * cdef class RowProcessor:             # <<<<<<<<<<<<<<
- *     pass
+/* "yapic/entity/_query.pxd":133
+ * @cython.final
+ * @cython.freelist(1000)
+ * cdef class RowConvertOp:             # <<<<<<<<<<<<<<
+ *     cdef RCO op
+ *     cdef object param1
  */
-struct __pyx_obj_5yapic_6entity_6_query_RowProcessor {
+struct __pyx_obj_5yapic_6entity_6_query_RowConvertOp {
   PyObject_HEAD
+  __pyx_t_5yapic_6entity_6_query_RCO op;
+  PyObject *param1;
+  PyObject *param2;
 };
 
 
@@ -1542,6 +1565,19 @@ struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection {
 };
 
 
+/* "_record_converter.pxd":2
+ * 
+ * cdef class RCState:             # <<<<<<<<<<<<<<
+ *     cdef readonly dict cache
+ *     cdef readonly object conn
+ */
+struct __pyx_obj_5yapic_6entity_3sql_17_record_converter_RCState {
+  PyObject_HEAD
+  PyObject *cache;
+  PyObject *conn;
+};
+
+
 /* "yapic/entity/_field_impl.pxd":5
  * 
  * 
@@ -1688,24 +1724,25 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_AutoImpl {
 };
 
 
-/* "yapic/entity/sql/_query_context.pxd":4
+/* "yapic/entity/sql/_query_context.pxd":5
  * 
  * 
  * cdef class QueryContext:             # <<<<<<<<<<<<<<
+ *     cdef readonly Connection conn
  *     cdef object cursor_factory
- *     cdef list columns
  */
 struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext {
   PyObject_HEAD
-  PyObject *cursor_factory;
-  PyObject *columns;
+  struct __pyx_vtabstruct_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_vtab;
   struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *conn;
-  PyObject *entities;
+  PyObject *cursor_factory;
+  PyObject *rcos_list;
+  struct __pyx_obj_5yapic_6entity_3sql_17_record_converter_RCState *rc_state;
 };
 
 
-/* "yapic/entity/sql/_query_context.pyx":24
- *             raise ValueError("Columns must be not empty")
+/* "yapic/entity/sql/_query_context.pyx":23
+ *         self.rc_state = RCState(conn)
  * 
  *     async def fetch(self, num=None, *, timeout=None):             # <<<<<<<<<<<<<<
  *         cdef list rows = []
@@ -1722,7 +1759,7 @@ struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct__fetch 
 };
 
 
-/* "yapic/entity/sql/_query_context.pyx":30
+/* "yapic/entity/sql/_query_context.pyx":29
  *         return rows
  * 
  *     async def fetchrow(self, *, timeout=None):             # <<<<<<<<<<<<<<
@@ -1747,7 +1784,7 @@ struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_1_fetch
 };
 
 
-/* "yapic/entity/sql/_query_context.pyx":39
+/* "yapic/entity/sql/_query_context.pyx":38
  *                 return None
  * 
  *     async def forward(self, num, *, timeout=None):             # <<<<<<<<<<<<<<
@@ -1772,7 +1809,7 @@ struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_2_forwa
 };
 
 
-/* "yapic/entity/sql/_query_context.pyx":44
+/* "yapic/entity/sql/_query_context.pyx":43
  *             return await cursor.forward(num, timeout=timeout)
  * 
  *     async def fetchval(self, column=0, *, timeout=None):             # <<<<<<<<<<<<<<
@@ -1798,7 +1835,7 @@ struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_3_fetch
 };
 
 
-/* "yapic/entity/sql/_query_context.pyx":50
+/* "yapic/entity/sql/_query_context.pyx":49
  *             return row[column]
  * 
  *     async def first(self, *, timeout=None):             # <<<<<<<<<<<<<<
@@ -1823,76 +1860,14 @@ struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_4_first
 };
 
 
-/* "yapic/entity/sql/_query_context.pyx":59
- *                 return None
- * 
- *     async def convert_row(self, object row):             # <<<<<<<<<<<<<<
- *         cdef PyObject* columns = <PyObject*>self.columns
- *         cdef int length = PyList_GET_SIZE(<object>columns)
- */
-struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row {
-  PyObject_HEAD
-  int __pyx_v_c;
-  PyObject *__pyx_v_col;
-  PyObject *__pyx_v_columns;
-  PyObject *__pyx_v_entity;
-  int __pyx_v_fc;
-  int __pyx_v_i;
-  int __pyx_v_length;
-  PyObject *__pyx_v_result;
-  PyObject *__pyx_v_row;
-  struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self;
-  PyObject *__pyx_v_tmp;
-  PyObject *__pyx_v_tmp_object;
-};
-
-
-/* "yapic/entity/sql/_query_context.pyx":93
- *         return result
- * 
- *     async def get_entity(self, EntityType ent, object record, int start, int end):             # <<<<<<<<<<<<<<
- *         cdef EntityAttribute attr
- *         cdef tuple pk = (record[start + attr._index_] for attr in ent.__pk__)
- */
-struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity {
-  PyObject_HEAD
-  struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *__pyx_v_attr;
-  int __pyx_v_end;
-  struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_ent;
-  PyObject *__pyx_v_entity;
-  PyObject *__pyx_v_genexpr;
-  PyObject *__pyx_v_key;
-  PyObject *__pyx_v_pk;
-  PyObject *__pyx_v_record;
-  struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self;
-  int __pyx_v_start;
-};
-
-
-/* "yapic/entity/sql/_query_context.pyx":95
- *     async def get_entity(self, EntityType ent, object record, int start, int end):
- *         cdef EntityAttribute attr
- *         cdef tuple pk = (record[start + attr._index_] for attr in ent.__pk__)             # <<<<<<<<<<<<<<
- *         cdef tuple key = (ent, pk)
- * 
- */
-struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr {
-  PyObject_HEAD
-  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity *__pyx_outer_scope;
-  PyObject *__pyx_v_attr;
-  PyObject *__pyx_t_0;
-  Py_ssize_t __pyx_t_1;
-};
-
-
-/* "yapic/entity/sql/_query_context.pyx":106
- * 
+/* "yapic/entity/sql/_query_context.pyx":61
+ *         return convert_record(row, self.rcos_list, self.rc_state)
  * 
  *     async def __aiter__(self):             # <<<<<<<<<<<<<<
  *         async with ensure_transaction(self.conn.conn):
  *             async for record in self.cursor_factory.__aiter__():
  */
-struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__ {
+struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__ {
   PyObject_HEAD
   PyObject *__pyx_v_record;
   struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self;
@@ -2216,6 +2191,10 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList *__pyx_vta
 struct __pyx_vtabstruct_5yapic_6entity_7_entity_PolymorphMeta {
   PyObject *(*add)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, PyObject *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, PyObject *);
   PyObject *(*normalize_id)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, PyObject *);
+  PyObject *(*parents)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
+  PyObject *(*children)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
+  PyObject *(*_parents)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, PyObject *);
+  PyObject *(*_children)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, PyObject *);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_PolymorphMeta *__pyx_vtabptr_5yapic_6entity_7_entity_PolymorphMeta;
 
@@ -2231,7 +2210,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_PolymorphMeta *__pyx_vtab
 struct __pyx_vtabstruct_5yapic_6entity_6_query_Query {
   struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression __pyx_base;
   struct __pyx_obj_5yapic_6entity_6_query_Query *(*clone)(struct __pyx_obj_5yapic_6entity_6_query_Query *, int __pyx_skip_dispatch);
-  struct __pyx_obj_5yapic_6entity_6_query_Query *(*finalize)(struct __pyx_obj_5yapic_6entity_6_query_Query *);
+  PyObject *(*finalize)(struct __pyx_obj_5yapic_6entity_6_query_Query *);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_6_query_Query *__pyx_vtabptr_5yapic_6entity_6_query_Query;
 
@@ -2241,7 +2220,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_6_query_Query *__pyx_vtabptr_5yapi
  * 
  * cdef class QueryFinalizer(Visitor):             # <<<<<<<<<<<<<<
  *     cdef readonly Query q
- *     cdef readonly list rpks
+ *     cdef readonly list rcos
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_6_query_QueryFinalizer {
@@ -2586,6 +2565,20 @@ struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_AutoImpl {
 };
 static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_AutoImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_AutoImpl;
 
+
+/* "yapic/entity/sql/_query_context.pyx":16
+ * 
+ * 
+ * cdef class QueryContext:             # <<<<<<<<<<<<<<
+ *     def __cinit__(self, Connection conn, cursor_factory, list rcos_list):
+ *         self.conn = conn
+ */
+
+struct __pyx_vtabstruct_5yapic_6entity_3sql_14_query_context_QueryContext {
+  PyObject *(*convert_row)(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *, PyObject *);
+};
+static struct __pyx_vtabstruct_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_vtabptr_5yapic_6entity_3sql_14_query_context_QueryContext;
+
 /* --- Runtime support code (head) --- */
 /* Refnanny.proto */
 #ifndef CYTHON_REFNANNY
@@ -2650,16 +2643,6 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_AutoImpl *__pyx_vtab
 #define __Pyx_CLEAR(r)    do { PyObject* tmp = ((PyObject*)(r)); r = NULL; __Pyx_DECREF(tmp);} while(0)
 #define __Pyx_XCLEAR(r)   do { if((r) != NULL) {PyObject* tmp = ((PyObject*)(r)); r = NULL; __Pyx_DECREF(tmp);}} while(0)
 
-/* PyObjectGetAttrStr.proto */
-#if CYTHON_USE_TYPE_SLOTS
-static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject* attr_name);
-#else
-#define __Pyx_PyObject_GetAttrStr(o,n) PyObject_GetAttr(o,n)
-#endif
-
-/* GetBuiltinName.proto */
-static PyObject *__Pyx_GetBuiltinName(PyObject *name);
-
 /* RaiseArgTupleInvalid.proto */
 static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
     Py_ssize_t num_min, Py_ssize_t num_max, Py_ssize_t num_found);
@@ -2678,12 +2661,81 @@ static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
         __Pyx__ArgTypeTest(obj, type, name, exact))
 static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *name, int exact);
 
+/* PyCFunctionFastCall.proto */
+#if CYTHON_FAST_PYCCALL
+static CYTHON_INLINE PyObject *__Pyx_PyCFunction_FastCall(PyObject *func, PyObject **args, Py_ssize_t nargs);
+#else
+#define __Pyx_PyCFunction_FastCall(func, args, nargs)  (assert(0), NULL)
+#endif
+
+/* PyFunctionFastCall.proto */
+#if CYTHON_FAST_PYCALL
+#define __Pyx_PyFunction_FastCall(func, args, nargs)\
+    __Pyx_PyFunction_FastCallDict((func), (args), (nargs), NULL)
+#if 1 || PY_VERSION_HEX < 0x030600B1
+static PyObject *__Pyx_PyFunction_FastCallDict(PyObject *func, PyObject **args, int nargs, PyObject *kwargs);
+#else
+#define __Pyx_PyFunction_FastCallDict(func, args, nargs, kwargs) _PyFunction_FastCallDict(func, args, nargs, kwargs)
+#endif
+#define __Pyx_BUILD_ASSERT_EXPR(cond)\
+    (sizeof(char [1 - 2*!(cond)]) - 1)
+#ifndef Py_MEMBER_SIZE
+#define Py_MEMBER_SIZE(type, member) sizeof(((type *)0)->member)
+#endif
+  static size_t __pyx_pyframe_localsplus_offset = 0;
+  #include "frameobject.h"
+  #define __Pxy_PyFrame_Initialize_Offsets()\
+    ((void)__Pyx_BUILD_ASSERT_EXPR(sizeof(PyFrameObject) == offsetof(PyFrameObject, f_localsplus) + Py_MEMBER_SIZE(PyFrameObject, f_localsplus)),\
+     (void)(__pyx_pyframe_localsplus_offset = ((size_t)PyFrame_Type.tp_basicsize) - Py_MEMBER_SIZE(PyFrameObject, f_localsplus)))
+  #define __Pyx_PyFrame_GetLocalsplus(frame)\
+    (assert(__pyx_pyframe_localsplus_offset), (PyObject **)(((char *)(frame)) + __pyx_pyframe_localsplus_offset))
+#endif
+
 /* PyObjectCall.proto */
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
 #else
 #define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
 #endif
+
+/* PyObjectCallMethO.proto */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg);
+#endif
+
+/* PyObjectCallOneArg.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
+
+/* PyObjectCallNoArg.proto */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func);
+#else
+#define __Pyx_PyObject_CallNoArg(func) __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL)
+#endif
+
+/* PyObjectGetAttrStr.proto */
+#if CYTHON_USE_TYPE_SLOTS
+static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject* attr_name);
+#else
+#define __Pyx_PyObject_GetAttrStr(o,n) PyObject_GetAttr(o,n)
+#endif
+
+/* PyObjectGetMethod.proto */
+static int __Pyx_PyObject_GetMethod(PyObject *obj, PyObject *name, PyObject **method);
+
+/* GetAwaitIter.proto */
+static CYTHON_INLINE PyObject *__Pyx_Coroutine_GetAwaitableIter(PyObject *o);
+static PyObject *__Pyx__Coroutine_GetAwaitableIter(PyObject *o);
+
+/* PyObjectCallMethod0.proto */
+static PyObject* __Pyx_PyObject_CallMethod0(PyObject* obj, PyObject* method_name);
+
+/* AsyncIter.proto */
+static CYTHON_INLINE PyObject *__Pyx_Coroutine_GetAsyncIter(PyObject *o);
+static CYTHON_INLINE PyObject *__Pyx_Coroutine_AsyncIterNext(PyObject *o);
+
+/* FetchCommonType.proto */
+static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type);
 
 /* PyThreadStateGet.proto */
 #if CYTHON_FAST_THREAD_STATE
@@ -2723,68 +2775,6 @@ static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject 
 
 /* RaiseException.proto */
 static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
-
-/* PyFunctionFastCall.proto */
-#if CYTHON_FAST_PYCALL
-#define __Pyx_PyFunction_FastCall(func, args, nargs)\
-    __Pyx_PyFunction_FastCallDict((func), (args), (nargs), NULL)
-#if 1 || PY_VERSION_HEX < 0x030600B1
-static PyObject *__Pyx_PyFunction_FastCallDict(PyObject *func, PyObject **args, int nargs, PyObject *kwargs);
-#else
-#define __Pyx_PyFunction_FastCallDict(func, args, nargs, kwargs) _PyFunction_FastCallDict(func, args, nargs, kwargs)
-#endif
-#define __Pyx_BUILD_ASSERT_EXPR(cond)\
-    (sizeof(char [1 - 2*!(cond)]) - 1)
-#ifndef Py_MEMBER_SIZE
-#define Py_MEMBER_SIZE(type, member) sizeof(((type *)0)->member)
-#endif
-  static size_t __pyx_pyframe_localsplus_offset = 0;
-  #include "frameobject.h"
-  #define __Pxy_PyFrame_Initialize_Offsets()\
-    ((void)__Pyx_BUILD_ASSERT_EXPR(sizeof(PyFrameObject) == offsetof(PyFrameObject, f_localsplus) + Py_MEMBER_SIZE(PyFrameObject, f_localsplus)),\
-     (void)(__pyx_pyframe_localsplus_offset = ((size_t)PyFrame_Type.tp_basicsize) - Py_MEMBER_SIZE(PyFrameObject, f_localsplus)))
-  #define __Pyx_PyFrame_GetLocalsplus(frame)\
-    (assert(__pyx_pyframe_localsplus_offset), (PyObject **)(((char *)(frame)) + __pyx_pyframe_localsplus_offset))
-#endif
-
-/* PyObjectCallMethO.proto */
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg);
-#endif
-
-/* PyObjectCallNoArg.proto */
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func);
-#else
-#define __Pyx_PyObject_CallNoArg(func) __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL)
-#endif
-
-/* PyCFunctionFastCall.proto */
-#if CYTHON_FAST_PYCCALL
-static CYTHON_INLINE PyObject *__Pyx_PyCFunction_FastCall(PyObject *func, PyObject **args, Py_ssize_t nargs);
-#else
-#define __Pyx_PyCFunction_FastCall(func, args, nargs)  (assert(0), NULL)
-#endif
-
-/* PyObjectCallOneArg.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
-
-/* PyObjectGetMethod.proto */
-static int __Pyx_PyObject_GetMethod(PyObject *obj, PyObject *name, PyObject **method);
-
-/* GetAwaitIter.proto */
-static CYTHON_INLINE PyObject *__Pyx_Coroutine_GetAwaitableIter(PyObject *o);
-static PyObject *__Pyx__Coroutine_GetAwaitableIter(PyObject *o);
-
-/* PyObjectCallMethod0.proto */
-static PyObject* __Pyx_PyObject_CallMethod0(PyObject* obj, PyObject* method_name);
-
-/* AsyncIter.proto */
-static CYTHON_INLINE PyObject *__Pyx_Coroutine_GetAsyncIter(PyObject *o);
-static CYTHON_INLINE PyObject *__Pyx_Coroutine_AsyncIterNext(PyObject *o);
-
-/* FetchCommonType.proto */
-static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type);
 
 /* GetTopmostException.proto */
 #if CYTHON_USE_EXC_INFO_STACK
@@ -3000,54 +2990,8 @@ static CYTHON_INLINE PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* k
 #define __Pyx_PyObject_GetItem(obj, key)  PyObject_GetItem(obj, key)
 #endif
 
-/* None.proto */
-static CYTHON_INLINE void __Pyx_RaiseClosureNameError(const char *varname);
-
-/* DictGetItem.proto */
-#if PY_MAJOR_VERSION >= 3 && !CYTHON_COMPILING_IN_PYPY
-static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key);
-#define __Pyx_PyObject_Dict_GetItem(obj, name)\
-    (likely(PyDict_CheckExact(obj)) ?\
-     __Pyx_PyDict_GetItem(obj, name) : PyObject_GetItem(obj, name))
-#else
-#define __Pyx_PyDict_GetItem(d, key) PyObject_GetItem(d, key)
-#define __Pyx_PyObject_Dict_GetItem(obj, name)  PyObject_GetItem(obj, name)
-#endif
-
-/* PyErrExceptionMatches.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_PyErr_ExceptionMatches(err) __Pyx_PyErr_ExceptionMatchesInState(__pyx_tstate, err)
-static CYTHON_INLINE int __Pyx_PyErr_ExceptionMatchesInState(PyThreadState* tstate, PyObject* err);
-#else
-#define __Pyx_PyErr_ExceptionMatches(err)  PyErr_ExceptionMatches(err)
-#endif
-
-/* ExtTypeTest.proto */
-static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
-
-/* IncludeStringH.proto */
-#include <string.h>
-
-/* PyObject_GenericGetAttr.proto */
-#if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
-static PyObject* __Pyx_PyObject_GenericGetAttr(PyObject* obj, PyObject* attr_name);
-#else
-#define __Pyx_PyObject_GenericGetAttr PyObject_GenericGetAttr
-#endif
-
-/* TypeImport.proto */
-#ifndef __PYX_HAVE_RT_ImportType_proto
-#define __PYX_HAVE_RT_ImportType_proto
-enum __Pyx_ImportType_CheckSize {
-   __Pyx_ImportType_CheckSize_Error = 0,
-   __Pyx_ImportType_CheckSize_Warn = 1,
-   __Pyx_ImportType_CheckSize_Ignore = 2
-};
-static PyTypeObject *__Pyx_ImportType(PyObject* module, const char *module_name, const char *class_name, size_t size, enum __Pyx_ImportType_CheckSize check_size);
-#endif
-
-/* GetVTable.proto */
-static void* __Pyx_GetVtable(PyObject *dict);
+/* GetBuiltinName.proto */
+static PyObject *__Pyx_GetBuiltinName(PyObject *name);
 
 /* PyDictVersioning.proto */
 #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
@@ -3074,6 +3018,60 @@ static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UIN
 #define __PYX_UPDATE_DICT_CACHE(dict, value, cache_var, version_var)
 #define __PYX_PY_DICT_LOOKUP_IF_MODIFIED(VAR, DICT, LOOKUP)  (VAR) = (LOOKUP);
 #endif
+
+/* GetModuleGlobalName.proto */
+#if CYTHON_USE_DICT_VERSIONS
+#define __Pyx_GetModuleGlobalName(var, name)  {\
+    static PY_UINT64_T __pyx_dict_version = 0;\
+    static PyObject *__pyx_dict_cached_value = NULL;\
+    (var) = (likely(__pyx_dict_version == __PYX_GET_DICT_VERSION(__pyx_d))) ?\
+        (likely(__pyx_dict_cached_value) ? __Pyx_NewRef(__pyx_dict_cached_value) : __Pyx_GetBuiltinName(name)) :\
+        __Pyx__GetModuleGlobalName(name, &__pyx_dict_version, &__pyx_dict_cached_value);\
+}
+#define __Pyx_GetModuleGlobalNameUncached(var, name)  {\
+    PY_UINT64_T __pyx_dict_version;\
+    PyObject *__pyx_dict_cached_value;\
+    (var) = __Pyx__GetModuleGlobalName(name, &__pyx_dict_version, &__pyx_dict_cached_value);\
+}
+static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_version, PyObject **dict_cached_value);
+#else
+#define __Pyx_GetModuleGlobalName(var, name)  (var) = __Pyx__GetModuleGlobalName(name)
+#define __Pyx_GetModuleGlobalNameUncached(var, name)  (var) = __Pyx__GetModuleGlobalName(name)
+static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name);
+#endif
+
+/* IncludeStringH.proto */
+#include <string.h>
+
+/* PyObject_GenericGetAttr.proto */
+#if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
+static PyObject* __Pyx_PyObject_GenericGetAttr(PyObject* obj, PyObject* attr_name);
+#else
+#define __Pyx_PyObject_GenericGetAttr PyObject_GenericGetAttr
+#endif
+
+/* SetVTable.proto */
+static int __Pyx_SetVtable(PyObject *dict, void *vtable);
+
+/* TypeImport.proto */
+#ifndef __PYX_HAVE_RT_ImportType_proto
+#define __PYX_HAVE_RT_ImportType_proto
+enum __Pyx_ImportType_CheckSize {
+   __Pyx_ImportType_CheckSize_Error = 0,
+   __Pyx_ImportType_CheckSize_Warn = 1,
+   __Pyx_ImportType_CheckSize_Ignore = 2
+};
+static PyTypeObject *__Pyx_ImportType(PyObject* module, const char *module_name, const char *class_name, size_t size, enum __Pyx_ImportType_CheckSize check_size);
+#endif
+
+/* GetVTable.proto */
+static void* __Pyx_GetVtable(PyObject *dict);
+
+/* Import.proto */
+static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
+
+/* ImportFrom.proto */
+static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name);
 
 /* CLineInTraceback.proto */
 #ifdef CYTHON_CLINE_IN_TRACEBACK
@@ -3102,16 +3100,13 @@ static void __Pyx_AddTraceback(const char *funcname, int c_line,
                                int py_line, const char *filename);
 
 /* CIntToPy.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
-
-/* CIntFromPy.proto */
-static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
-
-/* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
+
+/* CIntFromPy.proto */
+static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
 
 /* FastTypeChecks.proto */
 #if CYTHON_COMPILING_IN_CPYTHON
@@ -3125,15 +3120,6 @@ static CYTHON_INLINE int __Pyx_PyErr_GivenExceptionMatches2(PyObject *err, PyObj
 #define __Pyx_PyErr_GivenExceptionMatches2(err, type1, type2) (PyErr_GivenExceptionMatches(err, type1) || PyErr_GivenExceptionMatches(err, type2))
 #endif
 #define __Pyx_PyException_Check(obj) __Pyx_TypeCheck(obj, PyExc_Exception)
-
-/* Generator.proto */
-#define __Pyx_Generator_USED
-static PyTypeObject *__pyx_GeneratorType = 0;
-#define __Pyx_Generator_CheckExact(obj) (Py_TYPE(obj) == __pyx_GeneratorType)
-#define __Pyx_Generator_New(body, code, closure, name, qualname, module_name)\
-    __Pyx__Coroutine_New(__pyx_GeneratorType, body, code, closure, name, qualname, module_name)
-static PyObject *__Pyx_Generator_Next(PyObject *self);
-static int __pyx_Generator_init(void);
 
 /* AsyncGenerator.proto */
 #define __Pyx_AsyncGen_USED
@@ -3178,6 +3164,7 @@ static int __Pyx_check_binary_version(void);
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
+static PyObject *__pyx_f_5yapic_6entity_3sql_14_query_context_12QueryContext_convert_row(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self, PyObject *__pyx_v_row); /* proto*/
 
 /* Module declarations from 'cython' */
 
@@ -3225,7 +3212,7 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_PolymorphMeta = 0;
 /* Module declarations from 'yapic.entity._query' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_query_Query = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_query_QueryFinalizer = 0;
-static PyTypeObject *__pyx_ptype_5yapic_6entity_6_query_RowProcessor = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_6_query_RowConvertOp = 0;
 
 /* Module declarations from 'yapic.entity._field' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_field_Field = 0;
@@ -3254,6 +3241,9 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_8_dialect_Dialect = 0;
 /* Module declarations from 'yapic.entity.sql._connection' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_11_connection_Connection = 0;
 
+/* Module declarations from 'yapic.entity.sql._record_converter' */
+static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_17_record_converter_RCState = 0;
+
 /* Module declarations from 'cpython.ref' */
 
 /* Module declarations from 'cpython.list' */
@@ -3281,23 +3271,13 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scop
 static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_2_forward = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_3_fetchval = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_4_first = 0;
-static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row = 0;
-static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity = 0;
-static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr = 0;
-static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__ = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__ = 0;
 static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_3sql_14_query_context_ensure_transaction(PyObject *); /*proto*/
-static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_3sql_14_query_context_create_entity(struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, PyObject *, int, int); /*proto*/
 #define __Pyx_MODULE_NAME "yapic.entity.sql._query_context"
 extern int __pyx_module_is_main_yapic__entity__sql___query_context;
 int __pyx_module_is_main_yapic__entity__sql___query_context = 0;
 
 /* Implementation of 'yapic.entity.sql._query_context' */
-static PyObject *__pyx_builtin_ValueError;
-static PyObject *__pyx_builtin_range;
-static PyObject *__pyx_builtin_KeyError;
-static PyObject *__pyx_builtin_RuntimeError;
-static const char __pyx_k_end[] = "end";
-static const char __pyx_k_ent[] = "ent";
 static const char __pyx_k_num[] = "num";
 static const char __pyx_k_args[] = "args";
 static const char __pyx_k_conn[] = "conn";
@@ -3312,37 +3292,29 @@ static const char __pyx_k_await[] = "__await__";
 static const char __pyx_k_close[] = "close";
 static const char __pyx_k_fetch[] = "fetch";
 static const char __pyx_k_first[] = "first";
-static const char __pyx_k_index[] = "_index_";
-static const char __pyx_k_range[] = "range";
-static const char __pyx_k_start[] = "start";
 static const char __pyx_k_throw[] = "throw";
 static const char __pyx_k_aenter[] = "__aenter__";
 static const char __pyx_k_column[] = "column";
-static const char __pyx_k_record[] = "record";
-static const char __pyx_k_columns[] = "columns";
+static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_forward[] = "forward";
-static const char __pyx_k_genexpr[] = "genexpr";
 static const char __pyx_k_timeout[] = "timeout";
-static const char __pyx_k_KeyError[] = "KeyError";
 static const char __pyx_k_fetchrow[] = "fetchrow";
 static const char __pyx_k_fetchval[] = "fetchval";
 static const char __pyx_k_readonly[] = "readonly";
 static const char __pyx_k_top_xact[] = "_top_xact";
 static const char __pyx_k_isolation[] = "isolation";
-static const char __pyx_k_ValueError[] = "ValueError";
+static const char __pyx_k_rcos_list[] = "rcos_list";
 static const char __pyx_k_deferrable[] = "deferrable";
-static const char __pyx_k_get_entity[] = "get_entity";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static const char __pyx_k_readonly_2[] = "_readonly";
-static const char __pyx_k_convert_row[] = "convert_row";
 static const char __pyx_k_isolation_2[] = "_isolation";
 static const char __pyx_k_transaction[] = "transaction";
 static const char __pyx_k_QueryContext[] = "QueryContext";
-static const char __pyx_k_RuntimeError[] = "RuntimeError";
 static const char __pyx_k_deferrable_2[] = "_deferrable";
 static const char __pyx_k_serializable[] = "serializable";
+static const char __pyx_k_convert_record[] = "convert_record";
 static const char __pyx_k_cursor_factory[] = "cursor_factory";
-static const char __pyx_k_Too_many_columns[] = "Too many columns";
+static const char __pyx_k_record_converter[] = "_record_converter";
 static const char __pyx_k_QueryContext_fetch[] = "QueryContext.fetch";
 static const char __pyx_k_QueryContext_first[] = "QueryContext.first";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
@@ -3350,25 +3322,14 @@ static const char __pyx_k_QueryContext___aiter[] = "QueryContext.__aiter__";
 static const char __pyx_k_QueryContext_forward[] = "QueryContext.forward";
 static const char __pyx_k_QueryContext_fetchrow[] = "QueryContext.fetchrow";
 static const char __pyx_k_QueryContext_fetchval[] = "QueryContext.fetchval";
-static const char __pyx_k_QueryContext_get_entity[] = "QueryContext.get_entity";
-static const char __pyx_k_QueryContext_convert_row[] = "QueryContext.convert_row";
-static const char __pyx_k_Columns_must_be_not_empty[] = "Columns must be not empty";
-static const char __pyx_k_get_entity_locals_genexpr[] = "get_entity.<locals>.genexpr";
 static const char __pyx_k_yapic_entity_sql__query_context[] = "yapic.entity.sql._query_context";
-static PyObject *__pyx_kp_u_Columns_must_be_not_empty;
-static PyObject *__pyx_n_s_KeyError;
 static PyObject *__pyx_n_s_QueryContext;
 static PyObject *__pyx_n_s_QueryContext___aiter;
-static PyObject *__pyx_n_s_QueryContext_convert_row;
 static PyObject *__pyx_n_s_QueryContext_fetch;
 static PyObject *__pyx_n_s_QueryContext_fetchrow;
 static PyObject *__pyx_n_s_QueryContext_fetchval;
 static PyObject *__pyx_n_s_QueryContext_first;
 static PyObject *__pyx_n_s_QueryContext_forward;
-static PyObject *__pyx_n_s_QueryContext_get_entity;
-static PyObject *__pyx_n_s_RuntimeError;
-static PyObject *__pyx_kp_u_Too_many_columns;
-static PyObject *__pyx_n_s_ValueError;
 static PyObject *__pyx_n_s_aenter;
 static PyObject *__pyx_n_s_aexit;
 static PyObject *__pyx_n_s_aiter;
@@ -3378,53 +3339,43 @@ static PyObject *__pyx_n_s_await;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_close;
 static PyObject *__pyx_n_s_column;
-static PyObject *__pyx_n_s_columns;
 static PyObject *__pyx_n_s_conn;
-static PyObject *__pyx_n_s_convert_row;
+static PyObject *__pyx_n_s_convert_record;
 static PyObject *__pyx_n_s_cursor_factory;
 static PyObject *__pyx_n_s_deferrable;
 static PyObject *__pyx_n_s_deferrable_2;
-static PyObject *__pyx_n_s_end;
-static PyObject *__pyx_n_s_ent;
 static PyObject *__pyx_n_s_fetch;
 static PyObject *__pyx_n_s_fetchrow;
 static PyObject *__pyx_n_s_fetchval;
 static PyObject *__pyx_n_s_first;
 static PyObject *__pyx_n_s_forward;
-static PyObject *__pyx_n_s_genexpr;
-static PyObject *__pyx_n_s_get_entity;
-static PyObject *__pyx_n_s_get_entity_locals_genexpr;
-static PyObject *__pyx_n_s_index;
+static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_isolation;
 static PyObject *__pyx_n_s_isolation_2;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_n_s_num;
 static PyObject *__pyx_n_s_pyx_vtable;
-static PyObject *__pyx_n_s_range;
+static PyObject *__pyx_n_s_rcos_list;
 static PyObject *__pyx_n_s_readonly;
 static PyObject *__pyx_n_s_readonly_2;
-static PyObject *__pyx_n_s_record;
+static PyObject *__pyx_n_s_record_converter;
 static PyObject *__pyx_n_s_send;
 static PyObject *__pyx_n_u_serializable;
-static PyObject *__pyx_n_s_start;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_throw;
 static PyObject *__pyx_n_s_timeout;
 static PyObject *__pyx_n_s_top_xact;
 static PyObject *__pyx_n_s_transaction;
 static PyObject *__pyx_n_s_yapic_entity_sql__query_context;
-static int __pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext___cinit__(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self, struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *__pyx_v_conn, PyObject *__pyx_v_cursor_factory, PyObject *__pyx_v_columns); /* proto */
+static int __pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext___cinit__(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self, struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *__pyx_v_conn, PyObject *__pyx_v_cursor_factory, PyObject *__pyx_v_rcos_list); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_2fetch(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v_num, CYTHON_UNUSED PyObject *__pyx_v_timeout); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_5fetchrow(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self, PyObject *__pyx_v_timeout); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_8forward(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self, PyObject *__pyx_v_num, PyObject *__pyx_v_timeout); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_11fetchval(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self, PyObject *__pyx_v_column, PyObject *__pyx_v_timeout); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_14first(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self, PyObject *__pyx_v_timeout); /* proto */
-static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_17convert_row(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self, PyObject *__pyx_v_row); /* proto */
-static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_10get_entity_genexpr(PyObject *__pyx_self); /* proto */
-static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_20get_entity(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_ent, PyObject *__pyx_v_record, int __pyx_v_start, int __pyx_v_end); /* proto */
-static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_23__aiter__(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_26__await__(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_17__aiter__(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_20__await__(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_4conn___get__(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_5yapic_6entity_3sql_14_query_context_QueryContext(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct__fetch(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -3432,20 +3383,15 @@ static PyObject *__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_s
 static PyObject *__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_2_forward(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_3_fetchval(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_4_first(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_tuple_;
-static PyObject *__pyx_tuple__2;
-static PyObject *__pyx_tuple__3;
 /* Late includes */
 
-/* "yapic/entity/sql/_query_context.pyx":15
+/* "yapic/entity/sql/_query_context.pyx":17
  * 
  * cdef class QueryContext:
- *     def __cinit__(self, Connection conn, cursor_factory, list columns):             # <<<<<<<<<<<<<<
+ *     def __cinit__(self, Connection conn, cursor_factory, list rcos_list):             # <<<<<<<<<<<<<<
  *         self.conn = conn
  *         self.cursor_factory = cursor_factory
  */
@@ -3455,12 +3401,12 @@ static int __pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_1__cinit
 static int __pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *__pyx_v_conn = 0;
   PyObject *__pyx_v_cursor_factory = 0;
-  PyObject *__pyx_v_columns = 0;
+  PyObject *__pyx_v_rcos_list = 0;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_conn,&__pyx_n_s_cursor_factory,&__pyx_n_s_columns,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_conn,&__pyx_n_s_cursor_factory,&__pyx_n_s_rcos_list,0};
     PyObject* values[3] = {0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
@@ -3484,17 +3430,17 @@ static int __pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_1__cinit
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_cursor_factory)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 1); __PYX_ERR(0, 15, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 1); __PYX_ERR(0, 17, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
-        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_columns)) != 0)) kw_args--;
+        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_rcos_list)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 2); __PYX_ERR(0, 15, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 2); __PYX_ERR(0, 17, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 15, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 17, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -3505,19 +3451,19 @@ static int __pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_1__cinit
     }
     __pyx_v_conn = ((struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *)values[0]);
     __pyx_v_cursor_factory = values[1];
-    __pyx_v_columns = ((PyObject*)values[2]);
+    __pyx_v_rcos_list = ((PyObject*)values[2]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 15, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 17, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("yapic.entity.sql._query_context.QueryContext.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_conn), __pyx_ptype_5yapic_6entity_3sql_11_connection_Connection, 1, "conn", 0))) __PYX_ERR(0, 15, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_columns), (&PyList_Type), 1, "columns", 1))) __PYX_ERR(0, 15, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext___cinit__(((struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *)__pyx_v_self), __pyx_v_conn, __pyx_v_cursor_factory, __pyx_v_columns);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_conn), __pyx_ptype_5yapic_6entity_3sql_11_connection_Connection, 1, "conn", 0))) __PYX_ERR(0, 17, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_rcos_list), (&PyList_Type), 1, "rcos_list", 1))) __PYX_ERR(0, 17, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext___cinit__(((struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *)__pyx_v_self), __pyx_v_conn, __pyx_v_cursor_factory, __pyx_v_rcos_list);
 
   /* function exit code */
   goto __pyx_L0;
@@ -3528,20 +3474,18 @@ static int __pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_1__cinit
   return __pyx_r;
 }
 
-static int __pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext___cinit__(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self, struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *__pyx_v_conn, PyObject *__pyx_v_cursor_factory, PyObject *__pyx_v_columns) {
+static int __pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext___cinit__(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self, struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *__pyx_v_conn, PyObject *__pyx_v_cursor_factory, PyObject *__pyx_v_rcos_list) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  int __pyx_t_2;
-  int __pyx_t_3;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "yapic/entity/sql/_query_context.pyx":16
+  /* "yapic/entity/sql/_query_context.pyx":18
  * cdef class QueryContext:
- *     def __cinit__(self, Connection conn, cursor_factory, list columns):
+ *     def __cinit__(self, Connection conn, cursor_factory, list rcos_list):
  *         self.conn = conn             # <<<<<<<<<<<<<<
  *         self.cursor_factory = cursor_factory
- *         self.columns = columns
+ *         self.rcos_list = rcos_list
  */
   __Pyx_INCREF(((PyObject *)__pyx_v_conn));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_conn));
@@ -3549,12 +3493,12 @@ static int __pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext___cinit_
   __Pyx_DECREF(((PyObject *)__pyx_v_self->conn));
   __pyx_v_self->conn = __pyx_v_conn;
 
-  /* "yapic/entity/sql/_query_context.pyx":17
- *     def __cinit__(self, Connection conn, cursor_factory, list columns):
+  /* "yapic/entity/sql/_query_context.pyx":19
+ *     def __cinit__(self, Connection conn, cursor_factory, list rcos_list):
  *         self.conn = conn
  *         self.cursor_factory = cursor_factory             # <<<<<<<<<<<<<<
- *         self.columns = columns
- *         self.entities = {}
+ *         self.rcos_list = rcos_list
+ *         self.rc_state = RCState(conn)
  */
   __Pyx_INCREF(__pyx_v_cursor_factory);
   __Pyx_GIVEREF(__pyx_v_cursor_factory);
@@ -3562,71 +3506,38 @@ static int __pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext___cinit_
   __Pyx_DECREF(__pyx_v_self->cursor_factory);
   __pyx_v_self->cursor_factory = __pyx_v_cursor_factory;
 
-  /* "yapic/entity/sql/_query_context.pyx":18
+  /* "yapic/entity/sql/_query_context.pyx":20
  *         self.conn = conn
  *         self.cursor_factory = cursor_factory
- *         self.columns = columns             # <<<<<<<<<<<<<<
- *         self.entities = {}
+ *         self.rcos_list = rcos_list             # <<<<<<<<<<<<<<
+ *         self.rc_state = RCState(conn)
  * 
  */
-  __Pyx_INCREF(__pyx_v_columns);
-  __Pyx_GIVEREF(__pyx_v_columns);
-  __Pyx_GOTREF(__pyx_v_self->columns);
-  __Pyx_DECREF(__pyx_v_self->columns);
-  __pyx_v_self->columns = __pyx_v_columns;
-
-  /* "yapic/entity/sql/_query_context.pyx":19
- *         self.cursor_factory = cursor_factory
- *         self.columns = columns
- *         self.entities = {}             # <<<<<<<<<<<<<<
- * 
- *         if not columns:
- */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_1);
-  __Pyx_GOTREF(__pyx_v_self->entities);
-  __Pyx_DECREF(__pyx_v_self->entities);
-  __pyx_v_self->entities = ((PyObject*)__pyx_t_1);
-  __pyx_t_1 = 0;
+  __Pyx_INCREF(__pyx_v_rcos_list);
+  __Pyx_GIVEREF(__pyx_v_rcos_list);
+  __Pyx_GOTREF(__pyx_v_self->rcos_list);
+  __Pyx_DECREF(__pyx_v_self->rcos_list);
+  __pyx_v_self->rcos_list = __pyx_v_rcos_list;
 
   /* "yapic/entity/sql/_query_context.pyx":21
- *         self.entities = {}
- * 
- *         if not columns:             # <<<<<<<<<<<<<<
- *             raise ValueError("Columns must be not empty")
- * 
- */
-  __pyx_t_2 = (__pyx_v_columns != Py_None)&&(PyList_GET_SIZE(__pyx_v_columns) != 0);
-  __pyx_t_3 = ((!__pyx_t_2) != 0);
-  if (unlikely(__pyx_t_3)) {
-
-    /* "yapic/entity/sql/_query_context.pyx":22
- * 
- *         if not columns:
- *             raise ValueError("Columns must be not empty")             # <<<<<<<<<<<<<<
+ *         self.cursor_factory = cursor_factory
+ *         self.rcos_list = rcos_list
+ *         self.rc_state = RCState(conn)             # <<<<<<<<<<<<<<
  * 
  *     async def fetch(self, num=None, *, timeout=None):
  */
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_Raise(__pyx_t_1, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_5yapic_6entity_3sql_17_record_converter_RCState), ((PyObject *)__pyx_v_conn)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_1);
+  __Pyx_GOTREF(__pyx_v_self->rc_state);
+  __Pyx_DECREF(((PyObject *)__pyx_v_self->rc_state));
+  __pyx_v_self->rc_state = ((struct __pyx_obj_5yapic_6entity_3sql_17_record_converter_RCState *)__pyx_t_1);
+  __pyx_t_1 = 0;
 
-    /* "yapic/entity/sql/_query_context.pyx":21
- *         self.entities = {}
- * 
- *         if not columns:             # <<<<<<<<<<<<<<
- *             raise ValueError("Columns must be not empty")
- * 
- */
-  }
-
-  /* "yapic/entity/sql/_query_context.pyx":15
+  /* "yapic/entity/sql/_query_context.pyx":17
  * 
  * cdef class QueryContext:
- *     def __cinit__(self, Connection conn, cursor_factory, list columns):             # <<<<<<<<<<<<<<
+ *     def __cinit__(self, Connection conn, cursor_factory, list rcos_list):             # <<<<<<<<<<<<<<
  *         self.conn = conn
  *         self.cursor_factory = cursor_factory
  */
@@ -3644,8 +3555,8 @@ static int __pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext___cinit_
 }
 static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_4generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "yapic/entity/sql/_query_context.pyx":24
- *             raise ValueError("Columns must be not empty")
+/* "yapic/entity/sql/_query_context.pyx":23
+ *         self.rc_state = RCState(conn)
  * 
  *     async def fetch(self, num=None, *, timeout=None):             # <<<<<<<<<<<<<<
  *         cdef list rows = []
@@ -3688,7 +3599,7 @@ static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_3f
         if (value) { values[index] = value; kw_args--; }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "fetch") < 0)) __PYX_ERR(0, 24, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "fetch") < 0)) __PYX_ERR(0, 23, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3703,7 +3614,7 @@ static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_3f
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("fetch", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 24, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("fetch", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 23, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("yapic.entity.sql._query_context.QueryContext.fetch", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3725,7 +3636,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_2f
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct__fetch *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 24, __pyx_L1_error)
+    __PYX_ERR(0, 23, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -3739,7 +3650,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_2f
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_timeout);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_timeout);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_4generator, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_fetch, __pyx_n_s_QueryContext_fetch, __pyx_n_s_yapic_entity_sql__query_context); if (unlikely(!gen)) __PYX_ERR(0, 24, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_4generator, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_fetch, __pyx_n_s_QueryContext_fetch, __pyx_n_s_yapic_entity_sql__query_context); if (unlikely(!gen)) __PYX_ERR(0, 23, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -3772,32 +3683,32 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_4g
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 24, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 23, __pyx_L1_error)
 
-  /* "yapic/entity/sql/_query_context.pyx":25
+  /* "yapic/entity/sql/_query_context.pyx":24
  * 
  *     async def fetch(self, num=None, *, timeout=None):
  *         cdef list rows = []             # <<<<<<<<<<<<<<
  *         async for record in self:
  *             rows.append(record)
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_cur_scope->__pyx_v_rows = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "yapic/entity/sql/_query_context.pyx":26
+  /* "yapic/entity/sql/_query_context.pyx":25
  *     async def fetch(self, num=None, *, timeout=None):
  *         cdef list rows = []
  *         async for record in self:             # <<<<<<<<<<<<<<
  *             rows.append(record)
  *         return rows
  */
-  __pyx_t_1 = __Pyx_Coroutine_GetAsyncIter(((PyObject *)__pyx_cur_scope->__pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Coroutine_GetAsyncIter(((PyObject *)__pyx_cur_scope->__pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   for (;;) {
-    __pyx_t_2 = __Pyx_Coroutine_AsyncIterNext(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 26, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_Coroutine_AsyncIterNext(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_2);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -3821,7 +3732,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_4g
           PyErr_Clear();
           break;
         }
-        __PYX_ERR(0, 26, __pyx_L1_error)
+        __PYX_ERR(0, 25, __pyx_L1_error)
       }
       __pyx_t_2 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_2);
     } else {
@@ -3831,7 +3742,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_4g
         break;
       }
       __pyx_t_2 = NULL;
-      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 26, __pyx_L1_error)
+      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 25, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
     }
     __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_record);
@@ -3839,16 +3750,16 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_4g
     __Pyx_GIVEREF(__pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "yapic/entity/sql/_query_context.pyx":27
+    /* "yapic/entity/sql/_query_context.pyx":26
  *         cdef list rows = []
  *         async for record in self:
  *             rows.append(record)             # <<<<<<<<<<<<<<
  *         return rows
  * 
  */
-    __pyx_t_3 = __Pyx_PyList_Append(__pyx_cur_scope->__pyx_v_rows, __pyx_cur_scope->__pyx_v_record); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 27, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyList_Append(__pyx_cur_scope->__pyx_v_rows, __pyx_cur_scope->__pyx_v_record); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 26, __pyx_L1_error)
 
-    /* "yapic/entity/sql/_query_context.pyx":26
+    /* "yapic/entity/sql/_query_context.pyx":25
  *     async def fetch(self, num=None, *, timeout=None):
  *         cdef list rows = []
  *         async for record in self:             # <<<<<<<<<<<<<<
@@ -3858,7 +3769,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_4g
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "yapic/entity/sql/_query_context.pyx":28
+  /* "yapic/entity/sql/_query_context.pyx":27
  *         async for record in self:
  *             rows.append(record)
  *         return rows             # <<<<<<<<<<<<<<
@@ -3870,8 +3781,8 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_4g
   goto __pyx_L0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "yapic/entity/sql/_query_context.pyx":24
- *             raise ValueError("Columns must be not empty")
+  /* "yapic/entity/sql/_query_context.pyx":23
+ *         self.rc_state = RCState(conn)
  * 
  *     async def fetch(self, num=None, *, timeout=None):             # <<<<<<<<<<<<<<
  *         cdef list rows = []
@@ -3895,7 +3806,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_4g
 }
 static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7generator1(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "yapic/entity/sql/_query_context.pyx":30
+/* "yapic/entity/sql/_query_context.pyx":29
  *         return rows
  * 
  *     async def fetchrow(self, *, timeout=None):             # <<<<<<<<<<<<<<
@@ -3928,7 +3839,7 @@ static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_6f
         if (value) { values[index] = value; kw_args--; }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, 0, "fetchrow") < 0)) __PYX_ERR(0, 30, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, 0, "fetchrow") < 0)) __PYX_ERR(0, 29, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 0) {
       goto __pyx_L5_argtuple_error;
@@ -3938,7 +3849,7 @@ static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_6f
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("fetchrow", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 30, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("fetchrow", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 29, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("yapic.entity.sql._query_context.QueryContext.fetchrow", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3960,7 +3871,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_5f
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_1_fetchrow *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 30, __pyx_L1_error)
+    __PYX_ERR(0, 29, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -3971,7 +3882,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_5f
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_timeout);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_timeout);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7generator1, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_fetchrow, __pyx_n_s_QueryContext_fetchrow, __pyx_n_s_yapic_entity_sql__query_context); if (unlikely(!gen)) __PYX_ERR(0, 30, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7generator1, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_fetchrow, __pyx_n_s_QueryContext_fetchrow, __pyx_n_s_yapic_entity_sql__query_context); if (unlikely(!gen)) __PYX_ERR(0, 29, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -4022,9 +3933,9 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 30, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 29, __pyx_L1_error)
 
-  /* "yapic/entity/sql/_query_context.pyx":31
+  /* "yapic/entity/sql/_query_context.pyx":30
  * 
  *     async def fetchrow(self, *, timeout=None):
  *         async with ensure_transaction(self.conn.conn):             # <<<<<<<<<<<<<<
@@ -4034,12 +3945,12 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
   /*with:*/ {
     __pyx_t_1 = __pyx_cur_scope->__pyx_v_self->conn->conn;
     __Pyx_INCREF(__pyx_t_1);
-    __pyx_t_2 = __pyx_f_5yapic_6entity_3sql_14_query_context_ensure_transaction(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
+    __pyx_t_2 = __pyx_f_5yapic_6entity_3sql_14_query_context_ensure_transaction(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_3 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aexit); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 31, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aexit); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 30, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aenter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 31, __pyx_L4_error)
+    __pyx_t_4 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aenter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 30, __pyx_L4_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -4053,7 +3964,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
     }
     __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L4_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L4_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_1);
@@ -4077,11 +3988,11 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
       __pyx_t_3 = __pyx_cur_scope->__pyx_t_1;
       __pyx_cur_scope->__pyx_t_1 = 0;
       __Pyx_XGOTREF(__pyx_t_3);
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 31, __pyx_L4_error)
+      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 30, __pyx_L4_error)
       __pyx_t_1 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_1);
     } else {
       __pyx_t_1 = NULL;
-      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 31, __pyx_L4_error)
+      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 30, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -4094,7 +4005,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
         __Pyx_XGOTREF(__pyx_t_8);
         /*try:*/ {
 
-          /* "yapic/entity/sql/_query_context.pyx":32
+          /* "yapic/entity/sql/_query_context.pyx":31
  *     async def fetchrow(self, *, timeout=None):
  *         async with ensure_transaction(self.conn.conn):
  *             cursor = await self.cursor_factory             # <<<<<<<<<<<<<<
@@ -4131,30 +4042,30 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
             __pyx_t_8 = __pyx_cur_scope->__pyx_t_3;
             __pyx_cur_scope->__pyx_t_3 = 0;
             __Pyx_XGOTREF(__pyx_t_8);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 32, __pyx_L9_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 31, __pyx_L9_error)
             __pyx_t_2 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_2);
           } else {
             __pyx_t_2 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 32, __pyx_L9_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 31, __pyx_L9_error)
             __Pyx_GOTREF(__pyx_t_2);
           }
           __Pyx_GIVEREF(__pyx_t_2);
           __pyx_cur_scope->__pyx_v_cursor = __pyx_t_2;
           __pyx_t_2 = 0;
 
-          /* "yapic/entity/sql/_query_context.pyx":33
+          /* "yapic/entity/sql/_query_context.pyx":32
  *         async with ensure_transaction(self.conn.conn):
  *             cursor = await self.cursor_factory
  *             row = await cursor.fetchrow(timeout=timeout)             # <<<<<<<<<<<<<<
  *             if row:
  *                 return await self.convert_row(row)
  */
-          __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_cursor, __pyx_n_s_fetchrow); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 33, __pyx_L9_error)
+          __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_cursor, __pyx_n_s_fetchrow); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_2);
-          __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L9_error)
+          __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_1);
-          if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_timeout, __pyx_cur_scope->__pyx_v_timeout) < 0) __PYX_ERR(0, 33, __pyx_L9_error)
-          __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 33, __pyx_L9_error)
+          if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_timeout, __pyx_cur_scope->__pyx_v_timeout) < 0) __PYX_ERR(0, 32, __pyx_L9_error)
+          __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 32, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -4189,28 +4100,28 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
             __pyx_t_8 = __pyx_cur_scope->__pyx_t_3;
             __pyx_cur_scope->__pyx_t_3 = 0;
             __Pyx_XGOTREF(__pyx_t_8);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 33, __pyx_L9_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 32, __pyx_L9_error)
             __pyx_t_4 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_4);
           } else {
             __pyx_t_4 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_4) < 0) __PYX_ERR(0, 33, __pyx_L9_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_4) < 0) __PYX_ERR(0, 32, __pyx_L9_error)
             __Pyx_GOTREF(__pyx_t_4);
           }
           __Pyx_GIVEREF(__pyx_t_4);
           __pyx_cur_scope->__pyx_v_row = __pyx_t_4;
           __pyx_t_4 = 0;
 
-          /* "yapic/entity/sql/_query_context.pyx":34
+          /* "yapic/entity/sql/_query_context.pyx":33
  *             cursor = await self.cursor_factory
  *             row = await cursor.fetchrow(timeout=timeout)
  *             if row:             # <<<<<<<<<<<<<<
  *                 return await self.convert_row(row)
  *             else:
  */
-          __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_row); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 34, __pyx_L9_error)
+          __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_row); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 33, __pyx_L9_error)
           if (__pyx_t_9) {
 
-            /* "yapic/entity/sql/_query_context.pyx":35
+            /* "yapic/entity/sql/_query_context.pyx":34
  *             row = await cursor.fetchrow(timeout=timeout)
  *             if row:
  *                 return await self.convert_row(row)             # <<<<<<<<<<<<<<
@@ -4218,23 +4129,8 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
  *                 return None
  */
             __Pyx_XDECREF(__pyx_r);
-            __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_convert_row); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L9_error)
-            __Pyx_GOTREF(__pyx_t_1);
-            __pyx_t_2 = NULL;
-            if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-              __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_1);
-              if (likely(__pyx_t_2)) {
-                PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-                __Pyx_INCREF(__pyx_t_2);
-                __Pyx_INCREF(function);
-                __Pyx_DECREF_SET(__pyx_t_1, function);
-              }
-            }
-            __pyx_t_4 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_2, __pyx_cur_scope->__pyx_v_row) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_cur_scope->__pyx_v_row);
-            __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-            if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 35, __pyx_L9_error)
+            __pyx_t_4 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_14_query_context_QueryContext *)__pyx_cur_scope->__pyx_v_self->__pyx_vtab)->convert_row(__pyx_cur_scope->__pyx_v_self, __pyx_cur_scope->__pyx_v_row); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 34, __pyx_L9_error)
             __Pyx_GOTREF(__pyx_t_4);
-            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
             __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_4);
             __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
             __Pyx_XGOTREF(__pyx_r);
@@ -4266,11 +4162,11 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
               __pyx_t_8 = __pyx_cur_scope->__pyx_t_3;
               __pyx_cur_scope->__pyx_t_3 = 0;
               __Pyx_XGOTREF(__pyx_t_8);
-              if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 35, __pyx_L9_error)
+              if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 34, __pyx_L9_error)
               __pyx_t_4 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_4);
             } else {
               __pyx_t_4 = NULL;
-              if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_4) < 0) __PYX_ERR(0, 35, __pyx_L9_error)
+              if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_4) < 0) __PYX_ERR(0, 34, __pyx_L9_error)
               __Pyx_GOTREF(__pyx_t_4);
             }
             __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_4);
@@ -4278,7 +4174,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
             __pyx_t_4 = 0;
             goto __pyx_L13_try_return;
 
-            /* "yapic/entity/sql/_query_context.pyx":34
+            /* "yapic/entity/sql/_query_context.pyx":33
  *             cursor = await self.cursor_factory
  *             row = await cursor.fetchrow(timeout=timeout)
  *             if row:             # <<<<<<<<<<<<<<
@@ -4287,7 +4183,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
  */
           }
 
-          /* "yapic/entity/sql/_query_context.pyx":37
+          /* "yapic/entity/sql/_query_context.pyx":36
  *                 return await self.convert_row(row)
  *             else:
  *                 return None             # <<<<<<<<<<<<<<
@@ -4300,7 +4196,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
             goto __pyx_L13_try_return;
           }
 
-          /* "yapic/entity/sql/_query_context.pyx":31
+          /* "yapic/entity/sql/_query_context.pyx":30
  * 
  *     async def fetchrow(self, *, timeout=None):
  *         async with ensure_transaction(self.conn.conn):             # <<<<<<<<<<<<<<
@@ -4315,16 +4211,16 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         /*except:*/ {
           __Pyx_AddTraceback("yapic.entity.sql._query_context.QueryContext.fetchrow", __pyx_clineno, __pyx_lineno, __pyx_filename);
-          if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_1, &__pyx_t_2) < 0) __PYX_ERR(0, 31, __pyx_L11_except_error)
+          if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_1, &__pyx_t_2) < 0) __PYX_ERR(0, 30, __pyx_L11_except_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_GOTREF(__pyx_t_2);
-          __pyx_t_5 = PyTuple_Pack(3, __pyx_t_4, __pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 31, __pyx_L11_except_error)
+          __pyx_t_5 = PyTuple_Pack(3, __pyx_t_4, __pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 30, __pyx_L11_except_error)
           __Pyx_GOTREF(__pyx_t_5);
           __pyx_t_10 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-          if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 31, __pyx_L11_except_error)
+          if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 30, __pyx_L11_except_error)
           __Pyx_GOTREF(__pyx_t_10);
           __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_10);
           __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -4377,18 +4273,18 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
             __pyx_t_10 = __pyx_cur_scope->__pyx_t_7;
             __pyx_cur_scope->__pyx_t_7 = 0;
             __Pyx_XGOTREF(__pyx_t_10);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 31, __pyx_L11_except_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 30, __pyx_L11_except_error)
             __pyx_t_5 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_5);
           } else {
             __pyx_t_5 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_5) < 0) __PYX_ERR(0, 31, __pyx_L11_except_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_5) < 0) __PYX_ERR(0, 30, __pyx_L11_except_error)
             __Pyx_GOTREF(__pyx_t_5);
           }
           __pyx_t_10 = __pyx_t_5;
           __pyx_t_5 = 0;
           __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_10);
           __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-          if (__pyx_t_9 < 0) __PYX_ERR(0, 31, __pyx_L11_except_error)
+          if (__pyx_t_9 < 0) __PYX_ERR(0, 30, __pyx_L11_except_error)
           __pyx_t_11 = ((!(__pyx_t_9 != 0)) != 0);
           if (__pyx_t_11) {
             __Pyx_GIVEREF(__pyx_t_4);
@@ -4396,7 +4292,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
             __Pyx_XGIVEREF(__pyx_t_2);
             __Pyx_ErrRestoreWithState(__pyx_t_4, __pyx_t_1, __pyx_t_2);
             __pyx_t_4 = 0; __pyx_t_1 = 0; __pyx_t_2 = 0; 
-            __PYX_ERR(0, 31, __pyx_L11_except_error)
+            __PYX_ERR(0, 30, __pyx_L11_except_error)
           }
           __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -4425,9 +4321,9 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
     /*finally:*/ {
       /*normal exit:*/{
         if (__pyx_t_3) {
-          __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__2, NULL);
+          __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple_, NULL);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 31, __pyx_L1_error)
+          if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 30, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_8);
           __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_8);
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -4450,11 +4346,11 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
             __pyx_t_8 = __pyx_cur_scope->__pyx_t_1;
             __pyx_cur_scope->__pyx_t_1 = 0;
             __Pyx_XGOTREF(__pyx_t_8);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 31, __pyx_L1_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 30, __pyx_L1_error)
             __pyx_t_2 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_2);
           } else {
             __pyx_t_2 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 30, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_2);
           }
           __pyx_t_8 = __pyx_t_2;
@@ -4477,9 +4373,9 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
         __pyx_t_14 = __pyx_r;
         __pyx_r = 0;
         if (__pyx_t_3) {
-          __pyx_t_15 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__2, NULL);
+          __pyx_t_15 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple_, NULL);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 31, __pyx_L1_error)
+          if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 30, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_15);
           __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_15);
           __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
@@ -4537,11 +4433,11 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
             __pyx_t_15 = __pyx_cur_scope->__pyx_t_8;
             __pyx_cur_scope->__pyx_t_8 = 0;
             __Pyx_XGOTREF(__pyx_t_15);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 31, __pyx_L1_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 30, __pyx_L1_error)
             __pyx_t_2 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_2);
           } else {
             __pyx_t_2 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 30, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_2);
           }
           __pyx_t_15 = __pyx_t_2;
@@ -4573,7 +4469,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
   }
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "yapic/entity/sql/_query_context.pyx":30
+  /* "yapic/entity/sql/_query_context.pyx":29
  *         return rows
  * 
  *     async def fetchrow(self, *, timeout=None):             # <<<<<<<<<<<<<<
@@ -4602,7 +4498,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_7g
 }
 static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10generator2(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "yapic/entity/sql/_query_context.pyx":39
+/* "yapic/entity/sql/_query_context.pyx":38
  *                 return None
  * 
  *     async def forward(self, num, *, timeout=None):             # <<<<<<<<<<<<<<
@@ -4643,7 +4539,7 @@ static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_9f
         if (value) { values[index] = value; kw_args--; }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "forward") < 0)) __PYX_ERR(0, 39, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "forward") < 0)) __PYX_ERR(0, 38, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -4655,7 +4551,7 @@ static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_9f
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("forward", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 39, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("forward", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 38, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("yapic.entity.sql._query_context.QueryContext.forward", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -4677,7 +4573,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_8f
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_2_forward *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 39, __pyx_L1_error)
+    __PYX_ERR(0, 38, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -4691,7 +4587,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_8f
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_timeout);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_timeout);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10generator2, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_forward, __pyx_n_s_QueryContext_forward, __pyx_n_s_yapic_entity_sql__query_context); if (unlikely(!gen)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10generator2, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_forward, __pyx_n_s_QueryContext_forward, __pyx_n_s_yapic_entity_sql__query_context); if (unlikely(!gen)) __PYX_ERR(0, 38, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -4741,9 +4637,9 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 39, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 38, __pyx_L1_error)
 
-  /* "yapic/entity/sql/_query_context.pyx":40
+  /* "yapic/entity/sql/_query_context.pyx":39
  * 
  *     async def forward(self, num, *, timeout=None):
  *         async with ensure_transaction(self.conn.conn):             # <<<<<<<<<<<<<<
@@ -4753,12 +4649,12 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10
   /*with:*/ {
     __pyx_t_1 = __pyx_cur_scope->__pyx_v_self->conn->conn;
     __Pyx_INCREF(__pyx_t_1);
-    __pyx_t_2 = __pyx_f_5yapic_6entity_3sql_14_query_context_ensure_transaction(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
+    __pyx_t_2 = __pyx_f_5yapic_6entity_3sql_14_query_context_ensure_transaction(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_3 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aexit); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aexit); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 39, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aenter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 40, __pyx_L4_error)
+    __pyx_t_4 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aenter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 39, __pyx_L4_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -4772,7 +4668,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10
     }
     __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L4_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L4_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_1);
@@ -4796,11 +4692,11 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10
       __pyx_t_3 = __pyx_cur_scope->__pyx_t_1;
       __pyx_cur_scope->__pyx_t_1 = 0;
       __Pyx_XGOTREF(__pyx_t_3);
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 40, __pyx_L4_error)
+      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 39, __pyx_L4_error)
       __pyx_t_1 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_1);
     } else {
       __pyx_t_1 = NULL;
-      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 40, __pyx_L4_error)
+      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 39, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -4813,7 +4709,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10
         __Pyx_XGOTREF(__pyx_t_8);
         /*try:*/ {
 
-          /* "yapic/entity/sql/_query_context.pyx":41
+          /* "yapic/entity/sql/_query_context.pyx":40
  *     async def forward(self, num, *, timeout=None):
  *         async with ensure_transaction(self.conn.conn):
  *             cursor = await self.cursor_factory             # <<<<<<<<<<<<<<
@@ -4850,18 +4746,18 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10
             __pyx_t_8 = __pyx_cur_scope->__pyx_t_3;
             __pyx_cur_scope->__pyx_t_3 = 0;
             __Pyx_XGOTREF(__pyx_t_8);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 41, __pyx_L9_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 40, __pyx_L9_error)
             __pyx_t_2 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_2);
           } else {
             __pyx_t_2 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 41, __pyx_L9_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 40, __pyx_L9_error)
             __Pyx_GOTREF(__pyx_t_2);
           }
           __Pyx_GIVEREF(__pyx_t_2);
           __pyx_cur_scope->__pyx_v_cursor = __pyx_t_2;
           __pyx_t_2 = 0;
 
-          /* "yapic/entity/sql/_query_context.pyx":42
+          /* "yapic/entity/sql/_query_context.pyx":41
  *         async with ensure_transaction(self.conn.conn):
  *             cursor = await self.cursor_factory
  *             return await cursor.forward(num, timeout=timeout)             # <<<<<<<<<<<<<<
@@ -4869,17 +4765,17 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10
  *     async def fetchval(self, column=0, *, timeout=None):
  */
           __Pyx_XDECREF(__pyx_r);
-          __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_cursor, __pyx_n_s_forward); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 42, __pyx_L9_error)
+          __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_cursor, __pyx_n_s_forward); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 41, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_2);
-          __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L9_error)
+          __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_INCREF(__pyx_cur_scope->__pyx_v_num);
           __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_num);
           PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_cur_scope->__pyx_v_num);
-          __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 42, __pyx_L9_error)
+          __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 41, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_4);
-          if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_timeout, __pyx_cur_scope->__pyx_v_timeout) < 0) __PYX_ERR(0, 42, __pyx_L9_error)
-          __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 42, __pyx_L9_error)
+          if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_timeout, __pyx_cur_scope->__pyx_v_timeout) < 0) __PYX_ERR(0, 41, __pyx_L9_error)
+          __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 41, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -4915,11 +4811,11 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10
             __pyx_t_8 = __pyx_cur_scope->__pyx_t_3;
             __pyx_cur_scope->__pyx_t_3 = 0;
             __Pyx_XGOTREF(__pyx_t_8);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 42, __pyx_L9_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 41, __pyx_L9_error)
             __pyx_t_5 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_5);
           } else {
             __pyx_t_5 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_5) < 0) __PYX_ERR(0, 42, __pyx_L9_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_5) < 0) __PYX_ERR(0, 41, __pyx_L9_error)
             __Pyx_GOTREF(__pyx_t_5);
           }
           __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_5);
@@ -4927,7 +4823,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10
           __pyx_t_5 = 0;
           goto __pyx_L13_try_return;
 
-          /* "yapic/entity/sql/_query_context.pyx":40
+          /* "yapic/entity/sql/_query_context.pyx":39
  * 
  *     async def forward(self, num, *, timeout=None):
  *         async with ensure_transaction(self.conn.conn):             # <<<<<<<<<<<<<<
@@ -4942,16 +4838,16 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         /*except:*/ {
           __Pyx_AddTraceback("yapic.entity.sql._query_context.QueryContext.forward", __pyx_clineno, __pyx_lineno, __pyx_filename);
-          if (__Pyx_GetException(&__pyx_t_5, &__pyx_t_4, &__pyx_t_1) < 0) __PYX_ERR(0, 40, __pyx_L11_except_error)
+          if (__Pyx_GetException(&__pyx_t_5, &__pyx_t_4, &__pyx_t_1) < 0) __PYX_ERR(0, 39, __pyx_L11_except_error)
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_GOTREF(__pyx_t_1);
-          __pyx_t_2 = PyTuple_Pack(3, __pyx_t_5, __pyx_t_4, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L11_except_error)
+          __pyx_t_2 = PyTuple_Pack(3, __pyx_t_5, __pyx_t_4, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L11_except_error)
           __Pyx_GOTREF(__pyx_t_2);
           __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, NULL);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 40, __pyx_L11_except_error)
+          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 39, __pyx_L11_except_error)
           __Pyx_GOTREF(__pyx_t_9);
           __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_9);
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
@@ -5004,18 +4900,18 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10
             __pyx_t_9 = __pyx_cur_scope->__pyx_t_7;
             __pyx_cur_scope->__pyx_t_7 = 0;
             __Pyx_XGOTREF(__pyx_t_9);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 40, __pyx_L11_except_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 39, __pyx_L11_except_error)
             __pyx_t_2 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_2);
           } else {
             __pyx_t_2 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 40, __pyx_L11_except_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 39, __pyx_L11_except_error)
             __Pyx_GOTREF(__pyx_t_2);
           }
           __pyx_t_9 = __pyx_t_2;
           __pyx_t_2 = 0;
           __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_9);
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-          if (__pyx_t_10 < 0) __PYX_ERR(0, 40, __pyx_L11_except_error)
+          if (__pyx_t_10 < 0) __PYX_ERR(0, 39, __pyx_L11_except_error)
           __pyx_t_11 = ((!(__pyx_t_10 != 0)) != 0);
           if (__pyx_t_11) {
             __Pyx_GIVEREF(__pyx_t_5);
@@ -5023,7 +4919,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10
             __Pyx_XGIVEREF(__pyx_t_1);
             __Pyx_ErrRestoreWithState(__pyx_t_5, __pyx_t_4, __pyx_t_1);
             __pyx_t_5 = 0; __pyx_t_4 = 0; __pyx_t_1 = 0; 
-            __PYX_ERR(0, 40, __pyx_L11_except_error)
+            __PYX_ERR(0, 39, __pyx_L11_except_error)
           }
           __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -5052,9 +4948,9 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10
     /*finally:*/ {
       /*normal exit:*/{
         if (__pyx_t_3) {
-          __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__2, NULL);
+          __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple_, NULL);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 40, __pyx_L1_error)
+          if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 39, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_8);
           __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_8);
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -5077,11 +4973,11 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10
             __pyx_t_8 = __pyx_cur_scope->__pyx_t_1;
             __pyx_cur_scope->__pyx_t_1 = 0;
             __Pyx_XGOTREF(__pyx_t_8);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 40, __pyx_L1_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 39, __pyx_L1_error)
             __pyx_t_1 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_1);
           } else {
             __pyx_t_1 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 40, __pyx_L1_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 39, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_1);
           }
           __pyx_t_8 = __pyx_t_1;
@@ -5104,9 +5000,9 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10
         __pyx_t_14 = __pyx_r;
         __pyx_r = 0;
         if (__pyx_t_3) {
-          __pyx_t_15 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__2, NULL);
+          __pyx_t_15 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple_, NULL);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 40, __pyx_L1_error)
+          if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 39, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_15);
           __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_15);
           __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
@@ -5164,11 +5060,11 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10
             __pyx_t_15 = __pyx_cur_scope->__pyx_t_8;
             __pyx_cur_scope->__pyx_t_8 = 0;
             __Pyx_XGOTREF(__pyx_t_15);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 40, __pyx_L1_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 39, __pyx_L1_error)
             __pyx_t_1 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_1);
           } else {
             __pyx_t_1 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 40, __pyx_L1_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 39, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_1);
           }
           __pyx_t_15 = __pyx_t_1;
@@ -5200,7 +5096,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10
   }
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "yapic/entity/sql/_query_context.pyx":39
+  /* "yapic/entity/sql/_query_context.pyx":38
  *                 return None
  * 
  *     async def forward(self, num, *, timeout=None):             # <<<<<<<<<<<<<<
@@ -5229,7 +5125,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10
 }
 static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13generator3(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "yapic/entity/sql/_query_context.pyx":44
+/* "yapic/entity/sql/_query_context.pyx":43
  *             return await cursor.forward(num, timeout=timeout)
  * 
  *     async def fetchval(self, column=0, *, timeout=None):             # <<<<<<<<<<<<<<
@@ -5273,7 +5169,7 @@ static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_12
         if (value) { values[index] = value; kw_args--; }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "fetchval") < 0)) __PYX_ERR(0, 44, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "fetchval") < 0)) __PYX_ERR(0, 43, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -5288,7 +5184,7 @@ static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_12
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("fetchval", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 44, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("fetchval", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 43, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("yapic.entity.sql._query_context.QueryContext.fetchval", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -5310,7 +5206,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_11
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_3_fetchval *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 44, __pyx_L1_error)
+    __PYX_ERR(0, 43, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -5324,7 +5220,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_11
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_timeout);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_timeout);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13generator3, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_fetchval, __pyx_n_s_QueryContext_fetchval, __pyx_n_s_yapic_entity_sql__query_context); if (unlikely(!gen)) __PYX_ERR(0, 44, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13generator3, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_fetchval, __pyx_n_s_QueryContext_fetchval, __pyx_n_s_yapic_entity_sql__query_context); if (unlikely(!gen)) __PYX_ERR(0, 43, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -5374,9 +5270,9 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 44, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 43, __pyx_L1_error)
 
-  /* "yapic/entity/sql/_query_context.pyx":45
+  /* "yapic/entity/sql/_query_context.pyx":44
  * 
  *     async def fetchval(self, column=0, *, timeout=None):
  *         async with ensure_transaction(self.conn.conn):             # <<<<<<<<<<<<<<
@@ -5386,12 +5282,12 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13
   /*with:*/ {
     __pyx_t_1 = __pyx_cur_scope->__pyx_v_self->conn->conn;
     __Pyx_INCREF(__pyx_t_1);
-    __pyx_t_2 = __pyx_f_5yapic_6entity_3sql_14_query_context_ensure_transaction(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 45, __pyx_L1_error)
+    __pyx_t_2 = __pyx_f_5yapic_6entity_3sql_14_query_context_ensure_transaction(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 44, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_3 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aexit); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 45, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aexit); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aenter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 45, __pyx_L4_error)
+    __pyx_t_4 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aenter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 44, __pyx_L4_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -5405,7 +5301,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13
     }
     __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L4_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 44, __pyx_L4_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_1);
@@ -5429,11 +5325,11 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13
       __pyx_t_3 = __pyx_cur_scope->__pyx_t_1;
       __pyx_cur_scope->__pyx_t_1 = 0;
       __Pyx_XGOTREF(__pyx_t_3);
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 45, __pyx_L4_error)
+      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 44, __pyx_L4_error)
       __pyx_t_1 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_1);
     } else {
       __pyx_t_1 = NULL;
-      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 45, __pyx_L4_error)
+      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 44, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -5446,7 +5342,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13
         __Pyx_XGOTREF(__pyx_t_8);
         /*try:*/ {
 
-          /* "yapic/entity/sql/_query_context.pyx":46
+          /* "yapic/entity/sql/_query_context.pyx":45
  *     async def fetchval(self, column=0, *, timeout=None):
  *         async with ensure_transaction(self.conn.conn):
  *             cursor = await self.cursor_factory             # <<<<<<<<<<<<<<
@@ -5483,30 +5379,30 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13
             __pyx_t_8 = __pyx_cur_scope->__pyx_t_3;
             __pyx_cur_scope->__pyx_t_3 = 0;
             __Pyx_XGOTREF(__pyx_t_8);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 46, __pyx_L9_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 45, __pyx_L9_error)
             __pyx_t_2 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_2);
           } else {
             __pyx_t_2 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 46, __pyx_L9_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 45, __pyx_L9_error)
             __Pyx_GOTREF(__pyx_t_2);
           }
           __Pyx_GIVEREF(__pyx_t_2);
           __pyx_cur_scope->__pyx_v_cursor = __pyx_t_2;
           __pyx_t_2 = 0;
 
-          /* "yapic/entity/sql/_query_context.pyx":47
+          /* "yapic/entity/sql/_query_context.pyx":46
  *         async with ensure_transaction(self.conn.conn):
  *             cursor = await self.cursor_factory
  *             row = await cursor.fetchrow(timeout=timeout)             # <<<<<<<<<<<<<<
  *             return row[column]
  * 
  */
-          __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_cursor, __pyx_n_s_fetchrow); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 47, __pyx_L9_error)
+          __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_cursor, __pyx_n_s_fetchrow); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 46, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_2);
-          __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L9_error)
+          __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_1);
-          if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_timeout, __pyx_cur_scope->__pyx_v_timeout) < 0) __PYX_ERR(0, 47, __pyx_L9_error)
-          __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 47, __pyx_L9_error)
+          if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_timeout, __pyx_cur_scope->__pyx_v_timeout) < 0) __PYX_ERR(0, 46, __pyx_L9_error)
+          __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 46, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -5541,18 +5437,18 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13
             __pyx_t_8 = __pyx_cur_scope->__pyx_t_3;
             __pyx_cur_scope->__pyx_t_3 = 0;
             __Pyx_XGOTREF(__pyx_t_8);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 47, __pyx_L9_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 46, __pyx_L9_error)
             __pyx_t_4 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_4);
           } else {
             __pyx_t_4 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_4) < 0) __PYX_ERR(0, 47, __pyx_L9_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_4) < 0) __PYX_ERR(0, 46, __pyx_L9_error)
             __Pyx_GOTREF(__pyx_t_4);
           }
           __Pyx_GIVEREF(__pyx_t_4);
           __pyx_cur_scope->__pyx_v_row = __pyx_t_4;
           __pyx_t_4 = 0;
 
-          /* "yapic/entity/sql/_query_context.pyx":48
+          /* "yapic/entity/sql/_query_context.pyx":47
  *             cursor = await self.cursor_factory
  *             row = await cursor.fetchrow(timeout=timeout)
  *             return row[column]             # <<<<<<<<<<<<<<
@@ -5560,14 +5456,14 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13
  *     async def first(self, *, timeout=None):
  */
           __Pyx_XDECREF(__pyx_r);
-          __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_row, __pyx_cur_scope->__pyx_v_column); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 48, __pyx_L9_error)
+          __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_row, __pyx_cur_scope->__pyx_v_column); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 47, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_4);
           __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
           __pyx_t_4 = 0;
           goto __pyx_L13_try_return;
 
-          /* "yapic/entity/sql/_query_context.pyx":45
+          /* "yapic/entity/sql/_query_context.pyx":44
  * 
  *     async def fetchval(self, column=0, *, timeout=None):
  *         async with ensure_transaction(self.conn.conn):             # <<<<<<<<<<<<<<
@@ -5582,16 +5478,16 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         /*except:*/ {
           __Pyx_AddTraceback("yapic.entity.sql._query_context.QueryContext.fetchval", __pyx_clineno, __pyx_lineno, __pyx_filename);
-          if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_1, &__pyx_t_2) < 0) __PYX_ERR(0, 45, __pyx_L11_except_error)
+          if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_1, &__pyx_t_2) < 0) __PYX_ERR(0, 44, __pyx_L11_except_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_GOTREF(__pyx_t_2);
-          __pyx_t_5 = PyTuple_Pack(3, __pyx_t_4, __pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 45, __pyx_L11_except_error)
+          __pyx_t_5 = PyTuple_Pack(3, __pyx_t_4, __pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 44, __pyx_L11_except_error)
           __Pyx_GOTREF(__pyx_t_5);
           __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 45, __pyx_L11_except_error)
+          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 44, __pyx_L11_except_error)
           __Pyx_GOTREF(__pyx_t_9);
           __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_9);
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
@@ -5644,18 +5540,18 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13
             __pyx_t_9 = __pyx_cur_scope->__pyx_t_7;
             __pyx_cur_scope->__pyx_t_7 = 0;
             __Pyx_XGOTREF(__pyx_t_9);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 45, __pyx_L11_except_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 44, __pyx_L11_except_error)
             __pyx_t_5 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_5);
           } else {
             __pyx_t_5 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_5) < 0) __PYX_ERR(0, 45, __pyx_L11_except_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_5) < 0) __PYX_ERR(0, 44, __pyx_L11_except_error)
             __Pyx_GOTREF(__pyx_t_5);
           }
           __pyx_t_9 = __pyx_t_5;
           __pyx_t_5 = 0;
           __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_9);
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-          if (__pyx_t_10 < 0) __PYX_ERR(0, 45, __pyx_L11_except_error)
+          if (__pyx_t_10 < 0) __PYX_ERR(0, 44, __pyx_L11_except_error)
           __pyx_t_11 = ((!(__pyx_t_10 != 0)) != 0);
           if (__pyx_t_11) {
             __Pyx_GIVEREF(__pyx_t_4);
@@ -5663,7 +5559,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13
             __Pyx_XGIVEREF(__pyx_t_2);
             __Pyx_ErrRestoreWithState(__pyx_t_4, __pyx_t_1, __pyx_t_2);
             __pyx_t_4 = 0; __pyx_t_1 = 0; __pyx_t_2 = 0; 
-            __PYX_ERR(0, 45, __pyx_L11_except_error)
+            __PYX_ERR(0, 44, __pyx_L11_except_error)
           }
           __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -5692,9 +5588,9 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13
     /*finally:*/ {
       /*normal exit:*/{
         if (__pyx_t_3) {
-          __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__2, NULL);
+          __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple_, NULL);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 45, __pyx_L1_error)
+          if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 44, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_8);
           __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_8);
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -5717,11 +5613,11 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13
             __pyx_t_8 = __pyx_cur_scope->__pyx_t_1;
             __pyx_cur_scope->__pyx_t_1 = 0;
             __Pyx_XGOTREF(__pyx_t_8);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 45, __pyx_L1_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 44, __pyx_L1_error)
             __pyx_t_2 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_2);
           } else {
             __pyx_t_2 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 45, __pyx_L1_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 44, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_2);
           }
           __pyx_t_8 = __pyx_t_2;
@@ -5744,9 +5640,9 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13
         __pyx_t_14 = __pyx_r;
         __pyx_r = 0;
         if (__pyx_t_3) {
-          __pyx_t_15 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__2, NULL);
+          __pyx_t_15 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple_, NULL);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 45, __pyx_L1_error)
+          if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 44, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_15);
           __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_15);
           __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
@@ -5804,11 +5700,11 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13
             __pyx_t_15 = __pyx_cur_scope->__pyx_t_8;
             __pyx_cur_scope->__pyx_t_8 = 0;
             __Pyx_XGOTREF(__pyx_t_15);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 45, __pyx_L1_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 44, __pyx_L1_error)
             __pyx_t_2 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_2);
           } else {
             __pyx_t_2 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 45, __pyx_L1_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 44, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_2);
           }
           __pyx_t_15 = __pyx_t_2;
@@ -5840,7 +5736,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13
   }
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "yapic/entity/sql/_query_context.pyx":44
+  /* "yapic/entity/sql/_query_context.pyx":43
  *             return await cursor.forward(num, timeout=timeout)
  * 
  *     async def fetchval(self, column=0, *, timeout=None):             # <<<<<<<<<<<<<<
@@ -5869,7 +5765,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_13
 }
 static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16generator4(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "yapic/entity/sql/_query_context.pyx":50
+/* "yapic/entity/sql/_query_context.pyx":49
  *             return row[column]
  * 
  *     async def first(self, *, timeout=None):             # <<<<<<<<<<<<<<
@@ -5902,7 +5798,7 @@ static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_15
         if (value) { values[index] = value; kw_args--; }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, 0, "first") < 0)) __PYX_ERR(0, 50, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, 0, "first") < 0)) __PYX_ERR(0, 49, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 0) {
       goto __pyx_L5_argtuple_error;
@@ -5912,7 +5808,7 @@ static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_15
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("first", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 50, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("first", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 49, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("yapic.entity.sql._query_context.QueryContext.first", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -5934,7 +5830,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_14
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_4_first *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 50, __pyx_L1_error)
+    __PYX_ERR(0, 49, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -5945,7 +5841,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_14
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_timeout);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_timeout);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16generator4, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_first, __pyx_n_s_QueryContext_first, __pyx_n_s_yapic_entity_sql__query_context); if (unlikely(!gen)) __PYX_ERR(0, 50, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16generator4, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_first, __pyx_n_s_QueryContext_first, __pyx_n_s_yapic_entity_sql__query_context); if (unlikely(!gen)) __PYX_ERR(0, 49, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -5996,9 +5892,9 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 50, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 49, __pyx_L1_error)
 
-  /* "yapic/entity/sql/_query_context.pyx":51
+  /* "yapic/entity/sql/_query_context.pyx":50
  * 
  *     async def first(self, *, timeout=None):
  *         async with ensure_transaction(self.conn.conn):             # <<<<<<<<<<<<<<
@@ -6008,12 +5904,12 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
   /*with:*/ {
     __pyx_t_1 = __pyx_cur_scope->__pyx_v_self->conn->conn;
     __Pyx_INCREF(__pyx_t_1);
-    __pyx_t_2 = __pyx_f_5yapic_6entity_3sql_14_query_context_ensure_transaction(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 51, __pyx_L1_error)
+    __pyx_t_2 = __pyx_f_5yapic_6entity_3sql_14_query_context_ensure_transaction(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 50, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_3 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aexit); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 51, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aexit); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aenter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 51, __pyx_L4_error)
+    __pyx_t_4 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aenter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 50, __pyx_L4_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -6027,7 +5923,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
     }
     __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L4_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L4_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_1);
@@ -6051,11 +5947,11 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
       __pyx_t_3 = __pyx_cur_scope->__pyx_t_1;
       __pyx_cur_scope->__pyx_t_1 = 0;
       __Pyx_XGOTREF(__pyx_t_3);
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 51, __pyx_L4_error)
+      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 50, __pyx_L4_error)
       __pyx_t_1 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_1);
     } else {
       __pyx_t_1 = NULL;
-      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 51, __pyx_L4_error)
+      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 50, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -6068,7 +5964,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
         __Pyx_XGOTREF(__pyx_t_8);
         /*try:*/ {
 
-          /* "yapic/entity/sql/_query_context.pyx":52
+          /* "yapic/entity/sql/_query_context.pyx":51
  *     async def first(self, *, timeout=None):
  *         async with ensure_transaction(self.conn.conn):
  *             cursor = await self.cursor_factory             # <<<<<<<<<<<<<<
@@ -6105,30 +6001,30 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
             __pyx_t_8 = __pyx_cur_scope->__pyx_t_3;
             __pyx_cur_scope->__pyx_t_3 = 0;
             __Pyx_XGOTREF(__pyx_t_8);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 52, __pyx_L9_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 51, __pyx_L9_error)
             __pyx_t_2 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_2);
           } else {
             __pyx_t_2 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 52, __pyx_L9_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 51, __pyx_L9_error)
             __Pyx_GOTREF(__pyx_t_2);
           }
           __Pyx_GIVEREF(__pyx_t_2);
           __pyx_cur_scope->__pyx_v_cursor = __pyx_t_2;
           __pyx_t_2 = 0;
 
-          /* "yapic/entity/sql/_query_context.pyx":53
+          /* "yapic/entity/sql/_query_context.pyx":52
  *         async with ensure_transaction(self.conn.conn):
  *             cursor = await self.cursor_factory
  *             row = await cursor.fetchrow(timeout=timeout)             # <<<<<<<<<<<<<<
  *             if row is not None:
  *                 return await self.convert_row(row)
  */
-          __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_cursor, __pyx_n_s_fetchrow); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L9_error)
+          __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_cursor, __pyx_n_s_fetchrow); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_2);
-          __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L9_error)
+          __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_1);
-          if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_timeout, __pyx_cur_scope->__pyx_v_timeout) < 0) __PYX_ERR(0, 53, __pyx_L9_error)
-          __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 53, __pyx_L9_error)
+          if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_timeout, __pyx_cur_scope->__pyx_v_timeout) < 0) __PYX_ERR(0, 52, __pyx_L9_error)
+          __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 52, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -6163,18 +6059,18 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
             __pyx_t_8 = __pyx_cur_scope->__pyx_t_3;
             __pyx_cur_scope->__pyx_t_3 = 0;
             __Pyx_XGOTREF(__pyx_t_8);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 53, __pyx_L9_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 52, __pyx_L9_error)
             __pyx_t_4 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_4);
           } else {
             __pyx_t_4 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_4) < 0) __PYX_ERR(0, 53, __pyx_L9_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_4) < 0) __PYX_ERR(0, 52, __pyx_L9_error)
             __Pyx_GOTREF(__pyx_t_4);
           }
           __Pyx_GIVEREF(__pyx_t_4);
           __pyx_cur_scope->__pyx_v_row = __pyx_t_4;
           __pyx_t_4 = 0;
 
-          /* "yapic/entity/sql/_query_context.pyx":54
+          /* "yapic/entity/sql/_query_context.pyx":53
  *             cursor = await self.cursor_factory
  *             row = await cursor.fetchrow(timeout=timeout)
  *             if row is not None:             # <<<<<<<<<<<<<<
@@ -6185,7 +6081,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
           __pyx_t_10 = (__pyx_t_9 != 0);
           if (__pyx_t_10) {
 
-            /* "yapic/entity/sql/_query_context.pyx":55
+            /* "yapic/entity/sql/_query_context.pyx":54
  *             row = await cursor.fetchrow(timeout=timeout)
  *             if row is not None:
  *                 return await self.convert_row(row)             # <<<<<<<<<<<<<<
@@ -6193,23 +6089,8 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
  *                 return None
  */
             __Pyx_XDECREF(__pyx_r);
-            __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_convert_row); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L9_error)
-            __Pyx_GOTREF(__pyx_t_1);
-            __pyx_t_2 = NULL;
-            if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-              __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_1);
-              if (likely(__pyx_t_2)) {
-                PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-                __Pyx_INCREF(__pyx_t_2);
-                __Pyx_INCREF(function);
-                __Pyx_DECREF_SET(__pyx_t_1, function);
-              }
-            }
-            __pyx_t_4 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_2, __pyx_cur_scope->__pyx_v_row) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_cur_scope->__pyx_v_row);
-            __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-            if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 55, __pyx_L9_error)
+            __pyx_t_4 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_14_query_context_QueryContext *)__pyx_cur_scope->__pyx_v_self->__pyx_vtab)->convert_row(__pyx_cur_scope->__pyx_v_self, __pyx_cur_scope->__pyx_v_row); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 54, __pyx_L9_error)
             __Pyx_GOTREF(__pyx_t_4);
-            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
             __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_4);
             __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
             __Pyx_XGOTREF(__pyx_r);
@@ -6241,11 +6122,11 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
               __pyx_t_8 = __pyx_cur_scope->__pyx_t_3;
               __pyx_cur_scope->__pyx_t_3 = 0;
               __Pyx_XGOTREF(__pyx_t_8);
-              if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 55, __pyx_L9_error)
+              if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 54, __pyx_L9_error)
               __pyx_t_4 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_4);
             } else {
               __pyx_t_4 = NULL;
-              if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_4) < 0) __PYX_ERR(0, 55, __pyx_L9_error)
+              if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_4) < 0) __PYX_ERR(0, 54, __pyx_L9_error)
               __Pyx_GOTREF(__pyx_t_4);
             }
             __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_4);
@@ -6253,7 +6134,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
             __pyx_t_4 = 0;
             goto __pyx_L13_try_return;
 
-            /* "yapic/entity/sql/_query_context.pyx":54
+            /* "yapic/entity/sql/_query_context.pyx":53
  *             cursor = await self.cursor_factory
  *             row = await cursor.fetchrow(timeout=timeout)
  *             if row is not None:             # <<<<<<<<<<<<<<
@@ -6262,12 +6143,12 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
  */
           }
 
-          /* "yapic/entity/sql/_query_context.pyx":57
+          /* "yapic/entity/sql/_query_context.pyx":56
  *                 return await self.convert_row(row)
  *             else:
  *                 return None             # <<<<<<<<<<<<<<
  * 
- *     async def convert_row(self, object row):
+ *     cdef convert_row(self, object row):
  */
           /*else*/ {
             __Pyx_XDECREF(__pyx_r);
@@ -6275,7 +6156,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
             goto __pyx_L13_try_return;
           }
 
-          /* "yapic/entity/sql/_query_context.pyx":51
+          /* "yapic/entity/sql/_query_context.pyx":50
  * 
  *     async def first(self, *, timeout=None):
  *         async with ensure_transaction(self.conn.conn):             # <<<<<<<<<<<<<<
@@ -6290,16 +6171,16 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         /*except:*/ {
           __Pyx_AddTraceback("yapic.entity.sql._query_context.QueryContext.first", __pyx_clineno, __pyx_lineno, __pyx_filename);
-          if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_1, &__pyx_t_2) < 0) __PYX_ERR(0, 51, __pyx_L11_except_error)
+          if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_1, &__pyx_t_2) < 0) __PYX_ERR(0, 50, __pyx_L11_except_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_GOTREF(__pyx_t_2);
-          __pyx_t_5 = PyTuple_Pack(3, __pyx_t_4, __pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 51, __pyx_L11_except_error)
+          __pyx_t_5 = PyTuple_Pack(3, __pyx_t_4, __pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 50, __pyx_L11_except_error)
           __Pyx_GOTREF(__pyx_t_5);
           __pyx_t_11 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-          if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 51, __pyx_L11_except_error)
+          if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 50, __pyx_L11_except_error)
           __Pyx_GOTREF(__pyx_t_11);
           __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_11);
           __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
@@ -6352,18 +6233,18 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
             __pyx_t_11 = __pyx_cur_scope->__pyx_t_7;
             __pyx_cur_scope->__pyx_t_7 = 0;
             __Pyx_XGOTREF(__pyx_t_11);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 51, __pyx_L11_except_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 50, __pyx_L11_except_error)
             __pyx_t_5 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_5);
           } else {
             __pyx_t_5 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_5) < 0) __PYX_ERR(0, 51, __pyx_L11_except_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_5) < 0) __PYX_ERR(0, 50, __pyx_L11_except_error)
             __Pyx_GOTREF(__pyx_t_5);
           }
           __pyx_t_11 = __pyx_t_5;
           __pyx_t_5 = 0;
           __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_11);
           __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-          if (__pyx_t_10 < 0) __PYX_ERR(0, 51, __pyx_L11_except_error)
+          if (__pyx_t_10 < 0) __PYX_ERR(0, 50, __pyx_L11_except_error)
           __pyx_t_9 = ((!(__pyx_t_10 != 0)) != 0);
           if (__pyx_t_9) {
             __Pyx_GIVEREF(__pyx_t_4);
@@ -6371,7 +6252,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
             __Pyx_XGIVEREF(__pyx_t_2);
             __Pyx_ErrRestoreWithState(__pyx_t_4, __pyx_t_1, __pyx_t_2);
             __pyx_t_4 = 0; __pyx_t_1 = 0; __pyx_t_2 = 0; 
-            __PYX_ERR(0, 51, __pyx_L11_except_error)
+            __PYX_ERR(0, 50, __pyx_L11_except_error)
           }
           __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -6400,9 +6281,9 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
     /*finally:*/ {
       /*normal exit:*/{
         if (__pyx_t_3) {
-          __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__2, NULL);
+          __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple_, NULL);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 51, __pyx_L1_error)
+          if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 50, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_8);
           __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_8);
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -6425,11 +6306,11 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
             __pyx_t_8 = __pyx_cur_scope->__pyx_t_1;
             __pyx_cur_scope->__pyx_t_1 = 0;
             __Pyx_XGOTREF(__pyx_t_8);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 51, __pyx_L1_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 50, __pyx_L1_error)
             __pyx_t_2 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_2);
           } else {
             __pyx_t_2 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 51, __pyx_L1_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 50, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_2);
           }
           __pyx_t_8 = __pyx_t_2;
@@ -6452,9 +6333,9 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
         __pyx_t_14 = __pyx_r;
         __pyx_r = 0;
         if (__pyx_t_3) {
-          __pyx_t_15 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__2, NULL);
+          __pyx_t_15 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple_, NULL);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 51, __pyx_L1_error)
+          if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 50, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_15);
           __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_15);
           __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
@@ -6512,11 +6393,11 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
             __pyx_t_15 = __pyx_cur_scope->__pyx_t_8;
             __pyx_cur_scope->__pyx_t_8 = 0;
             __Pyx_XGOTREF(__pyx_t_15);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 51, __pyx_L1_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 50, __pyx_L1_error)
             __pyx_t_2 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_2);
           } else {
             __pyx_t_2 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 51, __pyx_L1_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 50, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_2);
           }
           __pyx_t_15 = __pyx_t_2;
@@ -6548,7 +6429,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
   }
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "yapic/entity/sql/_query_context.pyx":50
+  /* "yapic/entity/sql/_query_context.pyx":49
  *             return row[column]
  * 
  *     async def first(self, *, timeout=None):             # <<<<<<<<<<<<<<
@@ -6575,896 +6456,112 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_16
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_19generator5(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "yapic/entity/sql/_query_context.pyx":59
+/* "yapic/entity/sql/_query_context.pyx":58
  *                 return None
  * 
- *     async def convert_row(self, object row):             # <<<<<<<<<<<<<<
- *         cdef PyObject* columns = <PyObject*>self.columns
- *         cdef int length = PyList_GET_SIZE(<object>columns)
+ *     cdef convert_row(self, object row):             # <<<<<<<<<<<<<<
+ *         return convert_record(row, self.rcos_list, self.rc_state)
+ * 
  */
 
-/* Python wrapper */
-static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_18convert_row(PyObject *__pyx_v_self, PyObject *__pyx_v_row); /*proto*/
-static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_18convert_row(PyObject *__pyx_v_self, PyObject *__pyx_v_row) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("convert_row (wrapper)", 0);
-  __pyx_r = __pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_17convert_row(((struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *)__pyx_v_self), ((PyObject *)__pyx_v_row));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_17convert_row(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self, PyObject *__pyx_v_row) {
-  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row *__pyx_cur_scope;
+static PyObject *__pyx_f_5yapic_6entity_3sql_14_query_context_12QueryContext_convert_row(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self, PyObject *__pyx_v_row) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("convert_row", 0);
-  __pyx_cur_scope = (struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row *)__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row(__pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row, __pyx_empty_tuple, NULL);
-  if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row *)Py_None);
-    __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 59, __pyx_L1_error)
-  } else {
-    __Pyx_GOTREF(__pyx_cur_scope);
-  }
-  __pyx_cur_scope->__pyx_v_self = __pyx_v_self;
-  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
-  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
-  __pyx_cur_scope->__pyx_v_row = __pyx_v_row;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_row);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_row);
-  {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_19generator5, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_convert_row, __pyx_n_s_QueryContext_convert_row, __pyx_n_s_yapic_entity_sql__query_context); if (unlikely(!gen)) __PYX_ERR(0, 59, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_cur_scope);
-    __Pyx_RefNannyFinishContext();
-    return (PyObject *) gen;
-  }
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_AddTraceback("yapic.entity.sql._query_context.QueryContext.convert_row", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_19generator5(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
-{
-  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row *__pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row *)__pyx_generator->closure);
-  PyObject *__pyx_r = NULL;
-  int __pyx_t_1;
-  int __pyx_t_2;
-  PyObject *__pyx_t_3 = NULL;
-  Py_ssize_t __pyx_t_4;
-  PyObject *__pyx_t_5 = NULL;
-  int __pyx_t_6;
-  int __pyx_t_7;
-  int __pyx_t_8;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("convert_row", 0);
-  switch (__pyx_generator->resume_label) {
-    case 0: goto __pyx_L3_first_run;
-    default: /* CPython raises the right error here */
-    __Pyx_RefNannyFinishContext();
-    return NULL;
-  }
-  __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 59, __pyx_L1_error)
-
-  /* "yapic/entity/sql/_query_context.pyx":60
- * 
- *     async def convert_row(self, object row):
- *         cdef PyObject* columns = <PyObject*>self.columns             # <<<<<<<<<<<<<<
- *         cdef int length = PyList_GET_SIZE(<object>columns)
- *         # cdef tuple part
- */
-  __pyx_cur_scope->__pyx_v_columns = ((PyObject *)__pyx_cur_scope->__pyx_v_self->columns);
-
-  /* "yapic/entity/sql/_query_context.pyx":61
- *     async def convert_row(self, object row):
- *         cdef PyObject* columns = <PyObject*>self.columns
- *         cdef int length = PyList_GET_SIZE(<object>columns)             # <<<<<<<<<<<<<<
- *         # cdef tuple part
- *         cdef PyObject* col
- */
-  __pyx_cur_scope->__pyx_v_length = PyList_GET_SIZE(((PyObject *)__pyx_cur_scope->__pyx_v_columns));
-
-  /* "yapic/entity/sql/_query_context.pyx":66
- *         cdef PyObject* tmp_object
- * 
- *         if length == 1:             # <<<<<<<<<<<<<<
- *             col = PyList_GET_ITEM(<object>columns, 0)
- *             if isinstance(<object>col, EntityType):
- */
-  __pyx_t_1 = ((__pyx_cur_scope->__pyx_v_length == 1) != 0);
-  if (__pyx_t_1) {
-
-    /* "yapic/entity/sql/_query_context.pyx":67
- * 
- *         if length == 1:
- *             col = PyList_GET_ITEM(<object>columns, 0)             # <<<<<<<<<<<<<<
- *             if isinstance(<object>col, EntityType):
- *                 return create_entity(self.conn, <EntityType>col, row, 0, len(row))
- */
-    __pyx_cur_scope->__pyx_v_col = PyList_GET_ITEM(((PyObject *)__pyx_cur_scope->__pyx_v_columns), 0);
-
-    /* "yapic/entity/sql/_query_context.pyx":68
- *         if length == 1:
- *             col = PyList_GET_ITEM(<object>columns, 0)
- *             if isinstance(<object>col, EntityType):             # <<<<<<<<<<<<<<
- *                 return create_entity(self.conn, <EntityType>col, row, 0, len(row))
- * 
- */
-    __pyx_t_1 = __Pyx_TypeCheck(((PyObject *)__pyx_cur_scope->__pyx_v_col), __pyx_ptype_5yapic_6entity_7_entity_EntityType); 
-    __pyx_t_2 = (__pyx_t_1 != 0);
-    if (__pyx_t_2) {
-
-      /* "yapic/entity/sql/_query_context.pyx":69
- *             col = PyList_GET_ITEM(<object>columns, 0)
- *             if isinstance(<object>col, EntityType):
- *                 return create_entity(self.conn, <EntityType>col, row, 0, len(row))             # <<<<<<<<<<<<<<
- * 
- *         cdef tuple result = PyTuple_New(length)
- */
-      __Pyx_XDECREF(__pyx_r);
-      __pyx_t_3 = ((PyObject *)__pyx_cur_scope->__pyx_v_self->conn);
-      __Pyx_INCREF(__pyx_t_3);
-      __pyx_t_4 = PyObject_Length(__pyx_cur_scope->__pyx_v_row); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 69, __pyx_L1_error)
-      __pyx_t_5 = __pyx_f_5yapic_6entity_3sql_14_query_context_create_entity(((struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *)__pyx_t_3), ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_cur_scope->__pyx_v_col), __pyx_cur_scope->__pyx_v_row, 0, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 69, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_5);
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_5 = 0;
-      goto __pyx_L0;
-
-      /* "yapic/entity/sql/_query_context.pyx":68
- *         if length == 1:
- *             col = PyList_GET_ITEM(<object>columns, 0)
- *             if isinstance(<object>col, EntityType):             # <<<<<<<<<<<<<<
- *                 return create_entity(self.conn, <EntityType>col, row, 0, len(row))
- * 
- */
-    }
-
-    /* "yapic/entity/sql/_query_context.pyx":66
- *         cdef PyObject* tmp_object
- * 
- *         if length == 1:             # <<<<<<<<<<<<<<
- *             col = PyList_GET_ITEM(<object>columns, 0)
- *             if isinstance(<object>col, EntityType):
- */
-  }
-
-  /* "yapic/entity/sql/_query_context.pyx":71
- *                 return create_entity(self.conn, <EntityType>col, row, 0, len(row))
- * 
- *         cdef tuple result = PyTuple_New(length)             # <<<<<<<<<<<<<<
- *         tmp_object = <PyObject*>result
- *         cdef int c = 0
- */
-  __pyx_t_5 = PyTuple_New(__pyx_cur_scope->__pyx_v_length); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 71, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GIVEREF(__pyx_t_5);
-  __pyx_cur_scope->__pyx_v_result = ((PyObject*)__pyx_t_5);
-  __pyx_t_5 = 0;
-
-  /* "yapic/entity/sql/_query_context.pyx":72
- * 
- *         cdef tuple result = PyTuple_New(length)
- *         tmp_object = <PyObject*>result             # <<<<<<<<<<<<<<
- *         cdef int c = 0
- *         cdef int fc
- */
-  __pyx_cur_scope->__pyx_v_tmp_object = ((PyObject *)__pyx_cur_scope->__pyx_v_result);
-
-  /* "yapic/entity/sql/_query_context.pyx":73
- *         cdef tuple result = PyTuple_New(length)
- *         tmp_object = <PyObject*>result
- *         cdef int c = 0             # <<<<<<<<<<<<<<
- *         cdef int fc
- * 
- */
-  __pyx_cur_scope->__pyx_v_c = 0;
-
-  /* "yapic/entity/sql/_query_context.pyx":76
- *         cdef int fc
- * 
- *         for i in range(length):             # <<<<<<<<<<<<<<
- *             col = PyList_GET_ITEM(<object>columns, i)
- * 
- */
-  __pyx_t_6 = __pyx_cur_scope->__pyx_v_length;
-  __pyx_t_7 = __pyx_t_6;
-  for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
-    __pyx_cur_scope->__pyx_v_i = __pyx_t_8;
-
-    /* "yapic/entity/sql/_query_context.pyx":77
- * 
- *         for i in range(length):
- *             col = PyList_GET_ITEM(<object>columns, i)             # <<<<<<<<<<<<<<
- * 
- *             if isinstance(<object>col, EntityType):
- */
-    __pyx_cur_scope->__pyx_v_col = PyList_GET_ITEM(((PyObject *)__pyx_cur_scope->__pyx_v_columns), __pyx_cur_scope->__pyx_v_i);
-
-    /* "yapic/entity/sql/_query_context.pyx":79
- *             col = PyList_GET_ITEM(<object>columns, i)
- * 
- *             if isinstance(<object>col, EntityType):             # <<<<<<<<<<<<<<
- *                 fc = len((<EntityType>col).__fields__)
- *                 entity = create_entity(self.conn, <EntityType>col, row, c, c + fc)
- */
-    __pyx_t_2 = __Pyx_TypeCheck(((PyObject *)__pyx_cur_scope->__pyx_v_col), __pyx_ptype_5yapic_6entity_7_entity_EntityType); 
-    __pyx_t_1 = (__pyx_t_2 != 0);
-    if (__pyx_t_1) {
-
-      /* "yapic/entity/sql/_query_context.pyx":80
- * 
- *             if isinstance(<object>col, EntityType):
- *                 fc = len((<EntityType>col).__fields__)             # <<<<<<<<<<<<<<
- *                 entity = create_entity(self.conn, <EntityType>col, row, c, c + fc)
- *                 c += fc
- */
-      __pyx_t_5 = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_cur_scope->__pyx_v_col)->__fields__;
-      __Pyx_INCREF(__pyx_t_5);
-      if (unlikely(__pyx_t_5 == Py_None)) {
-        PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-        __PYX_ERR(0, 80, __pyx_L1_error)
-      }
-      __pyx_t_4 = PyTuple_GET_SIZE(__pyx_t_5); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 80, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_cur_scope->__pyx_v_fc = __pyx_t_4;
-
-      /* "yapic/entity/sql/_query_context.pyx":81
- *             if isinstance(<object>col, EntityType):
- *                 fc = len((<EntityType>col).__fields__)
- *                 entity = create_entity(self.conn, <EntityType>col, row, c, c + fc)             # <<<<<<<<<<<<<<
- *                 c += fc
- *                 Py_INCREF(<object>entity)
- */
-      __pyx_t_5 = ((PyObject *)__pyx_cur_scope->__pyx_v_self->conn);
-      __Pyx_INCREF(__pyx_t_5);
-      __pyx_t_3 = __pyx_f_5yapic_6entity_3sql_14_query_context_create_entity(((struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *)__pyx_t_5), ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_cur_scope->__pyx_v_col), __pyx_cur_scope->__pyx_v_row, __pyx_cur_scope->__pyx_v_c, (__pyx_cur_scope->__pyx_v_c + __pyx_cur_scope->__pyx_v_fc)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_entity);
-      __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_entity, __pyx_t_3);
-      __Pyx_GIVEREF(__pyx_t_3);
-      __pyx_t_3 = 0;
-
-      /* "yapic/entity/sql/_query_context.pyx":82
- *                 fc = len((<EntityType>col).__fields__)
- *                 entity = create_entity(self.conn, <EntityType>col, row, c, c + fc)
- *                 c += fc             # <<<<<<<<<<<<<<
- *                 Py_INCREF(<object>entity)
- *                 PyTuple_SET_ITEM(<object>tmp_object, i, <object>entity)
- */
-      __pyx_cur_scope->__pyx_v_c = (__pyx_cur_scope->__pyx_v_c + __pyx_cur_scope->__pyx_v_fc);
-
-      /* "yapic/entity/sql/_query_context.pyx":83
- *                 entity = create_entity(self.conn, <EntityType>col, row, c, c + fc)
- *                 c += fc
- *                 Py_INCREF(<object>entity)             # <<<<<<<<<<<<<<
- *                 PyTuple_SET_ITEM(<object>tmp_object, i, <object>entity)
- *             else:
- */
-      Py_INCREF(__pyx_cur_scope->__pyx_v_entity);
-
-      /* "yapic/entity/sql/_query_context.pyx":84
- *                 c += fc
- *                 Py_INCREF(<object>entity)
- *                 PyTuple_SET_ITEM(<object>tmp_object, i, <object>entity)             # <<<<<<<<<<<<<<
- *             else:
- *                 tmp = row[i]
- */
-      PyTuple_SET_ITEM(((PyObject *)__pyx_cur_scope->__pyx_v_tmp_object), __pyx_cur_scope->__pyx_v_i, __pyx_cur_scope->__pyx_v_entity);
-
-      /* "yapic/entity/sql/_query_context.pyx":79
- *             col = PyList_GET_ITEM(<object>columns, i)
- * 
- *             if isinstance(<object>col, EntityType):             # <<<<<<<<<<<<<<
- *                 fc = len((<EntityType>col).__fields__)
- *                 entity = create_entity(self.conn, <EntityType>col, row, c, c + fc)
- */
-      goto __pyx_L8;
-    }
-
-    /* "yapic/entity/sql/_query_context.pyx":86
- *                 PyTuple_SET_ITEM(<object>tmp_object, i, <object>entity)
- *             else:
- *                 tmp = row[i]             # <<<<<<<<<<<<<<
- *                 Py_INCREF(<object>tmp)
- *                 PyTuple_SET_ITEM(<object>tmp_object, i, <object>tmp)
- */
-    /*else*/ {
-      __pyx_t_3 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_row, __pyx_cur_scope->__pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 86, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_tmp);
-      __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_tmp, __pyx_t_3);
-      __Pyx_GIVEREF(__pyx_t_3);
-      __pyx_t_3 = 0;
-
-      /* "yapic/entity/sql/_query_context.pyx":87
- *             else:
- *                 tmp = row[i]
- *                 Py_INCREF(<object>tmp)             # <<<<<<<<<<<<<<
- *                 PyTuple_SET_ITEM(<object>tmp_object, i, <object>tmp)
- *                 c += 1
- */
-      Py_INCREF(__pyx_cur_scope->__pyx_v_tmp);
-
-      /* "yapic/entity/sql/_query_context.pyx":88
- *                 tmp = row[i]
- *                 Py_INCREF(<object>tmp)
- *                 PyTuple_SET_ITEM(<object>tmp_object, i, <object>tmp)             # <<<<<<<<<<<<<<
- *                 c += 1
- * 
- */
-      PyTuple_SET_ITEM(((PyObject *)__pyx_cur_scope->__pyx_v_tmp_object), __pyx_cur_scope->__pyx_v_i, __pyx_cur_scope->__pyx_v_tmp);
-
-      /* "yapic/entity/sql/_query_context.pyx":89
- *                 Py_INCREF(<object>tmp)
- *                 PyTuple_SET_ITEM(<object>tmp_object, i, <object>tmp)
- *                 c += 1             # <<<<<<<<<<<<<<
- * 
- *         return result
- */
-      __pyx_cur_scope->__pyx_v_c = (__pyx_cur_scope->__pyx_v_c + 1);
-    }
-    __pyx_L8:;
-  }
-
-  /* "yapic/entity/sql/_query_context.pyx":91
- *                 c += 1
- * 
- *         return result             # <<<<<<<<<<<<<<
- * 
- *     async def get_entity(self, EntityType ent, object record, int start, int end):
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_cur_scope->__pyx_v_result);
-  goto __pyx_L0;
-  CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
-
-  /* "yapic/entity/sql/_query_context.pyx":59
- *                 return None
- * 
- *     async def convert_row(self, object row):             # <<<<<<<<<<<<<<
- *         cdef PyObject* columns = <PyObject*>self.columns
- *         cdef int length = PyList_GET_SIZE(<object>columns)
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("convert_row", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
-  #if !CYTHON_USE_EXC_INFO_STACK
-  __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-  #endif
-  __pyx_generator->resume_label = -1;
-  __Pyx_Coroutine_clear((PyObject*)__pyx_generator);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_22generator6(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
-
-/* "yapic/entity/sql/_query_context.pyx":93
- *         return result
- * 
- *     async def get_entity(self, EntityType ent, object record, int start, int end):             # <<<<<<<<<<<<<<
- *         cdef EntityAttribute attr
- *         cdef tuple pk = (record[start + attr._index_] for attr in ent.__pk__)
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_21get_entity(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_21get_entity(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_ent = 0;
-  PyObject *__pyx_v_record = 0;
-  int __pyx_v_start;
-  int __pyx_v_end;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("get_entity (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_ent,&__pyx_n_s_record,&__pyx_n_s_start,&__pyx_n_s_end,0};
-    PyObject* values[4] = {0,0,0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-        CYTHON_FALLTHROUGH;
-        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-        CYTHON_FALLTHROUGH;
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_ent)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_record)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("get_entity", 1, 4, 4, 1); __PYX_ERR(0, 93, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  2:
-        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_start)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("get_entity", 1, 4, 4, 2); __PYX_ERR(0, 93, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  3:
-        if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_end)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("get_entity", 1, 4, 4, 3); __PYX_ERR(0, 93, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_entity") < 0)) __PYX_ERR(0, 93, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-    }
-    __pyx_v_ent = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)values[0]);
-    __pyx_v_record = values[1];
-    __pyx_v_start = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_start == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 93, __pyx_L3_error)
-    __pyx_v_end = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_end == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 93, __pyx_L3_error)
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_entity", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 93, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("yapic.entity.sql._query_context.QueryContext.get_entity", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ent), __pyx_ptype_5yapic_6entity_7_entity_EntityType, 1, "ent", 0))) __PYX_ERR(0, 93, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_20get_entity(((struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *)__pyx_v_self), __pyx_v_ent, __pyx_v_record, __pyx_v_start, __pyx_v_end);
-
-  /* function exit code */
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10get_entity_2generator8(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
-
-/* "yapic/entity/sql/_query_context.pyx":95
- *     async def get_entity(self, EntityType ent, object record, int start, int end):
- *         cdef EntityAttribute attr
- *         cdef tuple pk = (record[start + attr._index_] for attr in ent.__pk__)             # <<<<<<<<<<<<<<
- *         cdef tuple key = (ent, pk)
- * 
- */
-
-static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_10get_entity_genexpr(PyObject *__pyx_self) {
-  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr *__pyx_cur_scope;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("genexpr", 0);
-  __pyx_cur_scope = (struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr *)__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr(__pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr, __pyx_empty_tuple, NULL);
-  if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr *)Py_None);
-    __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 95, __pyx_L1_error)
-  } else {
-    __Pyx_GOTREF(__pyx_cur_scope);
-  }
-  __pyx_cur_scope->__pyx_outer_scope = (struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity *) __pyx_self;
-  __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
-  {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10get_entity_2generator8, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_get_entity_locals_genexpr, __pyx_n_s_yapic_entity_sql__query_context); if (unlikely(!gen)) __PYX_ERR(0, 95, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_cur_scope);
-    __Pyx_RefNannyFinishContext();
-    return (PyObject *) gen;
-  }
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_AddTraceback("yapic.entity.sql._query_context.QueryContext.get_entity.genexpr", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_10get_entity_2generator8(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
-{
-  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr *__pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr *)__pyx_generator->closure);
-  PyObject *__pyx_r = NULL;
-  PyObject *__pyx_t_1 = NULL;
-  Py_ssize_t __pyx_t_2;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("genexpr", 0);
-  switch (__pyx_generator->resume_label) {
-    case 0: goto __pyx_L3_first_run;
-    case 1: goto __pyx_L6_resume_from_yield;
-    default: /* CPython raises the right error here */
-    __Pyx_RefNannyFinishContext();
-    return NULL;
-  }
-  __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 95, __pyx_L1_error)
-  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_ent)) { __Pyx_RaiseClosureNameError("ent"); __PYX_ERR(0, 95, __pyx_L1_error) }
-  if (unlikely(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_ent->__pk__ == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 95, __pyx_L1_error)
-  }
-  __pyx_t_1 = __pyx_cur_scope->__pyx_outer_scope->__pyx_v_ent->__pk__; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
-  for (;;) {
-    if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
-    #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 95, __pyx_L1_error)
-    #else
-    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 95, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    #endif
-    __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_attr);
-    __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_attr, __pyx_t_3);
-    __Pyx_GIVEREF(__pyx_t_3);
-    __pyx_t_3 = 0;
-    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_record)) { __Pyx_RaiseClosureNameError("record"); __PYX_ERR(0, 95, __pyx_L1_error) }
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_start); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 95, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_attr, __pyx_n_s_index); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 95, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = PyNumber_Add(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 95, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_record, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 95, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_r = __pyx_t_4;
-    __pyx_t_4 = 0;
-    __Pyx_XGIVEREF(__pyx_t_1);
-    __pyx_cur_scope->__pyx_t_0 = __pyx_t_1;
-    __pyx_cur_scope->__pyx_t_1 = __pyx_t_2;
-    __Pyx_XGIVEREF(__pyx_r);
-    __Pyx_RefNannyFinishContext();
-    __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-    /* return from generator, yielding value */
-    __pyx_generator->resume_label = 1;
-    return __pyx_r;
-    __pyx_L6_resume_from_yield:;
-    __pyx_t_1 = __pyx_cur_scope->__pyx_t_0;
-    __pyx_cur_scope->__pyx_t_0 = 0;
-    __Pyx_XGOTREF(__pyx_t_1);
-    __pyx_t_2 = __pyx_cur_scope->__pyx_t_1;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 95, __pyx_L1_error)
-  }
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
-
-  /* function exit code */
-  PyErr_SetNone(PyExc_StopIteration);
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("genexpr", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
-  #if !CYTHON_USE_EXC_INFO_STACK
-  __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-  #endif
-  __pyx_generator->resume_label = -1;
-  __Pyx_Coroutine_clear((PyObject*)__pyx_generator);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "yapic/entity/sql/_query_context.pyx":93
- *         return result
- * 
- *     async def get_entity(self, EntityType ent, object record, int start, int end):             # <<<<<<<<<<<<<<
- *         cdef EntityAttribute attr
- *         cdef tuple pk = (record[start + attr._index_] for attr in ent.__pk__)
- */
-
-static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_20get_entity(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_ent, PyObject *__pyx_v_record, int __pyx_v_start, int __pyx_v_end) {
-  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity *__pyx_cur_scope;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("get_entity", 0);
-  __pyx_cur_scope = (struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity *)__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity(__pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity, __pyx_empty_tuple, NULL);
-  if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity *)Py_None);
-    __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 93, __pyx_L1_error)
-  } else {
-    __Pyx_GOTREF(__pyx_cur_scope);
-  }
-  __pyx_cur_scope->__pyx_v_self = __pyx_v_self;
-  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
-  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
-  __pyx_cur_scope->__pyx_v_ent = __pyx_v_ent;
-  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_ent);
-  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_ent);
-  __pyx_cur_scope->__pyx_v_record = __pyx_v_record;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_record);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_record);
-  __pyx_cur_scope->__pyx_v_start = __pyx_v_start;
-  __pyx_cur_scope->__pyx_v_end = __pyx_v_end;
-  {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_22generator6, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_get_entity, __pyx_n_s_QueryContext_get_entity, __pyx_n_s_yapic_entity_sql__query_context); if (unlikely(!gen)) __PYX_ERR(0, 93, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_cur_scope);
-    __Pyx_RefNannyFinishContext();
-    return (PyObject *) gen;
-  }
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_AddTraceback("yapic.entity.sql._query_context.QueryContext.get_entity", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_22generator6(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
-{
-  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity *__pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity *)__pyx_generator->closure);
-  PyObject *__pyx_r = NULL;
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  int __pyx_t_5;
-  PyObject *__pyx_t_6 = NULL;
-  PyObject *__pyx_t_7 = NULL;
-  PyObject *__pyx_t_8 = NULL;
-  PyObject *__pyx_t_9 = NULL;
-  PyObject *__pyx_t_10 = NULL;
-  PyObject *__pyx_t_11 = NULL;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("get_entity", 0);
-  switch (__pyx_generator->resume_label) {
-    case 0: goto __pyx_L3_first_run;
-    default: /* CPython raises the right error here */
-    __Pyx_RefNannyFinishContext();
-    return NULL;
+  int __pyx_t_4;
+  PyObject *__pyx_t_5 = NULL;
+  __Pyx_RefNannySetupContext("convert_row", 0);
+
+  /* "yapic/entity/sql/_query_context.pyx":59
+ * 
+ *     cdef convert_row(self, object row):
+ *         return convert_record(row, self.rcos_list, self.rc_state)             # <<<<<<<<<<<<<<
+ * 
+ *     async def __aiter__(self):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_convert_record); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  __pyx_t_4 = 0;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+      __pyx_t_4 = 1;
+    }
   }
-  __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 93, __pyx_L1_error)
-
-  /* "yapic/entity/sql/_query_context.pyx":95
- *     async def get_entity(self, EntityType ent, object record, int start, int end):
- *         cdef EntityAttribute attr
- *         cdef tuple pk = (record[start + attr._index_] for attr in ent.__pk__)             # <<<<<<<<<<<<<<
- *         cdef tuple key = (ent, pk)
- * 
- */
-  __pyx_t_1 = __pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_10get_entity_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 95, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(PyTuple_CheckExact(__pyx_t_1))||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 95, __pyx_L1_error)
-  __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_cur_scope->__pyx_v_pk = ((PyObject*)__pyx_t_1);
-  __pyx_t_1 = 0;
-
-  /* "yapic/entity/sql/_query_context.pyx":96
- *         cdef EntityAttribute attr
- *         cdef tuple pk = (record[start + attr._index_] for attr in ent.__pk__)
- *         cdef tuple key = (ent, pk)             # <<<<<<<<<<<<<<
- * 
- *         try:
- */
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_v_ent));
-  __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_v_ent));
-  PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_cur_scope->__pyx_v_ent));
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_pk);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_pk);
-  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_cur_scope->__pyx_v_pk);
-  __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_cur_scope->__pyx_v_key = ((PyObject*)__pyx_t_1);
-  __pyx_t_1 = 0;
-
-  /* "yapic/entity/sql/_query_context.pyx":98
- *         cdef tuple key = (ent, pk)
- * 
- *         try:             # <<<<<<<<<<<<<<
- *             return self.entities[key]
- *         except KeyError:
- */
+  #if CYTHON_FAST_PYCALL
+  if (PyFunction_Check(__pyx_t_2)) {
+    PyObject *__pyx_temp[4] = {__pyx_t_3, __pyx_v_row, __pyx_v_self->rcos_list, ((PyObject *)__pyx_v_self->rc_state)};
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 3+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_GOTREF(__pyx_t_1);
+  } else
+  #endif
+  #if CYTHON_FAST_PYCCALL
+  if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
+    PyObject *__pyx_temp[4] = {__pyx_t_3, __pyx_v_row, __pyx_v_self->rcos_list, ((PyObject *)__pyx_v_self->rc_state)};
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 3+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_GOTREF(__pyx_t_1);
+  } else
+  #endif
   {
-    __Pyx_ExceptionSave(&__pyx_t_2, &__pyx_t_3, &__pyx_t_4);
-    __Pyx_XGOTREF(__pyx_t_2);
-    __Pyx_XGOTREF(__pyx_t_3);
-    __Pyx_XGOTREF(__pyx_t_4);
-    /*try:*/ {
-
-      /* "yapic/entity/sql/_query_context.pyx":99
- * 
- *         try:
- *             return self.entities[key]             # <<<<<<<<<<<<<<
- *         except KeyError:
- *             entity = create_entity(self.conn, ent, record, start, end)
- */
-      __Pyx_XDECREF(__pyx_r);
-      if (unlikely(__pyx_cur_scope->__pyx_v_self->entities == Py_None)) {
-        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 99, __pyx_L4_error)
-      }
-      __pyx_t_1 = __Pyx_PyDict_GetItem(__pyx_cur_scope->__pyx_v_self->entities, __pyx_cur_scope->__pyx_v_key); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L4_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_1);
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_1 = 0;
-      goto __pyx_L8_try_return;
-
-      /* "yapic/entity/sql/_query_context.pyx":98
- *         cdef tuple key = (ent, pk)
- * 
- *         try:             # <<<<<<<<<<<<<<
- *             return self.entities[key]
- *         except KeyError:
- */
+    __pyx_t_5 = PyTuple_New(3+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 59, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    if (__pyx_t_3) {
+      __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
     }
-    __pyx_L4_error:;
-    __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-    /* "yapic/entity/sql/_query_context.pyx":100
- *         try:
- *             return self.entities[key]
- *         except KeyError:             # <<<<<<<<<<<<<<
- *             entity = create_entity(self.conn, ent, record, start, end)
- *             self.entities[key] = entity
- */
-    __pyx_t_5 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_KeyError);
-    if (__pyx_t_5) {
-      __Pyx_AddTraceback("yapic.entity.sql._query_context.QueryContext.get_entity", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_1, &__pyx_t_6, &__pyx_t_7) < 0) __PYX_ERR(0, 100, __pyx_L6_except_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __Pyx_GOTREF(__pyx_t_6);
-      __Pyx_GOTREF(__pyx_t_7);
-
-      /* "yapic/entity/sql/_query_context.pyx":101
- *             return self.entities[key]
- *         except KeyError:
- *             entity = create_entity(self.conn, ent, record, start, end)             # <<<<<<<<<<<<<<
- *             self.entities[key] = entity
- *             return entity
- */
-      __pyx_t_8 = ((PyObject *)__pyx_cur_scope->__pyx_v_self->conn);
-      __Pyx_INCREF(__pyx_t_8);
-      __pyx_t_9 = ((PyObject *)__pyx_cur_scope->__pyx_v_ent);
-      __Pyx_INCREF(__pyx_t_9);
-      __pyx_t_10 = __pyx_cur_scope->__pyx_v_record;
-      __Pyx_INCREF(__pyx_t_10);
-      __pyx_t_11 = __pyx_f_5yapic_6entity_3sql_14_query_context_create_entity(((struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *)__pyx_t_8), ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_9), __pyx_t_10, __pyx_cur_scope->__pyx_v_start, __pyx_cur_scope->__pyx_v_end); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 101, __pyx_L6_except_error)
-      __Pyx_GOTREF(__pyx_t_11);
-      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-      __Pyx_GIVEREF(__pyx_t_11);
-      __pyx_cur_scope->__pyx_v_entity = __pyx_t_11;
-      __pyx_t_11 = 0;
-
-      /* "yapic/entity/sql/_query_context.pyx":102
- *         except KeyError:
- *             entity = create_entity(self.conn, ent, record, start, end)
- *             self.entities[key] = entity             # <<<<<<<<<<<<<<
- *             return entity
- * 
- */
-      if (unlikely(__pyx_cur_scope->__pyx_v_self->entities == Py_None)) {
-        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 102, __pyx_L6_except_error)
-      }
-      if (unlikely(PyDict_SetItem(__pyx_cur_scope->__pyx_v_self->entities, __pyx_cur_scope->__pyx_v_key, __pyx_cur_scope->__pyx_v_entity) < 0)) __PYX_ERR(0, 102, __pyx_L6_except_error)
-
-      /* "yapic/entity/sql/_query_context.pyx":103
- *             entity = create_entity(self.conn, ent, record, start, end)
- *             self.entities[key] = entity
- *             return entity             # <<<<<<<<<<<<<<
- * 
- * 
- */
-      __Pyx_XDECREF(__pyx_r);
-      __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_cur_scope->__pyx_v_entity);
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      goto __pyx_L7_except_return;
-    }
-    goto __pyx_L6_except_error;
-    __pyx_L6_except_error:;
-
-    /* "yapic/entity/sql/_query_context.pyx":98
- *         cdef tuple key = (ent, pk)
- * 
- *         try:             # <<<<<<<<<<<<<<
- *             return self.entities[key]
- *         except KeyError:
- */
-    __Pyx_XGIVEREF(__pyx_t_2);
-    __Pyx_XGIVEREF(__pyx_t_3);
-    __Pyx_XGIVEREF(__pyx_t_4);
-    __Pyx_ExceptionReset(__pyx_t_2, __pyx_t_3, __pyx_t_4);
-    goto __pyx_L1_error;
-    __pyx_L8_try_return:;
-    __Pyx_XGIVEREF(__pyx_t_2);
-    __Pyx_XGIVEREF(__pyx_t_3);
-    __Pyx_XGIVEREF(__pyx_t_4);
-    __Pyx_ExceptionReset(__pyx_t_2, __pyx_t_3, __pyx_t_4);
-    goto __pyx_L0;
-    __pyx_L7_except_return:;
-    __Pyx_XGIVEREF(__pyx_t_2);
-    __Pyx_XGIVEREF(__pyx_t_3);
-    __Pyx_XGIVEREF(__pyx_t_4);
-    __Pyx_ExceptionReset(__pyx_t_2, __pyx_t_3, __pyx_t_4);
-    goto __pyx_L0;
+    __Pyx_INCREF(__pyx_v_row);
+    __Pyx_GIVEREF(__pyx_v_row);
+    PyTuple_SET_ITEM(__pyx_t_5, 0+__pyx_t_4, __pyx_v_row);
+    __Pyx_INCREF(__pyx_v_self->rcos_list);
+    __Pyx_GIVEREF(__pyx_v_self->rcos_list);
+    PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_self->rcos_list);
+    __Pyx_INCREF(((PyObject *)__pyx_v_self->rc_state));
+    __Pyx_GIVEREF(((PyObject *)__pyx_v_self->rc_state));
+    PyTuple_SET_ITEM(__pyx_t_5, 2+__pyx_t_4, ((PyObject *)__pyx_v_self->rc_state));
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
-  CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
 
-  /* "yapic/entity/sql/_query_context.pyx":93
- *         return result
+  /* "yapic/entity/sql/_query_context.pyx":58
+ *                 return None
  * 
- *     async def get_entity(self, EntityType ent, object record, int start, int end):             # <<<<<<<<<<<<<<
- *         cdef EntityAttribute attr
- *         cdef tuple pk = (record[start + attr._index_] for attr in ent.__pk__)
+ *     cdef convert_row(self, object row):             # <<<<<<<<<<<<<<
+ *         return convert_record(row, self.rcos_list, self.rc_state)
+ * 
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_XDECREF(__pyx_t_10);
-  __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_AddTraceback("get_entity", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_AddTraceback("yapic.entity.sql._query_context.QueryContext.convert_row", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
   __pyx_L0:;
-  __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
-  #if !CYTHON_USE_EXC_INFO_STACK
-  __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-  #endif
-  __pyx_generator->resume_label = -1;
-  __Pyx_Coroutine_clear((PyObject*)__pyx_generator);
+  __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25generator7(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
+static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_19generator5(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "yapic/entity/sql/_query_context.pyx":106
- * 
+/* "yapic/entity/sql/_query_context.pyx":61
+ *         return convert_record(row, self.rcos_list, self.rc_state)
  * 
  *     async def __aiter__(self):             # <<<<<<<<<<<<<<
  *         async with ensure_transaction(self.conn.conn):
@@ -7472,28 +6569,28 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_24__aiter__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_24__aiter__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_18__aiter__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_18__aiter__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__aiter__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_23__aiter__(((struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_17__aiter__(((struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_23__aiter__(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self) {
-  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__ *__pyx_cur_scope;
+static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_17__aiter__(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self) {
+  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__ *__pyx_cur_scope;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__aiter__", 0);
-  __pyx_cur_scope = (struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__ *)__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__(__pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__, __pyx_empty_tuple, NULL);
+  __pyx_cur_scope = (struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__ *)__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__(__pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__, __pyx_empty_tuple, NULL);
   if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__ *)Py_None);
+    __pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__ *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 106, __pyx_L1_error)
+    __PYX_ERR(0, 61, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -7501,7 +6598,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_23
   __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
   __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
   {
-    __pyx_CoroutineObject *gen = __Pyx_AsyncGen_New((__pyx_coroutine_body_t) __pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25generator7, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_aiter, __pyx_n_s_QueryContext___aiter, __pyx_n_s_yapic_entity_sql__query_context); if (unlikely(!gen)) __PYX_ERR(0, 106, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_AsyncGen_New((__pyx_coroutine_body_t) __pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_19generator5, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_aiter, __pyx_n_s_QueryContext___aiter, __pyx_n_s_yapic_entity_sql__query_context); if (unlikely(!gen)) __PYX_ERR(0, 61, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -7517,9 +6614,9 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_23
   return __pyx_r;
 }
 
-static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25generator7(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
+static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_19generator5(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
 {
-  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__ *__pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__ *)__pyx_generator->closure);
+  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__ *__pyx_cur_scope = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__ *)__pyx_generator->closure);
   PyObject *__pyx_r = NULL;
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
@@ -7547,9 +6644,9 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 106, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 61, __pyx_L1_error)
 
-  /* "yapic/entity/sql/_query_context.pyx":107
+  /* "yapic/entity/sql/_query_context.pyx":62
  * 
  *     async def __aiter__(self):
  *         async with ensure_transaction(self.conn.conn):             # <<<<<<<<<<<<<<
@@ -7559,12 +6656,12 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
   /*with:*/ {
     __pyx_t_1 = __pyx_cur_scope->__pyx_v_self->conn->conn;
     __Pyx_INCREF(__pyx_t_1);
-    __pyx_t_2 = __pyx_f_5yapic_6entity_3sql_14_query_context_ensure_transaction(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 107, __pyx_L1_error)
+    __pyx_t_2 = __pyx_f_5yapic_6entity_3sql_14_query_context_ensure_transaction(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_3 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aexit); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aexit); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aenter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L4_error)
+    __pyx_t_4 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_aenter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 62, __pyx_L4_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -7578,7 +6675,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
     }
     __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L4_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L4_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_1);
@@ -7602,11 +6699,11 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
       __pyx_t_3 = __pyx_cur_scope->__pyx_t_1;
       __pyx_cur_scope->__pyx_t_1 = 0;
       __Pyx_XGOTREF(__pyx_t_3);
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 107, __pyx_L4_error)
+      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 62, __pyx_L4_error)
       __pyx_t_1 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_1);
     } else {
       __pyx_t_1 = NULL;
-      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 107, __pyx_L4_error)
+      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 62, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -7619,14 +6716,14 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
         __Pyx_XGOTREF(__pyx_t_8);
         /*try:*/ {
 
-          /* "yapic/entity/sql/_query_context.pyx":108
+          /* "yapic/entity/sql/_query_context.pyx":63
  *     async def __aiter__(self):
  *         async with ensure_transaction(self.conn.conn):
  *             async for record in self.cursor_factory.__aiter__():             # <<<<<<<<<<<<<<
  *                 yield await self.convert_row(record)
  * 
  */
-          __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self->cursor_factory, __pyx_n_s_aiter); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L9_error)
+          __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self->cursor_factory, __pyx_n_s_aiter); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_1);
           __pyx_t_4 = NULL;
           if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -7640,14 +6737,14 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
           }
           __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
           __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 108, __pyx_L9_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-          __pyx_t_1 = __Pyx_Coroutine_GetAsyncIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L9_error)
+          __pyx_t_1 = __Pyx_Coroutine_GetAsyncIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           for (;;) {
-            __pyx_t_2 = __Pyx_Coroutine_AsyncIterNext(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 108, __pyx_L9_error)
+            __pyx_t_2 = __Pyx_Coroutine_AsyncIterNext(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L9_error)
             __Pyx_GOTREF(__pyx_t_2);
             __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_2);
             __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -7691,7 +6788,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
                   PyErr_Clear();
                   break;
                 }
-                __PYX_ERR(0, 108, __pyx_L9_error)
+                __PYX_ERR(0, 63, __pyx_L9_error)
               }
               __pyx_t_2 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_2);
             } else {
@@ -7701,7 +6798,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
                 break;
               }
               __pyx_t_2 = NULL;
-              if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 108, __pyx_L9_error)
+              if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 63, __pyx_L9_error)
               __Pyx_GOTREF(__pyx_t_2);
             }
             __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_record);
@@ -7709,30 +6806,15 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
             __Pyx_GIVEREF(__pyx_t_2);
             __pyx_t_2 = 0;
 
-            /* "yapic/entity/sql/_query_context.pyx":109
+            /* "yapic/entity/sql/_query_context.pyx":64
  *         async with ensure_transaction(self.conn.conn):
  *             async for record in self.cursor_factory.__aiter__():
  *                 yield await self.convert_row(record)             # <<<<<<<<<<<<<<
  * 
  *     def __await__(self):
  */
-            __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_convert_row); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 109, __pyx_L9_error)
-            __Pyx_GOTREF(__pyx_t_4);
-            __pyx_t_5 = NULL;
-            if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
-              __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
-              if (likely(__pyx_t_5)) {
-                PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-                __Pyx_INCREF(__pyx_t_5);
-                __Pyx_INCREF(function);
-                __Pyx_DECREF_SET(__pyx_t_4, function);
-              }
-            }
-            __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_cur_scope->__pyx_v_record) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_cur_scope->__pyx_v_record);
-            __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-            if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 109, __pyx_L9_error)
+            __pyx_t_2 = ((struct __pyx_vtabstruct_5yapic_6entity_3sql_14_query_context_QueryContext *)__pyx_cur_scope->__pyx_v_self->__pyx_vtab)->convert_row(__pyx_cur_scope->__pyx_v_self, __pyx_cur_scope->__pyx_v_record); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 64, __pyx_L9_error)
             __Pyx_GOTREF(__pyx_t_2);
-            __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
             __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_2);
             __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
             __Pyx_XGOTREF(__pyx_r);
@@ -7769,11 +6851,11 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
               __pyx_t_8 = __pyx_cur_scope->__pyx_t_4;
               __pyx_cur_scope->__pyx_t_4 = 0;
               __Pyx_XGOTREF(__pyx_t_8);
-              if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 109, __pyx_L9_error)
+              if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 64, __pyx_L9_error)
               __pyx_t_2 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_2);
             } else {
               __pyx_t_2 = NULL;
-              if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 109, __pyx_L9_error)
+              if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 64, __pyx_L9_error)
               __Pyx_GOTREF(__pyx_t_2);
             }
             __pyx_r = __pyx_t_2;
@@ -7810,9 +6892,9 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
             __pyx_t_8 = __pyx_cur_scope->__pyx_t_4;
             __pyx_cur_scope->__pyx_t_4 = 0;
             __Pyx_XGOTREF(__pyx_t_8);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 109, __pyx_L9_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 64, __pyx_L9_error)
 
-            /* "yapic/entity/sql/_query_context.pyx":108
+            /* "yapic/entity/sql/_query_context.pyx":63
  *     async def __aiter__(self):
  *         async with ensure_transaction(self.conn.conn):
  *             async for record in self.cursor_factory.__aiter__():             # <<<<<<<<<<<<<<
@@ -7822,7 +6904,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
           }
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-          /* "yapic/entity/sql/_query_context.pyx":107
+          /* "yapic/entity/sql/_query_context.pyx":62
  * 
  *     async def __aiter__(self):
  *         async with ensure_transaction(self.conn.conn):             # <<<<<<<<<<<<<<
@@ -7841,16 +6923,16 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         /*except:*/ {
           __Pyx_AddTraceback("yapic.entity.sql._query_context.QueryContext.__aiter__", __pyx_clineno, __pyx_lineno, __pyx_filename);
-          if (__Pyx_GetException(&__pyx_t_1, &__pyx_t_2, &__pyx_t_4) < 0) __PYX_ERR(0, 107, __pyx_L11_except_error)
+          if (__Pyx_GetException(&__pyx_t_1, &__pyx_t_2, &__pyx_t_4) < 0) __PYX_ERR(0, 62, __pyx_L11_except_error)
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_GOTREF(__pyx_t_4);
-          __pyx_t_5 = PyTuple_Pack(3, __pyx_t_1, __pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 107, __pyx_L11_except_error)
+          __pyx_t_5 = PyTuple_Pack(3, __pyx_t_1, __pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 62, __pyx_L11_except_error)
           __Pyx_GOTREF(__pyx_t_5);
           __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 107, __pyx_L11_except_error)
+          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 62, __pyx_L11_except_error)
           __Pyx_GOTREF(__pyx_t_9);
           __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_9);
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
@@ -7903,18 +6985,18 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
             __pyx_t_9 = __pyx_cur_scope->__pyx_t_7;
             __pyx_cur_scope->__pyx_t_7 = 0;
             __Pyx_XGOTREF(__pyx_t_9);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 107, __pyx_L11_except_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 62, __pyx_L11_except_error)
             __pyx_t_5 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_5);
           } else {
             __pyx_t_5 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_5) < 0) __PYX_ERR(0, 107, __pyx_L11_except_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_5) < 0) __PYX_ERR(0, 62, __pyx_L11_except_error)
             __Pyx_GOTREF(__pyx_t_5);
           }
           __pyx_t_9 = __pyx_t_5;
           __pyx_t_5 = 0;
           __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_9);
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-          if (__pyx_t_10 < 0) __PYX_ERR(0, 107, __pyx_L11_except_error)
+          if (__pyx_t_10 < 0) __PYX_ERR(0, 62, __pyx_L11_except_error)
           __pyx_t_11 = ((!(__pyx_t_10 != 0)) != 0);
           if (__pyx_t_11) {
             __Pyx_GIVEREF(__pyx_t_1);
@@ -7922,7 +7004,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
             __Pyx_XGIVEREF(__pyx_t_4);
             __Pyx_ErrRestoreWithState(__pyx_t_1, __pyx_t_2, __pyx_t_4);
             __pyx_t_1 = 0; __pyx_t_2 = 0; __pyx_t_4 = 0; 
-            __PYX_ERR(0, 107, __pyx_L11_except_error)
+            __PYX_ERR(0, 62, __pyx_L11_except_error)
           }
           __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
           __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -7946,9 +7028,9 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
     /*finally:*/ {
       /*normal exit:*/{
         if (__pyx_t_3) {
-          __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__2, NULL);
+          __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple_, NULL);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 107, __pyx_L1_error)
+          if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 62, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_8);
           __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_8);
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -7971,11 +7053,11 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
             __pyx_t_8 = __pyx_cur_scope->__pyx_t_1;
             __pyx_cur_scope->__pyx_t_1 = 0;
             __Pyx_XGOTREF(__pyx_t_8);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 107, __pyx_L1_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 62, __pyx_L1_error)
             __pyx_t_4 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_4);
           } else {
             __pyx_t_4 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_4) < 0) __PYX_ERR(0, 107, __pyx_L1_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_4) < 0) __PYX_ERR(0, 62, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_4);
           }
           __pyx_t_8 = __pyx_t_4;
@@ -7994,8 +7076,8 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
   }
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "yapic/entity/sql/_query_context.pyx":106
- * 
+  /* "yapic/entity/sql/_query_context.pyx":61
+ *         return convert_record(row, self.rcos_list, self.rc_state)
  * 
  *     async def __aiter__(self):             # <<<<<<<<<<<<<<
  *         async with ensure_transaction(self.conn.conn):
@@ -8022,7 +7104,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/_query_context.pyx":111
+/* "yapic/entity/sql/_query_context.pyx":66
  *                 yield await self.convert_row(record)
  * 
  *     def __await__(self):             # <<<<<<<<<<<<<<
@@ -8031,19 +7113,19 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_14_query_context_12QueryContext_25
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_27__await__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_27__await__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_21__await__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_21__await__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__await__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_26__await__(((struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_20__await__(((struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_26__await__(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self) {
+static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_20__await__(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -8052,7 +7134,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_26
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("__await__", 0);
 
-  /* "yapic/entity/sql/_query_context.pyx":112
+  /* "yapic/entity/sql/_query_context.pyx":67
  * 
  *     def __await__(self):
  *         return self.fetch().__await__()             # <<<<<<<<<<<<<<
@@ -8060,7 +7142,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_26
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_fetch); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 112, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_fetch); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -8074,10 +7156,10 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_26
   }
   __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 112, __pyx_L1_error)
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_await); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 112, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_await); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -8092,14 +7174,14 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_26
   }
   __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 112, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "yapic/entity/sql/_query_context.pyx":111
+  /* "yapic/entity/sql/_query_context.pyx":66
  *                 yield await self.convert_row(record)
  * 
  *     def __await__(self):             # <<<<<<<<<<<<<<
@@ -8121,11 +7203,12 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_26
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/_query_context.pxd":7
- *     cdef object cursor_factory
- *     cdef list columns
+/* "yapic/entity/sql/_query_context.pxd":6
+ * 
+ * cdef class QueryContext:
  *     cdef readonly Connection conn             # <<<<<<<<<<<<<<
- *     cdef dict entities
+ *     cdef object cursor_factory
+ *     cdef list rcos_list
  */
 
 /* Python wrapper */
@@ -8157,7 +7240,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_14_query_context_12QueryContext_4c
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/_query_context.pyx":115
+/* "yapic/entity/sql/_query_context.pyx":70
  * 
  * 
  * cdef inline object ensure_transaction(conn):             # <<<<<<<<<<<<<<
@@ -8176,21 +7259,21 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_3sql_14_query_context_ensu
   PyObject *__pyx_t_6 = NULL;
   __Pyx_RefNannySetupContext("ensure_transaction", 0);
 
-  /* "yapic/entity/sql/_query_context.pyx":116
+  /* "yapic/entity/sql/_query_context.pyx":71
  * 
  * cdef inline object ensure_transaction(conn):
  *     if conn._top_xact is None:             # <<<<<<<<<<<<<<
  *         return conn.transaction(isolation="serializable", readonly=True)
  *     else:
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_conn, __pyx_n_s_top_xact); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_conn, __pyx_n_s_top_xact); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = (__pyx_t_1 == Py_None);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (__pyx_t_3) {
 
-    /* "yapic/entity/sql/_query_context.pyx":117
+    /* "yapic/entity/sql/_query_context.pyx":72
  * cdef inline object ensure_transaction(conn):
  *     if conn._top_xact is None:
  *         return conn.transaction(isolation="serializable", readonly=True)             # <<<<<<<<<<<<<<
@@ -8198,13 +7281,13 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_3sql_14_query_context_ensu
  *         return conn.transaction(
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_conn, __pyx_n_s_transaction); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_conn, __pyx_n_s_transaction); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 72, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 117, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 72, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_isolation, __pyx_n_u_serializable) < 0) __PYX_ERR(0, 117, __pyx_L1_error)
-    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_readonly, Py_True) < 0) __PYX_ERR(0, 117, __pyx_L1_error)
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_empty_tuple, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 117, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_isolation, __pyx_n_u_serializable) < 0) __PYX_ERR(0, 72, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_readonly, Py_True) < 0) __PYX_ERR(0, 72, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_empty_tuple, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 72, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -8212,7 +7295,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_3sql_14_query_context_ensu
     __pyx_t_5 = 0;
     goto __pyx_L0;
 
-    /* "yapic/entity/sql/_query_context.pyx":116
+    /* "yapic/entity/sql/_query_context.pyx":71
  * 
  * cdef inline object ensure_transaction(conn):
  *     if conn._top_xact is None:             # <<<<<<<<<<<<<<
@@ -8221,7 +7304,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_3sql_14_query_context_ensu
  */
   }
 
-  /* "yapic/entity/sql/_query_context.pyx":119
+  /* "yapic/entity/sql/_query_context.pyx":74
  *         return conn.transaction(isolation="serializable", readonly=True)
  *     else:
  *         return conn.transaction(             # <<<<<<<<<<<<<<
@@ -8230,64 +7313,61 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_3sql_14_query_context_ensu
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_conn, __pyx_n_s_transaction); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 119, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_conn, __pyx_n_s_transaction); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 74, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
 
-    /* "yapic/entity/sql/_query_context.pyx":120
+    /* "yapic/entity/sql/_query_context.pyx":75
  *     else:
  *         return conn.transaction(
  *             isolation=conn._top_xact._isolation,             # <<<<<<<<<<<<<<
  *             readonly=conn._top_xact._readonly,
  *             deferrable=conn._top_xact._deferrable)
  */
-    __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 120, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 75, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_conn, __pyx_n_s_top_xact); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 120, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_conn, __pyx_n_s_top_xact); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_isolation_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 120, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_isolation_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 75, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_isolation, __pyx_t_6) < 0) __PYX_ERR(0, 120, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_isolation, __pyx_t_6) < 0) __PYX_ERR(0, 75, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "yapic/entity/sql/_query_context.pyx":121
+    /* "yapic/entity/sql/_query_context.pyx":76
  *         return conn.transaction(
  *             isolation=conn._top_xact._isolation,
  *             readonly=conn._top_xact._readonly,             # <<<<<<<<<<<<<<
  *             deferrable=conn._top_xact._deferrable)
- * 
  */
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_conn, __pyx_n_s_top_xact); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 121, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_conn, __pyx_n_s_top_xact); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 76, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_readonly_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_readonly_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_readonly, __pyx_t_1) < 0) __PYX_ERR(0, 120, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_readonly, __pyx_t_1) < 0) __PYX_ERR(0, 75, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "yapic/entity/sql/_query_context.pyx":122
+    /* "yapic/entity/sql/_query_context.pyx":77
  *             isolation=conn._top_xact._isolation,
  *             readonly=conn._top_xact._readonly,
  *             deferrable=conn._top_xact._deferrable)             # <<<<<<<<<<<<<<
- * 
- * 
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_conn, __pyx_n_s_top_xact); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 122, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_conn, __pyx_n_s_top_xact); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_deferrable_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 122, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_deferrable_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 77, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_deferrable, __pyx_t_6) < 0) __PYX_ERR(0, 120, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_deferrable, __pyx_t_6) < 0) __PYX_ERR(0, 75, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "yapic/entity/sql/_query_context.pyx":119
+    /* "yapic/entity/sql/_query_context.pyx":74
  *         return conn.transaction(isolation="serializable", readonly=True)
  *     else:
  *         return conn.transaction(             # <<<<<<<<<<<<<<
  *             isolation=conn._top_xact._isolation,
  *             readonly=conn._top_xact._readonly,
  */
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_empty_tuple, __pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 119, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_empty_tuple, __pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 74, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -8296,7 +7376,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_3sql_14_query_context_ensu
     goto __pyx_L0;
   }
 
-  /* "yapic/entity/sql/_query_context.pyx":115
+  /* "yapic/entity/sql/_query_context.pyx":70
  * 
  * 
  * cdef inline object ensure_transaction(conn):             # <<<<<<<<<<<<<<
@@ -8317,361 +7397,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_3sql_14_query_context_ensu
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-
-/* "yapic/entity/sql/_query_context.pyx":125
- * 
- * 
- * cdef inline object create_entity(Connection conn, EntityType ent, object record, int start, int end):             # <<<<<<<<<<<<<<
- *     if record is None:
- *         return
- */
-
-static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_3sql_14_query_context_create_entity(struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *__pyx_v_conn, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_ent, PyObject *__pyx_v_record, int __pyx_v_start, int __pyx_v_end) {
-  struct __pyx_obj_5yapic_6entity_7_entity_EntityState *__pyx_v_state = 0;
-  struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *__pyx_v_attr = 0;
-  PyObject *__pyx_v_attrs = 0;
-  int __pyx_v_state_len;
-  int __pyx_v_c;
-  struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *__pyx_v_dialect = 0;
-  struct __pyx_obj_5yapic_6entity_6_field_StorageType *__pyx_v_stype = 0;
-  int __pyx_v_i;
-  PyObject *__pyx_v_val = NULL;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
-  int __pyx_t_2;
-  PyObject *__pyx_t_3 = NULL;
-  Py_ssize_t __pyx_t_4;
-  int __pyx_t_5;
-  int __pyx_t_6;
-  int __pyx_t_7;
-  PyObject *__pyx_t_8 = NULL;
-  PyObject *__pyx_t_9 = NULL;
-  __Pyx_RefNannySetupContext("create_entity", 0);
-
-  /* "yapic/entity/sql/_query_context.pyx":126
- * 
- * cdef inline object create_entity(Connection conn, EntityType ent, object record, int start, int end):
- *     if record is None:             # <<<<<<<<<<<<<<
- *         return
- * 
- */
-  __pyx_t_1 = (__pyx_v_record == Py_None);
-  __pyx_t_2 = (__pyx_t_1 != 0);
-  if (__pyx_t_2) {
-
-    /* "yapic/entity/sql/_query_context.pyx":127
- * cdef inline object create_entity(Connection conn, EntityType ent, object record, int start, int end):
- *     if record is None:
- *         return             # <<<<<<<<<<<<<<
- * 
- *     cdef EntityState state = EntityState(ent)
- */
-    __Pyx_XDECREF(__pyx_r);
-    __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-    goto __pyx_L0;
-
-    /* "yapic/entity/sql/_query_context.pyx":126
- * 
- * cdef inline object create_entity(Connection conn, EntityType ent, object record, int start, int end):
- *     if record is None:             # <<<<<<<<<<<<<<
- *         return
- * 
- */
-  }
-
-  /* "yapic/entity/sql/_query_context.pyx":129
- *         return
- * 
- *     cdef EntityState state = EntityState(ent)             # <<<<<<<<<<<<<<
- *     cdef EntityAttribute attr
- *     cdef tuple attrs = ent.__attrs__
- */
-  __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_5yapic_6entity_7_entity_EntityState), ((PyObject *)__pyx_v_ent)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 129, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_v_state = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityState *)__pyx_t_3);
-  __pyx_t_3 = 0;
-
-  /* "yapic/entity/sql/_query_context.pyx":131
- *     cdef EntityState state = EntityState(ent)
- *     cdef EntityAttribute attr
- *     cdef tuple attrs = ent.__attrs__             # <<<<<<<<<<<<<<
- *     cdef int state_len = len(attrs)
- *     cdef int c = 0
- */
-  __pyx_t_3 = __pyx_v_ent->__attrs__;
-  __Pyx_INCREF(__pyx_t_3);
-  __pyx_v_attrs = ((PyObject*)__pyx_t_3);
-  __pyx_t_3 = 0;
-
-  /* "yapic/entity/sql/_query_context.pyx":132
- *     cdef EntityAttribute attr
- *     cdef tuple attrs = ent.__attrs__
- *     cdef int state_len = len(attrs)             # <<<<<<<<<<<<<<
- *     cdef int c = 0
- *     cdef Dialect dialect = conn.dialect
- */
-  if (unlikely(__pyx_v_attrs == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 132, __pyx_L1_error)
-  }
-  __pyx_t_4 = PyTuple_GET_SIZE(__pyx_v_attrs); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 132, __pyx_L1_error)
-  __pyx_v_state_len = __pyx_t_4;
-
-  /* "yapic/entity/sql/_query_context.pyx":133
- *     cdef tuple attrs = ent.__attrs__
- *     cdef int state_len = len(attrs)
- *     cdef int c = 0             # <<<<<<<<<<<<<<
- *     cdef Dialect dialect = conn.dialect
- *     cdef StorageType stype
- */
-  __pyx_v_c = 0;
-
-  /* "yapic/entity/sql/_query_context.pyx":134
- *     cdef int state_len = len(attrs)
- *     cdef int c = 0
- *     cdef Dialect dialect = conn.dialect             # <<<<<<<<<<<<<<
- *     cdef StorageType stype
- * 
- */
-  __pyx_t_3 = ((PyObject *)__pyx_v_conn->dialect);
-  __Pyx_INCREF(__pyx_t_3);
-  __pyx_v_dialect = ((struct __pyx_obj_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_t_3);
-  __pyx_t_3 = 0;
-
-  /* "yapic/entity/sql/_query_context.pyx":137
- *     cdef StorageType stype
- * 
- *     if end - start > state_len:             # <<<<<<<<<<<<<<
- *         raise RuntimeError("Too many columns")
- * 
- */
-  __pyx_t_2 = (((__pyx_v_end - __pyx_v_start) > __pyx_v_state_len) != 0);
-  if (unlikely(__pyx_t_2)) {
-
-    /* "yapic/entity/sql/_query_context.pyx":138
- * 
- *     if end - start > state_len:
- *         raise RuntimeError("Too many columns")             # <<<<<<<<<<<<<<
- * 
- *     for i in range(start, end):
- */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 138, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 138, __pyx_L1_error)
-
-    /* "yapic/entity/sql/_query_context.pyx":137
- *     cdef StorageType stype
- * 
- *     if end - start > state_len:             # <<<<<<<<<<<<<<
- *         raise RuntimeError("Too many columns")
- * 
- */
-  }
-
-  /* "yapic/entity/sql/_query_context.pyx":140
- *         raise RuntimeError("Too many columns")
- * 
- *     for i in range(start, end):             # <<<<<<<<<<<<<<
- *         attr = <EntityAttribute>attrs[c]
- *         val = record[i]
- */
-  __pyx_t_5 = __pyx_v_end;
-  __pyx_t_6 = __pyx_t_5;
-  for (__pyx_t_7 = __pyx_v_start; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
-    __pyx_v_i = __pyx_t_7;
-
-    /* "yapic/entity/sql/_query_context.pyx":141
- * 
- *     for i in range(start, end):
- *         attr = <EntityAttribute>attrs[c]             # <<<<<<<<<<<<<<
- *         val = record[i]
- * 
- */
-    if (unlikely(__pyx_v_attrs == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 141, __pyx_L1_error)
-    }
-    __pyx_t_3 = PyTuple_GET_ITEM(__pyx_v_attrs, __pyx_v_c);
-    __Pyx_INCREF(__pyx_t_3);
-    __Pyx_XDECREF_SET(__pyx_v_attr, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *)__pyx_t_3));
-    __pyx_t_3 = 0;
-
-    /* "yapic/entity/sql/_query_context.pyx":142
- *     for i in range(start, end):
- *         attr = <EntityAttribute>attrs[c]
- *         val = record[i]             # <<<<<<<<<<<<<<
- * 
- *         if isinstance(attr._impl_, CompositeImpl):
- */
-    __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_record, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 142, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_XDECREF_SET(__pyx_v_val, __pyx_t_3);
-    __pyx_t_3 = 0;
-
-    /* "yapic/entity/sql/_query_context.pyx":144
- *         val = record[i]
- * 
- *         if isinstance(attr._impl_, CompositeImpl):             # <<<<<<<<<<<<<<
- *             val = create_entity(conn, (<CompositeImpl>attr._impl_)._entity_, val, 0, len(val))
- *         elif val is not None:
- */
-    __pyx_t_3 = ((PyObject *)__pyx_v_attr->_impl_);
-    __Pyx_INCREF(__pyx_t_3);
-    __pyx_t_2 = __Pyx_TypeCheck(__pyx_t_3, __pyx_ptype_5yapic_6entity_11_field_impl_CompositeImpl); 
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_1 = (__pyx_t_2 != 0);
-    if (__pyx_t_1) {
-
-      /* "yapic/entity/sql/_query_context.pyx":145
- * 
- *         if isinstance(attr._impl_, CompositeImpl):
- *             val = create_entity(conn, (<CompositeImpl>attr._impl_)._entity_, val, 0, len(val))             # <<<<<<<<<<<<<<
- *         elif val is not None:
- *             stype = dialect.get_field_type(attr)
- */
-      __pyx_t_3 = ((PyObject *)((struct __pyx_obj_5yapic_6entity_11_field_impl_CompositeImpl *)__pyx_v_attr->_impl_)->__pyx_base._entity_);
-      __Pyx_INCREF(__pyx_t_3);
-      __pyx_t_4 = PyObject_Length(__pyx_v_val); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 145, __pyx_L1_error)
-      __pyx_t_8 = __pyx_f_5yapic_6entity_3sql_14_query_context_create_entity(__pyx_v_conn, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_3), __pyx_v_val, 0, __pyx_t_4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 145, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_8);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __Pyx_DECREF_SET(__pyx_v_val, __pyx_t_8);
-      __pyx_t_8 = 0;
-
-      /* "yapic/entity/sql/_query_context.pyx":144
- *         val = record[i]
- * 
- *         if isinstance(attr._impl_, CompositeImpl):             # <<<<<<<<<<<<<<
- *             val = create_entity(conn, (<CompositeImpl>attr._impl_)._entity_, val, 0, len(val))
- *         elif val is not None:
- */
-      goto __pyx_L7;
-    }
-
-    /* "yapic/entity/sql/_query_context.pyx":146
- *         if isinstance(attr._impl_, CompositeImpl):
- *             val = create_entity(conn, (<CompositeImpl>attr._impl_)._entity_, val, 0, len(val))
- *         elif val is not None:             # <<<<<<<<<<<<<<
- *             stype = dialect.get_field_type(attr)
- *             val = stype.decode(val)
- */
-    __pyx_t_1 = (__pyx_v_val != Py_None);
-    __pyx_t_2 = (__pyx_t_1 != 0);
-    if (__pyx_t_2) {
-
-      /* "yapic/entity/sql/_query_context.pyx":147
- *             val = create_entity(conn, (<CompositeImpl>attr._impl_)._entity_, val, 0, len(val))
- *         elif val is not None:
- *             stype = dialect.get_field_type(attr)             # <<<<<<<<<<<<<<
- *             val = stype.decode(val)
- * 
- */
-      if (!(likely(((((PyObject *)__pyx_v_attr)) == Py_None) || likely(__Pyx_TypeTest(((PyObject *)__pyx_v_attr), __pyx_ptype_5yapic_6entity_6_field_Field))))) __PYX_ERR(0, 147, __pyx_L1_error)
-      __pyx_t_8 = ((PyObject *)((struct __pyx_vtabstruct_5yapic_6entity_3sql_8_dialect_Dialect *)__pyx_v_dialect->__pyx_vtab)->get_field_type(__pyx_v_dialect, ((struct __pyx_obj_5yapic_6entity_6_field_Field *)__pyx_v_attr), 0)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 147, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_8);
-      __Pyx_XDECREF_SET(__pyx_v_stype, ((struct __pyx_obj_5yapic_6entity_6_field_StorageType *)__pyx_t_8));
-      __pyx_t_8 = 0;
-
-      /* "yapic/entity/sql/_query_context.pyx":148
- *         elif val is not None:
- *             stype = dialect.get_field_type(attr)
- *             val = stype.decode(val)             # <<<<<<<<<<<<<<
- * 
- *         state.set_initial_value(attr, val)
- */
-      __pyx_t_8 = ((struct __pyx_vtabstruct_5yapic_6entity_6_field_StorageType *)__pyx_v_stype->__pyx_vtab)->decode(__pyx_v_stype, __pyx_v_val, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 148, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_8);
-      __Pyx_DECREF_SET(__pyx_v_val, __pyx_t_8);
-      __pyx_t_8 = 0;
-
-      /* "yapic/entity/sql/_query_context.pyx":146
- *         if isinstance(attr._impl_, CompositeImpl):
- *             val = create_entity(conn, (<CompositeImpl>attr._impl_)._entity_, val, 0, len(val))
- *         elif val is not None:             # <<<<<<<<<<<<<<
- *             stype = dialect.get_field_type(attr)
- *             val = stype.decode(val)
- */
-    }
-    __pyx_L7:;
-
-    /* "yapic/entity/sql/_query_context.pyx":150
- *             val = stype.decode(val)
- * 
- *         state.set_initial_value(attr, val)             # <<<<<<<<<<<<<<
- *         c += 1
- * 
- */
-    __pyx_t_8 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *)__pyx_v_state->__pyx_vtab)->set_initial_value(__pyx_v_state, __pyx_v_attr, __pyx_v_val); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 150, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-
-    /* "yapic/entity/sql/_query_context.pyx":151
- * 
- *         state.set_initial_value(attr, val)
- *         c += 1             # <<<<<<<<<<<<<<
- * 
- *     return ent(state)
- */
-    __pyx_v_c = (__pyx_v_c + 1);
-  }
-
-  /* "yapic/entity/sql/_query_context.pyx":153
- *         c += 1
- * 
- *     return ent(state)             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(((PyObject *)__pyx_v_ent));
-  __pyx_t_3 = ((PyObject *)__pyx_v_ent); __pyx_t_9 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_9)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_9);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_3, function);
-    }
-  }
-  __pyx_t_8 = (__pyx_t_9) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_9, ((PyObject *)__pyx_v_state)) : __Pyx_PyObject_CallOneArg(__pyx_t_3, ((PyObject *)__pyx_v_state));
-  __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-  if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 153, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_r = __pyx_t_8;
-  __pyx_t_8 = 0;
-  goto __pyx_L0;
-
-  /* "yapic/entity/sql/_query_context.pyx":125
- * 
- * 
- * cdef inline object create_entity(Connection conn, EntityType ent, object record, int start, int end):             # <<<<<<<<<<<<<<
- *     if record is None:
- *         return
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_AddTraceback("yapic.entity.sql._query_context.create_entity", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = 0;
-  __pyx_L0:;
-  __Pyx_XDECREF((PyObject *)__pyx_v_state);
-  __Pyx_XDECREF((PyObject *)__pyx_v_attr);
-  __Pyx_XDECREF(__pyx_v_attrs);
-  __Pyx_XDECREF((PyObject *)__pyx_v_dialect);
-  __Pyx_XDECREF((PyObject *)__pyx_v_stype);
-  __Pyx_XDECREF(__pyx_v_val);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
+static struct __pyx_vtabstruct_5yapic_6entity_3sql_14_query_context_QueryContext __pyx_vtable_5yapic_6entity_3sql_14_query_context_QueryContext;
 
 static PyObject *__pyx_tp_new_5yapic_6entity_3sql_14_query_context_QueryContext(PyTypeObject *t, PyObject *a, PyObject *k) {
   struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *p;
@@ -8683,10 +7409,11 @@ static PyObject *__pyx_tp_new_5yapic_6entity_3sql_14_query_context_QueryContext(
   }
   if (unlikely(!o)) return 0;
   p = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *)o);
-  p->cursor_factory = Py_None; Py_INCREF(Py_None);
-  p->columns = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  p->__pyx_vtab = __pyx_vtabptr_5yapic_6entity_3sql_14_query_context_QueryContext;
   p->conn = ((struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *)Py_None); Py_INCREF(Py_None);
-  p->entities = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  p->cursor_factory = Py_None; Py_INCREF(Py_None);
+  p->rcos_list = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  p->rc_state = ((struct __pyx_obj_5yapic_6entity_3sql_17_record_converter_RCState *)Py_None); Py_INCREF(Py_None);
   if (unlikely(__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_1__cinit__(o, a, k) < 0)) goto bad;
   return o;
   bad:
@@ -8702,27 +7429,27 @@ static void __pyx_tp_dealloc_5yapic_6entity_3sql_14_query_context_QueryContext(P
   }
   #endif
   PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->cursor_factory);
-  Py_CLEAR(p->columns);
   Py_CLEAR(p->conn);
-  Py_CLEAR(p->entities);
+  Py_CLEAR(p->cursor_factory);
+  Py_CLEAR(p->rcos_list);
+  Py_CLEAR(p->rc_state);
   (*Py_TYPE(o)->tp_free)(o);
 }
 
 static int __pyx_tp_traverse_5yapic_6entity_3sql_14_query_context_QueryContext(PyObject *o, visitproc v, void *a) {
   int e;
   struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *p = (struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *)o;
-  if (p->cursor_factory) {
-    e = (*v)(p->cursor_factory, a); if (e) return e;
-  }
-  if (p->columns) {
-    e = (*v)(p->columns, a); if (e) return e;
-  }
   if (p->conn) {
     e = (*v)(((PyObject *)p->conn), a); if (e) return e;
   }
-  if (p->entities) {
-    e = (*v)(p->entities, a); if (e) return e;
+  if (p->cursor_factory) {
+    e = (*v)(p->cursor_factory, a); if (e) return e;
+  }
+  if (p->rcos_list) {
+    e = (*v)(p->rcos_list, a); if (e) return e;
+  }
+  if (p->rc_state) {
+    e = (*v)(((PyObject *)p->rc_state), a); if (e) return e;
   }
   return 0;
 }
@@ -8730,17 +7457,17 @@ static int __pyx_tp_traverse_5yapic_6entity_3sql_14_query_context_QueryContext(P
 static int __pyx_tp_clear_5yapic_6entity_3sql_14_query_context_QueryContext(PyObject *o) {
   PyObject* tmp;
   struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *p = (struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *)o;
-  tmp = ((PyObject*)p->cursor_factory);
-  p->cursor_factory = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->columns);
-  p->columns = ((PyObject*)Py_None); Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
   tmp = ((PyObject*)p->conn);
   p->conn = ((struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection *)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->entities);
-  p->entities = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  tmp = ((PyObject*)p->cursor_factory);
+  p->cursor_factory = Py_None; Py_INCREF(Py_None);
+  Py_XDECREF(tmp);
+  tmp = ((PyObject*)p->rcos_list);
+  p->rcos_list = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  Py_XDECREF(tmp);
+  tmp = ((PyObject*)p->rc_state);
+  p->rc_state = ((struct __pyx_obj_5yapic_6entity_3sql_17_record_converter_RCState *)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   return 0;
 }
@@ -8749,8 +7476,8 @@ static PyObject *__pyx_getprop_5yapic_6entity_3sql_14_query_context_12QueryConte
   return __pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_4conn_1__get__(o);
 }
 
-static PyObject *__pyx_specialmethod___pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_24__aiter__(PyObject *self, CYTHON_UNUSED PyObject *arg) {return __pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_24__aiter__(self);}
-static PyObject *__pyx_specialmethod___pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_27__await__(PyObject *self, CYTHON_UNUSED PyObject *arg) {return __pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_27__await__(self);}
+static PyObject *__pyx_specialmethod___pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_18__aiter__(PyObject *self, CYTHON_UNUSED PyObject *arg) {return __pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_18__aiter__(self);}
+static PyObject *__pyx_specialmethod___pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_21__await__(PyObject *self, CYTHON_UNUSED PyObject *arg) {return __pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_21__await__(self);}
 
 static PyMethodDef __pyx_methods_5yapic_6entity_3sql_14_query_context_QueryContext[] = {
   {"fetch", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_3fetch, METH_VARARGS|METH_KEYWORDS, 0},
@@ -8758,10 +7485,8 @@ static PyMethodDef __pyx_methods_5yapic_6entity_3sql_14_query_context_QueryConte
   {"forward", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_9forward, METH_VARARGS|METH_KEYWORDS, 0},
   {"fetchval", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_12fetchval, METH_VARARGS|METH_KEYWORDS, 0},
   {"first", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_15first, METH_VARARGS|METH_KEYWORDS, 0},
-  {"convert_row", (PyCFunction)__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_18convert_row, METH_O, 0},
-  {"get_entity", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_21get_entity, METH_VARARGS|METH_KEYWORDS, 0},
-  {"__aiter__", (PyCFunction)__pyx_specialmethod___pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_24__aiter__, METH_NOARGS|METH_COEXIST, 0},
-  {"__await__", (PyCFunction)__pyx_specialmethod___pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_27__await__, METH_NOARGS|METH_COEXIST, 0},
+  {"__aiter__", (PyCFunction)__pyx_specialmethod___pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_18__aiter__, METH_NOARGS|METH_COEXIST, 0},
+  {"__await__", (PyCFunction)__pyx_specialmethod___pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_21__await__, METH_NOARGS|METH_COEXIST, 0},
   {0, 0, 0, 0}
 };
 
@@ -8772,8 +7497,8 @@ static struct PyGetSetDef __pyx_getsets_5yapic_6entity_3sql_14_query_context_Que
 
 #if PY_MAJOR_VERSION >= 3
 static __Pyx_PyAsyncMethodsStruct __pyx_tp_as_async_QueryContext = {
-  __pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_27__await__, /*am_await*/
-  __pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_24__aiter__, /*am_aiter*/
+  __pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_21__await__, /*am_await*/
+  __pyx_pw_5yapic_6entity_3sql_14_query_context_12QueryContext_18__aiter__, /*am_aiter*/
   0, /*am_anext*/
 };
 #endif
@@ -9527,14 +8252,14 @@ static PyTypeObject __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_
   #endif
 };
 
-static struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row *__pyx_freelist_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row[8];
-static int __pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row = 0;
+static struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__ *__pyx_freelist_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__[8];
+static int __pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__ = 0;
 
-static PyObject *__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+static PyObject *__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
   PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row)))) {
-    o = (PyObject*)__pyx_freelist_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row[--__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row];
-    memset(o, 0, sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row));
+  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__ > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__)))) {
+    o = (PyObject*)__pyx_freelist_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__[--__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__];
+    memset(o, 0, sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__));
     (void) PyObject_INIT(o, t);
     PyObject_GC_Track(o);
   } else {
@@ -9544,345 +8269,8 @@ static PyObject *__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_s
   return o;
 }
 
-static void __pyx_tp_dealloc_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row(PyObject *o) {
-  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row *p = (struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row *)o;
-  PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->__pyx_v_entity);
-  Py_CLEAR(p->__pyx_v_result);
-  Py_CLEAR(p->__pyx_v_row);
-  Py_CLEAR(p->__pyx_v_self);
-  Py_CLEAR(p->__pyx_v_tmp);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row)))) {
-    __pyx_freelist_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row[__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row++] = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row *)o);
-  } else {
-    (*Py_TYPE(o)->tp_free)(o);
-  }
-}
-
-static int __pyx_tp_traverse_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row(PyObject *o, visitproc v, void *a) {
-  int e;
-  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row *p = (struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row *)o;
-  if (p->__pyx_v_entity) {
-    e = (*v)(p->__pyx_v_entity, a); if (e) return e;
-  }
-  if (p->__pyx_v_result) {
-    e = (*v)(p->__pyx_v_result, a); if (e) return e;
-  }
-  if (p->__pyx_v_row) {
-    e = (*v)(p->__pyx_v_row, a); if (e) return e;
-  }
-  if (p->__pyx_v_self) {
-    e = (*v)(((PyObject *)p->__pyx_v_self), a); if (e) return e;
-  }
-  if (p->__pyx_v_tmp) {
-    e = (*v)(p->__pyx_v_tmp, a); if (e) return e;
-  }
-  return 0;
-}
-
-static PyTypeObject __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "yapic.entity.sql._query_context.__pyx_scope_struct_5_convert_row", /*tp_name*/
-  sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row, /*tp_dealloc*/
-  0, /*tp_print*/
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
-  __pyx_tp_traverse_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row, /*tp_traverse*/
-  0, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  0, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-};
-
-static struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity *__pyx_freelist_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity[8];
-static int __pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity = 0;
-
-static PyObject *__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity)))) {
-    o = (PyObject*)__pyx_freelist_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity[--__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity];
-    memset(o, 0, sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity));
-    (void) PyObject_INIT(o, t);
-    PyObject_GC_Track(o);
-  } else {
-    o = (*t->tp_alloc)(t, 0);
-    if (unlikely(!o)) return 0;
-  }
-  return o;
-}
-
-static void __pyx_tp_dealloc_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity(PyObject *o) {
-  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity *p = (struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity *)o;
-  PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->__pyx_v_attr);
-  Py_CLEAR(p->__pyx_v_ent);
-  Py_CLEAR(p->__pyx_v_entity);
-  Py_CLEAR(p->__pyx_v_genexpr);
-  Py_CLEAR(p->__pyx_v_key);
-  Py_CLEAR(p->__pyx_v_pk);
-  Py_CLEAR(p->__pyx_v_record);
-  Py_CLEAR(p->__pyx_v_self);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity)))) {
-    __pyx_freelist_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity[__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity++] = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity *)o);
-  } else {
-    (*Py_TYPE(o)->tp_free)(o);
-  }
-}
-
-static int __pyx_tp_traverse_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity(PyObject *o, visitproc v, void *a) {
-  int e;
-  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity *p = (struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity *)o;
-  if (p->__pyx_v_attr) {
-    e = (*v)(((PyObject *)p->__pyx_v_attr), a); if (e) return e;
-  }
-  if (p->__pyx_v_ent) {
-    e = (*v)(((PyObject *)p->__pyx_v_ent), a); if (e) return e;
-  }
-  if (p->__pyx_v_entity) {
-    e = (*v)(p->__pyx_v_entity, a); if (e) return e;
-  }
-  if (p->__pyx_v_genexpr) {
-    e = (*v)(p->__pyx_v_genexpr, a); if (e) return e;
-  }
-  if (p->__pyx_v_key) {
-    e = (*v)(p->__pyx_v_key, a); if (e) return e;
-  }
-  if (p->__pyx_v_pk) {
-    e = (*v)(p->__pyx_v_pk, a); if (e) return e;
-  }
-  if (p->__pyx_v_record) {
-    e = (*v)(p->__pyx_v_record, a); if (e) return e;
-  }
-  if (p->__pyx_v_self) {
-    e = (*v)(((PyObject *)p->__pyx_v_self), a); if (e) return e;
-  }
-  return 0;
-}
-
-static PyTypeObject __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "yapic.entity.sql._query_context.__pyx_scope_struct_6_get_entity", /*tp_name*/
-  sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity, /*tp_dealloc*/
-  0, /*tp_print*/
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
-  __pyx_tp_traverse_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity, /*tp_traverse*/
-  0, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  0, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-};
-
-static struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr *__pyx_freelist_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr[8];
-static int __pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr = 0;
-
-static PyObject *__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr)))) {
-    o = (PyObject*)__pyx_freelist_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr[--__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr];
-    memset(o, 0, sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr));
-    (void) PyObject_INIT(o, t);
-    PyObject_GC_Track(o);
-  } else {
-    o = (*t->tp_alloc)(t, 0);
-    if (unlikely(!o)) return 0;
-  }
-  return o;
-}
-
-static void __pyx_tp_dealloc_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr(PyObject *o) {
-  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr *p = (struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr *)o;
-  PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->__pyx_outer_scope);
-  Py_CLEAR(p->__pyx_v_attr);
-  Py_CLEAR(p->__pyx_t_0);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr)))) {
-    __pyx_freelist_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr[__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr++] = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr *)o);
-  } else {
-    (*Py_TYPE(o)->tp_free)(o);
-  }
-}
-
-static int __pyx_tp_traverse_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr(PyObject *o, visitproc v, void *a) {
-  int e;
-  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr *p = (struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr *)o;
-  if (p->__pyx_outer_scope) {
-    e = (*v)(((PyObject *)p->__pyx_outer_scope), a); if (e) return e;
-  }
-  if (p->__pyx_v_attr) {
-    e = (*v)(p->__pyx_v_attr, a); if (e) return e;
-  }
-  if (p->__pyx_t_0) {
-    e = (*v)(p->__pyx_t_0, a); if (e) return e;
-  }
-  return 0;
-}
-
-static PyTypeObject __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "yapic.entity.sql._query_context.__pyx_scope_struct_7_genexpr", /*tp_name*/
-  sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr, /*tp_dealloc*/
-  0, /*tp_print*/
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
-  __pyx_tp_traverse_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr, /*tp_traverse*/
-  0, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  0, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-};
-
-static struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__ *__pyx_freelist_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__[8];
-static int __pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__ = 0;
-
-static PyObject *__pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__ > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__)))) {
-    o = (PyObject*)__pyx_freelist_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__[--__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__];
-    memset(o, 0, sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__));
-    (void) PyObject_INIT(o, t);
-    PyObject_GC_Track(o);
-  } else {
-    o = (*t->tp_alloc)(t, 0);
-    if (unlikely(!o)) return 0;
-  }
-  return o;
-}
-
-static void __pyx_tp_dealloc_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__(PyObject *o) {
-  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__ *p = (struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__ *)o;
+static void __pyx_tp_dealloc_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__(PyObject *o) {
+  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__ *p = (struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__ *)o;
   PyObject_GC_UnTrack(o);
   Py_CLEAR(p->__pyx_v_record);
   Py_CLEAR(p->__pyx_v_self);
@@ -9894,16 +8282,16 @@ static void __pyx_tp_dealloc_5yapic_6entity_3sql_14_query_context___pyx_scope_st
   Py_CLEAR(p->__pyx_t_5);
   Py_CLEAR(p->__pyx_t_6);
   Py_CLEAR(p->__pyx_t_7);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__ < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__)))) {
-    __pyx_freelist_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__[__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__++] = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__ *)o);
+  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__ < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__)))) {
+    __pyx_freelist_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__[__pyx_freecount_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__++] = ((struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__ *)o);
   } else {
     (*Py_TYPE(o)->tp_free)(o);
   }
 }
 
-static int __pyx_tp_traverse_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__(PyObject *o, visitproc v, void *a) {
+static int __pyx_tp_traverse_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__(PyObject *o, visitproc v, void *a) {
   int e;
-  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__ *p = (struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__ *)o;
+  struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__ *p = (struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__ *)o;
   if (p->__pyx_v_record) {
     e = (*v)(p->__pyx_v_record, a); if (e) return e;
   }
@@ -9937,12 +8325,12 @@ static int __pyx_tp_traverse_5yapic_6entity_3sql_14_query_context___pyx_scope_st
   return 0;
 }
 
-static PyTypeObject __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__ = {
+static PyTypeObject __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__ = {
   PyVarObject_HEAD_INIT(0, 0)
-  "yapic.entity.sql._query_context.__pyx_scope_struct_8___aiter__", /*tp_name*/
-  sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__), /*tp_basicsize*/
+  "yapic.entity.sql._query_context.__pyx_scope_struct_5___aiter__", /*tp_name*/
+  sizeof(struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__, /*tp_dealloc*/
+  __pyx_tp_dealloc_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -9964,7 +8352,7 @@ static PyTypeObject __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
   0, /*tp_doc*/
-  __pyx_tp_traverse_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__, /*tp_traverse*/
+  __pyx_tp_traverse_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__, /*tp_traverse*/
   0, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
@@ -9980,7 +8368,7 @@ static PyTypeObject __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__, /*tp_new*/
+  __pyx_tp_new_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -10041,20 +8429,13 @@ static struct PyModuleDef __pyx_moduledef = {
 #endif
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
-  {&__pyx_kp_u_Columns_must_be_not_empty, __pyx_k_Columns_must_be_not_empty, sizeof(__pyx_k_Columns_must_be_not_empty), 0, 1, 0, 0},
-  {&__pyx_n_s_KeyError, __pyx_k_KeyError, sizeof(__pyx_k_KeyError), 0, 0, 1, 1},
   {&__pyx_n_s_QueryContext, __pyx_k_QueryContext, sizeof(__pyx_k_QueryContext), 0, 0, 1, 1},
   {&__pyx_n_s_QueryContext___aiter, __pyx_k_QueryContext___aiter, sizeof(__pyx_k_QueryContext___aiter), 0, 0, 1, 1},
-  {&__pyx_n_s_QueryContext_convert_row, __pyx_k_QueryContext_convert_row, sizeof(__pyx_k_QueryContext_convert_row), 0, 0, 1, 1},
   {&__pyx_n_s_QueryContext_fetch, __pyx_k_QueryContext_fetch, sizeof(__pyx_k_QueryContext_fetch), 0, 0, 1, 1},
   {&__pyx_n_s_QueryContext_fetchrow, __pyx_k_QueryContext_fetchrow, sizeof(__pyx_k_QueryContext_fetchrow), 0, 0, 1, 1},
   {&__pyx_n_s_QueryContext_fetchval, __pyx_k_QueryContext_fetchval, sizeof(__pyx_k_QueryContext_fetchval), 0, 0, 1, 1},
   {&__pyx_n_s_QueryContext_first, __pyx_k_QueryContext_first, sizeof(__pyx_k_QueryContext_first), 0, 0, 1, 1},
   {&__pyx_n_s_QueryContext_forward, __pyx_k_QueryContext_forward, sizeof(__pyx_k_QueryContext_forward), 0, 0, 1, 1},
-  {&__pyx_n_s_QueryContext_get_entity, __pyx_k_QueryContext_get_entity, sizeof(__pyx_k_QueryContext_get_entity), 0, 0, 1, 1},
-  {&__pyx_n_s_RuntimeError, __pyx_k_RuntimeError, sizeof(__pyx_k_RuntimeError), 0, 0, 1, 1},
-  {&__pyx_kp_u_Too_many_columns, __pyx_k_Too_many_columns, sizeof(__pyx_k_Too_many_columns), 0, 1, 0, 0},
-  {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
   {&__pyx_n_s_aenter, __pyx_k_aenter, sizeof(__pyx_k_aenter), 0, 0, 1, 1},
   {&__pyx_n_s_aexit, __pyx_k_aexit, sizeof(__pyx_k_aexit), 0, 0, 1, 1},
   {&__pyx_n_s_aiter, __pyx_k_aiter, sizeof(__pyx_k_aiter), 0, 0, 1, 1},
@@ -10064,36 +8445,29 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_close, __pyx_k_close, sizeof(__pyx_k_close), 0, 0, 1, 1},
   {&__pyx_n_s_column, __pyx_k_column, sizeof(__pyx_k_column), 0, 0, 1, 1},
-  {&__pyx_n_s_columns, __pyx_k_columns, sizeof(__pyx_k_columns), 0, 0, 1, 1},
   {&__pyx_n_s_conn, __pyx_k_conn, sizeof(__pyx_k_conn), 0, 0, 1, 1},
-  {&__pyx_n_s_convert_row, __pyx_k_convert_row, sizeof(__pyx_k_convert_row), 0, 0, 1, 1},
+  {&__pyx_n_s_convert_record, __pyx_k_convert_record, sizeof(__pyx_k_convert_record), 0, 0, 1, 1},
   {&__pyx_n_s_cursor_factory, __pyx_k_cursor_factory, sizeof(__pyx_k_cursor_factory), 0, 0, 1, 1},
   {&__pyx_n_s_deferrable, __pyx_k_deferrable, sizeof(__pyx_k_deferrable), 0, 0, 1, 1},
   {&__pyx_n_s_deferrable_2, __pyx_k_deferrable_2, sizeof(__pyx_k_deferrable_2), 0, 0, 1, 1},
-  {&__pyx_n_s_end, __pyx_k_end, sizeof(__pyx_k_end), 0, 0, 1, 1},
-  {&__pyx_n_s_ent, __pyx_k_ent, sizeof(__pyx_k_ent), 0, 0, 1, 1},
   {&__pyx_n_s_fetch, __pyx_k_fetch, sizeof(__pyx_k_fetch), 0, 0, 1, 1},
   {&__pyx_n_s_fetchrow, __pyx_k_fetchrow, sizeof(__pyx_k_fetchrow), 0, 0, 1, 1},
   {&__pyx_n_s_fetchval, __pyx_k_fetchval, sizeof(__pyx_k_fetchval), 0, 0, 1, 1},
   {&__pyx_n_s_first, __pyx_k_first, sizeof(__pyx_k_first), 0, 0, 1, 1},
   {&__pyx_n_s_forward, __pyx_k_forward, sizeof(__pyx_k_forward), 0, 0, 1, 1},
-  {&__pyx_n_s_genexpr, __pyx_k_genexpr, sizeof(__pyx_k_genexpr), 0, 0, 1, 1},
-  {&__pyx_n_s_get_entity, __pyx_k_get_entity, sizeof(__pyx_k_get_entity), 0, 0, 1, 1},
-  {&__pyx_n_s_get_entity_locals_genexpr, __pyx_k_get_entity_locals_genexpr, sizeof(__pyx_k_get_entity_locals_genexpr), 0, 0, 1, 1},
-  {&__pyx_n_s_index, __pyx_k_index, sizeof(__pyx_k_index), 0, 0, 1, 1},
+  {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_isolation, __pyx_k_isolation, sizeof(__pyx_k_isolation), 0, 0, 1, 1},
   {&__pyx_n_s_isolation_2, __pyx_k_isolation_2, sizeof(__pyx_k_isolation_2), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
   {&__pyx_n_s_num, __pyx_k_num, sizeof(__pyx_k_num), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},
-  {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
+  {&__pyx_n_s_rcos_list, __pyx_k_rcos_list, sizeof(__pyx_k_rcos_list), 0, 0, 1, 1},
   {&__pyx_n_s_readonly, __pyx_k_readonly, sizeof(__pyx_k_readonly), 0, 0, 1, 1},
   {&__pyx_n_s_readonly_2, __pyx_k_readonly_2, sizeof(__pyx_k_readonly_2), 0, 0, 1, 1},
-  {&__pyx_n_s_record, __pyx_k_record, sizeof(__pyx_k_record), 0, 0, 1, 1},
+  {&__pyx_n_s_record_converter, __pyx_k_record_converter, sizeof(__pyx_k_record_converter), 0, 0, 1, 1},
   {&__pyx_n_s_send, __pyx_k_send, sizeof(__pyx_k_send), 0, 0, 1, 1},
   {&__pyx_n_u_serializable, __pyx_k_serializable, sizeof(__pyx_k_serializable), 0, 1, 0, 1},
-  {&__pyx_n_s_start, __pyx_k_start, sizeof(__pyx_k_start), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_s_throw, __pyx_k_throw, sizeof(__pyx_k_throw), 0, 0, 1, 1},
   {&__pyx_n_s_timeout, __pyx_k_timeout, sizeof(__pyx_k_timeout), 0, 0, 1, 1},
@@ -10103,51 +8477,23 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 22, __pyx_L1_error)
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 76, __pyx_L1_error)
-  __pyx_builtin_KeyError = __Pyx_GetBuiltinName(__pyx_n_s_KeyError); if (!__pyx_builtin_KeyError) __PYX_ERR(0, 100, __pyx_L1_error)
-  __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(0, 138, __pyx_L1_error)
   return 0;
-  __pyx_L1_error:;
-  return -1;
 }
 
 static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "yapic/entity/sql/_query_context.pyx":22
- * 
- *         if not columns:
- *             raise ValueError("Columns must be not empty")             # <<<<<<<<<<<<<<
- * 
- *     async def fetch(self, num=None, *, timeout=None):
- */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_Columns_must_be_not_empty); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 22, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple_);
-  __Pyx_GIVEREF(__pyx_tuple_);
-
-  /* "yapic/entity/sql/_query_context.pyx":31
+  /* "yapic/entity/sql/_query_context.pyx":30
  * 
  *     async def fetchrow(self, *, timeout=None):
  *         async with ensure_transaction(self.conn.conn):             # <<<<<<<<<<<<<<
  *             cursor = await self.cursor_factory
  *             row = await cursor.fetchrow(timeout=timeout)
  */
-  __pyx_tuple__2 = PyTuple_Pack(3, Py_None, Py_None, Py_None); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 31, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__2);
-  __Pyx_GIVEREF(__pyx_tuple__2);
-
-  /* "yapic/entity/sql/_query_context.pyx":138
- * 
- *     if end - start > state_len:
- *         raise RuntimeError("Too many columns")             # <<<<<<<<<<<<<<
- * 
- *     for i in range(start, end):
- */
-  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_u_Too_many_columns); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 138, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__3);
-  __Pyx_GIVEREF(__pyx_tuple__3);
+  __pyx_tuple_ = PyTuple_Pack(3, Py_None, Py_None, Py_None); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple_);
+  __Pyx_GIVEREF(__pyx_tuple_);
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -10199,67 +8545,52 @@ static int __Pyx_modinit_type_init_code(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_14_query_context_QueryContext) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_3sql_14_query_context_QueryContext = &__pyx_vtable_5yapic_6entity_3sql_14_query_context_QueryContext;
+  __pyx_vtable_5yapic_6entity_3sql_14_query_context_QueryContext.convert_row = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_3sql_14_query_context_QueryContext *, PyObject *))__pyx_f_5yapic_6entity_3sql_14_query_context_12QueryContext_convert_row;
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_14_query_context_QueryContext) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
   __pyx_type_5yapic_6entity_3sql_14_query_context_QueryContext.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_14_query_context_QueryContext.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_14_query_context_QueryContext.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_3sql_14_query_context_QueryContext.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_QueryContext, (PyObject *)&__pyx_type_5yapic_6entity_3sql_14_query_context_QueryContext) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_3sql_14_query_context_QueryContext.tp_dict, __pyx_vtabptr_5yapic_6entity_3sql_14_query_context_QueryContext) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_QueryContext, (PyObject *)&__pyx_type_5yapic_6entity_3sql_14_query_context_QueryContext) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_3sql_14_query_context_QueryContext = &__pyx_type_5yapic_6entity_3sql_14_query_context_QueryContext;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct__fetch) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct__fetch) < 0) __PYX_ERR(0, 23, __pyx_L1_error)
   __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct__fetch.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct__fetch.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct__fetch.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct__fetch.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct__fetch = &__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct__fetch;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_1_fetchrow) < 0) __PYX_ERR(0, 30, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_1_fetchrow) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
   __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_1_fetchrow.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_1_fetchrow.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_1_fetchrow.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_1_fetchrow.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_1_fetchrow = &__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_1_fetchrow;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_2_forward) < 0) __PYX_ERR(0, 39, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_2_forward) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
   __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_2_forward.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_2_forward.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_2_forward.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_2_forward.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_2_forward = &__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_2_forward;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_3_fetchval) < 0) __PYX_ERR(0, 44, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_3_fetchval) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
   __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_3_fetchval.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_3_fetchval.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_3_fetchval.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_3_fetchval.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_3_fetchval = &__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_3_fetchval;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_4_first) < 0) __PYX_ERR(0, 50, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_4_first) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
   __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_4_first.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_4_first.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_4_first.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_4_first.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_4_first = &__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_4_first;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row) < 0) __PYX_ERR(0, 59, __pyx_L1_error)
-  __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row.tp_print = 0;
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__.tp_print = 0;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
-  __pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row = &__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5_convert_row;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity) < 0) __PYX_ERR(0, 93, __pyx_L1_error)
-  __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity.tp_print = 0;
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
-  }
-  __pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity = &__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_6_get_entity;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr) < 0) __PYX_ERR(0, 95, __pyx_L1_error)
-  __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr.tp_print = 0;
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
-  }
-  __pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr = &__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_7_genexpr;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__) < 0) __PYX_ERR(0, 106, __pyx_L1_error)
-  __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__.tp_print = 0;
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
-  }
-  __pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__ = &__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_8___aiter__;
+  __pyx_ptype_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__ = &__pyx_type_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__;
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -10364,8 +8695,8 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_5yapic_6entity_6_query_QueryFinalizer = __Pyx_ImportType(__pyx_t_1, "yapic.entity._query", "QueryFinalizer", sizeof(struct __pyx_obj_5yapic_6entity_6_query_QueryFinalizer), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_6entity_6_query_QueryFinalizer) __PYX_ERR(5, 27, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_6_query_QueryFinalizer = (struct __pyx_vtabstruct_5yapic_6entity_6_query_QueryFinalizer*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_6_query_QueryFinalizer->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_6_query_QueryFinalizer)) __PYX_ERR(5, 27, __pyx_L1_error)
-  __pyx_ptype_5yapic_6entity_6_query_RowProcessor = __Pyx_ImportType(__pyx_t_1, "yapic.entity._query", "RowProcessor", sizeof(struct __pyx_obj_5yapic_6entity_6_query_RowProcessor), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_6_query_RowProcessor) __PYX_ERR(5, 32, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_6_query_RowConvertOp = __Pyx_ImportType(__pyx_t_1, "yapic.entity._query", "RowConvertOp", sizeof(struct __pyx_obj_5yapic_6entity_6_query_RowConvertOp), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_6_query_RowConvertOp) __PYX_ERR(5, 133, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("yapic.entity._field"); if (unlikely(!__pyx_t_1)) __PYX_ERR(6, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -10426,44 +8757,49 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_5yapic_6entity_3sql_11_connection_Connection = __Pyx_ImportType(__pyx_t_1, "yapic.entity.sql._connection", "Connection", sizeof(struct __pyx_obj_5yapic_6entity_3sql_11_connection_Connection), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_6entity_3sql_11_connection_Connection) __PYX_ERR(11, 7, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyImport_ImportModule("yapic.entity._field_impl"); if (unlikely(!__pyx_t_1)) __PYX_ERR(12, 5, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("yapic.entity.sql._record_converter"); if (unlikely(!__pyx_t_1)) __PYX_ERR(12, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_ptype_5yapic_6entity_3sql_17_record_converter_RCState = __Pyx_ImportType(__pyx_t_1, "yapic.entity.sql._record_converter", "RCState", sizeof(struct __pyx_obj_5yapic_6entity_3sql_17_record_converter_RCState), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_3sql_17_record_converter_RCState) __PYX_ERR(12, 2, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyImport_ImportModule("yapic.entity._field_impl"); if (unlikely(!__pyx_t_1)) __PYX_ERR(13, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_5yapic_6entity_11_field_impl_StringImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "StringImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_StringImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_field_impl_StringImpl) __PYX_ERR(12, 5, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_field_impl_StringImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_StringImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_StringImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_StringImpl)) __PYX_ERR(12, 5, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_StringImpl) __PYX_ERR(13, 5, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_StringImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_StringImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_StringImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_StringImpl)) __PYX_ERR(13, 5, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_BytesImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "BytesImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_BytesImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_field_impl_BytesImpl) __PYX_ERR(12, 9, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_field_impl_BytesImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_BytesImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_BytesImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_BytesImpl)) __PYX_ERR(12, 9, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_BytesImpl) __PYX_ERR(13, 9, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_BytesImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_BytesImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_BytesImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_BytesImpl)) __PYX_ERR(13, 9, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_IntImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "IntImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_IntImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_field_impl_IntImpl) __PYX_ERR(12, 13, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_field_impl_IntImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_IntImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_IntImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_IntImpl)) __PYX_ERR(12, 13, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_IntImpl) __PYX_ERR(13, 13, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_IntImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_IntImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_IntImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_IntImpl)) __PYX_ERR(13, 13, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_BoolImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "BoolImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_BoolImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_field_impl_BoolImpl) __PYX_ERR(12, 17, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_field_impl_BoolImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_BoolImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_BoolImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_BoolImpl)) __PYX_ERR(12, 17, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_BoolImpl) __PYX_ERR(13, 17, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_BoolImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_BoolImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_BoolImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_BoolImpl)) __PYX_ERR(13, 17, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_DateImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "DateImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_DateImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_field_impl_DateImpl) __PYX_ERR(12, 21, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_field_impl_DateImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_DateImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_DateImpl)) __PYX_ERR(12, 21, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_DateImpl) __PYX_ERR(13, 21, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_DateImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_DateImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_DateImpl)) __PYX_ERR(13, 21, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_DateTimeImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "DateTimeImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_DateTimeImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_field_impl_DateTimeImpl) __PYX_ERR(12, 25, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateTimeImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_DateTimeImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeImpl)) __PYX_ERR(12, 25, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_DateTimeImpl) __PYX_ERR(13, 25, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateTimeImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_DateTimeImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeImpl)) __PYX_ERR(13, 25, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_DateTimeTzImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "DateTimeTzImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_DateTimeTzImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_field_impl_DateTimeTzImpl) __PYX_ERR(12, 29, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeTzImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateTimeTzImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_DateTimeTzImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeTzImpl)) __PYX_ERR(12, 29, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_DateTimeTzImpl) __PYX_ERR(13, 29, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeTzImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_DateTimeTzImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_DateTimeTzImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_DateTimeTzImpl)) __PYX_ERR(13, 29, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_ChoiceImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "ChoiceImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_ChoiceImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_field_impl_ChoiceImpl) __PYX_ERR(12, 33, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_field_impl_ChoiceImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_ChoiceImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_ChoiceImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_ChoiceImpl)) __PYX_ERR(12, 33, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_ChoiceImpl) __PYX_ERR(13, 33, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_ChoiceImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_ChoiceImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_ChoiceImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_ChoiceImpl)) __PYX_ERR(13, 33, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_EntityTypeImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "EntityTypeImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_EntityTypeImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_field_impl_EntityTypeImpl) __PYX_ERR(12, 38, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_field_impl_EntityTypeImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_EntityTypeImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_EntityTypeImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_EntityTypeImpl)) __PYX_ERR(12, 38, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_EntityTypeImpl) __PYX_ERR(13, 38, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_EntityTypeImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_EntityTypeImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_EntityTypeImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_EntityTypeImpl)) __PYX_ERR(13, 38, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_JsonImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "JsonImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_JsonImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_field_impl_JsonImpl) __PYX_ERR(12, 42, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_field_impl_JsonImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_JsonImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_JsonImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_JsonImpl)) __PYX_ERR(12, 42, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_JsonImpl) __PYX_ERR(13, 42, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_JsonImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_JsonImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_JsonImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_JsonImpl)) __PYX_ERR(13, 42, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_CompositeImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "CompositeImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_CompositeImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_field_impl_CompositeImpl) __PYX_ERR(12, 46, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_field_impl_CompositeImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_CompositeImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_CompositeImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_CompositeImpl)) __PYX_ERR(12, 46, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_CompositeImpl) __PYX_ERR(13, 46, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_CompositeImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_CompositeImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_CompositeImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_CompositeImpl)) __PYX_ERR(13, 46, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "AutoImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_AutoImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl) __PYX_ERR(12, 50, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_field_impl_AutoImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_AutoImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_AutoImpl)) __PYX_ERR(12, 50, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl) __PYX_ERR(13, 50, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_AutoImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_AutoImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_AutoImpl)) __PYX_ERR(13, 50, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;
@@ -10582,6 +8918,7 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec__query_context(PyObject *__pyx_pyi
 #endif
 {
   PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannyDeclarations
   #if CYTHON_PEP489_MULTI_PHASE_INIT
   if (__pyx_m) {
@@ -10687,21 +9024,43 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
+  /* "yapic/entity/sql/_query_context.pyx":13
+ * from ._dialect cimport Dialect
+ * from ._record_converter cimport RCState
+ * from ._record_converter import convert_record             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_INCREF(__pyx_n_s_convert_record);
+  __Pyx_GIVEREF(__pyx_n_s_convert_record);
+  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_convert_record);
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_record_converter, __pyx_t_1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_convert_record); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_convert_record, __pyx_t_1) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
   /* "yapic/entity/sql/_query_context.pyx":1
  * from cpython.object cimport PyObject             # <<<<<<<<<<<<<<
  * from cpython.ref cimport Py_INCREF, Py_DECREF, Py_XINCREF, Py_XDECREF
  * from cpython.list cimport PyList_GET_ITEM, PyList_GET_SIZE
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_2) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /*--- Wrapped vars code ---*/
 
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
   if (__pyx_m) {
     if (__pyx_d) {
       __Pyx_AddTraceback("init yapic.entity.sql._query_context", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -10738,34 +9097,6 @@ end:
     return (__Pyx_RefNannyAPIStruct *)r;
 }
 #endif
-
-/* PyObjectGetAttrStr */
-#if CYTHON_USE_TYPE_SLOTS
-static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject* attr_name) {
-    PyTypeObject* tp = Py_TYPE(obj);
-    if (likely(tp->tp_getattro))
-        return tp->tp_getattro(obj, attr_name);
-#if PY_MAJOR_VERSION < 3
-    if (likely(tp->tp_getattr))
-        return tp->tp_getattr(obj, PyString_AS_STRING(attr_name));
-#endif
-    return PyObject_GetAttr(obj, attr_name);
-}
-#endif
-
-/* GetBuiltinName */
-static PyObject *__Pyx_GetBuiltinName(PyObject *name) {
-    PyObject* result = __Pyx_PyObject_GetAttrStr(__pyx_b, name);
-    if (unlikely(!result)) {
-        PyErr_Format(PyExc_NameError,
-#if PY_MAJOR_VERSION >= 3
-            "name '%U' is not defined", name);
-#else
-            "name '%.200s' is not defined", PyString_AS_STRING(name));
-#endif
-    }
-    return result;
-}
 
 /* RaiseArgTupleInvalid */
 static void __Pyx_RaiseArgtupleInvalid(
@@ -10930,206 +9261,26 @@ static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *nam
     return 0;
 }
 
-/* PyObjectCall */
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw) {
-    PyObject *result;
-    ternaryfunc call = func->ob_type->tp_call;
-    if (unlikely(!call))
-        return PyObject_Call(func, arg, kw);
-    if (unlikely(Py_EnterRecursiveCall((char*)" while calling a Python object")))
-        return NULL;
-    result = (*call)(func, arg, kw);
-    Py_LeaveRecursiveCall();
-    if (unlikely(!result) && unlikely(!PyErr_Occurred())) {
-        PyErr_SetString(
-            PyExc_SystemError,
-            "NULL result without error in PyObject_Call");
-    }
-    return result;
-}
-#endif
-
-/* PyErrFetchRestore */
-#if CYTHON_FAST_THREAD_STATE
-static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    tmp_type = tstate->curexc_type;
-    tmp_value = tstate->curexc_value;
-    tmp_tb = tstate->curexc_traceback;
-    tstate->curexc_type = type;
-    tstate->curexc_value = value;
-    tstate->curexc_traceback = tb;
-    Py_XDECREF(tmp_type);
-    Py_XDECREF(tmp_value);
-    Py_XDECREF(tmp_tb);
-}
-static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
-    *type = tstate->curexc_type;
-    *value = tstate->curexc_value;
-    *tb = tstate->curexc_traceback;
-    tstate->curexc_type = 0;
-    tstate->curexc_value = 0;
-    tstate->curexc_traceback = 0;
-}
-#endif
-
-/* RaiseException */
-#if PY_MAJOR_VERSION < 3
-static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb,
-                        CYTHON_UNUSED PyObject *cause) {
-    __Pyx_PyThreadState_declare
-    Py_XINCREF(type);
-    if (!value || value == Py_None)
-        value = NULL;
-    else
-        Py_INCREF(value);
-    if (!tb || tb == Py_None)
-        tb = NULL;
-    else {
-        Py_INCREF(tb);
-        if (!PyTraceBack_Check(tb)) {
-            PyErr_SetString(PyExc_TypeError,
-                "raise: arg 3 must be a traceback or None");
-            goto raise_error;
-        }
-    }
-    if (PyType_Check(type)) {
-#if CYTHON_COMPILING_IN_PYPY
-        if (!value) {
-            Py_INCREF(Py_None);
-            value = Py_None;
-        }
-#endif
-        PyErr_NormalizeException(&type, &value, &tb);
+/* PyCFunctionFastCall */
+#if CYTHON_FAST_PYCCALL
+static CYTHON_INLINE PyObject * __Pyx_PyCFunction_FastCall(PyObject *func_obj, PyObject **args, Py_ssize_t nargs) {
+    PyCFunctionObject *func = (PyCFunctionObject*)func_obj;
+    PyCFunction meth = PyCFunction_GET_FUNCTION(func);
+    PyObject *self = PyCFunction_GET_SELF(func);
+    int flags = PyCFunction_GET_FLAGS(func);
+    assert(PyCFunction_Check(func));
+    assert(METH_FASTCALL == (flags & ~(METH_CLASS | METH_STATIC | METH_COEXIST | METH_KEYWORDS | METH_STACKLESS)));
+    assert(nargs >= 0);
+    assert(nargs == 0 || args != NULL);
+    /* _PyCFunction_FastCallDict() must not be called with an exception set,
+       because it may clear it (directly or indirectly) and so the
+       caller loses its exception */
+    assert(!PyErr_Occurred());
+    if ((PY_VERSION_HEX < 0x030700A0) || unlikely(flags & METH_KEYWORDS)) {
+        return (*((__Pyx_PyCFunctionFastWithKeywords)(void*)meth)) (self, args, nargs, NULL);
     } else {
-        if (value) {
-            PyErr_SetString(PyExc_TypeError,
-                "instance exception may not have a separate value");
-            goto raise_error;
-        }
-        value = type;
-        type = (PyObject*) Py_TYPE(type);
-        Py_INCREF(type);
-        if (!PyType_IsSubtype((PyTypeObject *)type, (PyTypeObject *)PyExc_BaseException)) {
-            PyErr_SetString(PyExc_TypeError,
-                "raise: exception class must be a subclass of BaseException");
-            goto raise_error;
-        }
+        return (*((__Pyx_PyCFunctionFast)(void*)meth)) (self, args, nargs);
     }
-    __Pyx_PyThreadState_assign
-    __Pyx_ErrRestore(type, value, tb);
-    return;
-raise_error:
-    Py_XDECREF(value);
-    Py_XDECREF(type);
-    Py_XDECREF(tb);
-    return;
-}
-#else
-static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause) {
-    PyObject* owned_instance = NULL;
-    if (tb == Py_None) {
-        tb = 0;
-    } else if (tb && !PyTraceBack_Check(tb)) {
-        PyErr_SetString(PyExc_TypeError,
-            "raise: arg 3 must be a traceback or None");
-        goto bad;
-    }
-    if (value == Py_None)
-        value = 0;
-    if (PyExceptionInstance_Check(type)) {
-        if (value) {
-            PyErr_SetString(PyExc_TypeError,
-                "instance exception may not have a separate value");
-            goto bad;
-        }
-        value = type;
-        type = (PyObject*) Py_TYPE(value);
-    } else if (PyExceptionClass_Check(type)) {
-        PyObject *instance_class = NULL;
-        if (value && PyExceptionInstance_Check(value)) {
-            instance_class = (PyObject*) Py_TYPE(value);
-            if (instance_class != type) {
-                int is_subclass = PyObject_IsSubclass(instance_class, type);
-                if (!is_subclass) {
-                    instance_class = NULL;
-                } else if (unlikely(is_subclass == -1)) {
-                    goto bad;
-                } else {
-                    type = instance_class;
-                }
-            }
-        }
-        if (!instance_class) {
-            PyObject *args;
-            if (!value)
-                args = PyTuple_New(0);
-            else if (PyTuple_Check(value)) {
-                Py_INCREF(value);
-                args = value;
-            } else
-                args = PyTuple_Pack(1, value);
-            if (!args)
-                goto bad;
-            owned_instance = PyObject_Call(type, args, NULL);
-            Py_DECREF(args);
-            if (!owned_instance)
-                goto bad;
-            value = owned_instance;
-            if (!PyExceptionInstance_Check(value)) {
-                PyErr_Format(PyExc_TypeError,
-                             "calling %R should have returned an instance of "
-                             "BaseException, not %R",
-                             type, Py_TYPE(value));
-                goto bad;
-            }
-        }
-    } else {
-        PyErr_SetString(PyExc_TypeError,
-            "raise: exception class must be a subclass of BaseException");
-        goto bad;
-    }
-    if (cause) {
-        PyObject *fixed_cause;
-        if (cause == Py_None) {
-            fixed_cause = NULL;
-        } else if (PyExceptionClass_Check(cause)) {
-            fixed_cause = PyObject_CallObject(cause, NULL);
-            if (fixed_cause == NULL)
-                goto bad;
-        } else if (PyExceptionInstance_Check(cause)) {
-            fixed_cause = cause;
-            Py_INCREF(fixed_cause);
-        } else {
-            PyErr_SetString(PyExc_TypeError,
-                            "exception causes must derive from "
-                            "BaseException");
-            goto bad;
-        }
-        PyException_SetCause(value, fixed_cause);
-    }
-    PyErr_SetObject(type, value);
-    if (tb) {
-#if CYTHON_COMPILING_IN_PYPY
-        PyObject *tmp_type, *tmp_value, *tmp_tb;
-        PyErr_Fetch(&tmp_type, &tmp_value, &tmp_tb);
-        Py_INCREF(tb);
-        PyErr_Restore(tmp_type, tmp_value, tb);
-        Py_XDECREF(tmp_tb);
-#else
-        PyThreadState *tstate = __Pyx_PyThreadState_Current;
-        PyObject* tmp_tb = tstate->curexc_traceback;
-        if (tb != tmp_tb) {
-            Py_INCREF(tb);
-            tstate->curexc_traceback = tb;
-            Py_XDECREF(tmp_tb);
-        }
-#endif
-    }
-bad:
-    Py_XDECREF(owned_instance);
-    return;
 }
 #endif
 
@@ -11252,6 +9403,26 @@ done:
 #endif
 #endif
 
+/* PyObjectCall */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw) {
+    PyObject *result;
+    ternaryfunc call = func->ob_type->tp_call;
+    if (unlikely(!call))
+        return PyObject_Call(func, arg, kw);
+    if (unlikely(Py_EnterRecursiveCall((char*)" while calling a Python object")))
+        return NULL;
+    result = (*call)(func, arg, kw);
+    Py_LeaveRecursiveCall();
+    if (unlikely(!result) && unlikely(!PyErr_Occurred())) {
+        PyErr_SetString(
+            PyExc_SystemError,
+            "NULL result without error in PyObject_Call");
+    }
+    return result;
+}
+#endif
+
 /* PyObjectCallMethO */
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg) {
@@ -11269,51 +9440,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject
             "NULL result without error in PyObject_Call");
     }
     return result;
-}
-#endif
-
-/* PyObjectCallNoArg */
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
-#if CYTHON_FAST_PYCALL
-    if (PyFunction_Check(func)) {
-        return __Pyx_PyFunction_FastCall(func, NULL, 0);
-    }
-#endif
-#ifdef __Pyx_CyFunction_USED
-    if (likely(PyCFunction_Check(func) || __Pyx_CyFunction_Check(func)))
-#else
-    if (likely(PyCFunction_Check(func)))
-#endif
-    {
-        if (likely(PyCFunction_GET_FLAGS(func) & METH_NOARGS)) {
-            return __Pyx_PyObject_CallMethO(func, NULL);
-        }
-    }
-    return __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL);
-}
-#endif
-
-/* PyCFunctionFastCall */
-#if CYTHON_FAST_PYCCALL
-static CYTHON_INLINE PyObject * __Pyx_PyCFunction_FastCall(PyObject *func_obj, PyObject **args, Py_ssize_t nargs) {
-    PyCFunctionObject *func = (PyCFunctionObject*)func_obj;
-    PyCFunction meth = PyCFunction_GET_FUNCTION(func);
-    PyObject *self = PyCFunction_GET_SELF(func);
-    int flags = PyCFunction_GET_FLAGS(func);
-    assert(PyCFunction_Check(func));
-    assert(METH_FASTCALL == (flags & ~(METH_CLASS | METH_STATIC | METH_COEXIST | METH_KEYWORDS | METH_STACKLESS)));
-    assert(nargs >= 0);
-    assert(nargs == 0 || args != NULL);
-    /* _PyCFunction_FastCallDict() must not be called with an exception set,
-       because it may clear it (directly or indirectly) and so the
-       caller loses its exception */
-    assert(!PyErr_Occurred());
-    if ((PY_VERSION_HEX < 0x030700A0) || unlikely(flags & METH_KEYWORDS)) {
-        return (*((__Pyx_PyCFunctionFastWithKeywords)(void*)meth)) (self, args, nargs, NULL);
-    } else {
-        return (*((__Pyx_PyCFunctionFast)(void*)meth)) (self, args, nargs);
-    }
 }
 #endif
 
@@ -11354,6 +9480,42 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObjec
     result = __Pyx_PyObject_Call(func, args, NULL);
     Py_DECREF(args);
     return result;
+}
+#endif
+
+/* PyObjectCallNoArg */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
+#if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(func)) {
+        return __Pyx_PyFunction_FastCall(func, NULL, 0);
+    }
+#endif
+#ifdef __Pyx_CyFunction_USED
+    if (likely(PyCFunction_Check(func) || __Pyx_CyFunction_Check(func)))
+#else
+    if (likely(PyCFunction_Check(func)))
+#endif
+    {
+        if (likely(PyCFunction_GET_FLAGS(func) & METH_NOARGS)) {
+            return __Pyx_PyObject_CallMethO(func, NULL);
+        }
+    }
+    return __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL);
+}
+#endif
+
+/* PyObjectGetAttrStr */
+#if CYTHON_USE_TYPE_SLOTS
+static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject* attr_name) {
+    PyTypeObject* tp = Py_TYPE(obj);
+    if (likely(tp->tp_getattro))
+        return tp->tp_getattro(obj, attr_name);
+#if PY_MAJOR_VERSION < 3
+    if (likely(tp->tp_getattr))
+        return tp->tp_getattr(obj, PyString_AS_STRING(attr_name));
+#endif
+    return PyObject_GetAttr(obj, attr_name);
 }
 #endif
 
@@ -11675,6 +9837,189 @@ bad:
     cached_type = NULL;
     goto done;
 }
+
+/* PyErrFetchRestore */
+#if CYTHON_FAST_THREAD_STATE
+static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    tmp_type = tstate->curexc_type;
+    tmp_value = tstate->curexc_value;
+    tmp_tb = tstate->curexc_traceback;
+    tstate->curexc_type = type;
+    tstate->curexc_value = value;
+    tstate->curexc_traceback = tb;
+    Py_XDECREF(tmp_type);
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(tmp_tb);
+}
+static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
+    *type = tstate->curexc_type;
+    *value = tstate->curexc_value;
+    *tb = tstate->curexc_traceback;
+    tstate->curexc_type = 0;
+    tstate->curexc_value = 0;
+    tstate->curexc_traceback = 0;
+}
+#endif
+
+/* RaiseException */
+#if PY_MAJOR_VERSION < 3
+static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb,
+                        CYTHON_UNUSED PyObject *cause) {
+    __Pyx_PyThreadState_declare
+    Py_XINCREF(type);
+    if (!value || value == Py_None)
+        value = NULL;
+    else
+        Py_INCREF(value);
+    if (!tb || tb == Py_None)
+        tb = NULL;
+    else {
+        Py_INCREF(tb);
+        if (!PyTraceBack_Check(tb)) {
+            PyErr_SetString(PyExc_TypeError,
+                "raise: arg 3 must be a traceback or None");
+            goto raise_error;
+        }
+    }
+    if (PyType_Check(type)) {
+#if CYTHON_COMPILING_IN_PYPY
+        if (!value) {
+            Py_INCREF(Py_None);
+            value = Py_None;
+        }
+#endif
+        PyErr_NormalizeException(&type, &value, &tb);
+    } else {
+        if (value) {
+            PyErr_SetString(PyExc_TypeError,
+                "instance exception may not have a separate value");
+            goto raise_error;
+        }
+        value = type;
+        type = (PyObject*) Py_TYPE(type);
+        Py_INCREF(type);
+        if (!PyType_IsSubtype((PyTypeObject *)type, (PyTypeObject *)PyExc_BaseException)) {
+            PyErr_SetString(PyExc_TypeError,
+                "raise: exception class must be a subclass of BaseException");
+            goto raise_error;
+        }
+    }
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrRestore(type, value, tb);
+    return;
+raise_error:
+    Py_XDECREF(value);
+    Py_XDECREF(type);
+    Py_XDECREF(tb);
+    return;
+}
+#else
+static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause) {
+    PyObject* owned_instance = NULL;
+    if (tb == Py_None) {
+        tb = 0;
+    } else if (tb && !PyTraceBack_Check(tb)) {
+        PyErr_SetString(PyExc_TypeError,
+            "raise: arg 3 must be a traceback or None");
+        goto bad;
+    }
+    if (value == Py_None)
+        value = 0;
+    if (PyExceptionInstance_Check(type)) {
+        if (value) {
+            PyErr_SetString(PyExc_TypeError,
+                "instance exception may not have a separate value");
+            goto bad;
+        }
+        value = type;
+        type = (PyObject*) Py_TYPE(value);
+    } else if (PyExceptionClass_Check(type)) {
+        PyObject *instance_class = NULL;
+        if (value && PyExceptionInstance_Check(value)) {
+            instance_class = (PyObject*) Py_TYPE(value);
+            if (instance_class != type) {
+                int is_subclass = PyObject_IsSubclass(instance_class, type);
+                if (!is_subclass) {
+                    instance_class = NULL;
+                } else if (unlikely(is_subclass == -1)) {
+                    goto bad;
+                } else {
+                    type = instance_class;
+                }
+            }
+        }
+        if (!instance_class) {
+            PyObject *args;
+            if (!value)
+                args = PyTuple_New(0);
+            else if (PyTuple_Check(value)) {
+                Py_INCREF(value);
+                args = value;
+            } else
+                args = PyTuple_Pack(1, value);
+            if (!args)
+                goto bad;
+            owned_instance = PyObject_Call(type, args, NULL);
+            Py_DECREF(args);
+            if (!owned_instance)
+                goto bad;
+            value = owned_instance;
+            if (!PyExceptionInstance_Check(value)) {
+                PyErr_Format(PyExc_TypeError,
+                             "calling %R should have returned an instance of "
+                             "BaseException, not %R",
+                             type, Py_TYPE(value));
+                goto bad;
+            }
+        }
+    } else {
+        PyErr_SetString(PyExc_TypeError,
+            "raise: exception class must be a subclass of BaseException");
+        goto bad;
+    }
+    if (cause) {
+        PyObject *fixed_cause;
+        if (cause == Py_None) {
+            fixed_cause = NULL;
+        } else if (PyExceptionClass_Check(cause)) {
+            fixed_cause = PyObject_CallObject(cause, NULL);
+            if (fixed_cause == NULL)
+                goto bad;
+        } else if (PyExceptionInstance_Check(cause)) {
+            fixed_cause = cause;
+            Py_INCREF(fixed_cause);
+        } else {
+            PyErr_SetString(PyExc_TypeError,
+                            "exception causes must derive from "
+                            "BaseException");
+            goto bad;
+        }
+        PyException_SetCause(value, fixed_cause);
+    }
+    PyErr_SetObject(type, value);
+    if (tb) {
+#if CYTHON_COMPILING_IN_PYPY
+        PyObject *tmp_type, *tmp_value, *tmp_tb;
+        PyErr_Fetch(&tmp_type, &tmp_value, &tmp_tb);
+        Py_INCREF(tb);
+        PyErr_Restore(tmp_type, tmp_value, tb);
+        Py_XDECREF(tmp_tb);
+#else
+        PyThreadState *tstate = __Pyx_PyThreadState_Current;
+        PyObject* tmp_tb = tstate->curexc_traceback;
+        if (tb != tmp_tb) {
+            Py_INCREF(tb);
+            tstate->curexc_traceback = tb;
+            Py_XDECREF(tmp_tb);
+        }
+#endif
+    }
+bad:
+    Py_XDECREF(owned_instance);
+    return;
+}
+#endif
 
 /* GetTopmostException */
 #if CYTHON_USE_EXC_INFO_STACK
@@ -13309,71 +11654,79 @@ static PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* key) {
 }
 #endif
 
-/* None */
-static CYTHON_INLINE void __Pyx_RaiseClosureNameError(const char *varname) {
-    PyErr_Format(PyExc_NameError, "free variable '%s' referenced before assignment in enclosing scope", varname);
+/* GetBuiltinName */
+static PyObject *__Pyx_GetBuiltinName(PyObject *name) {
+    PyObject* result = __Pyx_PyObject_GetAttrStr(__pyx_b, name);
+    if (unlikely(!result)) {
+        PyErr_Format(PyExc_NameError,
+#if PY_MAJOR_VERSION >= 3
+            "name '%U' is not defined", name);
+#else
+            "name '%.200s' is not defined", PyString_AS_STRING(name));
+#endif
+    }
+    return result;
 }
 
-/* DictGetItem */
-#if PY_MAJOR_VERSION >= 3 && !CYTHON_COMPILING_IN_PYPY
-static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key) {
-    PyObject *value;
-    value = PyDict_GetItemWithError(d, key);
-    if (unlikely(!value)) {
-        if (!PyErr_Occurred()) {
-            if (unlikely(PyTuple_Check(key))) {
-                PyObject* args = PyTuple_Pack(1, key);
-                if (likely(args)) {
-                    PyErr_SetObject(PyExc_KeyError, args);
-                    Py_DECREF(args);
-                }
-            } else {
-                PyErr_SetObject(PyExc_KeyError, key);
-            }
-        }
+/* PyDictVersioning */
+#if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
+static CYTHON_INLINE PY_UINT64_T __Pyx_get_tp_dict_version(PyObject *obj) {
+    PyObject *dict = Py_TYPE(obj)->tp_dict;
+    return likely(dict) ? __PYX_GET_DICT_VERSION(dict) : 0;
+}
+static CYTHON_INLINE PY_UINT64_T __Pyx_get_object_dict_version(PyObject *obj) {
+    PyObject **dictptr = NULL;
+    Py_ssize_t offset = Py_TYPE(obj)->tp_dictoffset;
+    if (offset) {
+#if CYTHON_COMPILING_IN_CPYTHON
+        dictptr = (likely(offset > 0)) ? (PyObject **) ((char *)obj + offset) : _PyObject_GetDictPtr(obj);
+#else
+        dictptr = _PyObject_GetDictPtr(obj);
+#endif
+    }
+    return (dictptr && *dictptr) ? __PYX_GET_DICT_VERSION(*dictptr) : 0;
+}
+static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UINT64_T tp_dict_version, PY_UINT64_T obj_dict_version) {
+    PyObject *dict = Py_TYPE(obj)->tp_dict;
+    if (unlikely(!dict) || unlikely(tp_dict_version != __PYX_GET_DICT_VERSION(dict)))
+        return 0;
+    return obj_dict_version == __Pyx_get_object_dict_version(obj);
+}
+#endif
+
+/* GetModuleGlobalName */
+#if CYTHON_USE_DICT_VERSIONS
+static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_version, PyObject **dict_cached_value)
+#else
+static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name)
+#endif
+{
+    PyObject *result;
+#if !CYTHON_AVOID_BORROWED_REFS
+#if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030500A1
+    result = _PyDict_GetItem_KnownHash(__pyx_d, name, ((PyASCIIObject *) name)->hash);
+    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
+    if (likely(result)) {
+        return __Pyx_NewRef(result);
+    } else if (unlikely(PyErr_Occurred())) {
         return NULL;
     }
-    Py_INCREF(value);
-    return value;
-}
-#endif
-
-/* PyErrExceptionMatches */
-#if CYTHON_FAST_THREAD_STATE
-static int __Pyx_PyErr_ExceptionMatchesTuple(PyObject *exc_type, PyObject *tuple) {
-    Py_ssize_t i, n;
-    n = PyTuple_GET_SIZE(tuple);
-#if PY_MAJOR_VERSION >= 3
-    for (i=0; i<n; i++) {
-        if (exc_type == PyTuple_GET_ITEM(tuple, i)) return 1;
+#else
+    result = PyDict_GetItem(__pyx_d, name);
+    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
+    if (likely(result)) {
+        return __Pyx_NewRef(result);
     }
 #endif
-    for (i=0; i<n; i++) {
-        if (__Pyx_PyErr_GivenExceptionMatches(exc_type, PyTuple_GET_ITEM(tuple, i))) return 1;
+#else
+    result = PyObject_GetItem(__pyx_d, name);
+    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
+    if (likely(result)) {
+        return __Pyx_NewRef(result);
     }
-    return 0;
-}
-static CYTHON_INLINE int __Pyx_PyErr_ExceptionMatchesInState(PyThreadState* tstate, PyObject* err) {
-    PyObject *exc_type = tstate->curexc_type;
-    if (exc_type == err) return 1;
-    if (unlikely(!exc_type)) return 0;
-    if (unlikely(PyTuple_Check(err)))
-        return __Pyx_PyErr_ExceptionMatchesTuple(exc_type, err);
-    return __Pyx_PyErr_GivenExceptionMatches(exc_type, err);
-}
+    PyErr_Clear();
 #endif
-
-/* ExtTypeTest */
-static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
-    if (unlikely(!type)) {
-        PyErr_SetString(PyExc_SystemError, "Missing type object");
-        return 0;
-    }
-    if (likely(__Pyx_TypeCheck(obj, type)))
-        return 1;
-    PyErr_Format(PyExc_TypeError, "Cannot convert %.200s to %.200s",
-                 Py_TYPE(obj)->tp_name, type->tp_name);
-    return 0;
+    return __Pyx_GetBuiltinName(name);
 }
 
 /* PyObject_GenericGetAttr */
@@ -13385,6 +11738,24 @@ static PyObject* __Pyx_PyObject_GenericGetAttr(PyObject* obj, PyObject* attr_nam
     return __Pyx_PyObject_GenericGetAttrNoDict(obj, attr_name);
 }
 #endif
+
+/* SetVTable */
+static int __Pyx_SetVtable(PyObject *dict, void *vtable) {
+#if PY_VERSION_HEX >= 0x02070000
+    PyObject *ob = PyCapsule_New(vtable, 0, 0);
+#else
+    PyObject *ob = PyCObject_FromVoidPtr(vtable, 0);
+#endif
+    if (!ob)
+        goto bad;
+    if (PyDict_SetItem(dict, __pyx_n_s_pyx_vtable, ob) < 0)
+        goto bad;
+    Py_DECREF(ob);
+    return 0;
+bad:
+    Py_XDECREF(ob);
+    return -1;
+}
 
 /* TypeImport */
 #ifndef __PYX_HAVE_RT_ImportType
@@ -13467,31 +11838,84 @@ bad:
     return NULL;
 }
 
-/* PyDictVersioning */
-#if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
-static CYTHON_INLINE PY_UINT64_T __Pyx_get_tp_dict_version(PyObject *obj) {
-    PyObject *dict = Py_TYPE(obj)->tp_dict;
-    return likely(dict) ? __PYX_GET_DICT_VERSION(dict) : 0;
-}
-static CYTHON_INLINE PY_UINT64_T __Pyx_get_object_dict_version(PyObject *obj) {
-    PyObject **dictptr = NULL;
-    Py_ssize_t offset = Py_TYPE(obj)->tp_dictoffset;
-    if (offset) {
-#if CYTHON_COMPILING_IN_CPYTHON
-        dictptr = (likely(offset > 0)) ? (PyObject **) ((char *)obj + offset) : _PyObject_GetDictPtr(obj);
-#else
-        dictptr = _PyObject_GetDictPtr(obj);
-#endif
+/* Import */
+static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level) {
+    PyObject *empty_list = 0;
+    PyObject *module = 0;
+    PyObject *global_dict = 0;
+    PyObject *empty_dict = 0;
+    PyObject *list;
+    #if PY_MAJOR_VERSION < 3
+    PyObject *py_import;
+    py_import = __Pyx_PyObject_GetAttrStr(__pyx_b, __pyx_n_s_import);
+    if (!py_import)
+        goto bad;
+    #endif
+    if (from_list)
+        list = from_list;
+    else {
+        empty_list = PyList_New(0);
+        if (!empty_list)
+            goto bad;
+        list = empty_list;
     }
-    return (dictptr && *dictptr) ? __PYX_GET_DICT_VERSION(*dictptr) : 0;
+    global_dict = PyModule_GetDict(__pyx_m);
+    if (!global_dict)
+        goto bad;
+    empty_dict = PyDict_New();
+    if (!empty_dict)
+        goto bad;
+    {
+        #if PY_MAJOR_VERSION >= 3
+        if (level == -1) {
+            if (strchr(__Pyx_MODULE_NAME, '.')) {
+                module = PyImport_ImportModuleLevelObject(
+                    name, global_dict, empty_dict, list, 1);
+                if (!module) {
+                    if (!PyErr_ExceptionMatches(PyExc_ImportError))
+                        goto bad;
+                    PyErr_Clear();
+                }
+            }
+            level = 0;
+        }
+        #endif
+        if (!module) {
+            #if PY_MAJOR_VERSION < 3
+            PyObject *py_level = PyInt_FromLong(level);
+            if (!py_level)
+                goto bad;
+            module = PyObject_CallFunctionObjArgs(py_import,
+                name, global_dict, empty_dict, list, py_level, (PyObject *)NULL);
+            Py_DECREF(py_level);
+            #else
+            module = PyImport_ImportModuleLevelObject(
+                name, global_dict, empty_dict, list, level);
+            #endif
+        }
+    }
+bad:
+    #if PY_MAJOR_VERSION < 3
+    Py_XDECREF(py_import);
+    #endif
+    Py_XDECREF(empty_list);
+    Py_XDECREF(empty_dict);
+    return module;
 }
-static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UINT64_T tp_dict_version, PY_UINT64_T obj_dict_version) {
-    PyObject *dict = Py_TYPE(obj)->tp_dict;
-    if (unlikely(!dict) || unlikely(tp_dict_version != __PYX_GET_DICT_VERSION(dict)))
-        return 0;
-    return obj_dict_version == __Pyx_get_object_dict_version(obj);
+
+/* ImportFrom */
+static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name) {
+    PyObject* value = __Pyx_PyObject_GetAttrStr(module, name);
+    if (unlikely(!value) && PyErr_ExceptionMatches(PyExc_AttributeError)) {
+        PyErr_Format(PyExc_ImportError,
+        #if PY_MAJOR_VERSION < 3
+            "cannot import name %.230s", PyString_AS_STRING(name));
+        #else
+            "cannot import name %S", name);
+        #endif
+    }
+    return value;
 }
-#endif
 
 /* CLineInTraceback */
 #ifndef CYTHON_CLINE_IN_TRACEBACK
@@ -13700,6 +12124,37 @@ bad:
     Py_XDECREF(py_frame);
 }
 
+/* CIntToPy */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
+    const long neg_one = (long) ((long) 0 - (long) 1), const_zero = (long) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(long) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(long) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(long) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(long),
+                                     little, !is_unsigned);
+    }
+}
+
 /* CIntFromPyVerify */
 #define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\
     __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 0)
@@ -13722,35 +12177,193 @@ bad:
         return (target_type) value;\
     }
 
-/* CIntToPy */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
-    const int neg_one = (int) ((int) 0 - (int) 1), const_zero = (int) 0;
+/* CIntFromPy */
+static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {
+    const long neg_one = (long) ((long) 0 - (long) 1), const_zero = (long) 0;
     const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(int) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(int) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(int) <= sizeof(unsigned PY_LONG_LONG)) {
-            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#if PY_MAJOR_VERSION < 3
+    if (likely(PyInt_Check(x))) {
+        if (sizeof(long) < sizeof(long)) {
+            __PYX_VERIFY_RETURN_INT(long, long, PyInt_AS_LONG(x))
+        } else {
+            long val = PyInt_AS_LONG(x);
+            if (is_unsigned && unlikely(val < 0)) {
+                goto raise_neg_overflow;
+            }
+            return (long) val;
+        }
+    } else
 #endif
+    if (likely(PyLong_Check(x))) {
+        if (is_unsigned) {
+#if CYTHON_USE_PYLONG_INTERNALS
+            const digit* digits = ((PyLongObject*)x)->ob_digit;
+            switch (Py_SIZE(x)) {
+                case  0: return (long) 0;
+                case  1: __PYX_VERIFY_RETURN_INT(long, digit, digits[0])
+                case 2:
+                    if (8 * sizeof(long) > 1 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(long) >= 2 * PyLong_SHIFT) {
+                            return (long) (((((long)digits[1]) << PyLong_SHIFT) | (long)digits[0]));
+                        }
+                    }
+                    break;
+                case 3:
+                    if (8 * sizeof(long) > 2 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(long) >= 3 * PyLong_SHIFT) {
+                            return (long) (((((((long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0]));
+                        }
+                    }
+                    break;
+                case 4:
+                    if (8 * sizeof(long) > 3 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(long) >= 4 * PyLong_SHIFT) {
+                            return (long) (((((((((long)digits[3]) << PyLong_SHIFT) | (long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0]));
+                        }
+                    }
+                    break;
+            }
+#endif
+#if CYTHON_COMPILING_IN_CPYTHON
+            if (unlikely(Py_SIZE(x) < 0)) {
+                goto raise_neg_overflow;
+            }
+#else
+            {
+                int result = PyObject_RichCompareBool(x, Py_False, Py_LT);
+                if (unlikely(result < 0))
+                    return (long) -1;
+                if (unlikely(result == 1))
+                    goto raise_neg_overflow;
+            }
+#endif
+            if (sizeof(long) <= sizeof(unsigned long)) {
+                __PYX_VERIFY_RETURN_INT_EXC(long, unsigned long, PyLong_AsUnsignedLong(x))
+#ifdef HAVE_LONG_LONG
+            } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
+                __PYX_VERIFY_RETURN_INT_EXC(long, unsigned PY_LONG_LONG, PyLong_AsUnsignedLongLong(x))
+#endif
+            }
+        } else {
+#if CYTHON_USE_PYLONG_INTERNALS
+            const digit* digits = ((PyLongObject*)x)->ob_digit;
+            switch (Py_SIZE(x)) {
+                case  0: return (long) 0;
+                case -1: __PYX_VERIFY_RETURN_INT(long, sdigit, (sdigit) (-(sdigit)digits[0]))
+                case  1: __PYX_VERIFY_RETURN_INT(long,  digit, +digits[0])
+                case -2:
+                    if (8 * sizeof(long) - 1 > 1 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(long, long, -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                            return (long) (((long)-1)*(((((long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
+                        }
+                    }
+                    break;
+                case 2:
+                    if (8 * sizeof(long) > 1 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                            return (long) ((((((long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
+                        }
+                    }
+                    break;
+                case -3:
+                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(long, long, -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                            return (long) (((long)-1)*(((((((long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
+                        }
+                    }
+                    break;
+                case 3:
+                    if (8 * sizeof(long) > 2 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                            return (long) ((((((((long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
+                        }
+                    }
+                    break;
+                case -4:
+                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(long, long, -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
+                            return (long) (((long)-1)*(((((((((long)digits[3]) << PyLong_SHIFT) | (long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
+                        }
+                    }
+                    break;
+                case 4:
+                    if (8 * sizeof(long) > 3 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
+                            return (long) ((((((((((long)digits[3]) << PyLong_SHIFT) | (long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
+                        }
+                    }
+                    break;
+            }
+#endif
+            if (sizeof(long) <= sizeof(long)) {
+                __PYX_VERIFY_RETURN_INT_EXC(long, long, PyLong_AsLong(x))
+#ifdef HAVE_LONG_LONG
+            } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
+                __PYX_VERIFY_RETURN_INT_EXC(long, PY_LONG_LONG, PyLong_AsLongLong(x))
+#endif
+            }
+        }
+        {
+#if CYTHON_COMPILING_IN_PYPY && !defined(_PyLong_AsByteArray)
+            PyErr_SetString(PyExc_RuntimeError,
+                            "_PyLong_AsByteArray() not available in PyPy, cannot convert large numbers");
+#else
+            long val;
+            PyObject *v = __Pyx_PyNumber_IntOrLong(x);
+ #if PY_MAJOR_VERSION < 3
+            if (likely(v) && !PyLong_Check(v)) {
+                PyObject *tmp = v;
+                v = PyNumber_Long(tmp);
+                Py_DECREF(tmp);
+            }
+ #endif
+            if (likely(v)) {
+                int one = 1; int is_little = (int)*(unsigned char *)&one;
+                unsigned char *bytes = (unsigned char *)&val;
+                int ret = _PyLong_AsByteArray((PyLongObject *)v,
+                                              bytes, sizeof(val),
+                                              is_little, !is_unsigned);
+                Py_DECREF(v);
+                if (likely(!ret))
+                    return val;
+            }
+#endif
+            return (long) -1;
         }
     } else {
-        if (sizeof(int) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(int) <= sizeof(PY_LONG_LONG)) {
-            return PyLong_FromLongLong((PY_LONG_LONG) value);
-#endif
-        }
+        long val;
+        PyObject *tmp = __Pyx_PyNumber_IntOrLong(x);
+        if (!tmp) return (long) -1;
+        val = __Pyx_PyInt_As_long(tmp);
+        Py_DECREF(tmp);
+        return val;
     }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(int),
-                                     little, !is_unsigned);
-    }
+raise_overflow:
+    PyErr_SetString(PyExc_OverflowError,
+        "value too large to convert to long");
+    return (long) -1;
+raise_neg_overflow:
+    PyErr_SetString(PyExc_OverflowError,
+        "can't convert negative value to long");
+    return (long) -1;
 }
 
 /* CIntFromPy */
@@ -13942,226 +12555,6 @@ raise_neg_overflow:
     return (int) -1;
 }
 
-/* CIntToPy */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
-    const long neg_one = (long) ((long) 0 - (long) 1), const_zero = (long) 0;
-    const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(long) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(long) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
-            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
-#endif
-        }
-    } else {
-        if (sizeof(long) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
-            return PyLong_FromLongLong((PY_LONG_LONG) value);
-#endif
-        }
-    }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(long),
-                                     little, !is_unsigned);
-    }
-}
-
-/* CIntFromPy */
-static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {
-    const long neg_one = (long) ((long) 0 - (long) 1), const_zero = (long) 0;
-    const int is_unsigned = neg_one > const_zero;
-#if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_Check(x))) {
-        if (sizeof(long) < sizeof(long)) {
-            __PYX_VERIFY_RETURN_INT(long, long, PyInt_AS_LONG(x))
-        } else {
-            long val = PyInt_AS_LONG(x);
-            if (is_unsigned && unlikely(val < 0)) {
-                goto raise_neg_overflow;
-            }
-            return (long) val;
-        }
-    } else
-#endif
-    if (likely(PyLong_Check(x))) {
-        if (is_unsigned) {
-#if CYTHON_USE_PYLONG_INTERNALS
-            const digit* digits = ((PyLongObject*)x)->ob_digit;
-            switch (Py_SIZE(x)) {
-                case  0: return (long) 0;
-                case  1: __PYX_VERIFY_RETURN_INT(long, digit, digits[0])
-                case 2:
-                    if (8 * sizeof(long) > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(long) >= 2 * PyLong_SHIFT) {
-                            return (long) (((((long)digits[1]) << PyLong_SHIFT) | (long)digits[0]));
-                        }
-                    }
-                    break;
-                case 3:
-                    if (8 * sizeof(long) > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(long) >= 3 * PyLong_SHIFT) {
-                            return (long) (((((((long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0]));
-                        }
-                    }
-                    break;
-                case 4:
-                    if (8 * sizeof(long) > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(long) >= 4 * PyLong_SHIFT) {
-                            return (long) (((((((((long)digits[3]) << PyLong_SHIFT) | (long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0]));
-                        }
-                    }
-                    break;
-            }
-#endif
-#if CYTHON_COMPILING_IN_CPYTHON
-            if (unlikely(Py_SIZE(x) < 0)) {
-                goto raise_neg_overflow;
-            }
-#else
-            {
-                int result = PyObject_RichCompareBool(x, Py_False, Py_LT);
-                if (unlikely(result < 0))
-                    return (long) -1;
-                if (unlikely(result == 1))
-                    goto raise_neg_overflow;
-            }
-#endif
-            if (sizeof(long) <= sizeof(unsigned long)) {
-                __PYX_VERIFY_RETURN_INT_EXC(long, unsigned long, PyLong_AsUnsignedLong(x))
-#ifdef HAVE_LONG_LONG
-            } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
-                __PYX_VERIFY_RETURN_INT_EXC(long, unsigned PY_LONG_LONG, PyLong_AsUnsignedLongLong(x))
-#endif
-            }
-        } else {
-#if CYTHON_USE_PYLONG_INTERNALS
-            const digit* digits = ((PyLongObject*)x)->ob_digit;
-            switch (Py_SIZE(x)) {
-                case  0: return (long) 0;
-                case -1: __PYX_VERIFY_RETURN_INT(long, sdigit, (sdigit) (-(sdigit)digits[0]))
-                case  1: __PYX_VERIFY_RETURN_INT(long,  digit, +digits[0])
-                case -2:
-                    if (8 * sizeof(long) - 1 > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(long, long, -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
-                            return (long) (((long)-1)*(((((long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
-                        }
-                    }
-                    break;
-                case 2:
-                    if (8 * sizeof(long) > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
-                            return (long) ((((((long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
-                        }
-                    }
-                    break;
-                case -3:
-                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(long, long, -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
-                            return (long) (((long)-1)*(((((((long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
-                        }
-                    }
-                    break;
-                case 3:
-                    if (8 * sizeof(long) > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
-                            return (long) ((((((((long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
-                        }
-                    }
-                    break;
-                case -4:
-                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(long, long, -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
-                            return (long) (((long)-1)*(((((((((long)digits[3]) << PyLong_SHIFT) | (long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
-                        }
-                    }
-                    break;
-                case 4:
-                    if (8 * sizeof(long) > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(long, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
-                            return (long) ((((((((((long)digits[3]) << PyLong_SHIFT) | (long)digits[2]) << PyLong_SHIFT) | (long)digits[1]) << PyLong_SHIFT) | (long)digits[0])));
-                        }
-                    }
-                    break;
-            }
-#endif
-            if (sizeof(long) <= sizeof(long)) {
-                __PYX_VERIFY_RETURN_INT_EXC(long, long, PyLong_AsLong(x))
-#ifdef HAVE_LONG_LONG
-            } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
-                __PYX_VERIFY_RETURN_INT_EXC(long, PY_LONG_LONG, PyLong_AsLongLong(x))
-#endif
-            }
-        }
-        {
-#if CYTHON_COMPILING_IN_PYPY && !defined(_PyLong_AsByteArray)
-            PyErr_SetString(PyExc_RuntimeError,
-                            "_PyLong_AsByteArray() not available in PyPy, cannot convert large numbers");
-#else
-            long val;
-            PyObject *v = __Pyx_PyNumber_IntOrLong(x);
- #if PY_MAJOR_VERSION < 3
-            if (likely(v) && !PyLong_Check(v)) {
-                PyObject *tmp = v;
-                v = PyNumber_Long(tmp);
-                Py_DECREF(tmp);
-            }
- #endif
-            if (likely(v)) {
-                int one = 1; int is_little = (int)*(unsigned char *)&one;
-                unsigned char *bytes = (unsigned char *)&val;
-                int ret = _PyLong_AsByteArray((PyLongObject *)v,
-                                              bytes, sizeof(val),
-                                              is_little, !is_unsigned);
-                Py_DECREF(v);
-                if (likely(!ret))
-                    return val;
-            }
-#endif
-            return (long) -1;
-        }
-    } else {
-        long val;
-        PyObject *tmp = __Pyx_PyNumber_IntOrLong(x);
-        if (!tmp) return (long) -1;
-        val = __Pyx_PyInt_As_long(tmp);
-        Py_DECREF(tmp);
-        return val;
-    }
-raise_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "value too large to convert to long");
-    return (long) -1;
-raise_neg_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "can't convert negative value to long");
-    return (long) -1;
-}
-
 /* FastTypeChecks */
 #if CYTHON_COMPILING_IN_CPYTHON
 static int __Pyx_InBases(PyTypeObject *a, PyTypeObject *b) {
@@ -14261,98 +12654,6 @@ static CYTHON_INLINE int __Pyx_PyErr_GivenExceptionMatches2(PyObject *err, PyObj
     return (PyErr_GivenExceptionMatches(err, exc_type1) || PyErr_GivenExceptionMatches(err, exc_type2));
 }
 #endif
-
-/* Generator */
-static PyMethodDef __pyx_Generator_methods[] = {
-    {"send", (PyCFunction) __Pyx_Coroutine_Send, METH_O,
-     (char*) PyDoc_STR("send(arg) -> send 'arg' into generator,\nreturn next yielded value or raise StopIteration.")},
-    {"throw", (PyCFunction) __Pyx_Coroutine_Throw, METH_VARARGS,
-     (char*) PyDoc_STR("throw(typ[,val[,tb]]) -> raise exception in generator,\nreturn next yielded value or raise StopIteration.")},
-    {"close", (PyCFunction) __Pyx_Coroutine_Close_Method, METH_NOARGS,
-     (char*) PyDoc_STR("close() -> raise GeneratorExit inside generator.")},
-    {0, 0, 0, 0}
-};
-static PyMemberDef __pyx_Generator_memberlist[] = {
-    {(char *) "gi_running", T_BOOL, offsetof(__pyx_CoroutineObject, is_running), READONLY, NULL},
-    {(char*) "gi_yieldfrom", T_OBJECT, offsetof(__pyx_CoroutineObject, yieldfrom), READONLY,
-     (char*) PyDoc_STR("object being iterated by 'yield from', or None")},
-    {(char*) "gi_code", T_OBJECT, offsetof(__pyx_CoroutineObject, gi_code), READONLY, NULL},
-    {0, 0, 0, 0, 0}
-};
-static PyGetSetDef __pyx_Generator_getsets[] = {
-    {(char *) "__name__", (getter)__Pyx_Coroutine_get_name, (setter)__Pyx_Coroutine_set_name,
-     (char*) PyDoc_STR("name of the generator"), 0},
-    {(char *) "__qualname__", (getter)__Pyx_Coroutine_get_qualname, (setter)__Pyx_Coroutine_set_qualname,
-     (char*) PyDoc_STR("qualified name of the generator"), 0},
-    {0, 0, 0, 0, 0}
-};
-static PyTypeObject __pyx_GeneratorType_type = {
-    PyVarObject_HEAD_INIT(0, 0)
-    "generator",
-    sizeof(__pyx_CoroutineObject),
-    0,
-    (destructor) __Pyx_Coroutine_dealloc,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_HAVE_FINALIZE,
-    0,
-    (traverseproc) __Pyx_Coroutine_traverse,
-    0,
-    0,
-    offsetof(__pyx_CoroutineObject, gi_weakreflist),
-    0,
-    (iternextfunc) __Pyx_Generator_Next,
-    __pyx_Generator_methods,
-    __pyx_Generator_memberlist,
-    __pyx_Generator_getsets,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-#if CYTHON_USE_TP_FINALIZE
-    0,
-#else
-    __Pyx_Coroutine_del,
-#endif
-    0,
-#if CYTHON_USE_TP_FINALIZE
-    __Pyx_Coroutine_del,
-#elif PY_VERSION_HEX >= 0x030400a1
-    0,
-#endif
-};
-static int __pyx_Generator_init(void) {
-    __pyx_GeneratorType_type.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
-    __pyx_GeneratorType_type.tp_iter = PyObject_SelfIter;
-    __pyx_GeneratorType = __Pyx_FetchCommonType(&__pyx_GeneratorType_type);
-    if (unlikely(!__pyx_GeneratorType)) {
-        return -1;
-    }
-    return 0;
-}
 
 /* AsyncGeneratorInitFinalizer */
 #if PY_VERSION_HEX < 0x030600B0

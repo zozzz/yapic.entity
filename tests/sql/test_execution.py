@@ -42,10 +42,7 @@ class User2(Entity, schema="execution_private", name="User"):
     address: One[Address]
 
 
-async def test_ddl(conn):
-    await conn.conn.execute("""DROP SCHEMA IF EXISTS "execution" CASCADE""")
-    await conn.conn.execute("""DROP SCHEMA IF EXISTS "execution_private" CASCADE""")
-
+async def test_ddl(conn, pgclean):
     result = await sync(conn, Address.__registry__)
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
 CREATE SEQUENCE "execution"."Address_id_seq";
@@ -129,6 +126,7 @@ async def test_select(conn):
     u = await conn.select(q).first()
     assert u.id == 1
     assert u.name == "Jhon Doe"
+    assert u.is_active is True
 
     u.name = "New Name"
     await conn.update(u)
@@ -357,8 +355,14 @@ async def test_composite(conn):
         id: Serial
         name: Composite[CompName]
 
+    class Article(Entity, registry=reg_a, schema="execution"):
+        id: Serial
+        author_id: Auto = ForeignKey(CompUser.id)
+        author: One[CompUser]
+
     result = await sync(conn, reg_a)
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE SEQUENCE "execution"."CompUser_id_seq";
 CREATE TYPE "execution"."CompXY" AS (
   "x" TEXT,
   "y" TEXT
@@ -368,11 +372,17 @@ CREATE TYPE "execution"."CompName" AS (
   "family" TEXT,
   "xy" "execution"."CompXY"
 );
-CREATE SEQUENCE "execution"."CompUser_id_seq";
 CREATE TABLE "execution"."CompUser" (
   "id" INT4 NOT NULL DEFAULT nextval('"execution"."CompUser_id_seq"'::regclass),
   "name" "execution"."CompName",
   PRIMARY KEY("id")
+);
+CREATE SEQUENCE "execution"."Article_id_seq";
+CREATE TABLE "execution"."Article" (
+  "id" INT4 NOT NULL DEFAULT nextval('"execution"."Article_id_seq"'::regclass),
+  "author_id" INT4,
+  PRIMARY KEY("id"),
+  CONSTRAINT "fk_Article__author_id-CompUser__id" FOREIGN KEY ("author_id") REFERENCES "execution"."CompUser" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
 );"""
     await conn.conn.execute(result)
 
@@ -440,6 +450,36 @@ CREATE TABLE "execution"."CompUser" (
     assert user.name.given == "Given"
     assert user.name.xy.x == "X"
     assert user.name.xy.y == "Y IOU"
+
+    q = Query().select_from(CompUser).columns(CompUser.id, CompUser.name.xy.y).where(CompUser.id == user.id)
+    res = await conn.select(q).first()
+    assert res == (user.id, "Y IOU")
+
+    q = Query().select_from(CompUser).columns(CompUser.id, CompUser.name).where(CompUser.id == user.id)
+    res = await conn.select(q).first()
+    assert res[0] == user.id
+    assert res[1].family == "Family IOU"
+    assert res[1].given == "Given"
+    assert res[1].xy.x == "X"
+    assert res[1].xy.y == "Y IOU"
+
+    q = Query().select_from(CompUser).columns(CompUser.id, CompUser.name.xy).where(CompUser.id == user.id)
+    res = await conn.select(q).first()
+    assert res[0] == user.id
+    assert res[1].x == "X"
+    assert res[1].y == "Y IOU"
+
+    article = Article()
+    article.author_id = user.id
+    await conn.save(article)
+
+    q = Query().select_from(Article).columns(Article.id, Article.author.name).where(Article.id == article.id)
+    res = await conn.select(q).first()
+    assert res[0] == article.id
+    assert res[1].family == "Family IOU"
+    assert res[1].given == "Given"
+    assert res[1].xy.x == "X"
+    assert res[1].xy.y == "Y IOU"
 
 
 async def test_callable_default(conn):

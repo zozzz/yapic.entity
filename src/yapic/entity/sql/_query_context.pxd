@@ -1,8 +1,11 @@
 from ._connection cimport Connection
+from ._record_converter cimport RCState
 
 
 cdef class QueryContext:
-    cdef object cursor_factory
-    cdef list columns
     cdef readonly Connection conn
-    cdef dict entities
+    cdef object cursor_factory
+    cdef list rcos_list
+    cdef RCState rc_state
+
+    cdef convert_row(self, object row)

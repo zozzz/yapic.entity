@@ -46,9 +46,10 @@ cdef class Relation(EntityAttribute):
 
 
 @cython.final
-cdef class RelatedField(Field):
-    def __cinit__(self, Relation rel, **kwargs):
+cdef class RelatedField(EntityAttribute):
+    def __cinit__(self, Relation rel, *, str name, **kwargs):
         self.__relation__ = rel
+        self._name_ = name
         self._impl_ = None
         self._virtual_ = True
 
@@ -68,7 +69,7 @@ cdef class RelatedField(Field):
         return "<RelatedField %r>" % self.__relation__
 
     cpdef clone(self):
-        return type(self)(self.__relation__.clone())
+        return type(self)(self.__relation__.clone(), name=self._name_)
 
     cdef object bind(self, EntityType entity):
         if self.__relation__.bind(entity):
@@ -78,6 +79,7 @@ cdef class RelatedField(Field):
             if self.__rfield__ is None:
                 self.__rfield__ = getattr(self.__relation__._impl_.joined, self._name_)
                 self.__rpath__ = getattr(self.__relation__, self._name_)
+            return True
         else:
             return False
 

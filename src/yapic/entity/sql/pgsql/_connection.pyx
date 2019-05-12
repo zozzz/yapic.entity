@@ -11,22 +11,6 @@ from .._connection cimport Connection
 
 
 cdef class PostgreConnection(Connection):
-    # async def create_entity(self, EntityType ent, *, drop=False):
-    #     try:
-    #         schema = ent.__meta__["schema"]
-    #     except KeyError:
-    #         pass
-    #     else:
-    #         await self.conn.execute(f"CREATE SCHEMA IF NOT EXISTS {self.dialect.quote_ident(schema)}")
-
-    #     qname = self.dialect.table_qname(ent)
-
-    #     if drop:
-    #         await self.conn.execute(f"DROP TABLE IF EXISTS {qname} CASCADE")
-
-    #     ddl = self.dialect.create_ddl_compiler()
-    #     return await self.conn.execute(ddl.compile_entity(ent))
-
     async def insert(self, EntityBase entity, timeout=None):
         cdef EntityType ent = type(entity)
         cdef list attrs = []
@@ -35,13 +19,13 @@ cdef class PostgreConnection(Connection):
 
         await self._collect_attrs(entity, True, "", attrs, names, values)
 
-        q = self.dialect.create_query_compiler() \
+        q, p = self.dialect.create_query_compiler() \
             .compile_insert(ent, attrs, names, values, False)
 
         if not q:
             return entity
 
-        return await self.__exec_iou(q, values, entity, ent, timeout)
+        return await self.__exec_iou(q, p, entity, ent, timeout)
 
     async def insert_or_update(self, EntityBase entity, timeout=None):
         cdef EntityType ent = type(entity)
@@ -51,13 +35,13 @@ cdef class PostgreConnection(Connection):
 
         await self._collect_attrs(entity, True, "", attrs, names, values)
 
-        q = self.dialect.create_query_compiler() \
+        q, p = self.dialect.create_query_compiler() \
             .compile_insert_or_update(ent, attrs, names, values, False)
 
         if not q:
             return entity
 
-        return await self.__exec_iou(q, values, entity, ent, timeout)
+        return await self.__exec_iou(q, p, entity, ent, timeout)
 
     async def update(self, EntityBase entity, timeout=None):
         cdef EntityType ent = type(entity)
@@ -67,13 +51,13 @@ cdef class PostgreConnection(Connection):
 
         await self._collect_attrs(entity, False, "", attrs, names, values)
 
-        q = self.dialect.create_query_compiler() \
+        q, p = self.dialect.create_query_compiler() \
             .compile_update(ent, attrs, names, values, False)
 
         if not q:
             return entity
 
-        return await self.__exec_iou(q, values, entity, ent, timeout)
+        return await self.__exec_iou(q, p, entity, ent, timeout)
 
     async def delete(self, EntityBase entity, timeout=None):
         cdef EntityType ent = type(entity)
@@ -112,6 +96,7 @@ cdef class PostgreConnection(Connection):
 
         return True
 
+    # TODO: refactor withoperations
     def __set_rec_on_entity(self, EntityBase entity, EntityType entity_t, record):
         cdef EntityState state = entity.__state__
         cdef EntityAttribute attr

@@ -1377,12 +1377,12 @@ struct __pyx_obj_5yapic_6entity_9_relation_Relation {
 /* "_relation.pxd":15
  * 
  * @cython.final
- * cdef class RelatedField(Field):             # <<<<<<<<<<<<<<
+ * cdef class RelatedField(EntityAttribute):             # <<<<<<<<<<<<<<
  *     cdef readonly Relation __relation__
  *     cdef readonly Field __rfield__
  */
 struct __pyx_obj_5yapic_6entity_9_relation_RelatedField {
-  struct __pyx_obj_5yapic_6entity_6_field_Field __pyx_base;
+  struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute __pyx_base;
   struct __pyx_obj_5yapic_6entity_9_relation_Relation *__relation__;
   struct __pyx_obj_5yapic_6entity_6_field_Field *__rfield__;
   struct __pyx_obj_5yapic_6entity_11_expression_PathExpression *__rpath__;
@@ -1830,6 +1830,10 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList *__pyx_vta
 struct __pyx_vtabstruct_5yapic_6entity_7_entity_PolymorphMeta {
   PyObject *(*add)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, PyObject *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, PyObject *);
   PyObject *(*normalize_id)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, PyObject *);
+  PyObject *(*parents)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
+  PyObject *(*children)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
+  PyObject *(*_parents)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, PyObject *);
+  PyObject *(*_children)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, PyObject *);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_PolymorphMeta *__pyx_vtabptr_5yapic_6entity_7_entity_PolymorphMeta;
 
@@ -1994,13 +1998,13 @@ static struct __pyx_vtabstruct_5yapic_6entity_9_relation_Relation *__pyx_vtabptr
 /* "_relation.pxd":15
  * 
  * @cython.final
- * cdef class RelatedField(Field):             # <<<<<<<<<<<<<<
+ * cdef class RelatedField(EntityAttribute):             # <<<<<<<<<<<<<<
  *     cdef readonly Relation __relation__
  *     cdef readonly Field __rfield__
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedField {
-  struct __pyx_vtabstruct_5yapic_6entity_6_field_Field __pyx_base;
+  struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute __pyx_base;
 };
 static struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedField *__pyx_vtabptr_5yapic_6entity_9_relation_RelatedField;
 

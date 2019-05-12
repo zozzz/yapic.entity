@@ -29,7 +29,7 @@ async def sync(Connection connection, Registry registry, EntityType entity_base=
 async def compare_data(Connection connection, RegistryDiff diff):
     for kind, param in diff:
         if kind is RegistryDiffKind.COMPARE_DATA:
-            existing = await connection.select(Query().select_from(param[0]).column(param[0]))
+            existing = await connection.select(Query().select_from(param[0]).columns(param[0]))
             for x in diff.compare_data(existing, param[1].__fix_entries__):
                 yield x
         else:

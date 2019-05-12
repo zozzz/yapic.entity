@@ -28,13 +28,10 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         self.parent = parent
 
     cpdef compile_select(self, Query query):
-        query = query.finalize()
+        query, self.rcos_list = query.finalize()
         self.parts = ["SELECT"]
         self.table_alias = self.parent.table_alias if self.parent else {}
         self.params = self.parent.params if self.parent else []
-
-        self.collect_select = False
-        self.select = []
 
         from_ = self.visit_select_from(query._select_from)
         if query._joins:
@@ -97,27 +94,23 @@ cdef class PostgreQueryCompiler(QueryCompiler):
     def visit_joins(self, dict joins):
         result = []
 
-        for ent, condition, type in joins.values():
-            qname, alias = self._add_entity_alias(ent)
+        for joined, condition, type in joins.values():
+            qname, alias = self._add_entity_alias(joined)
             result.append(f"{type + ' ' if type else ''}JOIN {qname} {alias} ON {self.visit(condition)}")
 
         return " ".join(result)
 
     def visit_columns(self, columns):
-        self.collect_select = True
         result = []
 
         for col in columns:
             if isinstance(col, EntityType):
-                self.select.append(col)
-
                 tbl = self.table_alias[col][1]
                 for field in (<EntityType>col).__fields__:
                     result.append(self.visit(field))
             else:
                 result.append(self.visit(col))
 
-        self.collect_select = False
         return result
 
     def visit_field(self, field):
@@ -127,8 +120,6 @@ cdef class PostgreQueryCompiler(QueryCompiler):
             # print("MISSING", field, field._entity_, get_alias_target(field._entity_), hash(field._entity_))
             raise RuntimeError("Entity is missing from query: %r" % field._entity_)
             # tbl = self.dialect.table_qname(field._entity_)
-        if self.collect_select is True:
-            self.select.append(field)
 
         return f'{tbl}.{self.dialect.quote_ident(field._name_)}'
 
@@ -327,28 +318,40 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
     cpdef compile_insert(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
         if not values:
-            return None
+            return (None, None)
 
         cdef list inserts = []
+        cdef list params = []
+        cdef int idx
 
         if inline_values:
             for v in values:
                 inserts.append(self.dialect.quote_value(v))
         else:
-            for i in range(1, len(names) + 1):
-                inserts.append(f"${i}")
+            idx = 1
+            for i in range(0, len(names)):
+                v = values[i]
+                if isinstance(v, RawExpression):
+                    inserts.append((<RawExpression>v).expr)
+                else:
+                    inserts.append(f"${idx}")
+                    params.append(v)
+                    idx += 1
+
 
         return "".join(("INSERT INTO ", self.dialect.table_qname(entity),
-            "(", ", ".join(names), ") VALUES (", ", ".join(inserts), ")"))
+            " (", ", ".join(names), ") VALUES (", ", ".join(inserts), ")")), params
 
     cpdef compile_insert_or_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
         if not values:
-            return None
+            return (None, None)
 
         cdef EntityAttribute attr
         cdef list updates = []
         cdef list inserts = []
+        cdef list params = []
         cdef list pk_names = [self.dialect.quote_ident(attr._name_) for attr in entity.__pk__]
+        cdef int idx
 
         if inline_values:
             for i, name in enumerate(names):
@@ -358,11 +361,21 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                 if not attr.get_ext(PrimaryKey):
                     updates.append(f"{name}={val}")
         else:
+            idx = 1
             for i, name in enumerate(names):
+                v = values[i]
                 attr = <EntityAttribute>attrs[i]
-                inserts.append(f"${i+1}")
-                if not attr.get_ext(PrimaryKey):
-                    updates.append(f"{name}=${i+1}")
+
+                if isinstance(v, RawExpression):
+                    inserts.append((<RawExpression>v).expr)
+                    if not attr.get_ext(PrimaryKey):
+                        updates.append(f"{name}={(<RawExpression>v).expr}")
+                else:
+                    inserts.append(f"${idx}")
+                    if not attr.get_ext(PrimaryKey):
+                        updates.append(f"{name}=${idx}")
+                    params.append(v)
+                    idx += 1
 
         q = ["INSERT INTO ", self.dialect.table_qname(entity),
             " (", ", ".join(names), ") VALUES (", ", ".join(inserts), ")",
@@ -375,15 +388,18 @@ cdef class PostgreQueryCompiler(QueryCompiler):
             q.extend(("DO UPDATE SET ", ", ".join(updates)))
         else:
             q.append("DO NOTHING")
-        return "".join(q)
+
+        return "".join(q), params
 
     cpdef compile_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
         if not values:
-            return None
+            return (None, None)
 
         cdef EntityAttribute attr
         cdef list updates = []
         cdef list where = []
+        cdef list params = []
+        cdef int idx
 
         if inline_values:
             for i, name in enumerate(names):
@@ -395,22 +411,33 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                 else:
                     updates.append(f"{name}={val}")
         else:
+            idx = 1
             for i, name in enumerate(names):
+                v = values[i]
                 attr = <EntityAttribute>attrs[i]
 
-                if attr.get_ext(PrimaryKey):
-                    where.append(f"{name}=${i+1}")
+                if isinstance(v, RawExpression):
+                    if attr.get_ext(PrimaryKey):
+                        where.append(f"{name}={(<RawExpression>v).expr}")
+                    else:
+                        updates.append(f"{name}={(<RawExpression>v).expr}")
                 else:
-                    updates.append(f"{name}=${i+1}")
+                    if attr.get_ext(PrimaryKey):
+                        where.append(f"{name}=${idx}")
+                    else:
+                        updates.append(f"{name}=${idx}")
+
+                    params.append(v)
+                    idx += 1
 
         if not updates:
-            return None
+            return (None, None)
 
         if not where:
             raise RuntimeError("TODO: ...")
 
         return "".join(("UPDATE ", self.dialect.table_qname(entity), " SET ",
-            ", ".join(updates), " WHERE ", " AND ".join(where)))
+            ", ".join(updates), " WHERE ", " AND ".join(where))), params
 
     cpdef compile_delete(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
         """
@@ -465,7 +492,7 @@ cdef str path_expr(object d, str type, str base, list path):
         if type == "json":
             return f"jsonb_extract_path({base}, {', '.join(map(d.quote_value, path))})"
         elif type == "composite":
-            return f"{base}.{'.'.join(map(d.quote_ident, path))}"
+            return f"({base}).{'.'.join(map(d.quote_ident, path))}"
     return base
 
 

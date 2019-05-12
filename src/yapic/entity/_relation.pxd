@@ -12,7 +12,7 @@ cdef class Relation(EntityAttribute):
 
 
 @cython.final
-cdef class RelatedField(Field):
+cdef class RelatedField(EntityAttribute):
     cdef readonly Relation __relation__
     cdef readonly Field __rfield__
     cdef readonly PathExpression __rpath__
