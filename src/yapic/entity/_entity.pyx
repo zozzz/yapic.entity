@@ -716,41 +716,76 @@ cdef class EntityState:
 
 
 cdef class EntityBase:
+    # def __cinit__(self, state=None, **values):
+    #     cdef EntityType model = type(self)
+    #     cdef PolymorphMeta poly = model.__meta__.get("polymorph", None)
+
+    #     if not model.resolve_deferred():
+    #         print(model.__deferred__)
+    #         raise RuntimeError("Entity is not resolved...")
+
+    #     if state is not None:
+    #         if isinstance(state, EntityState):
+    #             self.__state__ = state
+    #         elif isinstance(state, dict):
+    #             self.__state__ = EntityState(model)
+    #             self.__state__.update(state, True)
+    #         else:
+    #             raise TypeError("Unsupported state argumented: %r" % state)
+
+    #     if not self.__state__:
+    #         self.__state__ = EntityState(model)
+
+    #     if values:
+    #         self.__state__.update(values, True)
+
+    #     self.__state__.init()
+
+    #     # TODO: refactor
+    #     if poly is not None:
+    #         try:
+    #             poly_id = model.__meta__["polymorph_id"]
+    #         except KeyError:
+    #             pass
+    #         else:
+    #             poly_id = PolymorphMeta.normalize_id(poly_id)
+    #             for i, idf in enumerate(poly.id_fields):
+    #                 setattr(self, idf, poly_id[i])
+
     def __cinit__(self, state=None, **values):
         cdef EntityType model = type(self)
-        cdef PolymorphMeta poly = model.__meta__.get("polymorph", None)
 
         if not model.resolve_deferred():
             print(model.__deferred__)
             raise RuntimeError("Entity is not resolved...")
 
-        if state is not None:
-            if isinstance(state, EntityState):
-                self.__state__ = state
-            elif isinstance(state, dict):
-                self.__state__ = EntityState(model)
-                self.__state__.update(state, True)
-            else:
-                raise TypeError("Unsupported state argumented: %r" % state)
-
-        if not self.__state__:
+        if isinstance(state, EntityState):
+            self.__state__ = state
+        else:
             self.__state__ = EntityState(model)
 
-        if values:
-            self.__state__.update(values, True)
+    def __init__(self, data = None, **kw):
+        cdef PolymorphMeta poly
+        cdef EntityType model
 
-        self.__state__.init()
+        if not isinstance(data, EntityState):
+            if isinstance(data, dict):
+                self.__state__.update(data, True)
+            if len(kw):
+                self.__state__.update(kw, True)
 
-        # TODO: refactor
-        if poly is not None:
-            try:
-                poly_id = model.__meta__["polymorph_id"]
-            except KeyError:
-                pass
-            else:
-                poly_id = PolymorphMeta.normalize_id(poly_id)
-                for i, idf in enumerate(poly.id_fields):
-                    setattr(self, idf, poly_id[i])
+            self.__state__.init()
+
+            model = type(self)
+            poly = (<dict>model.__meta__).get("polymorph", None)
+            if poly is not None:
+                poly_id = (<dict>model.__meta__).get("polymorph_id", None)
+                if poly_id is not None:
+                    poly_id = PolymorphMeta.normalize_id(poly_id)
+                    for i, idf in enumerate(poly.id_fields):
+                        setattr(self, idf, poly_id[i])
+        else:
+            self.__state__.init()
 
     @classmethod
     def __init_subclass__(cls, *, str name=None, Registry registry=None, bint _root=False, **meta):
@@ -799,7 +834,7 @@ cdef class EntityBase:
         cdef EntityState state = self.__state__
         cdef int length = len(ent.__pk__)
         cdef tuple res = PyTuple_New(length)
-        cdef bint is_set = False
+        cdef bint has_pk = False
 
         for idx, attr in enumerate(ent.__pk__):
             val = state.get_value(attr)
@@ -808,11 +843,11 @@ cdef class EntityBase:
                 Py_INCREF(<object>None)
                 PyTuple_SET_ITEM(<object>res, idx, <object>None)
             else:
-                is_set = True
+                has_pk = True
                 Py_INCREF(<object>val)
                 PyTuple_SET_ITEM(<object>res, idx, <object>val)
 
-        if is_set:
+        if has_pk:
             return res
         else:
             return ()
@@ -929,10 +964,8 @@ cdef class PolymorphMeta:
 
     cpdef list parents(self, EntityType entity):
         entity = get_alias_target(entity)
-        # cdef DependencyList deps = DependencyList()
         cdef list result = []
         self._parents(entity, result)
-        # result.sort(key=deps.index)
         return result
 
     cdef object _parents(self, EntityType entity, list result):
@@ -946,15 +979,13 @@ cdef class PolymorphMeta:
 
 
     cpdef list children(self, EntityType entity):
+        cdef Relation relation
         entity = get_alias_target(entity)
         cdef list result = []
-        self._children(entity, result)
-        return result
-
-    cdef object _children(self, EntityType entity, list result):
-        cdef Relation relation
 
         for x in self.entities.values():
             relation = <Relation>((<tuple>x)[1])
             if relation._impl_._joined is entity:
                 result.append(relation)
+
+        return result

@@ -143,12 +143,19 @@ async def test_insert_workerx(conn):
     worker.workerx_field = "workerx_field: set from workerx"
     await conn.save(worker)
 
+    def test_worker_x_fields(w):
+        assert isinstance(w, WorkerX)
+        assert w.id == worker.id
+        assert w.variant == "workerx"
+        assert w.employee_field == "employee_field: set from workerx"
+        assert w.worker_field == "worker_field: set from workerx"
+        assert w.workerx_field == "workerx_field: set from workerx"
+
     w = await conn.select(Query().select_from(WorkerX).where(WorkerX.id == worker.id)).first()
-    assert w.id == worker.id
-    assert w.variant == "workerx"
-    assert w.employee_field == "employee_field: set from workerx"
-    assert w.worker_field == "worker_field: set from workerx"
-    assert w.workerx_field == "workerx_field: set from workerx"
+    test_worker_x_fields(w)
+
+    w = await conn.select(Query().select_from(Employee).where(WorkerX.id == worker.id)).first()
+    test_worker_x_fields(w)
 
 
 # async def test_end(conn):

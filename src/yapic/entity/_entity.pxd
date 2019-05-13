@@ -125,4 +125,3 @@ cdef class PolymorphMeta:
     cpdef list parents(self, EntityType entity)
     cpdef list children(self, EntityType entity)
     cdef object _parents(self, EntityType entity, list result)
-    cdef object _children(self, EntityType entity, list result)

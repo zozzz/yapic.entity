@@ -1663,7 +1663,6 @@ struct __pyx_vtabstruct_5yapic_6entity_7_entity_PolymorphMeta {
   PyObject *(*parents)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
   PyObject *(*children)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, int __pyx_skip_dispatch);
   PyObject *(*_parents)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, PyObject *);
-  PyObject *(*_children)(struct __pyx_obj_5yapic_6entity_7_entity_PolymorphMeta *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, PyObject *);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_7_entity_PolymorphMeta *__pyx_vtabptr_5yapic_6entity_7_entity_PolymorphMeta;
 

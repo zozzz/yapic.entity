@@ -89,14 +89,18 @@ ctypedef enum RCO:
     # (POP,)
     POP = 2
 
+    # Jump to given position
+    # (JUMP, position)
+    JUMP = 3
+
     # Create entity state, and set state variable
     # (CREATE_STATE, EntityType)
-    CREATE_STATE = 3
+    CREATE_STATE = 4
 
     # Create new entity instance from previously created state
     # returns entity
     # (CREATE_ENTITY, EntityType)
-    CREATE_ENTITY = 4
+    CREATE_ENTITY = 5
 
     # Create new entity instance or get from cache if exists, and change context to it
     # returns entity
@@ -104,28 +108,27 @@ ctypedef enum RCO:
     # CREATE_ENTITY_CACHED = 4
 
     # Create polymorph entity, and change context to it
-    # returns entity, if can create, otherwise, just skip this step
-    # (CREATE_POLYMORPH_ENTITY, (record_index_for_pks,), {polyid: rcos})
-    CREATE_POLYMORPH_ENTITY = 5
+    # (CREATE_POLYMORPH_ENTITY, (record_index_for_pks,), {polyid: jump_index})
+    CREATE_POLYMORPH_ENTITY = 6
 
     # Load entity from storage, and change to it
     # returns entity
     # (LOAD_ENTITY, EntityType, condition)
-    LOAD_ENTITY = 6
+    LOAD_ENTITY = 7
 
     # Set attribute on current entity instance from previous command result
     # returns entity
     # (SET_ATTR, EntityAttribute)
-    SET_ATTR = 7
+    SET_ATTR = 8
 
     # Set attribute on current entity instance, from record
     # returns entity
     # (SET_ATTR_RECORD, EntityAttribute, record_index)
-    SET_ATTR_RECORD = 8
+    SET_ATTR_RECORD = 9
 
     # Get value from record
     # (GET_RECORD, record_index)
-    GET_RECORD = 9
+    GET_RECORD = 10
 
 
 @cython.final
