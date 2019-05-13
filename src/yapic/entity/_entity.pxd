@@ -118,8 +118,10 @@ cdef class PolymorphMeta:
     cdef readonly tuple id_fields
     cdef readonly dict entities
 
+    @staticmethod
+    cdef tuple normalize_id(object id)
+
     cdef object add(self, object id, EntityType entity, object relation)
-    cdef tuple normalize_id(self, object id)
     cpdef list parents(self, EntityType entity)
     cpdef list children(self, EntityType entity)
     cdef object _parents(self, EntityType entity, list result)

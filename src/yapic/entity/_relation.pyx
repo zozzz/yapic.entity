@@ -46,27 +46,47 @@ cdef class Relation(EntityAttribute):
 
 
 @cython.final
-cdef class RelatedField(EntityAttribute):
+cdef class RelatedAttribute(EntityAttribute):
     def __cinit__(self, Relation rel, *, str name, **kwargs):
         self.__relation__ = rel
         self._name_ = name
-        self._impl_ = None
+        self._impl_ = RelatedAttributeImpl()
         self._virtual_ = True
 
     def __getattribute__(self, key):
         if key in ("__repr__", "_virtual_", "clone", "bind", "visit"):
             return object.__getattribute__(self, key)
         else:
-            return getattr(self.__rfield__, key)
+            return getattr(self.__rattr__, key)
 
     def __setattr__(self, name, value):
-        setattr(self.__rfield__, name, value)
+        setattr(self.__rattr__, name, value)
 
     def __getitem__(self, key):
         return self.__rpath__[key]
 
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+        elif isinstance(instance, EntityBase):
+            return getattr((<EntityBase>instance).__state__.get_value(self.__relation__), self._name_)
+        else:
+            raise RuntimeError("...")
+
+    def __set__(self, EntityBase instance, value):
+        related = instance.__state__.get_value(self.__relation__)
+        if related is NOTSET:
+            related = self.__relation__._impl_._joined()
+            instance.__state__.set_value(self.__relation__, related)
+        setattr(related, self._name_, value)
+
+    def __delete__(self, EntityBase instance):
+        cdef EntityBase related = instance.__state__.get_value(self.__relation__)
+        if related is not None:
+            delattr(related, self._name_)
+
     def __repr__(self):
-        return "<RelatedField %r>" % self.__relation__
+        return "<RelatedAttribute %r>" % self.__relation__
 
     cpdef clone(self):
         return type(self)(self.__relation__.clone(), name=self._name_)
@@ -74,10 +94,10 @@ cdef class RelatedField(EntityAttribute):
     cdef object bind(self, EntityType entity):
         if self.__relation__.bind(entity):
             if not isinstance(self.__relation__._impl_, ManyToOne):
-                raise ValueError("RelatedField only accepts ManyToOne type ralations")
+                raise ValueError("RelatedAttribute only accepts ManyToOne type ralations")
 
-            if self.__rfield__ is None:
-                self.__rfield__ = getattr(self.__relation__._impl_.joined, self._name_)
+            if self.__rattr__ is None:
+                self.__rattr__ = getattr(self.__relation__._impl_.joined, self._name_)
                 self.__rpath__ = getattr(self.__relation__, self._name_)
             return True
         else:
@@ -86,6 +106,16 @@ cdef class RelatedField(EntityAttribute):
     cpdef visit(self, Visitor visitor):
         return self.__rpath__.visit(visitor)
 
+
+cdef class RelatedAttributeImpl(EntityAttributeImpl):
+    cdef object state_init(self, object initial):
+        return NOTSET
+
+    cdef object state_set(self, object initial, object current, object value):
+        return NOTSET
+
+    cdef object state_get_dirty(self, object initial, object current):
+        return NOTSET
 
 cdef class RelationImpl(EntityAttributeImpl):
     def __cinit__(self, joined, state_impl, *args):
@@ -130,8 +160,6 @@ cdef class ManyToOne(RelationImpl):
 
         if self.joined is None:
             self.joined = self._joined.alias()
-        else:
-            return True
 
         if attr._default_:
             self.join_expr = replace_entity(attr._default_, self._joined, self.joined)
@@ -164,8 +192,7 @@ cdef class OneToMany(RelationImpl):
 
         if self.joined is None:
             self.joined = self._joined.alias()
-        else:
-            return True
+
 
         if attr._default_:
             self.join_expr = replace_entity(attr._default_, self._joined, self.joined)
@@ -199,10 +226,9 @@ cdef class ManyToMany(RelationImpl):
 
         if self.joined is None:
             self.joined = self._joined.alias()
-        else:
-            return True
 
-        self.across = self._across.alias()
+        if self.across is None:
+            self.across = self._across.alias()
 
         if attr._default_:
             self.across_join_expr = attr._default_[self._across]
@@ -245,7 +271,10 @@ cdef class ManyToMany(RelationImpl):
             raise ValueError("Invalid value for join expression: %r" % attr._default_)
 
     cpdef object clone(self):
-        return type(self)(self._joined, self.state_impl, self._across)
+        cdef ManyToMany c = type(self)(self._joined, self.state_impl, self._across)
+        c.joined = self.joined
+        c.across = self.across
+        return c
 
 
 cdef determine_join_expr(EntityType entity, EntityType joined):
@@ -305,6 +334,8 @@ cdef class RelatedItem(ValueStore):
         return NOTSET
 
     cpdef object state_set(self, object initial, object current, object value):
+        if not isinstance(value, EntityBase):
+            raise TypeError("Can't set attribute with this value: %r" % value)
         return value
 
     cpdef object state_get_dirty(self, object initial, object current):

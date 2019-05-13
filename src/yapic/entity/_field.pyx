@@ -73,7 +73,7 @@ cdef class Field(EntityAttribute):
 
     def __repr__(self):
         if self._entity_:
-            return "<Field %s: %s of %s>" % (self._name_, self._impl_, self._entity_.__name__)
+            return "<Field %s: %s of %s>" % (self._name_, self._impl_, self._entity_)
         else:
             return "<Field %s: %s (unbound)>" % (self._name_, self._impl_)
 
@@ -165,12 +165,16 @@ cdef class Index(FieldExtension):
 
 # todo: faster eval, with Py_CompileString(ref, "<string>", Py_eval_input); PyEval_EvalCode
 
+_CodeType = type(compile("1", "<string>", "eval"))
+
 cdef class ForeignKey(FieldExtension):
     def __cinit__(self, field, *, str name = None, str on_update = "RESTRICT", str on_delete = "RESTRICT"):
         self.ref = None
 
         if isinstance(field, str):
             self._ref = compile(field, "<string>", "eval")
+        elif isinstance(field, _CodeType):
+            self._ref = field
         elif not isinstance(field, Field):
             raise TypeError("Incorrect argument for ForeignKey field parameter")
         else:

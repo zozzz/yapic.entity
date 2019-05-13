@@ -12,7 +12,7 @@ from cpython.module cimport PyImport_Import, PyModule_GetDict
 
 from ._field cimport Field, PrimaryKey, ForeignKey
 from ._field_impl cimport AutoImpl
-from ._relation cimport Relation, ManyToOne, RelatedItem, RelatedField
+from ._relation cimport Relation, ManyToOne, RelatedItem, RelatedAttribute
 from ._factory cimport Factory, get_type_hints, new_instance_from_forward, is_forward_decl
 from ._expression cimport Visitor, Expression
 from ._registry cimport Registry
@@ -91,7 +91,7 @@ cdef class EntityType(type):
                 poly_join = None
                 poly_relation = Relation(ManyToOne(base_entity, RelatedItem()))
 
-                for attr in base_entity.__fields__:
+                for attr in base_entity.__attrs__:
                     if attr.get_ext(PrimaryKey):
                         self_pk = Field(AutoImpl(), name=attr._name_) \
                             // ForeignKey(attr, name="polymorph_fkey", on_delete="CASCADE", on_update="CASCADE") \
@@ -106,17 +106,16 @@ cdef class EntityType(type):
                             poly_join &= self_pk == attr
                     elif attr._key_:
                         # TODO: stateless
-                        self_attr = RelatedField(poly_relation, name=attr._key_)
+                        self_attr = RelatedAttribute(poly_relation, name=attr._key_)
                         __attrs__.append(self_attr)
                         (<EntityAttribute>self_attr)._key_ = attr._key_
-                        setattr(self, attr._key_, self_attr)
+                        if attr._key_:
+                            setattr(self, attr._key_, self_attr)
 
                 (<Relation>poly_relation)._default_ = poly_join
                 __attrs__.append(poly_relation)
                 poly_meta.add(self.__meta__["polymorph_id"], self, poly_relation)
 
-
-            # copy pk from base entity if polymorp
 
             if hints[1] is not None:
                 for name, type in (<dict>hints[1]).items():
@@ -719,6 +718,7 @@ cdef class EntityState:
 cdef class EntityBase:
     def __cinit__(self, state=None, **values):
         cdef EntityType model = type(self)
+        cdef PolymorphMeta poly = model.__meta__.get("polymorph", None)
 
         if not model.resolve_deferred():
             print(model.__deferred__)
@@ -740,6 +740,17 @@ cdef class EntityBase:
             self.__state__.update(values, True)
 
         self.__state__.init()
+
+        # TODO: refactor
+        if poly is not None:
+            try:
+                poly_id = model.__meta__["polymorph_id"]
+            except KeyError:
+                pass
+            else:
+                poly_id = PolymorphMeta.normalize_id(poly_id)
+                for i, idf in enumerate(poly.id_fields):
+                    setattr(self, idf, poly_id[i])
 
     @classmethod
     def __init_subclass__(cls, *, str name=None, Registry registry=None, bint _root=False, **meta):
@@ -828,7 +839,11 @@ cdef class EntityBase:
             self.iter_index += 1
 
             attr = <EntityAttribute>(<tuple>(ent.__attrs__)[idx])
-            value = self.__state__.get_value(attr)
+            if attr._key_ is None:
+                return self.__next__()
+
+            value = getattr(self, attr._key_)
+            # value = self.__state__.get_value(attr)
 
             if value is NOTSET:
                 return self.__next__()
@@ -889,21 +904,22 @@ cdef class DependencyList(list):
 @cython.final
 cdef class PolymorphMeta:
     def __cinit__(self, EntityType ent, object id):
-        self.id_fields = self.normalize_id(id)
+        self.id_fields = PolymorphMeta.normalize_id(id)
         self.entities = {}
 
     cdef object add(self, object id, EntityType entity, object relation):
         if not isinstance(relation, Relation):
             raise TypeError("Relation expected, but got: %r" % relation)
 
-        id = self.normalize_id(id)
+        id = PolymorphMeta.normalize_id(id)
 
         if id in self.entities:
             raise ValueError("This polymorph_id is already registered: %r" % id)
 
         self.entities[entity] = (id, relation)
 
-    cdef tuple normalize_id(self, object id):
+    @staticmethod
+    cdef tuple normalize_id(object id):
         if not isinstance(id, tuple):
             if isinstance(id, list):
                 return tuple(id)

@@ -7,51 +7,10 @@ from cpython.ref cimport Py_INCREF
 from cpython.tuple cimport PyTuple_New, PyTuple_GET_ITEM, PyTuple_SET_ITEM, PyTuple_GET_SIZE
 
 
-
 cdef class RCState:
     def __cinit__(self, object conn):
         self.conn = conn
         self.cache = {}
-
-
-# class RecordConverter:
-#     def __cinit__(self, list operations):
-#         self.operations = operations
-#         self.stack = []
-
-#     cdef object begin(self):
-#         self.current_idx = 0
-
-#     cdef object next(self, object record, RCState state):
-#         if self.current_idx >= len(self.operations):
-#             raise StopIteration()
-
-#         cdef tuple op = self.operations[self.current_idx]
-#         cdef PyObject* id
-#         cdef PyObject* params
-#         cdef PyObject* tmp
-#         cdef object recv
-#         cdef int length
-
-#         if op is RCO.PUSH:
-#             self.stack.push(self.result)
-#         elif op is RCO.POP:
-#             self.result = self.stack.pop()
-#         elif op is RCO.CREATE_ENTITY:
-#             self.result = op[1]()
-#         elif op is RCO.CREATE_POLYMORPH_ENTITY:
-#             params = PyTuple_GET_ITEM(<object>op, 1)
-#             length = PyTuple_GET_SIZE(params)
-#             id = PyTuple_New(length)
-
-#             for i in range(0, length):
-#                 tmp = PyTuple_GET_ITEM(<object>params, i)
-#                 recv = record[<object>tmp]
-#                 Py_INCREF(<object>recv)
-#                 PyTuple_SET_ITEM(<object>id, i, <recv>)
-
-#             try:
-#                 polyc =
 
 
 async def convert_record(object record, list rcos_list, RCState state):

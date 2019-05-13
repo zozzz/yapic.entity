@@ -94,7 +94,7 @@ CREATE TABLE "poly"."WorkerY" (
 async def test_query_from_worker(conn):
     q = Query().select_from(Worker).where(Worker.employee_field == "Nice")
     sql, params = conn.dialect.create_query_compiler().compile_select(q)
-    assert sql == """SELECT "t1"."id", "t1"."variant", "t1"."employee_field", "t0"."worker_field", "t2"."workerx_field", "t3"."workery_field" FROM "poly"."Worker" "t0" INNER JOIN "poly"."Employee" "t1" ON "t0"."id" = "t1"."id" LEFT JOIN "poly"."WorkerX" "t2" ON "t2"."id" = "t0"."id" LEFT JOIN "poly"."WorkerY" "t3" ON "t3"."id" = "t0"."id" WHERE "t1"."employee_field" = $1"""
+    assert sql == """SELECT "t1"."id", "t1"."variant", "t1"."employee_field", "t0"."worker_field", "t3"."workerx_field", "t4"."workery_field" FROM "poly"."Worker" "t0" INNER JOIN "poly"."Employee" "t1" ON "t0"."id" = "t1"."id" LEFT JOIN "poly"."WorkerX" "t3" ON "t3"."id" = "t0"."id" LEFT JOIN "poly"."WorkerY" "t4" ON "t4"."id" = "t0"."id" WHERE "t1"."employee_field" = $1"""
     assert params == ("Nice", )
 
 
@@ -103,7 +103,7 @@ async def test_query_from_employee(conn):
         .where(Employee.employee_field == "Nice") \
         .where(Worker.worker_field == "WF")
     sql, params = conn.dialect.create_query_compiler().compile_select(q)
-    assert sql == """SELECT "t0"."id", "t0"."variant", "t0"."employee_field", "t2"."manager_field", "t1"."worker_field", "t3"."workerx_field", "t4"."workery_field" FROM "poly"."Employee" "t0" INNER JOIN "poly"."Worker" "t1" ON "t1"."id" = "t0"."id" LEFT JOIN "poly"."Manager" "t2" ON "t2"."id" = "t0"."id" LEFT JOIN "poly"."WorkerX" "t3" ON "t3"."id" = "t1"."id" LEFT JOIN "poly"."WorkerY" "t4" ON "t4"."id" = "t1"."id" WHERE "t0"."employee_field" = $1 AND "t1"."worker_field" = $2"""
+    assert sql == """SELECT "t0"."id", "t0"."variant", "t0"."employee_field", "t1"."manager_field", "t2"."worker_field", "t3"."workerx_field", "t4"."workery_field" FROM "poly"."Employee" "t0" LEFT JOIN "poly"."Manager" "t1" ON "t1"."id" = "t0"."id" LEFT JOIN "poly"."Worker" "t2" ON "t2"."id" = "t0"."id" LEFT JOIN "poly"."WorkerX" "t3" ON "t3"."id" = "t2"."id" LEFT JOIN "poly"."WorkerY" "t4" ON "t4"."id" = "t2"."id" WHERE "t0"."employee_field" = $1 AND "t2"."worker_field" = $2"""
     assert params == ("Nice", "WF")
 
 
@@ -114,6 +114,41 @@ async def test_query_org(conn):
     sql, params = conn.dialect.create_query_compiler().compile_select(q)
     assert sql == """SELECT "t0"."id", "t0"."employee_id" FROM "poly"."Organization" "t0" INNER JOIN "poly"."Employee" "t1" ON "t0"."employee_id" = "t1"."id" INNER JOIN "poly"."Worker" "t2" ON "t2"."id" = "t1"."id" WHERE "t1"."employee_field" = $1 AND "t2"."worker_field" = $2"""
     assert params == ("Nice", "WF")
+
+
+async def test_query_from_workerx(conn):
+    q = Query().select_from(WorkerX).where(Employee.employee_field == "OK")
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t3"."id", "t3"."variant", "t3"."employee_field", "t1"."worker_field", "t0"."workerx_field" FROM "poly"."WorkerX" "t0" INNER JOIN "poly"."Worker" "t1" ON "t0"."id" = "t1"."id" INNER JOIN "poly"."Employee" "t3" ON "t1"."id" = "t3"."id" WHERE "t3"."employee_field" = $1"""
+    assert params == ("OK", )
+
+
+async def test_insert_worker(conn):
+    worker = Worker()
+    worker.employee_field = "ef"
+    worker.worker_field = "wf"
+    await conn.save(worker)
+
+    w = await conn.select(Query().select_from(Worker).where(Worker.id == worker.id)).first()
+    assert w.id == worker.id
+    assert w.variant == "worker"
+    assert w.employee_field == "ef"
+    assert w.worker_field == "wf"
+
+
+async def test_insert_workerx(conn):
+    worker = WorkerX()
+    worker.employee_field = "employee_field: set from workerx"
+    worker.worker_field = "worker_field: set from workerx"
+    worker.workerx_field = "workerx_field: set from workerx"
+    await conn.save(worker)
+
+    w = await conn.select(Query().select_from(WorkerX).where(WorkerX.id == worker.id)).first()
+    assert w.id == worker.id
+    assert w.variant == "workerx"
+    assert w.employee_field == "employee_field: set from workerx"
+    assert w.worker_field == "worker_field: set from workerx"
+    assert w.workerx_field == "workerx_field: set from workerx"
 
 
 # async def test_end(conn):

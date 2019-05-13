@@ -6,7 +6,7 @@ from yapic.entity._field_impl cimport CompositeImpl
 from yapic.entity._expression cimport (Expression, AliasExpression, DirectionExpression, Visitor, BinaryExpression,
     UnaryExpression, CastExpression, CallExpression, RawExpression, PathExpression)
 from yapic.entity._expression import and_
-from yapic.entity._relation cimport Relation, RelationImpl, ManyToMany, RelatedField, determine_join_expr
+from yapic.entity._relation cimport Relation, RelationImpl, ManyToMany, RelatedAttribute, determine_join_expr
 from yapic.entity._error cimport JoinError
 
 
@@ -155,20 +155,25 @@ cdef class Query(Expression):
             if entity is None:
                 raise RuntimeError("Relation is deferred: %r" % what)
 
-            if entity in self._select_from:
-                return
+            if condition is None:
+                raise RuntimeError("Missing join expression from relation: %r" % what)
+
+            if entity in self._select_from or entity in self._entities:
+                return self
 
         elif isinstance(what, EntityType):
-            if what in self._select_from:
-                return
+            if what in self._select_from or what in self._entities:
+                return self
 
             entity = <EntityType>what
 
             if condition is None:
                 condition = determine_join(self, entity)
 
-        if entity not in self._entities:
-            self._entities.append(entity)
+        self._entities.append(entity)
+        aliased = get_alias_target(entity)
+        if aliased not in self._entities:
+            self._entities.append(aliased)
 
         try:
             existing = self._joins[entity]
@@ -297,15 +302,17 @@ cdef class QueryFinalizer(Visitor):
         return PathExpression(expr._primary_, list(expr._path_))
 
     def finalize(self, *expr_list):
-        if self.q._columns:     self._visit_columns(list(self.q._columns))
+        if self.q._columns:
+            self._visit_columns(list(self.q._columns))
+        else:
+            self._visit_columns(self.q._select_from)
+
         if self.q._where:       self._visit_list(self.q._where)
         if self.q._order:       self._visit_list(self.q._order)
         if self.q._group:       self._visit_list(self.q._group)
         if self.q._having:      self._visit_list(self.q._having)
         if self.q._distinct:    self._visit_list(self.q._distinct)
 
-        if not self.q._columns:
-            self._visit_columns(self.q._select_from)
 
         # print("="*40)
         # from pprint import pprint
@@ -376,6 +383,9 @@ cdef class QueryFinalizer(Visitor):
         for relation in parents:
             self.q.join(relation, None, "INNER")
 
+        for relation in reversed(parents):
+            self.q.join(relation, None, "INNER")
+
             if parent_relation:
                 before_create = [
                     RowConvertOp(RCO.POP),
@@ -444,17 +454,7 @@ cdef class QueryFinalizer(Visitor):
             if isinstance(field._impl_, CompositeImpl):
                 rco[0:0] = self._rco_for_composite(field, (<CompositeImpl>field._impl_)._entity_)
                 rco.append(RowConvertOp(RCO.POP))
-                rco.append(RowConvertOp(RCO.SET_ATTR, field))
-                # composite = (<CompositeImpl>field._impl_)._entity_
-                # cfields = {}
-                # for cfield in composite.__fields__:
-                #     cfields[cfield._name_] = len(self.q._columns)
-                #     self.q._columns.append(getattr(field, cfield._key_))
-
-                # print(cfields)
-                # rco[0:0] = self._rco_for_entity(composite, composite.__fields__, cfields) + [RowConvertOp(RCO.PUSH)]
-                # rco.append(RowConvertOp(RCO.POP))
-                # rco.append(RowConvertOp(RCO.SET_ATTR, field))
+                rco.append(RowConvertOp(RCO.SET_ATTR, aliased.__fields__[field._index_]))
             else:
                 try:
                     idx = existing[field._name_]
@@ -466,7 +466,7 @@ cdef class QueryFinalizer(Visitor):
                         self.q._columns.append(field)
                         existing[field._name_] = idx
 
-                rco.append(RowConvertOp(RCO.SET_ATTR_RECORD, field, idx))
+                rco.append(RowConvertOp(RCO.SET_ATTR_RECORD, aliased.__fields__[field._index_], idx))
 
         rco.extend(before_create)
         rco.append(RowConvertOp(RCO.CREATE_ENTITY, aliased))
@@ -509,20 +509,15 @@ cdef class QueryFinalizer(Visitor):
 
 cdef inline determine_join(Query q, EntityType joined):
     cdef EntityType ent
-    condition = None
 
     for ent in q._entities:
         try:
-            condition = determine_join_expr(ent, joined)
+            return determine_join_expr(ent, joined)
         except JoinError:
             try:
-                condition = determine_join_expr(joined, ent)
+                return determine_join_expr(joined, ent)
             except JoinError:
                 continue
-            else:
-                return condition
-        else:
-            return condition
 
     raise JoinError("Can't found suitable join condition between %r <-> %r" % (q, joined))
 

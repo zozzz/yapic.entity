@@ -4,7 +4,7 @@ from operator import __and__, __eq__, __neg__, __pos__
 
 import cython
 
-from ._entity cimport EntityBase, EntityType, EntityState, EntityAttribute, NOTSET, DependencyList
+from ._entity cimport EntityBase, EntityType, EntityState, EntityAttribute, NOTSET, DependencyList, get_alias_target
 from ._relation cimport Relation, ManyToMany
 from ._expression cimport Visitor, Expression, ConstExpression, RawExpression, UnaryExpression, BinaryExpression
 
@@ -30,6 +30,7 @@ cpdef list save_operations(EntityBase entity):
     # print(order)
 
     ops.sort(key=cmp_to_key(_comparator(order)))
+    # print("\n".join(map(repr, ops)))
     return ops
 
 
@@ -95,13 +96,13 @@ cdef _collect_entities(EntityBase entity, DependencyList order, list ops, object
 
 cdef set_related_attrs(Relation attr, EntityBase main, EntityBase related, DependencyList order, list ops):
     if isinstance(attr._impl_, ManyToMany):
-        across_entity = attr._impl_.across()
+        across_entity = attr._impl_._across()
 
         append_fields(across_entity, main, attr._impl_.across_join_expr, ops)
         append_fields(across_entity, related, attr._impl_.join_expr, ops)
 
         _collect_entities(across_entity, order, ops, EntityOperation.INSERT_OR_UPDATE)
-        order.add(type(across_entity))
+        order.add(attr._impl_._across)
     else:
         append_fields(main, related, attr._impl_.join_expr, ops)
 
@@ -127,12 +128,16 @@ cdef determine_entity_op(EntityBase entity):
 
 cdef class FieldUpdater(Visitor):
     cdef EntityBase target
+    cdef EntityType target_t
     cdef EntityBase source
+    cdef EntityType source_t
     cdef list result
 
     def __cinit__(self, EntityBase target, EntityBase source):
         self.target = target
+        self.target_t = get_alias_target(type(target))
         self.source = source
+        self.source_t = get_alias_target(type(source))
         self.result = []
 
     def visit_binary(self, BinaryExpression expr):
@@ -143,14 +148,20 @@ cdef class FieldUpdater(Visitor):
             self.visit(left)
             self.visit(right)
         elif expr.op is __eq__:
-            if isinstance(left, EntityAttribute) and left._entity_ is type(self.target):
-                if isinstance(right, EntityAttribute) and right._entity_ is type(self.source):
+            if isinstance(left, EntityAttribute):
+                left = get_alias_target(left._entity_).__attrs__[left._index_]
+
+            if isinstance(right, EntityAttribute):
+                right = get_alias_target(right._entity_).__attrs__[right._index_]
+
+            if isinstance(left, EntityAttribute) and left._entity_ is self.target_t:
+                if isinstance(right, EntityAttribute) and right._entity_ is self.source_t:
                     self.result.append((self.target, left, self.source, right))
                 else:
                     if self.target.__state__.get_value(left) is NOTSET:
                         self.target.__state__.set_value(left, right)
-            elif isinstance(right, EntityAttribute) and right._entity_ is type(self.target):
-                if isinstance(left, EntityAttribute) and left._entity_ is type(self.source):
+            elif isinstance(right, EntityAttribute) and right._entity_ is self.target_t:
+                if isinstance(left, EntityAttribute) and left._entity_ is self.source_t:
                     self.result.append((self.target, right, self.source, left))
                 else:
                     if self.target.__state__.get_value(right) is NOTSET:
@@ -175,7 +186,7 @@ cdef class FieldUpdater(Visitor):
         return expr
 
     def visit_field(self, EntityAttribute expr):
-        if expr._entity_ is type(self.source):
+        if get_alias_target(expr._entity_) is self.source_t:
             val = self.source.__state__.get_value(expr)
             if val is not NOTSET:
                 return val

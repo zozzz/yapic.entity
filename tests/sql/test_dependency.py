@@ -1,7 +1,7 @@
 import pytest
 from yapic.entity.sql import wrap_connection, Entity, sync
 from yapic.entity import (Serial, Int, String, ForeignKey, PrimaryKey, One, Many, ManyAcross, Registry, DependencyList,
-                          Json, Composite, save_operations, Auto, AutoIncrement)
+                          Json, Composite, save_operations, Auto, AutoIncrement, Query)
 
 pytestmark = pytest.mark.asyncio  # type: ignore
 
@@ -135,6 +135,14 @@ async def test_insert(conn):
     assert user.tags[0].tag == "some tag"
     assert user.tags[1].id == 1
     assert user.tags[1].tag == "xyz"
+
+    # automatically set foreign key on user
+    addr = await conn.select(Query().select_from(Address).where(Address.id == 1)).first()
+    user2 = User(name="AddrTest")
+    user2.address = addr
+    await conn.save(user2)
+    assert user2.id == 2
+    assert user2.address_id == 1
 
     # await conn.insert(user)
 

@@ -42,8 +42,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         if query._prefix:
             self.parts.append(" ".join(query._prefix))
 
-        if query._columns:
-            self.parts.append(", ".join(self.visit_columns(query._columns)))
+        self.parts.append(", ".join(self.visit_columns(query._columns)))
 
         self.parts.append("FROM")
         self.parts.append(from_)
@@ -314,6 +313,8 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                 aname = ent.__name__ if ent.__name__ else f"t{len(self.table_alias)}"
                 alias = (self.dialect.table_qname(aliased), self.dialect.quote_ident(aname))
             self.table_alias[ent] = alias
+            if aliased not in self.table_alias:
+                self.table_alias[aliased] = alias
             return alias
 
     cpdef compile_insert(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
