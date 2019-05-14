@@ -315,10 +315,10 @@ cdef class QueryFinalizer(Visitor):
         if self.q._distinct:    self._visit_list(self.q._distinct)
 
 
-        print("="*40)
-        from pprint import pprint
-        pprint(self.rcos)
-        print("="*40)
+        # print("="*40)
+        # from pprint import pprint
+        # pprint(self.rcos)
+        # print("="*40)
 
     def _visit_columns(self, expr_list):
         cdef PathExpression path
@@ -410,7 +410,8 @@ cdef class QueryFinalizer(Visitor):
         aliased = get_alias_target(entity)
         rco.extend(self._rco_for_entity(entity, entity.__fields__, fields, before_create))
 
-        pc = self._add_poly_child(create_poly, len(rco) + 2, aliased, poly, fields)
+        rco_len = len(rco)
+        pc = self._add_poly_child(create_poly, rco_len + 3, rco_len + 2, aliased, poly, fields)
         if pc:
             rco.append(RowConvertOp(RCO.PUSH))
 
@@ -419,13 +420,15 @@ cdef class QueryFinalizer(Visitor):
                 id_fields.append(fields[ent_id])
 
             rco.append(RowConvertOp(RCO.CREATE_POLYMORPH_ENTITY, tuple(id_fields), create_poly))
-            create_poly[None] = (<RowConvertOp>pc[len(pc) - 1]).param1
+            end = RowConvertOp(RCO.JUMP, 0)
+            rco.append(end)
             rco.extend(pc)
+            end.param1 = len(rco)
 
         self.rcos.append(rco)
 
     # TODO: refactor nested child jump out
-    def _add_poly_child(self, dict create_poly, int idx_start, EntityType entity, PolymorphMeta poly, dict fields):
+    def _add_poly_child(self, dict create_poly, int idx_start, int idx_break, EntityType entity, PolymorphMeta poly, dict fields):
         cdef Relation relation
         cdef EntityType child
         cdef list rcos = []
@@ -441,21 +444,19 @@ cdef class QueryFinalizer(Visitor):
                 RowConvertOp(RCO.SET_ATTR, relation),
             ])
 
-            rcos.append(rco)
+            rcos.extend(rco)
+            rcos.append(RowConvertOp(RCO.JUMP, idx_break))
 
             idx += len(rco) + 1
-            pc = self._add_poly_child(create_poly, idx, child, poly, fields)
+            pc = self._add_poly_child(create_poly, idx, idx_break, child, poly, fields)
             if pc:
-                pc[0:0] = rco + [RowConvertOp(RCO.PUSH)]
-                rcos.append(pc)
-                idx += len(pc) + 1
+                rcos.extend(rco)
+                rcos.append(RowConvertOp(RCO.PUSH))
+                rcos.extend(pc)
 
-        cdef list result = []
-        for rco in rcos:
-            result.extend(rco)
-            result.append(RowConvertOp(RCO.JUMP, idx))
+            idx = idx_start + len(rcos)
 
-        return result
+        return rcos
 
 
     def _rco_for_entity(self, EntityType entity_type, fields, dict existing=None, list before_create=[]):

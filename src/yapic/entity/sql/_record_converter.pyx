@@ -106,7 +106,7 @@ async def convert_record(object record, list rcos_list, RCState state):
         # for j in range(0, len(rcos)):
         while j < rcos_len:
             rco = <RowConvertOp>(<list>(rcos)[j])
-            print(rco)
+            # print(rco)
 
             if rco.op == RCO.PUSH:
                 push(result)
@@ -121,14 +121,18 @@ async def convert_record(object record, list rcos_list, RCState state):
                 result = rco.param1(entity_state)
             elif rco.op == RCO.CREATE_POLYMORPH_ENTITY:
                 # TODO: refactor, very bad
-                poly_id = tuple(record[idx] for idx in rco.param1)
+
+                if not isinstance(rco.param1, tuple):
+                    raise RuntimeError("Invalid param1 for RCO: %r" % rco)
+
+                if not isinstance(rco.param2, dict):
+                    raise RuntimeError("Invalid param1 for RCO: %r" % rco)
+
+                poly_id = _create_id(<tuple>(rco.param1), record)
                 poly_jump = (<dict>rco.param2).get(poly_id, None)
-                if poly_jump is None:
-                    j = (<dict>rco.param2)[None]
-                else:
+                if poly_jump is not None:
                     j = poly_jump
-                print("JUMP", j, poly_id, rco.param2)
-                continue
+                    continue
             elif rco.op == RCO.LOAD_ENTITY:
                 raise NotImplementedError()
             elif rco.op == RCO.SET_ATTR:
@@ -154,3 +158,17 @@ async def convert_record(object record, list rcos_list, RCState state):
     else:
         return converted
 
+
+cdef tuple _create_id(tuple idx_list, object record):
+    cdef tuple result
+    cdef int length = len(idx_list)
+
+    if length == 1:
+        return (record[idx_list[0]],)
+    else:
+        result = PyTuple_New(length)
+        for i in range(0, length):
+            val = record[idx_list[i]]
+            Py_INCREF(<object>val)
+            PyTuple_SET_ITEM(<object>result, i, <object>val)
+        return result
