@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from decimal import Decimal
 
 from yapic import json
 from yapic.entity._entity cimport EntityType, EntityBase
@@ -41,6 +42,10 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
             return self.__date_time_type(field, <DateTimeImpl>impl)
         elif isinstance(impl, DateTimeTzImpl):
             return self.__date_time_tz_type(field, <DateTimeTzImpl>impl)
+        elif isinstance(impl, NumericImpl):
+            return self.__numeric_type(field, <NumericImpl>impl)
+        elif isinstance(impl, FloatImpl):
+            return self.__float_type(field, <FloatImpl>impl)
         elif isinstance(impl, ChoiceImpl):
             return self.__choice_type(field, <ChoiceImpl>impl)
         elif isinstance(impl, JsonImpl):
@@ -78,6 +83,15 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
 
     cdef StorageType __date_time_tz_type(self, Field field, DateTimeTzImpl impl):
         return DateTimeTzType("TIMESTAMPTZ")
+
+    cdef StorageType __numeric_type(self, Field field, NumericImpl impl):
+        if field.min_size <= 0 or field.max_size <= 0:
+            raise ValueError(f"Invalid values for Numeric type: {(field.min_size, field.max_size)}")
+
+        return NumericType(f"NUMERIC({field.min_size}, {field.max_size})")
+
+    cdef StorageType __float_type(self, Field field, FloatImpl impl):
+        return FloatType(f"FLOAT{field.max_size}")
 
     cdef StorageType __choice_type(self, Field field, ChoiceImpl impl):
         # hashid = Hashids(min_length=5, salt=impl.enum.__qualname__)
@@ -209,6 +223,33 @@ cdef class DateTimeTzType(PostgreType):
         if isinstance(value, datetime):
             return value
         return datetime.strptime(value, "%Y-%m-%d %H:%M:%S.%f%z")
+
+
+cdef class NumericType(PostgreType):
+    cpdef object encode(self, object value):
+        if value is None:
+            return None
+        return str(value)
+
+    cpdef object decode(self, object value):
+        if isinstance(value, str):
+            return Decimal(value)
+        else:
+            return value
+
+
+cdef class FloatType(PostgreType):
+    cpdef object encode(self, object value):
+        if isinstance(value, str):
+            return float(value)
+        else:
+            return value
+
+    cpdef object decode(self, object value):
+        if isinstance(value, str):
+            return float(value)
+        else:
+            return value
 
 
 cdef class ChoiceType(PostgreType):

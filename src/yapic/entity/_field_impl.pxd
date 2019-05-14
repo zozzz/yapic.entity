@@ -30,6 +30,14 @@ cdef class DateTimeTzImpl(FieldImpl):
     pass
 
 
+cdef class NumericImpl(FieldImpl):
+    pass
+
+
+cdef class FloatImpl(FieldImpl):
+    pass
+
+
 cdef class ChoiceImpl(FieldImpl):
     cdef object _enum
     cdef readonly bint is_multi

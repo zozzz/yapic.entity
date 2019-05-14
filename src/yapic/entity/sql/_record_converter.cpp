@@ -1112,7 +1112,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityType {
   PyObject *__fix_entries__;
   PyObject *registry;
   PyObject *meta;
-  PyObject *deps;
+  PyObject *__deps__;
   PyObject *__weakref__;
 };
 

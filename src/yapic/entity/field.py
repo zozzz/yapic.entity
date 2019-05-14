@@ -1,5 +1,6 @@
 from typing import Generic, TypeVar, Union, Optional, List, Tuple, Type, Any
 from datetime import date, datetime
+from decimal import Decimal
 from enum import Enum
 from ._field import Field as _Field, Index, ForeignKey, PrimaryKey, AutoIncrement
 from ._field_impl import (
@@ -11,6 +12,8 @@ from ._field_impl import (
     DateImpl,
     DateTimeImpl,
     DateTimeTzImpl,
+    NumericImpl,
+    FloatImpl,
     JsonImpl as _JsonImpl,
     CompositeImpl as _CompositeImpl,
     AutoImpl,
@@ -45,10 +48,17 @@ Bool = Field[BoolImpl, bool, int]
 Date = Field[DateImpl, date, str]
 DateTime = Field[DateTimeImpl, datetime, str]
 DateTimeTz = Field[DateTimeTzImpl, datetime, str]
+Numeric = Field[NumericImpl, Decimal, str]
 Auto = Field[AutoImpl, Any, Any]
 
 
 class Int(Field[IntImpl, int, int]):
+    def __new__(cls, *args, **kwargs):
+        kwargs.setdefault("size", 4)
+        return Field.__new__(cls, *args, **kwargs)
+
+
+class Float(Field[FloatImpl, float, float]):
     def __new__(cls, *args, **kwargs):
         kwargs.setdefault("size", 4)
         return Field.__new__(cls, *args, **kwargs)

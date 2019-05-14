@@ -3,7 +3,19 @@
 from yapic.entity._entity import Entity
 from yapic.entity._entity cimport EntityType, EntityAttribute
 from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, AutoIncrement, StorageType
-from yapic.entity._field_impl cimport IntImpl, StringImpl, BytesImpl, ChoiceImpl, BoolImpl, DateImpl, DateTimeImpl, DateTimeTzImpl, JsonImpl, CompositeImpl
+from yapic.entity._field_impl cimport (
+    IntImpl,
+    StringImpl,
+    BytesImpl,
+    ChoiceImpl,
+    BoolImpl,
+    DateImpl,
+    DateTimeImpl,
+    DateTimeTzImpl,
+    NumericImpl,
+    FloatImpl,
+    JsonImpl,
+    CompositeImpl)
 from yapic.entity._registry cimport Registry
 from yapic.entity._expression cimport RawExpression
 
@@ -117,6 +129,8 @@ cdef class PostgreDDLReflect(DDLReflect):
                 typens.nspname as "typeschema",
                 pg_type.typname as "typename",
                 information_schema._pg_char_max_length(information_schema._pg_truetypid(pg_attribute.*, pg_type.*), information_schema._pg_truetypmod(pg_attribute.*, pg_type.*)) AS character_maximum_length,
+                information_schema._pg_numeric_precision(information_schema._pg_truetypid(pg_attribute.*, pg_type.*), information_schema._pg_truetypmod(pg_attribute.*, pg_type.*)) AS numeric_precision,
+                information_schema._pg_numeric_scale(information_schema._pg_truetypid(pg_attribute.*, pg_type.*), information_schema._pg_truetypmod(pg_attribute.*, pg_type.*)) AS numeric_scale,
                 pg_attribute.attlen as "size"
             FROM pg_attribute
                 INNER JOIN pg_type ON pg_type.oid=pg_attribute.atttypid
@@ -173,6 +187,10 @@ cdef class PostgreDDLReflect(DDLReflect):
             field = Field(DateTimeTzImpl(), nullable=is_nullable)
         elif typename == "timestamp":
             field = Field(DateTimeImpl(), nullable=is_nullable)
+        elif typename == "numeric":
+            field = Field(NumericImpl(), size=(record["numeric_precision"], record["numeric_scale"]), nullable=is_nullable)
+        elif typename == "float4" or typename == "float8":
+            field = Field(FloatImpl(), size=record["size"], nullable=is_nullable)
         elif typename == "jsonb":
             JSON_ENTITY_UID += 1
 

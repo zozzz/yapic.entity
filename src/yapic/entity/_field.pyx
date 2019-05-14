@@ -21,8 +21,6 @@ cdef class Field(EntityAttribute):
                 if len(size) == 2:
                     self.min_size = size[0]
                     self.max_size = size[1]
-                    if self.min_size > self.max_size:
-                        raise ValueError("TODO:")
                 else:
                     raise ValueError("TODO:")
 

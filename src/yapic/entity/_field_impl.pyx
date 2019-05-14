@@ -55,6 +55,14 @@ cdef class DateTimeTzImpl(FieldImpl):
     def __repr__(self):
         return "DateTimeTz"
 
+cdef class NumericImpl(FieldImpl):
+    def __repr__(self):
+        return "NumericImpl"
+
+cdef class FloatImpl(FieldImpl):
+    def __repr__(self):
+        return "FloatImpl"
+
 
 cdef class EntityTypeImpl(FieldImpl):
     def __cinit__(self, entity):

@@ -7,6 +7,8 @@ from yapic.entity._field_impl cimport (
     DateImpl,
     DateTimeImpl,
     DateTimeTzImpl,
+    NumericImpl,
+    FloatImpl,
     ChoiceImpl,
     JsonImpl,
     CompositeImpl
@@ -26,6 +28,8 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
     cdef StorageType __date_type(self, Field field, DateImpl impl)
     cdef StorageType __date_time_type(self, Field field, DateTimeImpl impl)
     cdef StorageType __date_time_tz_type(self, Field field, DateTimeTzImpl impl)
+    cdef StorageType __numeric_type(self, Field field, NumericImpl impl)
+    cdef StorageType __float_type(self, Field field, FloatImpl impl)
     cdef StorageType __choice_type(self, Field field, ChoiceImpl impl)
     cdef StorageType __json_type(self, Field field, JsonImpl impl)
     cdef StorageType __composite_type(self, Field field, CompositeImpl impl)
