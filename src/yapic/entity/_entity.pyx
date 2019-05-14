@@ -152,6 +152,7 @@ cdef class EntityType(type):
         self.__deferred__ = []
         self.__fields__ = tuple(fields)
         self.__attrs__ = tuple(fields + __attrs__)
+        self.__deps__ = set()
 
         pk = []
 
@@ -195,19 +196,6 @@ cdef class EntityType(type):
                 return self.__name__
             else:
                 return f"{schema}.{self.__name__}"
-
-    @property
-    def __deps__(self):
-        cdef EntityAttribute attr
-        if self.deps is None:
-            deps = set()
-
-            for attr in self.__attrs__:
-                attr._impl_  # XXX prettier mode, for forcing implementation init
-                deps |= attr._deps_
-
-            self.deps = deps
-        return self.deps
 
     @staticmethod
     def __prepare__(*args, **kwargs):
@@ -255,7 +243,8 @@ cdef class EntityType(type):
             return False
 
     cpdef object __entity_ready__(self):
-        pass
+        for attr in self.__attrs__:
+            self.__deps__ |= attr._deps_
 
 
 cpdef bint is_entity_alias(object o):
@@ -924,17 +913,25 @@ class Entity(EntityBase, metaclass=EntityType, registry=REGISTRY, _root=True):
 @cython.final
 cdef class DependencyList(list):
     cpdef add(self, EntityType item):
+        cdef list self_ = <list>self
+
         try:
-            idx = self.index(item)
+            idx = self_.index(item)
         except ValueError:
             idx = len(self)
-            self.append(item)
+            self_.append(item)
 
         for dep in sorted(item.__deps__, key=attrgetter("__name__")):
-            if dep not in self:
-                self.insert(idx, dep)
+            try:
+                didx = self_.index(dep)
+            except ValueError:
+                self_.insert(idx, dep)
                 self.add(dep)
-
+            else:
+                if didx > idx:
+                    self_.pop(didx)
+                    self_.insert(idx, dep)
+                    self.add(dep)
 
 @cython.final
 cdef class PolymorphMeta:

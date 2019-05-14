@@ -120,6 +120,7 @@ cdef class RegistryDiff:
             else:
                 return order.index(val)
 
+        print(list(order))
         self.changes.sort(key=key)
 
 

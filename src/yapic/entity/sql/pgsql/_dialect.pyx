@@ -34,6 +34,8 @@ cdef class PostgreDialect(Dialect):
             return str(value)
         elif isinstance(value, bool):
             return "TRUE" if value else "FALSE"
+        elif value is None:
+            return "NULL"
         else:
             value = str(value).replace("'", "''")
             return f"'{value}'"
