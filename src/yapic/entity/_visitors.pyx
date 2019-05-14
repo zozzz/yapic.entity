@@ -1,6 +1,7 @@
-from ._expression cimport Expression, Visitor, BinaryExpression, UnaryExpression, DirectionExpression, AliasExpression, CastExpression, CallExpression, RawExpression
+from ._expression cimport Expression, Visitor, BinaryExpression, UnaryExpression, DirectionExpression, AliasExpression, CastExpression, CallExpression, RawExpression, PathExpression
 from ._entity cimport EntityType, EntityAttribute
 from ._field cimport Field
+from ._relation cimport Relation
 
 
 cdef class ReplacerBase(Visitor):
@@ -31,6 +32,11 @@ cdef class ReplacerBase(Visitor):
     def visit_field(self, expr):
         return expr
 
+    def visit_path(self, PathExpression expr):
+        return PathExpression(self.visit(expr._primary_), [self.visit(a) for a in expr._path_])
+
+
+
 
 cdef class EntityReplacer(ReplacerBase):
     def __cinit__(self, EntityType what, EntityType to):
@@ -43,6 +49,17 @@ cdef class EntityReplacer(ReplacerBase):
             return getattr(self.to, expr._key_)
         else:
             return expr
+
+    def visit_relation(self, Relation relation):
+        cdef Relation clone
+
+        if relation._entity_ is self.what:
+            clone = relation.clone()
+            if not clone.bind(self.to):
+                raise RuntimeError("...")
+            return clone
+        else:
+            return relation
 
 
 cdef class FieldAssigner(ReplacerBase):
