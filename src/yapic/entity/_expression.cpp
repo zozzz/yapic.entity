@@ -9350,7 +9350,7 @@ static int __pyx_pf_5yapic_6entity_11_expression_14PathExpression___cinit__(stru
  *         self._primary_ = primary
  *         self._path_ = path             # <<<<<<<<<<<<<<
  * 
- *     @cython.wraparound(True)
+ *     # @cython.wraparound(True)
  */
   __Pyx_INCREF(__pyx_v_path);
   __Pyx_GIVEREF(__pyx_v_path);
@@ -9374,9 +9374,9 @@ static int __pyx_pf_5yapic_6entity_11_expression_14PathExpression___cinit__(stru
 
 /* "yapic/entity/_expression.pyx":194
  * 
- *     @cython.wraparound(True)
+ *     # @cython.wraparound(True)
  *     def __getattr__(self, object key):             # <<<<<<<<<<<<<<
- *         last_item = self._path_[-1]
+ *         last_item = self._path_[len(self._path_) - 1]
  *         new_path = list(self._path_)
  */
 
@@ -9400,17 +9400,19 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_2__getat
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  int __pyx_t_2;
-  int __pyx_t_3;
+  Py_ssize_t __pyx_t_2;
+  Py_ssize_t __pyx_t_3;
   int __pyx_t_4;
   int __pyx_t_5;
-  PyObject *__pyx_t_6 = NULL;
+  int __pyx_t_6;
+  int __pyx_t_7;
+  PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("__getattr__", 0);
 
   /* "yapic/entity/_expression.pyx":195
- *     @cython.wraparound(True)
+ *     # @cython.wraparound(True)
  *     def __getattr__(self, object key):
- *         last_item = self._path_[-1]             # <<<<<<<<<<<<<<
+ *         last_item = self._path_[len(self._path_) - 1]             # <<<<<<<<<<<<<<
  *         new_path = list(self._path_)
  *         if isinstance(last_item, Expression):
  */
@@ -9418,14 +9420,23 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_2__getat
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(0, 195, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->_path_, -1L, long, 1, __Pyx_PyInt_From_long, 1, 1, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 195, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_1 = __pyx_v_self->_path_;
+  __Pyx_INCREF(__pyx_t_1);
+  if (unlikely(__pyx_t_1 == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 195, __pyx_L1_error)
+  }
+  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 195, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_3 = (__pyx_t_2 - 1);
+  __pyx_t_1 = PyList_GET_ITEM(__pyx_v_self->_path_, __pyx_t_3);
+  __Pyx_INCREF(__pyx_t_1);
   __pyx_v_last_item = __pyx_t_1;
   __pyx_t_1 = 0;
 
   /* "yapic/entity/_expression.pyx":196
  *     def __getattr__(self, object key):
- *         last_item = self._path_[-1]
+ *         last_item = self._path_[len(self._path_) - 1]
  *         new_path = list(self._path_)             # <<<<<<<<<<<<<<
  *         if isinstance(last_item, Expression):
  *             obj = getattr(last_item, key)
@@ -9436,15 +9447,15 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_2__getat
   __pyx_t_1 = 0;
 
   /* "yapic/entity/_expression.pyx":197
- *         last_item = self._path_[-1]
+ *         last_item = self._path_[len(self._path_) - 1]
  *         new_path = list(self._path_)
  *         if isinstance(last_item, Expression):             # <<<<<<<<<<<<<<
  *             obj = getattr(last_item, key)
  *             if isinstance(obj, PathExpression) and last_item is (<PathExpression>obj)._primary_:
  */
-  __pyx_t_2 = __Pyx_TypeCheck(__pyx_v_last_item, __pyx_ptype_5yapic_6entity_11_expression_Expression); 
-  __pyx_t_3 = (__pyx_t_2 != 0);
-  if (__pyx_t_3) {
+  __pyx_t_4 = __Pyx_TypeCheck(__pyx_v_last_item, __pyx_ptype_5yapic_6entity_11_expression_Expression); 
+  __pyx_t_5 = (__pyx_t_4 != 0);
+  if (__pyx_t_5) {
 
     /* "yapic/entity/_expression.pyx":198
  *         new_path = list(self._path_)
@@ -9465,18 +9476,18 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_2__getat
  *                 new_path.extend((<PathExpression>obj)._path_)
  *             else:
  */
-    __pyx_t_2 = __Pyx_TypeCheck(__pyx_v_obj, __pyx_ptype_5yapic_6entity_11_expression_PathExpression); 
-    __pyx_t_4 = (__pyx_t_2 != 0);
-    if (__pyx_t_4) {
+    __pyx_t_4 = __Pyx_TypeCheck(__pyx_v_obj, __pyx_ptype_5yapic_6entity_11_expression_PathExpression); 
+    __pyx_t_6 = (__pyx_t_4 != 0);
+    if (__pyx_t_6) {
     } else {
-      __pyx_t_3 = __pyx_t_4;
+      __pyx_t_5 = __pyx_t_6;
       goto __pyx_L5_bool_binop_done;
     }
-    __pyx_t_4 = (__pyx_v_last_item == ((PyObject *)((struct __pyx_obj_5yapic_6entity_11_expression_PathExpression *)__pyx_v_obj)->_primary_));
-    __pyx_t_2 = (__pyx_t_4 != 0);
-    __pyx_t_3 = __pyx_t_2;
+    __pyx_t_6 = (__pyx_v_last_item == ((PyObject *)((struct __pyx_obj_5yapic_6entity_11_expression_PathExpression *)__pyx_v_obj)->_primary_));
+    __pyx_t_4 = (__pyx_t_6 != 0);
+    __pyx_t_5 = __pyx_t_4;
     __pyx_L5_bool_binop_done:;
-    if (__pyx_t_3) {
+    if (__pyx_t_5) {
 
       /* "yapic/entity/_expression.pyx":200
  *             obj = getattr(last_item, key)
@@ -9487,7 +9498,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_2__getat
  */
       __pyx_t_1 = ((struct __pyx_obj_5yapic_6entity_11_expression_PathExpression *)__pyx_v_obj)->_path_;
       __Pyx_INCREF(__pyx_t_1);
-      __pyx_t_5 = __Pyx_PyList_Extend(__pyx_v_new_path, __pyx_t_1); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 200, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyList_Extend(__pyx_v_new_path, __pyx_t_1); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 200, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
       /* "yapic/entity/_expression.pyx":199
@@ -9508,12 +9519,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_2__getat
  *             new_path.append(key)
  */
     /*else*/ {
-      __pyx_t_5 = __Pyx_PyList_Append(__pyx_v_new_path, __pyx_v_obj); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 202, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_new_path, __pyx_v_obj); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 202, __pyx_L1_error)
     }
     __pyx_L4:;
 
     /* "yapic/entity/_expression.pyx":197
- *         last_item = self._path_[-1]
+ *         last_item = self._path_[len(self._path_) - 1]
  *         new_path = list(self._path_)
  *         if isinstance(last_item, Expression):             # <<<<<<<<<<<<<<
  *             obj = getattr(last_item, key)
@@ -9530,7 +9541,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_2__getat
  * 
  */
   /*else*/ {
-    __pyx_t_5 = __Pyx_PyList_Append(__pyx_v_new_path, __pyx_v_key); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 204, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_new_path, __pyx_v_key); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 204, __pyx_L1_error)
   }
   __pyx_L3:;
 
@@ -9539,7 +9550,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_2__getat
  *             new_path.append(key)
  *         return PathExpression(self._primary_, new_path)             # <<<<<<<<<<<<<<
  * 
- *     @cython.wraparound(True)
+ *     # @cython.wraparound(True)
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 205, __pyx_L1_error)
@@ -9550,25 +9561,25 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_2__getat
   __Pyx_INCREF(__pyx_v_new_path);
   __Pyx_GIVEREF(__pyx_v_new_path);
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_new_path);
-  __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_PathExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 205, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_8 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_PathExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 205, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_r = __pyx_t_6;
-  __pyx_t_6 = 0;
+  __pyx_r = __pyx_t_8;
+  __pyx_t_8 = 0;
   goto __pyx_L0;
 
   /* "yapic/entity/_expression.pyx":194
  * 
- *     @cython.wraparound(True)
+ *     # @cython.wraparound(True)
  *     def __getattr__(self, object key):             # <<<<<<<<<<<<<<
- *         last_item = self._path_[-1]
+ *         last_item = self._path_[len(self._path_) - 1]
  *         new_path = list(self._path_)
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_8);
   __Pyx_AddTraceback("yapic.entity._expression.PathExpression.__getattr__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -9582,9 +9593,9 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_2__getat
 
 /* "yapic/entity/_expression.pyx":208
  * 
- *     @cython.wraparound(True)
+ *     # @cython.wraparound(True)
  *     def __getitem__(self, object key):             # <<<<<<<<<<<<<<
- *         last_item = self._path_[-1]
+ *         last_item = self._path_[len(self._path_) - 1]
  *         new_path = list(self._path_)
  */
 
@@ -9608,17 +9619,19 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_4__getit
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  int __pyx_t_2;
-  int __pyx_t_3;
+  Py_ssize_t __pyx_t_2;
+  Py_ssize_t __pyx_t_3;
   int __pyx_t_4;
   int __pyx_t_5;
-  PyObject *__pyx_t_6 = NULL;
+  int __pyx_t_6;
+  int __pyx_t_7;
+  PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("__getitem__", 0);
 
   /* "yapic/entity/_expression.pyx":209
- *     @cython.wraparound(True)
+ *     # @cython.wraparound(True)
  *     def __getitem__(self, object key):
- *         last_item = self._path_[-1]             # <<<<<<<<<<<<<<
+ *         last_item = self._path_[len(self._path_) - 1]             # <<<<<<<<<<<<<<
  *         new_path = list(self._path_)
  *         if isinstance(last_item, Expression):
  */
@@ -9626,14 +9639,23 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_4__getit
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(0, 209, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->_path_, -1L, long, 1, __Pyx_PyInt_From_long, 1, 1, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 209, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_1 = __pyx_v_self->_path_;
+  __Pyx_INCREF(__pyx_t_1);
+  if (unlikely(__pyx_t_1 == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 209, __pyx_L1_error)
+  }
+  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 209, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_3 = (__pyx_t_2 - 1);
+  __pyx_t_1 = PyList_GET_ITEM(__pyx_v_self->_path_, __pyx_t_3);
+  __Pyx_INCREF(__pyx_t_1);
   __pyx_v_last_item = __pyx_t_1;
   __pyx_t_1 = 0;
 
   /* "yapic/entity/_expression.pyx":210
  *     def __getitem__(self, object key):
- *         last_item = self._path_[-1]
+ *         last_item = self._path_[len(self._path_) - 1]
  *         new_path = list(self._path_)             # <<<<<<<<<<<<<<
  *         if isinstance(last_item, Expression):
  *             obj = last_item[key]
@@ -9644,15 +9666,15 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_4__getit
   __pyx_t_1 = 0;
 
   /* "yapic/entity/_expression.pyx":211
- *         last_item = self._path_[-1]
+ *         last_item = self._path_[len(self._path_) - 1]
  *         new_path = list(self._path_)
  *         if isinstance(last_item, Expression):             # <<<<<<<<<<<<<<
  *             obj = last_item[key]
  *             if isinstance(obj, PathExpression) and last_item is (<PathExpression>obj)._primary_:
  */
-  __pyx_t_2 = __Pyx_TypeCheck(__pyx_v_last_item, __pyx_ptype_5yapic_6entity_11_expression_Expression); 
-  __pyx_t_3 = (__pyx_t_2 != 0);
-  if (__pyx_t_3) {
+  __pyx_t_4 = __Pyx_TypeCheck(__pyx_v_last_item, __pyx_ptype_5yapic_6entity_11_expression_Expression); 
+  __pyx_t_5 = (__pyx_t_4 != 0);
+  if (__pyx_t_5) {
 
     /* "yapic/entity/_expression.pyx":212
  *         new_path = list(self._path_)
@@ -9673,18 +9695,18 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_4__getit
  *                 new_path.extend((<PathExpression>obj)._path_)
  *             else:
  */
-    __pyx_t_2 = __Pyx_TypeCheck(__pyx_v_obj, __pyx_ptype_5yapic_6entity_11_expression_PathExpression); 
-    __pyx_t_4 = (__pyx_t_2 != 0);
-    if (__pyx_t_4) {
+    __pyx_t_4 = __Pyx_TypeCheck(__pyx_v_obj, __pyx_ptype_5yapic_6entity_11_expression_PathExpression); 
+    __pyx_t_6 = (__pyx_t_4 != 0);
+    if (__pyx_t_6) {
     } else {
-      __pyx_t_3 = __pyx_t_4;
+      __pyx_t_5 = __pyx_t_6;
       goto __pyx_L5_bool_binop_done;
     }
-    __pyx_t_4 = (__pyx_v_last_item == ((PyObject *)((struct __pyx_obj_5yapic_6entity_11_expression_PathExpression *)__pyx_v_obj)->_primary_));
-    __pyx_t_2 = (__pyx_t_4 != 0);
-    __pyx_t_3 = __pyx_t_2;
+    __pyx_t_6 = (__pyx_v_last_item == ((PyObject *)((struct __pyx_obj_5yapic_6entity_11_expression_PathExpression *)__pyx_v_obj)->_primary_));
+    __pyx_t_4 = (__pyx_t_6 != 0);
+    __pyx_t_5 = __pyx_t_4;
     __pyx_L5_bool_binop_done:;
-    if (__pyx_t_3) {
+    if (__pyx_t_5) {
 
       /* "yapic/entity/_expression.pyx":214
  *             obj = last_item[key]
@@ -9695,7 +9717,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_4__getit
  */
       __pyx_t_1 = ((struct __pyx_obj_5yapic_6entity_11_expression_PathExpression *)__pyx_v_obj)->_path_;
       __Pyx_INCREF(__pyx_t_1);
-      __pyx_t_5 = __Pyx_PyList_Extend(__pyx_v_new_path, __pyx_t_1); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 214, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyList_Extend(__pyx_v_new_path, __pyx_t_1); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 214, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
       /* "yapic/entity/_expression.pyx":213
@@ -9716,12 +9738,12 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_4__getit
  *             new_path.append(key)
  */
     /*else*/ {
-      __pyx_t_5 = __Pyx_PyList_Append(__pyx_v_new_path, __pyx_v_obj); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 216, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_new_path, __pyx_v_obj); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 216, __pyx_L1_error)
     }
     __pyx_L4:;
 
     /* "yapic/entity/_expression.pyx":211
- *         last_item = self._path_[-1]
+ *         last_item = self._path_[len(self._path_) - 1]
  *         new_path = list(self._path_)
  *         if isinstance(last_item, Expression):             # <<<<<<<<<<<<<<
  *             obj = last_item[key]
@@ -9738,7 +9760,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_4__getit
  * 
  */
   /*else*/ {
-    __pyx_t_5 = __Pyx_PyList_Append(__pyx_v_new_path, __pyx_v_key); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 218, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_new_path, __pyx_v_key); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 218, __pyx_L1_error)
   }
   __pyx_L3:;
 
@@ -9758,25 +9780,25 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_4__getit
   __Pyx_INCREF(__pyx_v_new_path);
   __Pyx_GIVEREF(__pyx_v_new_path);
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_new_path);
-  __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_PathExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 219, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_8 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_PathExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 219, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_r = __pyx_t_6;
-  __pyx_t_6 = 0;
+  __pyx_r = __pyx_t_8;
+  __pyx_t_8 = 0;
   goto __pyx_L0;
 
   /* "yapic/entity/_expression.pyx":208
  * 
- *     @cython.wraparound(True)
+ *     # @cython.wraparound(True)
  *     def __getitem__(self, object key):             # <<<<<<<<<<<<<<
- *         last_item = self._path_[-1]
+ *         last_item = self._path_[len(self._path_) - 1]
  *         new_path = list(self._path_)
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_8);
   __Pyx_AddTraceback("yapic.entity._expression.PathExpression.__getitem__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;

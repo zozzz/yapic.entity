@@ -705,42 +705,6 @@ cdef class EntityState:
 
 
 cdef class EntityBase:
-    # def __cinit__(self, state=None, **values):
-    #     cdef EntityType model = type(self)
-    #     cdef PolymorphMeta poly = model.__meta__.get("polymorph", None)
-
-    #     if not model.resolve_deferred():
-    #         print(model.__deferred__)
-    #         raise RuntimeError("Entity is not resolved...")
-
-    #     if state is not None:
-    #         if isinstance(state, EntityState):
-    #             self.__state__ = state
-    #         elif isinstance(state, dict):
-    #             self.__state__ = EntityState(model)
-    #             self.__state__.update(state, True)
-    #         else:
-    #             raise TypeError("Unsupported state argumented: %r" % state)
-
-    #     if not self.__state__:
-    #         self.__state__ = EntityState(model)
-
-    #     if values:
-    #         self.__state__.update(values, True)
-
-    #     self.__state__.init()
-
-    #     # TODO: refactor
-    #     if poly is not None:
-    #         try:
-    #             poly_id = model.__meta__["polymorph_id"]
-    #         except KeyError:
-    #             pass
-    #         else:
-    #             poly_id = PolymorphMeta.normalize_id(poly_id)
-    #             for i, idf in enumerate(poly.id_fields):
-    #                 setattr(self, idf, poly_id[i])
-
     def __cinit__(self, state=None, **values):
         cdef EntityType model = type(self)
 
@@ -758,12 +722,12 @@ cdef class EntityBase:
         cdef EntityType model
 
         if not isinstance(data, EntityState):
-            if isinstance(data, dict):
-                self.__state__.update(data, True)
-            if len(kw):
-                self.__state__.update(kw, True)
-
             self.__state__.init()
+
+            if isinstance(data, dict):
+                self.__state__.update(data, False)
+            if len(kw) != 0:
+                self.__state__.update(kw, False)
 
             model = type(self)
             poly = (<dict>model.__meta__).get("polymorph", None)
@@ -879,6 +843,22 @@ cdef class EntityBase:
     def __json__(self):
         ctx = SerializerCtx()
         return EntitySerializer(self, ctx)
+
+    def __getitem__(self, key):
+        if isinstance(key, str):
+            return getattr(self, key)
+        elif isinstance(key, int):
+            return getattr(self, type(self).__fields__[key]._key_)
+        else:
+            raise TypeError("Unsupported key type: %r" % type(key))
+
+    def __setitem__(self, key, value):
+        if isinstance(key, str):
+            setattr(self, key, value)
+        elif isinstance(key, int):
+            setattr(self, type(self).__fields__[key]._key_, value)
+        else:
+            raise TypeError("Unsupported key type: %r" % type(key))
 
     def serialize(self, ctx=None):
         if ctx is None:

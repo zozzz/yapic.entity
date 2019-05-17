@@ -55,5 +55,9 @@ cdef class CompositeImpl(EntityTypeImpl):
     pass
 
 
+cdef class NamedTupleImpl(CompositeImpl):
+    pass
+
+
 cdef class AutoImpl(FieldImpl):
     pass

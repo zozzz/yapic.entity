@@ -254,16 +254,18 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                     compiled = self.visit(item)
             elif state == "json":
                 if isinstance(item, Field):
-                    attrs.append((<Field>item)._name_)
+                    attrs.append(self.dialect.quote_ident((<Field>item)._name_))
                 elif isinstance(item, str):
-                    attrs.append(item)
+                    attrs.append(self.dialect.quote_ident(item))
                 elif isinstance(item, int):
                     attrs.append(str(item))
                 else:
                     raise ValueError("Invalid json path entry: %r" % item)
             elif state == "composite":
                 if isinstance(item, Field):
-                    attrs.append((<Field>item)._name_)
+                    attrs.append("." + self.dialect.quote_ident((<Field>item)._name_))
+                elif isinstance(item, int):
+                    attrs.append(f"[{item}]")
                 else:
                     raise ValueError("Invalid composite path entry: %r" % item)
 
@@ -491,9 +493,9 @@ cdef compile_binary(PostgreQueryCompiler qc, BinaryExpression expr, str op):
 cdef str path_expr(object d, str type, str base, list path):
     if path:
         if type == "json":
-            return f"jsonb_extract_path({base}, {', '.join(map(d.quote_value, path))})"
+            return f"jsonb_extract_path({base}, {', '.join(path)})"
         elif type == "composite":
-            return f"({base}).{'.'.join(map(d.quote_ident, path))}"
+            return f"({base}){''.join(path)}"
     return base
 
 

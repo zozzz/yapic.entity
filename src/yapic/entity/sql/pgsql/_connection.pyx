@@ -17,7 +17,7 @@ cdef class PostgreConnection(Connection):
         cdef list names = []
         cdef list values = []
 
-        await self._collect_attrs(entity, True, "", attrs, names, values)
+        await self._collect_attrs(entity, True, attrs, names, values)
 
         q, p = self.dialect.create_query_compiler() \
             .compile_insert(ent, attrs, names, values, False)
@@ -33,7 +33,7 @@ cdef class PostgreConnection(Connection):
         cdef list names = []
         cdef list values = []
 
-        await self._collect_attrs(entity, True, "", attrs, names, values)
+        await self._collect_attrs(entity, True, attrs, names, values)
 
         q, p = self.dialect.create_query_compiler() \
             .compile_insert_or_update(ent, attrs, names, values, False)
@@ -49,7 +49,7 @@ cdef class PostgreConnection(Connection):
         cdef list names = []
         cdef list values = []
 
-        await self._collect_attrs(entity, False, "", attrs, names, values)
+        await self._collect_attrs(entity, False, attrs, names, values)
 
         q, p = self.dialect.create_query_compiler() \
             .compile_update(ent, attrs, names, values, False)
@@ -65,7 +65,7 @@ cdef class PostgreConnection(Connection):
         cdef list names = []
         cdef list values = []
 
-        await self._collect_attrs(entity, True, "", attrs, names, values)
+        await self._collect_attrs(entity, True, attrs, names, values)
 
         q, p = self.dialect.create_query_compiler() \
             .compile_delete(ent, attrs, names, values, False)

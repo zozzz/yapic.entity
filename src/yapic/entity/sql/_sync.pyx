@@ -48,7 +48,7 @@ async def convert_data_to_raw(Connection connection, tuple change):
         attrs = []
         names = []
         values = []
-        await connection._collect_attrs(param, True, "", attrs, names, values)
+        await connection._collect_attrs(param, True, attrs, names, values)
         return (kind, (entity_t, attrs, names, values))
     else:
         return kind, param

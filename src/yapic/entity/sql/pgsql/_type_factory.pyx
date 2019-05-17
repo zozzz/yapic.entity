@@ -4,6 +4,7 @@ from decimal import Decimal
 from yapic import json
 from yapic.entity._entity cimport EntityType, EntityBase
 from yapic.entity._field cimport Field, PrimaryKey, StorageType, StorageTypeFactory
+from yapic.entity._expression cimport RawExpression
 from yapic.entity._field_impl cimport (
     StringImpl,
     BytesImpl,
@@ -16,7 +17,9 @@ from yapic.entity._field_impl cimport (
     JsonImpl,
     CompositeImpl
 )
-from yapic.entity._expression cimport RawExpression
+from yapic.entity._geom_impl cimport (
+    PointImpl,
+)
 
 from ._dialect cimport PostgreDialect
 
@@ -50,6 +53,8 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
             return self.__choice_type(field, <ChoiceImpl>impl)
         elif isinstance(impl, JsonImpl):
             return self.__json_type(field, <JsonImpl>impl)
+        elif isinstance(impl, PointImpl):
+            return self.__point_type(field, <PointImpl>impl)
         elif isinstance(impl, CompositeImpl):
             return self.__composite_type(field, <CompositeImpl>impl)
 
@@ -138,6 +143,9 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
         cdef CompositeType t = CompositeType(self.dialect.table_qname(impl._entity_))
         t.entity = impl._entity_
         return t
+
+    cdef StorageType __point_type(self, Field field, PointImpl impl):
+        return PointType("POINT")
 
 
 cdef class PostgreType(StorageType):
@@ -280,6 +288,14 @@ cdef class JsonType(PostgreType):
 cdef class CompositeType(PostgreType):
     cdef EntityType entity
 
+    cpdef object encode(self, object value):
+        return value
+
+    cpdef object decode(self, object value):
+        return value
+
+
+cdef class PointType(PostgreType):
     cpdef object encode(self, object value):
         return value
 

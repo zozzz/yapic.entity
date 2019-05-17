@@ -1,7 +1,10 @@
+# flake8: noqa
+
 from typing import Generic, TypeVar, Union, Optional, List, Tuple, Type, Any
 from datetime import date, datetime
 from decimal import Decimal
 from enum import Enum
+from ._entity import Entity
 from ._field import Field as _Field, Index, ForeignKey, PrimaryKey, AutoIncrement
 from ._field_impl import (
     StringImpl,
@@ -17,6 +20,10 @@ from ._field_impl import (
     JsonImpl as _JsonImpl,
     CompositeImpl as _CompositeImpl,
     AutoImpl,
+)
+from ._geom_impl import (
+    PointType,
+    PointImpl,
 )
 
 Impl = TypeVar("Impl")
@@ -77,7 +84,7 @@ class ChoiceImpl(Generic[EnumT], _ChoiceImpl):
     is_multi: bool
 
     def __init__(self, enum: Type[EnumT]):
-        pass
+        super().__init__(enum)
 
 
 class Choice(Generic[EnumT], Field[ChoiceImpl[EnumT], EnumT, Any]):
@@ -91,7 +98,7 @@ class JsonImpl(Generic[EntityT], _JsonImpl):
     _entity_: Type[EntityT]
 
     def __init__(self, entity: Type[EntityT]):
-        pass
+        super().__init__(entity)
 
 
 class Json(Generic[EntityT], Field[JsonImpl[EntityT], EntityT, str]):
@@ -102,8 +109,11 @@ class CompositeImpl(Generic[EntityT], _CompositeImpl):
     _entity_: Type[EntityT]
 
     def __init__(self, entity: Type[EntityT]):
-        pass
+        super().__init__(entity)
 
 
 class Composite(Generic[EntityT], Field[CompositeImpl[EntityT], EntityT, str]):
     pass
+
+
+Point = Field[PointImpl, PointType, Any]

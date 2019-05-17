@@ -3,7 +3,7 @@ from datetime import datetime
 from decimal import Decimal
 from yapic.entity.sql import wrap_connection, Entity, sync
 from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Bool, ForeignKey, PrimaryKey,
-                          One, Query, func, EntityDiff, Registry, Json, Composite, Auto, Numeric, Float)
+                          One, Query, func, EntityDiff, Registry, Json, Composite, Auto, Numeric, Float, Point)
 
 pytestmark = pytest.mark.asyncio
 
@@ -31,6 +31,8 @@ class User(Entity, schema="execution"):
     salary: Numeric = Field(size=[15, 2])
     distance_mm: Float
     distance_km: Float = Field(size=8)
+
+    point: Point
 
     is_active: Bool = True
     birth_date: Date
@@ -67,6 +69,7 @@ CREATE TABLE "execution"."User" (
   "salary" NUMERIC(15, 2),
   "distance_mm" FLOAT4,
   "distance_km" FLOAT8,
+  "point" POINT,
   "is_active" BOOLEAN NOT NULL DEFAULT TRUE,
   "birth_date" DATE,
   "naive_date" TIMESTAMP NOT NULL DEFAULT '2019-01-01 12:34:55.000000',
@@ -206,6 +209,8 @@ async def test_diff(conn):
         salary: Numeric = Field(size=[15, 3])
         distance_mm: Float
         distance_km: Float = Field(size=4)
+
+        point: Point
 
         is_active: Bool = True
         birth_date: String
@@ -675,3 +680,28 @@ CREATE TABLE "execution"."User" (
     assert result == """ALTER TABLE "execution"."User"
   ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
     await conn.conn.execute(result)
+
+
+async def test_point(conn, pgclean):
+    reg = Registry()
+
+    class PointTest(Entity, registry=reg, schema="execution"):
+        id: Serial
+        point: Point
+
+    result = await sync(conn, reg)
+    await conn.conn.execute(result)
+
+    p = PointTest(point=(1.25, 2.25))
+    assert p.point.x == 1.25
+    assert p.point.y == 2.25
+    await conn.save(p)
+
+    ps = await conn.select(Query().select_from(PointTest).where(PointTest.id == 1)).first()
+    assert ps.point.x == 1.25
+    assert ps.point.y == 2.25
+
+    p = PointTest(id=1, point=(5.25, 6.25))
+    await conn.save(p)
+    assert p.point.x == 5.25
+    assert p.point.y == 6.25

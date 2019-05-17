@@ -5,6 +5,7 @@ from ._entity cimport EntityType, EntityBase, EntityAttributeImpl, EntityAttribu
 from ._expression cimport PathExpression
 
 
+
 cdef class StringImpl(FieldImpl):
     def __repr__(self):
         return "String"
@@ -57,17 +58,18 @@ cdef class DateTimeTzImpl(FieldImpl):
 
 cdef class NumericImpl(FieldImpl):
     def __repr__(self):
-        return "NumericImpl"
+        return "Numeric"
 
 cdef class FloatImpl(FieldImpl):
     def __repr__(self):
-        return "FloatImpl"
+        return "Float"
 
 
 cdef class EntityTypeImpl(FieldImpl):
-    def __cinit__(self, entity):
+    def __init__(self, entity):
         entity.__meta__["is_type"] = True
         self._entity_ = entity
+        super().__init__()
 
     cpdef object init(self, EntityAttribute attr):
         attr._deps_.add(self._entity_)
@@ -101,14 +103,15 @@ cdef class EntityTypeImpl(FieldImpl):
                 return initial
         elif initial is not current:
             return current
-        elif current.__state__.is_dirty:
+        elif current is not None and current.__state__.is_dirty:
             return current
         return NOTSET
 
 
 cdef class JsonImpl(EntityTypeImpl):
-    def __cinit__(self, entity):
+    def __init__(self, entity):
         entity.__meta__["is_virtual"] = True
+        super().__init__(entity)
 
     def __repr__(self):
         return "Json(%r)" % self._entity_
@@ -128,6 +131,18 @@ cdef class CompositeImpl(EntityTypeImpl):
 
     def __repr__(self):
         return "Composite(%r)" % self._entity_
+
+
+cdef class NamedTupleImpl(CompositeImpl):
+    def __init__(self, entity):
+        entity.__meta__["is_virtual"] = True
+        super().__init__(entity)
+
+    cpdef getattr(self, EntityAttribute attr, object key):
+        return PathExpression(attr, [getattr(self._entity_, key)._index_])
+
+    def __repr__(self):
+        return "NamedTuple(%r)" % self._entity_
 
 
 cdef class AutoImpl(FieldImpl):

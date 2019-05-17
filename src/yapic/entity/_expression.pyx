@@ -190,9 +190,9 @@ cdef class PathExpression(Expression):
         self._primary_ = primary
         self._path_ = path
 
-    @cython.wraparound(True)
+    # @cython.wraparound(True)
     def __getattr__(self, object key):
-        last_item = self._path_[-1]
+        last_item = self._path_[len(self._path_) - 1]
         new_path = list(self._path_)
         if isinstance(last_item, Expression):
             obj = getattr(last_item, key)
@@ -204,9 +204,9 @@ cdef class PathExpression(Expression):
             new_path.append(key)
         return PathExpression(self._primary_, new_path)
 
-    @cython.wraparound(True)
+    # @cython.wraparound(True)
     def __getitem__(self, object key):
-        last_item = self._path_[-1]
+        last_item = self._path_[len(self._path_) - 1]
         new_path = list(self._path_)
         if isinstance(last_item, Expression):
             obj = last_item[key]

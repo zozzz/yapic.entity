@@ -3,6 +3,8 @@
 from yapic.entity._entity import Entity
 from yapic.entity._entity cimport EntityType, EntityAttribute
 from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, AutoIncrement, StorageType
+from yapic.entity._registry cimport Registry
+from yapic.entity._expression cimport RawExpression
 from yapic.entity._field_impl cimport (
     IntImpl,
     StringImpl,
@@ -15,9 +17,12 @@ from yapic.entity._field_impl cimport (
     NumericImpl,
     FloatImpl,
     JsonImpl,
-    CompositeImpl)
-from yapic.entity._registry cimport Registry
-from yapic.entity._expression cimport RawExpression
+    CompositeImpl,
+)
+from yapic.entity._geom_impl cimport (
+    PointImpl,
+)
+
 
 from .._ddl cimport DDLCompiler, DDLReflect
 from .._connection cimport Connection
@@ -197,6 +202,8 @@ cdef class PostgreDDLReflect(DDLReflect):
             class JsonEntity(self.entity_base, name=f"JsonEntity{JSON_ENTITY_UID}"):
                 pass
             field = Field(JsonImpl(JsonEntity), nullable=is_nullable)
+        elif typename == "point":
+            field = Field(PointImpl(), nullable=is_nullable)
         elif typeschema != "pg_catalog" and typeschema != "information_schema":
             ctypename = f"{typeschema}.{typename}" if typeschema != "public" else f"{typename}"
             centity = registry[ctypename]
