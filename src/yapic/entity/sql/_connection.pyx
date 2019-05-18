@@ -57,16 +57,17 @@ cdef class Connection:
     async def save(self, EntityBase entity):
         cdef EntityBase target
         cdef EntityBase src
+        cdef bint res = False
 
         for op, param in save_operations(entity):
             if op is EntityOperation.REMOVE:
-                await self.delete(param)
+                res = await self.delete(param)
             elif op is EntityOperation.UPDATE:
-                await self.update(param)
+                res = await self.update(param)
             elif op is EntityOperation.INSERT:
-                await self.insert(param)
+                res = await self.insert(param)
             elif op is EntityOperation.INSERT_OR_UPDATE:
-                await self.insert_or_update(param)
+                res = await self.insert_or_update(param)
             elif op is EntityOperation.UPDATE_ATTR:
                 target = param[0]
                 src = param[2]
@@ -74,6 +75,13 @@ cdef class Connection:
                 val = src.__state__.get_value(param[3])
                 if val is not NOTSET:
                     target.__state__.set_value(param[1], val)
+
+                res = True
+
+            if not res:
+                return False
+
+        return True
 
     async def reflect(self, EntityType base=Entity):
         reg = Registry()

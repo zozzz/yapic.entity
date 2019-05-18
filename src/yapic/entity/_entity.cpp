@@ -1673,10 +1673,11 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityState {
   PyObject *initial;
   PyObject *current;
   int field_count;
+  int exists;
 };
 
 
-/* "yapic/entity/_entity.pxd":112
+/* "yapic/entity/_entity.pxd":113
  * 
  * @cython.final
  * cdef class DependencyList(list):             # <<<<<<<<<<<<<<
@@ -1689,7 +1690,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_DependencyList {
 };
 
 
-/* "yapic/entity/_entity.pxd":117
+/* "yapic/entity/_entity.pxd":118
  * 
  * @cython.final
  * cdef class PolymorphMeta:             # <<<<<<<<<<<<<<
@@ -3787,6 +3788,7 @@ static PyObject *__pyx_pf_5yapic_6entity_7_entity_11EntityState_2changes(struct 
 static PyObject *__pyx_pf_5yapic_6entity_7_entity_11EntityState_8is_dirty___get__(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_7_entity_11EntityState_4reset(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *__pyx_v_attr); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_7_entity_11EntityState_6changed_realtions(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_7_entity_11EntityState_6exists___get__(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *__pyx_v_self); /* proto */
 static int __pyx_pf_5yapic_6entity_7_entity_10EntityBase___cinit__(struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *__pyx_v_self, PyObject *__pyx_v_state, CYTHON_UNUSED PyObject *__pyx_v_values); /* proto */
 static int __pyx_pf_5yapic_6entity_7_entity_10EntityBase_2__init__(struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *__pyx_v_self, PyObject *__pyx_v_data, PyObject *__pyx_v_kw); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_7_entity_10EntityBase_4__init_subclass__(PyTypeObject *__pyx_v_cls, PyObject *__pyx_v_name, struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx_v_registry, CYTHON_UNUSED int __pyx_v__root, PyObject *__pyx_v_meta); /* proto */
@@ -15163,6 +15165,50 @@ static PyObject *__pyx_gb_5yapic_6entity_7_entity_11EntityState_8generator(__pyx
   return __pyx_r;
 }
 
+/* "yapic/entity/_entity.pxd":89
+ *     cdef tuple current
+ *     cdef int field_count
+ *     cdef readonly bint exists             # <<<<<<<<<<<<<<
+ * 
+ *     # @staticmethod
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5yapic_6entity_7_entity_11EntityState_6exists_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_7_entity_11EntityState_6exists_1__get__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_5yapic_6entity_7_entity_11EntityState_6exists___get__(((struct __pyx_obj_5yapic_6entity_7_entity_EntityState *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5yapic_6entity_7_entity_11EntityState_6exists___get__(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("__get__", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->exists); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 89, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("yapic.entity._entity.EntityState.exists.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "yapic/entity/_entity.pyx":708
  * 
  * cdef class EntityBase:
@@ -19720,7 +19766,7 @@ static PyObject *__pyx_pf_5yapic_6entity_7_entity_13PolymorphMeta_4children(stru
   return __pyx_r;
 }
 
-/* "yapic/entity/_entity.pxd":118
+/* "yapic/entity/_entity.pxd":119
  * @cython.final
  * cdef class PolymorphMeta:
  *     cdef readonly tuple id_fields             # <<<<<<<<<<<<<<
@@ -19757,7 +19803,7 @@ static PyObject *__pyx_pf_5yapic_6entity_7_entity_13PolymorphMeta_9id_fields___g
   return __pyx_r;
 }
 
-/* "yapic/entity/_entity.pxd":119
+/* "yapic/entity/_entity.pxd":120
  * cdef class PolymorphMeta:
  *     cdef readonly tuple id_fields
  *     cdef readonly dict entities             # <<<<<<<<<<<<<<
@@ -20953,6 +20999,10 @@ static PyObject *__pyx_getprop_5yapic_6entity_7_entity_11EntityState_is_dirty(Py
   return __pyx_pw_5yapic_6entity_7_entity_11EntityState_8is_dirty_1__get__(o);
 }
 
+static PyObject *__pyx_getprop_5yapic_6entity_7_entity_11EntityState_exists(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_5yapic_6entity_7_entity_11EntityState_6exists_1__get__(o);
+}
+
 static PyMethodDef __pyx_methods_5yapic_6entity_7_entity_EntityState[] = {
   {"changes", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5yapic_6entity_7_entity_11EntityState_3changes, METH_VARARGS|METH_KEYWORDS, 0},
   {"reset", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5yapic_6entity_7_entity_11EntityState_5reset, METH_VARARGS|METH_KEYWORDS, 0},
@@ -20962,6 +21012,7 @@ static PyMethodDef __pyx_methods_5yapic_6entity_7_entity_EntityState[] = {
 
 static struct PyGetSetDef __pyx_getsets_5yapic_6entity_7_entity_EntityState[] = {
   {(char *)"is_dirty", __pyx_getprop_5yapic_6entity_7_entity_11EntityState_is_dirty, 0, (char *)0, 0},
+  {(char *)"exists", __pyx_getprop_5yapic_6entity_7_entity_11EntityState_exists, 0, (char *)0, 0},
   {0, 0, 0, 0, 0}
 };
 

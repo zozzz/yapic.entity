@@ -692,16 +692,17 @@ async def test_point(conn, pgclean):
     result = await sync(conn, reg)
     await conn.conn.execute(result)
 
-    p = PointTest(point=(1.25, 2.25))
+    # TODO: kezelni, hogy adatbázisból van-e betöltve vagy sem
+    p = PointTest(id=1, point=(1.25, 2.25))
     assert p.point.x == 1.25
     assert p.point.y == 2.25
-    await conn.save(p)
+    assert await conn.save(p) is True
 
     ps = await conn.select(Query().select_from(PointTest).where(PointTest.id == 1)).first()
     assert ps.point.x == 1.25
     assert ps.point.y == 2.25
 
     p = PointTest(id=1, point=(5.25, 6.25))
-    await conn.save(p)
+    assert await conn.save(p) is True
     assert p.point.x == 5.25
     assert p.point.y == 6.25

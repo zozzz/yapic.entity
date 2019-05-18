@@ -86,6 +86,7 @@ cdef class EntityState:
     cdef tuple initial
     cdef tuple current
     cdef int field_count
+    cdef readonly bint exists
 
     # @staticmethod
     # cdef EntityState create_from_dict(EntityType entity, dict data)

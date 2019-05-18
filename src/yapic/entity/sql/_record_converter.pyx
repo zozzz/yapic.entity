@@ -117,11 +117,10 @@ async def convert_record(object record, list rcos_list, RCState state):
                 continue
             elif rco.op == RCO.CREATE_STATE:
                 entity_state = EntityState(rco.param1)
+                entity_state.exists = True
             elif rco.op == RCO.CREATE_ENTITY:
                 result = rco.param1(entity_state)
             elif rco.op == RCO.CREATE_POLYMORPH_ENTITY:
-                # TODO: refactor, very bad
-
                 if not isinstance(rco.param1, tuple):
                     raise RuntimeError("Invalid param1 for RCO: %r" % rco)
 

@@ -90,11 +90,11 @@ cdef class PostgreConnection(Connection):
 
         self.conn._check_open()
         res = await self.conn._execute(q, values, 0, timeout)
-        record = res[0]
-
-        self.__set_rec_on_entity(entity, entity_t, record)
-
-        return True
+        if res:
+            self.__set_rec_on_entity(entity, entity_t, res[0])
+            return True
+        else:
+            return False
 
     # TODO: refactor withoperations
     def __set_rec_on_entity(self, EntityBase entity, EntityType entity_t, record):
@@ -102,6 +102,8 @@ cdef class PostgreConnection(Connection):
         cdef EntityAttribute attr
         cdef StorageType field_type
         cdef CompositeImpl cimpl
+
+        state.exists = True
 
         for k, v in record.items():
             attr = getattr(entity_t, k)

@@ -121,7 +121,10 @@ cdef append_fields(EntityBase main, EntityBase related, Expression expr, list op
 
 cdef determine_entity_op(EntityBase entity):
     if entity.__pk__:
-        return EntityOperation.UPDATE
+        if entity.__state__.exists:
+            return EntityOperation.UPDATE
+        else:
+            return EntityOperation.INSERT_OR_UPDATE
     else:
         return EntityOperation.INSERT
 
