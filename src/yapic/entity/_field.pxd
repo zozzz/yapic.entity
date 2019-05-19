@@ -1,6 +1,6 @@
 import cython
 
-from ._entity cimport EntityType, EntityAttribute, EntityAttributeExt, EntityAttributeImpl
+from ._entity cimport EntityType, EntityAttribute, EntityAttributeExt, EntityAttributeImpl, get_alias_target
 
 
 cdef class Field(EntityAttribute):
@@ -11,6 +11,12 @@ cdef class Field(EntityAttribute):
 
     # cdef bint values_is_eq(self, object a, object b)
     cpdef StorageType get_type(self, StorageTypeFactory factory)
+
+
+cdef inline bint field_eq(Field a, Field b):
+    return a._uid_ is b._uid_
+    # return get_alias_target(a._entity_) is get_alias_target(b._entity_) \
+    #     and a._name_ == b._name_
 
 
 # cdef class FieldProxy(Field):

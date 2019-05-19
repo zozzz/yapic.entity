@@ -111,24 +111,27 @@ ctypedef enum RCO:
     # (CREATE_POLYMORPH_ENTITY, (record_index_for_pks,), {polyid: jump_index})
     CREATE_POLYMORPH_ENTITY = 6
 
-    # Load entity from storage, and change to it
-    # returns entity
-    # (LOAD_ENTITY, EntityType, condition)
-    LOAD_ENTITY = 7
+    # Load one entity from storage, and push into stack
+    # (LOAD_ENTITY, EntityType, (record indexes for query_factory params), query_factory)
+    LOAD_ONE_ENTITY = 7
+
+    # Load multiple entity from storage, and push into stack
+    # (LOAD_ENTITY, EntityType, (record indexes for query_factory params), query_factory)
+    LOAD_MULTI_ENTITY = 8
 
     # Set attribute on current entity instance from previous command result
     # returns entity
     # (SET_ATTR, EntityAttribute)
-    SET_ATTR = 8
+    SET_ATTR = 9
 
     # Set attribute on current entity instance, from record
     # returns entity
     # (SET_ATTR_RECORD, EntityAttribute, record_index)
-    SET_ATTR_RECORD = 9
+    SET_ATTR_RECORD = 10
 
     # Get value from record
     # (GET_RECORD, record_index)
-    GET_RECORD = 10
+    GET_RECORD = 11
 
 
 @cython.final
@@ -137,3 +140,10 @@ cdef class RowConvertOp:
     cdef RCO op
     cdef object param1
     cdef object param2
+
+
+@cython.final
+cdef class QueryFactory:
+    cdef readonly EntityType entity
+    cdef readonly tuple fields
+    cdef readonly Expression join_expr

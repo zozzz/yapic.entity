@@ -42,10 +42,6 @@ class Organization(Entity, schema="poly"):
     employee: One[Employee]
 
 
-async def test_begin(conn):
-    await conn.conn.execute("""DROP SCHEMA IF EXISTS "poly" CASCADE""")
-
-
 async def test_sync(conn, pgclean):
     result = await sync(conn, Worker.__registry__)
     assert result == """CREATE SCHEMA IF NOT EXISTS "poly";

@@ -175,6 +175,11 @@ cdef class EntityType(type):
 
         if _root is False:
             if not is_alias:
+                # TODO: better solution for registering entity early for resolving
+                module = PyImport_Import(self.__module__)
+                mdict = PyModule_GetDict(module)
+                (<object>mdict)[args[0]] = self
+
                 self.__register__()
 
     @property
@@ -294,8 +299,15 @@ cdef EntityAttribute init_attribute(EntityAttribute by_type, object value):
         return by_type
 
 
+cdef int ENTITY_ATTRIBUTE_UID_COUNTER = 1
+
+
 cdef class EntityAttribute(Expression):
     def __cinit__(self, *args, **kwargs):
+        global ENTITY_ATTRIBUTE_UID_COUNTER
+        self._uid_ = ENTITY_ATTRIBUTE_UID_COUNTER
+        ENTITY_ATTRIBUTE_UID_COUNTER += 1
+
         if args:
             impl = args[0]
             if isinstance(impl, EntityAttributeImpl):

@@ -1,6 +1,6 @@
-from ._expression cimport Expression, Visitor, BinaryExpression, UnaryExpression, DirectionExpression, AliasExpression, CastExpression, CallExpression, RawExpression, PathExpression
+from ._expression cimport Expression, Visitor, BinaryExpression, UnaryExpression, DirectionExpression, AliasExpression, CastExpression, CallExpression, RawExpression, PathExpression, coerce_expression
 from ._entity cimport EntityType, EntityAttribute
-from ._field cimport Field
+from ._field cimport Field, field_eq
 from ._relation cimport Relation
 
 
@@ -36,6 +36,36 @@ cdef class ReplacerBase(Visitor):
         return PathExpression(self.visit(expr._primary_), [self.visit(a) for a in expr._path_])
 
 
+cdef class Walk(Visitor):
+    def visit_binary(self, BinaryExpression expr):
+        self.visit(expr.left)
+        self.visit(expr.right)
+
+    def visit_unary(self, UnaryExpression expr):
+        self.visit(expr.expr)
+
+    def visit_direction(self, DirectionExpression expr):
+        self.visit(expr.expr)
+
+    def visit_alias(self, AliasExpression expr):
+        self.visit(expr.expr)
+
+    def visit_cast(self, CastExpression expr):
+        self.visit(expr.expr)
+
+    def visit_call(self, CallExpression expr):
+        for a in expr.args:
+            self.visit(a)
+
+    def visit_raw(self, RawExpression expr):
+        pass
+
+    def visit_field(self, expr):
+        pass
+
+    def visit_path(self, PathExpression expr):
+        for a in expr._path_:
+            self.visit(a)
 
 
 cdef class EntityReplacer(ReplacerBase):
@@ -103,4 +133,26 @@ cdef class FieldAssigner(ReplacerBase):
             return data.__state__.get_value(expr)
 
 
+cdef class FieldExtractor(Walk):
+    def __cinit__(self, EntityType entity):
+        self.entity = entity
+        self.fields = []
 
+    def visit_field(self, Field field):
+        if field._entity_ is self.entity:
+            self.fields.append(field)
+
+
+cdef class FieldReplacer(ReplacerBase):
+    def __cinit__(self, tuple fields, tuple values):
+        self.fields = fields
+        self.values = values
+
+    def visit_field(self, Field expr):
+        cdef Field repl
+
+        for i, repl in enumerate(self.fields):
+            if field_eq(expr, repl):
+                return coerce_expression(self.values[i])
+
+        return expr

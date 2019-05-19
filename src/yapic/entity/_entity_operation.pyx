@@ -5,7 +5,7 @@ from operator import __and__, __eq__, __neg__, __pos__
 import cython
 
 from ._entity cimport EntityBase, EntityType, EntityState, EntityAttribute, NOTSET, DependencyList, get_alias_target
-from ._relation cimport Relation, ManyToMany
+from ._relation cimport Relation, ManyToMany, OneToMany
 from ._expression cimport Visitor, Expression, ConstExpression, RawExpression, UnaryExpression, BinaryExpression
 
 
@@ -103,6 +103,8 @@ cdef set_related_attrs(Relation attr, EntityBase main, EntityBase related, Depen
 
         _collect_entities(across_entity, order, ops, EntityOperation.INSERT_OR_UPDATE)
         order.add(attr._impl_._across)
+    elif isinstance(attr._impl_, OneToMany):
+        append_fields(related, main, attr._impl_.join_expr, ops)
     else:
         append_fields(main, related, attr._impl_.join_expr, ops)
 
@@ -147,10 +149,7 @@ cdef class FieldUpdater(Visitor):
         left = self.visit(expr.left)
         right = self.visit(expr.right)
 
-        if expr.op is __and__:
-            self.visit(left)
-            self.visit(right)
-        elif expr.op is __eq__:
+        if expr.op is __eq__:
             if isinstance(left, EntityAttribute):
                 left = get_alias_target(left._entity_).__attrs__[left._index_]
 
@@ -161,14 +160,12 @@ cdef class FieldUpdater(Visitor):
                 if isinstance(right, EntityAttribute) and right._entity_ is self.source_t:
                     self.result.append((self.target, left, self.source, right))
                 else:
-                    if self.target.__state__.get_value(left) is NOTSET:
-                        self.target.__state__.set_value(left, right)
+                    self.target.__state__.set_value(left, right)
             elif isinstance(right, EntityAttribute) and right._entity_ is self.target_t:
                 if isinstance(left, EntityAttribute) and left._entity_ is self.source_t:
                     self.result.append((self.target, right, self.source, left))
                 else:
-                    if self.target.__state__.get_value(right) is NOTSET:
-                        self.target.__state__.set_value(right, left)
+                    self.target.__state__.set_value(right, left)
         else:
             raise ValueError("Unsupported operator: %r" % expr.op)
 

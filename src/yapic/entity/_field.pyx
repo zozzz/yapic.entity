@@ -134,7 +134,6 @@ cdef class AutoIncrement(FieldExtension):
         cdef EntityType entity
         cdef EntityType aliased
 
-
         if self.sequence is None:
             entity = attr._entity_
             aliased = get_alias_target(entity)

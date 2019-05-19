@@ -5,7 +5,7 @@ from cpython.object cimport PyObject, PyObject_RichCompareBool, Py_EQ
 from cpython.tuple cimport PyTuple_SetItem, PyTuple_GetItem, PyTuple_New, PyTuple_GET_SIZE, PyTuple_SET_ITEM, PyTuple_GET_ITEM, PyTuple_Pack
 from cpython.module cimport PyImport_Import, PyModule_GetDict
 
-from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeImpl, get_alias_target, NOTSET
+from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeImpl, EntityAttributeExt, get_alias_target, NOTSET
 from ._expression cimport Expression, Visitor, PathExpression
 from ._field cimport Field, ForeignKey, collect_foreign_keys
 from ._factory cimport Factory, ForwardDecl, new_instance_from_forward, is_forward_decl
@@ -400,6 +400,11 @@ cdef class RelatedList(ValueStore):
 
 cdef class RelatedDict(ValueStore):
     pass
+
+
+cdef class EagerLoad(EntityAttributeExt):
+    def __cinit__(self, str type="INNER"):
+        self.type = type
 
 
 # cdef class RelatedItem(ValueStore):

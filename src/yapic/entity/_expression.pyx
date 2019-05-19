@@ -125,6 +125,9 @@ cdef class ConstExpression(Expression):
     cpdef visit(self, Visitor visitor):
         return visitor.visit_const(self)
 
+    cpdef alias(self, str alias):
+        return self
+
 
 cdef class DirectionExpression(Expression):
     def __cinit__(self, Expression expr, bint is_asc):

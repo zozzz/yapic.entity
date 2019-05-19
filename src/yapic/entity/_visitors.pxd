@@ -6,6 +6,10 @@ cdef class ReplacerBase(Visitor):
     pass
 
 
+cdef class Walk(Visitor):
+    pass
+
+
 cdef class EntityReplacer(ReplacerBase):
     cdef EntityType what
     cdef EntityType to
@@ -26,3 +30,23 @@ cdef inline assign_field(EntityBase into, Expression expr, list values):
     for r in values:
         data[type(r)] = r
     FieldAssigner(type(into), into, data).visit(expr)
+
+
+cdef class FieldExtractor(Walk):
+    cdef EntityType entity
+    cdef list fields
+
+
+cdef inline tuple extract_fields(EntityType entity, Expression expr):
+    fe = FieldExtractor(entity)
+    fe.visit(expr)
+    return tuple(fe.fields)
+
+
+cdef class FieldReplacer(ReplacerBase):
+    cdef tuple fields
+    cdef tuple values
+
+
+cdef inline Expression replace_fields(Expression expr, tuple fields, tuple values):
+    return FieldReplacer(fields, values).visit(expr)

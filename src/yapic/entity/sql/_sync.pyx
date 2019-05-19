@@ -11,6 +11,9 @@ from ._connection cimport Connection
 
 
 async def sync(Connection connection, Registry registry, EntityType entity_base=Entity):
+    if registry.deferred:
+        raise RuntimeError("This registry is not fully resolved, some of entities maybe deferred: %r" % registry.deferred)
+
     cdef RegistryDiff diff = await connection.diff(registry, entity_base)
 
     # print("\n".join(map(repr, diff.changes)))

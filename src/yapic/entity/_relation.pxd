@@ -1,7 +1,7 @@
 import cython
 from cpython.object cimport PyObject
 
-from ._entity cimport EntityType, EntityAttribute, EntityAttributeImpl
+from ._entity cimport EntityType, EntityAttribute, EntityAttributeImpl, EntityAttributeExt
 from ._expression cimport Expression, PathExpression
 from ._factory cimport Factory
 from ._field cimport Field
@@ -82,6 +82,9 @@ cdef class RelatedList(ValueStore):
 
 cdef class RelatedDict(ValueStore):
     pass
+
+cdef class EagerLoad(EntityAttributeExt):
+    cdef readonly str type
 
 
 # cdef class RelatedItem(ValueStore):

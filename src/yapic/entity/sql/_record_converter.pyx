@@ -127,13 +127,19 @@ async def convert_record(object record, list rcos_list, RCState state):
                 if not isinstance(rco.param2, dict):
                     raise RuntimeError("Invalid param1 for RCO: %r" % rco)
 
-                poly_id = _create_id(<tuple>(rco.param1), record)
+                poly_id = _record_idexes_to_tuple(<tuple>(rco.param1), record)
                 poly_jump = (<dict>rco.param2).get(poly_id, None)
                 if poly_jump is not None:
                     j = poly_jump
                     continue
-            elif rco.op == RCO.LOAD_ENTITY:
-                raise NotImplementedError()
+            elif rco.op == RCO.LOAD_ONE_ENTITY:
+                related_id = _record_idexes_to_tuple(<tuple>(rco.param1), record)
+                query = rco.param2(related_id)
+                push(await state.conn.select(query).first())
+            elif rco.op == RCO.LOAD_MULTI_ENTITY:
+                related_id = _record_idexes_to_tuple(<tuple>(rco.param1), record)
+                query = rco.param2(related_id)
+                push(await state.conn.select(query))
             elif rco.op == RCO.SET_ATTR:
                 entity_state.set_initial_value(<EntityAttribute>rco.param1, tmp)
             elif rco.op == RCO.SET_ATTR_RECORD:
@@ -158,7 +164,7 @@ async def convert_record(object record, list rcos_list, RCState state):
         return converted
 
 
-cdef tuple _create_id(tuple idx_list, object record):
+cdef tuple _record_idexes_to_tuple(tuple idx_list, object record):
     cdef tuple result
     cdef int length = len(idx_list)
 
