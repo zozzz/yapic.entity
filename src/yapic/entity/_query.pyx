@@ -15,6 +15,10 @@ cdef class Query(Expression):
     def __cinit__(self):
         self._entities = []
 
+    def __init__(self, from_ = None):
+        if from_ is not None:
+            self.select_from(from_)
+
     cpdef visit(self, Visitor visitor):
         return visitor.visit_query(self)
 
@@ -490,7 +494,7 @@ cdef class QueryFinalizer(Visitor):
                             existing[field._name_] = idx
 
                     rco.append(RowConvertOp(RCO.SET_ATTR_RECORD, aliased.__fields__[field._index_], idx))
-            elif isinstance(attr, Relation) and False: # TODO: temporarly disabled
+            elif isinstance(attr, Relation) and attr._key_ is not None:
                 relation = <Relation>attr
                 if relation.get_ext(EagerLoad):
                     relation_rco.append((relation, self._rco_for_eager_relation()))
@@ -536,27 +540,39 @@ cdef class QueryFinalizer(Visitor):
         return []
 
     def _rco_for_lazy_relation(self, Relation relation, dict existing=None):
+        cdef EntityType load = relation._impl_.joined
+        cdef EntityType load_aliased = get_alias_target(load)
+        cdef RCO op
+        cdef Query q
+
         if isinstance(relation._impl_, ManyToMany):
-            pass
+            if load is not load_aliased:
+                expr = replace_entity(relation._impl_.across_join_expr, load, load_aliased)
+            else:
+                expr = relation._impl_.across_join_expr
+
+            expr = replace_entity(expr, relation._impl_.across, relation._impl_._across)
+            expr2 = replace_entity(relation._impl_.join_expr, relation._impl_.across, relation._impl_._across)
+            expr2 = replace_entity(expr2, relation._impl_.joined, relation._impl_._joined)
+
+            op = RCO.LOAD_MULTI_ENTITY
+            q = Query(relation._impl_._across) \
+                .columns(relation._impl_._joined) \
+                .join(relation._impl_._joined, expr2, "INNER")
         else:
-            indexes, cf = self._new_query_factory(relation._entity_, relation._impl_.joined, relation._impl_.join_expr)
-            print(cf)
-            if cf is not None:
-                if isinstance(relation._impl_, ManyToOne):
-                    return [RowConvertOp(RCO.LOAD_ONE_ENTITY, indexes, cf)]
-                else:
-                    return [RowConvertOp(RCO.LOAD_MULTI_ENTITY, indexes, cf)]
+            if load is not load_aliased:
+                expr = replace_entity(relation._impl_.join_expr, load, load_aliased)
+            else:
+                expr = relation._impl_.join_expr
 
-        return None
+            op = RCO.LOAD_ONE_ENTITY if isinstance(relation._impl_, ManyToOne) else RCO.LOAD_MULTI_ENTITY
+            q = Query(load_aliased)
 
-    # TODO: optimalizálni a tuple létrehozást
-    def _new_query_factory(self, EntityType loaded_entity, EntityType load, Expression expr):
-        aliased = get_alias_target(load)
-        if load is not aliased:
-            expr = replace_entity(expr, load, get_alias_target(load))
+        cdef tuple fields = extract_fields(relation._entity_, expr)
+        cdef list indexes = []
 
-        fields = extract_fields(loaded_entity, expr)
-        indexes = []
+        if len(fields) == 0:
+            return None
 
         for field in fields:
             try:
@@ -567,10 +583,34 @@ cdef class QueryFinalizer(Visitor):
 
             indexes.append(idx)
 
-        if len(indexes) != 0:
-            return tuple(indexes), QueryFactory(aliased, fields, expr)
-        else:
-            return None, None
+        return [RowConvertOp(op, tuple(indexes), QueryFactory(q, fields, expr))]
+
+    # TODO: optimalizálni a tuple létrehozást
+    # def _new_query_factory(self, EntityType loaded_entity, EntityType load, Relation r, Expression expr):
+    #     aliased = get_alias_target(load)
+    #     if load is not aliased:
+    #         expr = replace_entity(expr, load, get_alias_target(load))
+
+    #     fields = extract_fields(loaded_entity, expr)
+    #     indexes = []
+
+    #     for field in fields:
+    #         try:
+    #             idx = self._find_column_index(field)
+    #         except ValueError:
+    #             idx = len(self.q._columns)
+    #             self.q._columns.append(field)
+
+    #         indexes.append(idx)
+
+    #     if len(indexes) != 0:
+    #         if isinstance(r._impl_, ManyToMany):
+    #             qf = QueryFactory(Query(), fields, expr)
+    #         else:
+    #             qf = QueryFactory(Query(), fields, expr)
+    #         return tuple(indexes), qf
+    #     else:
+    #         return None, None
 
 
     def _find_column_index(self, Field field):
@@ -597,14 +637,13 @@ cdef inline determine_join(Query q, EntityType joined):
 
 @cython.final
 cdef class QueryFactory:
-    def __init__(self, EntityType entity, tuple fields, Expression join_expr):
-        self.entity = entity
+    def __init__(self, Query query, tuple fields, Expression join_expr):
+        self.query = query
         self.fields = fields
         self.join_expr = join_expr
 
     def __call__(self, tuple values):
-        return Query().select_from(self.entity) \
-            .where(replace_fields(self.join_expr, self.fields, values))
+        return self.query.clone().where(replace_fields(self.join_expr, self.fields, values))
 
     def __repr__(self):
-        return "<QueryFactory %r %r>" % (self.entity, self.fields)
+        return "<QueryFactory>"

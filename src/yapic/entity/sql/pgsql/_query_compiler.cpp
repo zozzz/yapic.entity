@@ -1442,12 +1442,12 @@ struct __pyx_obj_5yapic_6entity_6_query_RowConvertOp {
  * 
  * @cython.final
  * cdef class QueryFactory:             # <<<<<<<<<<<<<<
- *     cdef readonly EntityType entity
+ *     cdef readonly Query query
  *     cdef readonly tuple fields
  */
 struct __pyx_obj_5yapic_6entity_6_query_QueryFactory {
   PyObject_HEAD
-  struct __pyx_obj_5yapic_6entity_7_entity_EntityType *entity;
+  struct __pyx_obj_5yapic_6entity_6_query_Query *query;
   PyObject *fields;
   struct __pyx_obj_5yapic_6entity_11_expression_Expression *join_expr;
 };

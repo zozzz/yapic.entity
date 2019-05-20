@@ -144,6 +144,6 @@ cdef class RowConvertOp:
 
 @cython.final
 cdef class QueryFactory:
-    cdef readonly EntityType entity
+    cdef readonly Query query
     cdef readonly tuple fields
     cdef readonly Expression join_expr
