@@ -18,6 +18,8 @@ cdef class Query(Expression):
     cdef readonly dict _aliases
     cdef readonly slice _range
     cdef readonly list _entities
+    cdef readonly dict _load
+    cdef readonly dict _exclude
 
     cpdef Query clone(self)
     cdef tuple finalize(self)

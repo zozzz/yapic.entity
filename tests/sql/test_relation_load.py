@@ -101,13 +101,12 @@ async def test_load(conn):
 
     await conn.save(Tag(value="tag3"))
 
-    # TODO: set parent_id on child
     user = User(name="User", address=addr, tags=[tag1, tag2])
     user.children.append(UserChild(name="Child1"))
     user.children.append(UserChild(name="Child2"))
     await conn.save(user)
 
-    user = await conn.select(Query().select_from(User).where(User.id == 1)).first()
+    user = await conn.select(Query(User).where(User.id == 1).load(User, User.address, User.children, User.tags)).first()
     assert user.id == 1
     assert user.address.id == user.address_id
     assert user.address.addr == "Address1"
@@ -115,3 +114,7 @@ async def test_load(conn):
     assert user.children[0].name in ("Child1", "Child2")
     assert user.children[1].name in ("Child1", "Child2")
     assert user.children[0].name != user.children[1].name
+    assert len(user.tags) == 2
+    assert user.tags[0].value in ("tag1", "tag2")
+    assert user.tags[1].value in ("tag1", "tag2")
+    assert user.tags[0].value != user.tags[1].value

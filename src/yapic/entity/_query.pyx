@@ -14,6 +14,8 @@ from yapic.entity._visitors cimport extract_fields, replace_fields, replace_enti
 cdef class Query(Expression):
     def __cinit__(self):
         self._entities = []
+        self._load = {}
+        self._exclude = {}
 
     def __init__(self, from_ = None):
         if from_ is not None:
@@ -210,6 +212,14 @@ cdef class Query(Expression):
             self._range = slice(offset, stop)
         return self
 
+    def load(self, *load):
+        load_options(self._load, load)
+        return self
+
+    def exclude(self, *exclude):
+        load_options(self._exclude, exclude)
+        return self
+
     cpdef Query clone(self):
         cdef Query q = type(self)()
 
@@ -225,6 +235,8 @@ cdef class Query(Expression):
         if self._joins:       q._joins = dict(self._joins)
         if self._range:       q._range = slice(self._range.start, self._range.stop, self._range.step)
         if self._entities:    q._entities = list(self._entities)
+        if self._load:        q._load = dict(self._load)
+        if self._exclude:     q._exclude = dict(self._exclude)
 
         return q
 
@@ -235,6 +247,19 @@ cdef class Query(Expression):
         qf.finalize()
 
         return res, qf.rcos
+
+
+cdef object load_options(dict target, tuple input):
+    for inp in input:
+        if isinstance(inp, EntityAttribute):
+            target[(<EntityAttribute>inp)._uid_] = inp
+        elif isinstance(inp, PathExpression):
+            if isinstance((<PathExpression>inp)._primary_, Relation):
+                target[(<EntityAttribute>(<PathExpression>inp)._primary_)._uid_] = inp
+            else:
+                raise NotImplementedError()
+        else:
+            target[inp] = inp
 
 
 @cython.final
@@ -310,8 +335,11 @@ cdef class QueryFinalizer(Visitor):
 
     def finalize(self, *expr_list):
         if self.q._columns:
+            self.q.load(*self.q._columns)
             self._visit_columns(list(self.q._columns))
         else:
+            if not self.q._load:
+                self.q.load(*self.q._select_from)
             self._visit_columns(self.q._select_from)
 
         if self.q._where:       self._visit_list(self.q._where)
@@ -478,23 +506,29 @@ cdef class QueryFinalizer(Visitor):
         for attr in entity_type.__attrs__:
             if isinstance(attr, Field):
                 field = <Field>attr
-                if isinstance(field._impl_, CompositeImpl):
-                    rco[0:0] = self._rco_for_composite(field, (<CompositeImpl>field._impl_)._entity_)
-                    rco.append(RowConvertOp(RCO.POP))
-                    rco.append(RowConvertOp(RCO.SET_ATTR, aliased.__fields__[field._index_]))
-                else:
-                    try:
-                        idx = existing[field._name_]
-                    except KeyError:
-                        try:
-                            idx = self._find_column_index(field)
-                        except ValueError:
-                            idx = len(self.q._columns)
-                            self.q._columns.append(field)
-                            existing[field._name_] = idx
 
-                    rco.append(RowConvertOp(RCO.SET_ATTR_RECORD, aliased.__fields__[field._index_], idx))
-            elif isinstance(attr, Relation) and attr._key_ is not None:
+                if ((field._uid_ in self.q._load or field._entity_ in self.q._load)
+                        and (not self.q._exclude
+                            or field._uid_ not in self.q._exclude
+                            or field._entity_ not in self.q._exclude)):
+
+                    if isinstance(field._impl_, CompositeImpl):
+                        rco[0:0] = self._rco_for_composite(field, (<CompositeImpl>field._impl_)._entity_)
+                        rco.append(RowConvertOp(RCO.POP))
+                        rco.append(RowConvertOp(RCO.SET_ATTR, aliased.__fields__[field._index_]))
+                    else:
+                        try:
+                            idx = existing[field._name_]
+                        except KeyError:
+                            try:
+                                idx = self._find_column_index(field)
+                            except ValueError:
+                                idx = len(self.q._columns)
+                                self.q._columns.append(field)
+                                existing[field._name_] = idx
+
+                        rco.append(RowConvertOp(RCO.SET_ATTR_RECORD, aliased.__fields__[field._index_], idx))
+            elif isinstance(attr, Relation) and attr._uid_ in self.q._load:
                 relation = <Relation>attr
                 if relation.get_ext(EagerLoad):
                     relation_rco.append((relation, self._rco_for_eager_relation()))
