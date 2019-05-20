@@ -2711,10 +2711,7 @@ extern int __pyx_module_is_main_yapic__entity___entity_operation;
 int __pyx_module_is_main_yapic__entity___entity_operation = 0;
 
 /* Implementation of 'yapic.entity._entity_operation' */
-static PyObject *__pyx_builtin_print;
-static PyObject *__pyx_builtin_map;
 static PyObject *__pyx_builtin_ValueError;
-static const char __pyx_k_[] = "\n";
 static const char __pyx_k_a[] = "a";
 static const char __pyx_k_b[] = "b";
 static const char __pyx_k_eq[] = "__eq__";
@@ -2722,18 +2719,15 @@ static const char __pyx_k_pk[] = "__pk__";
 static const char __pyx_k_and[] = "__and__";
 static const char __pyx_k_doc[] = "__doc__";
 static const char __pyx_k_key[] = "key";
-static const char __pyx_k_map[] = "map";
 static const char __pyx_k_neg[] = "__neg__";
 static const char __pyx_k_pos[] = "__pos__";
 static const char __pyx_k_enum[] = "enum";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
-static const char __pyx_k_repr[] = "repr";
 static const char __pyx_k_sort[] = "sort";
 static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_index[] = "index";
 static const char __pyx_k_order[] = "order";
-static const char __pyx_k_print[] = "print";
 static const char __pyx_k_INSERT[] = "INSERT";
 static const char __pyx_k_REMOVE[] = "REMOVE";
 static const char __pyx_k_UPDATE[] = "UPDATE";
@@ -2765,7 +2759,6 @@ static const char __pyx_k_changed_realtions[] = "changed_realtions";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_Unsupported_operator_r[] = "Unsupported operator: %r";
 static const char __pyx_k_yapic_entity__entity_operation[] = "yapic.entity._entity_operation";
-static PyObject *__pyx_kp_u_;
 static PyObject *__pyx_n_s_EntityOperation;
 static PyObject *__pyx_n_s_FieldUpdater;
 static PyObject *__pyx_n_s_INSERT;
@@ -2797,7 +2790,6 @@ static PyObject *__pyx_n_s_is_dirty;
 static PyObject *__pyx_n_s_join_expr;
 static PyObject *__pyx_n_s_key;
 static PyObject *__pyx_n_s_main;
-static PyObject *__pyx_n_s_map;
 static PyObject *__pyx_n_s_metaclass;
 static PyObject *__pyx_n_s_module;
 static PyObject *__pyx_n_s_name;
@@ -2807,10 +2799,8 @@ static PyObject *__pyx_n_s_order;
 static PyObject *__pyx_n_s_pk;
 static PyObject *__pyx_n_s_pos;
 static PyObject *__pyx_n_s_prepare;
-static PyObject *__pyx_n_s_print;
 static PyObject *__pyx_n_s_pyx_vtable;
 static PyObject *__pyx_n_s_qualname;
-static PyObject *__pyx_n_s_repr;
 static PyObject *__pyx_n_s_sort;
 static PyObject *__pyx_n_s_source;
 static PyObject *__pyx_n_s_target;
@@ -2899,7 +2889,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_save_operations(stru
  *     # print(order)
  * 
  *     ops.sort(key=cmp_to_key(_comparator(order)))             # <<<<<<<<<<<<<<
- *     print("\n".join(map(repr, ops)))
+ *     # print("\n".join(map(repr, ops)))
  *     return ops
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_ops, __pyx_n_s_sort); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
@@ -2934,37 +2924,9 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_save_operations(stru
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "yapic/entity/_entity_operation.pyx":33
- * 
- *     ops.sort(key=cmp_to_key(_comparator(order)))
- *     print("\n".join(map(repr, ops)))             # <<<<<<<<<<<<<<
- *     return ops
- * 
- */
-  __pyx_t_3 = __Pyx_GetBuiltinName(__pyx_n_s_repr); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 33, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_3);
-  __Pyx_INCREF(__pyx_v_ops);
-  __Pyx_GIVEREF(__pyx_v_ops);
-  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_ops);
-  __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_map, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 33, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyUnicode_Join(__pyx_kp_u_, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 33, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
   /* "yapic/entity/_entity_operation.pyx":34
  *     ops.sort(key=cmp_to_key(_comparator(order)))
- *     print("\n".join(map(repr, ops)))
+ *     # print("\n".join(map(repr, ops)))
  *     return ops             # <<<<<<<<<<<<<<
  * 
  * 
@@ -6341,7 +6303,6 @@ static struct PyModuleDef __pyx_moduledef = {
 #endif
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
-  {&__pyx_kp_u_, __pyx_k_, sizeof(__pyx_k_), 0, 1, 0, 0},
   {&__pyx_n_s_EntityOperation, __pyx_k_EntityOperation, sizeof(__pyx_k_EntityOperation), 0, 0, 1, 1},
   {&__pyx_n_s_FieldUpdater, __pyx_k_FieldUpdater, sizeof(__pyx_k_FieldUpdater), 0, 0, 1, 1},
   {&__pyx_n_s_INSERT, __pyx_k_INSERT, sizeof(__pyx_k_INSERT), 0, 0, 1, 1},
@@ -6373,7 +6334,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_join_expr, __pyx_k_join_expr, sizeof(__pyx_k_join_expr), 0, 0, 1, 1},
   {&__pyx_n_s_key, __pyx_k_key, sizeof(__pyx_k_key), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
-  {&__pyx_n_s_map, __pyx_k_map, sizeof(__pyx_k_map), 0, 0, 1, 1},
   {&__pyx_n_s_metaclass, __pyx_k_metaclass, sizeof(__pyx_k_metaclass), 0, 0, 1, 1},
   {&__pyx_n_s_module, __pyx_k_module, sizeof(__pyx_k_module), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
@@ -6383,10 +6343,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_pk, __pyx_k_pk, sizeof(__pyx_k_pk), 0, 0, 1, 1},
   {&__pyx_n_s_pos, __pyx_k_pos, sizeof(__pyx_k_pos), 0, 0, 1, 1},
   {&__pyx_n_s_prepare, __pyx_k_prepare, sizeof(__pyx_k_prepare), 0, 0, 1, 1},
-  {&__pyx_n_s_print, __pyx_k_print, sizeof(__pyx_k_print), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},
   {&__pyx_n_s_qualname, __pyx_k_qualname, sizeof(__pyx_k_qualname), 0, 0, 1, 1},
-  {&__pyx_n_s_repr, __pyx_k_repr, sizeof(__pyx_k_repr), 0, 0, 1, 1},
   {&__pyx_n_s_sort, __pyx_k_sort, sizeof(__pyx_k_sort), 0, 0, 1, 1},
   {&__pyx_n_s_source, __pyx_k_source, sizeof(__pyx_k_source), 0, 0, 1, 1},
   {&__pyx_n_s_target, __pyx_k_target, sizeof(__pyx_k_target), 0, 0, 1, 1},
@@ -6395,8 +6353,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 33, __pyx_L1_error)
-  __pyx_builtin_map = __Pyx_GetBuiltinName(__pyx_n_s_map); if (!__pyx_builtin_map) __PYX_ERR(0, 33, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 170, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;

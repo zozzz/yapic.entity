@@ -1,7 +1,7 @@
 from ._expression cimport Expression, Visitor, BinaryExpression, UnaryExpression, DirectionExpression, AliasExpression, CastExpression, CallExpression, RawExpression, PathExpression, coerce_expression
 from ._entity cimport EntityType, EntityAttribute
 from ._field cimport Field, field_eq
-from ._relation cimport Relation
+from ._relation cimport Relation, ManyToMany
 
 
 cdef class ReplacerBase(Visitor):
@@ -156,3 +156,14 @@ cdef class FieldReplacer(ReplacerBase):
                 return coerce_expression(self.values[i])
 
         return expr
+
+    def visit_relation(self, Relation relation):
+        cdef Relation clone = relation.clone()
+        if not clone.bind(relation._entity_):
+            raise RuntimeError("...")
+
+        if isinstance(clone._impl_, ManyToMany):
+            clone._impl_.join_expr = self.visit(clone._impl_.join_expr)
+            clone._impl_.across_join_expr = self.visit(clone._impl_.across_join_expr)
+        else:
+            clone._impl_.join_expr = self.visit(clone._impl_.join_expr)

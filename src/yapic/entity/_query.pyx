@@ -490,7 +490,7 @@ cdef class QueryFinalizer(Visitor):
                             existing[field._name_] = idx
 
                     rco.append(RowConvertOp(RCO.SET_ATTR_RECORD, aliased.__fields__[field._index_], idx))
-            elif isinstance(attr, Relation):
+            elif isinstance(attr, Relation) and False: # TODO: temporarly disabled
                 relation = <Relation>attr
                 if relation.get_ext(EagerLoad):
                     relation_rco.append((relation, self._rco_for_eager_relation()))
