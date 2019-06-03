@@ -922,6 +922,19 @@ struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType;
 struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType;
 struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType;
 struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType;
+struct __pyx_opt_args_5yapic_6entity_7_entity_11EntityState_update;
+
+/* "_entity.pxd":96
+ * 
+ *     cdef object init(self)
+ *     cpdef object update(self, dict data, bint is_initial=*)             # <<<<<<<<<<<<<<
+ * 
+ *     cdef object set_value(self, EntityAttribute attr, object value)
+ */
+struct __pyx_opt_args_5yapic_6entity_7_entity_11EntityState_update {
+  int __pyx_n;
+  int is_initial;
+};
 
 /* "yapic/entity/_query.pxd":82
  * """
@@ -2258,7 +2271,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl *__py
 
 struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState {
   PyObject *(*init)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *);
-  PyObject *(*update)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, PyObject *, int);
+  PyObject *(*update)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_5yapic_6entity_7_entity_11EntityState_update *__pyx_optional_args);
   PyObject *(*set_value)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *, PyObject *);
   PyObject *(*set_initial_value)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *, PyObject *);
   PyObject *(*get_value)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *);

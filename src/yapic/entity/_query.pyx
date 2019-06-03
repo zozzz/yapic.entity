@@ -430,6 +430,7 @@ cdef class QueryFinalizer(Visitor):
                 before_create = []
             parent_relation = relation
 
+            self.q.load(relation._impl_.joined)
             rco.extend(self._rco_for_entity(relation._impl_.joined, fields, before_create))
             rco.append(RowConvertOp(RCO.PUSH))
 
@@ -472,6 +473,7 @@ cdef class QueryFinalizer(Visitor):
             self.q.join(child, relation._default_, "LEFT")
 
             create_poly[poly.entities[child][0]] = idx
+            self.q.load(child)
             rco = self._rco_for_entity(child, fields, [
                 RowConvertOp(RCO.POP),
                 RowConvertOp(RCO.SET_ATTR, relation),

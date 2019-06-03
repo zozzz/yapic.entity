@@ -86,6 +86,10 @@ CREATE TABLE "poly"."WorkerY" (
 
     await conn.conn.execute(result)
 
+    result = await sync(conn, Worker.__registry__)
+    print(result)
+    assert bool(result) is False
+
 
 async def test_query_from_worker(conn):
     q = Query().select_from(Worker).where(Worker.employee_field == "Nice")
@@ -151,6 +155,27 @@ async def test_insert_workerx(conn):
     test_worker_x_fields(w)
 
     w = await conn.select(Query().select_from(Employee).where(WorkerX.id == worker.id)).first()
+    test_worker_x_fields(w)
+
+
+async def test_insert_with_specified_id(conn):
+    id = 12345
+    worker = WorkerX()
+    worker.id = id
+    worker.employee_field = "employee_field: set from workerx"
+    worker.worker_field = "worker_field: set from workerx"
+    worker.workerx_field = "workerx_field: set from workerx"
+    await conn.save(worker)
+
+    def test_worker_x_fields(w):
+        assert isinstance(w, WorkerX)
+        assert w.id == id
+        assert w.variant == "workerx"
+        assert w.employee_field == "employee_field: set from workerx"
+        assert w.worker_field == "worker_field: set from workerx"
+        assert w.workerx_field == "workerx_field: set from workerx"
+
+    w = await conn.select(Query().select_from(WorkerX).where(WorkerX.id == id)).first()
     test_worker_x_fields(w)
 
 

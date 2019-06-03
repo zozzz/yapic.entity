@@ -867,6 +867,19 @@ struct __pyx_obj_5yapic_6entity_18_entity_serializer_EntitySerializer;
 struct __pyx_obj_5yapic_6entity_18_entity_serializer_DontSerialize;
 struct __pyx_obj_5yapic_6entity_18_entity_serializer_MappingGenerator;
 struct __pyx_obj_5yapic_6entity_18_entity_serializer_SequenceGenerator;
+struct __pyx_opt_args_5yapic_6entity_7_entity_11EntityState_update;
+
+/* "_entity.pxd":96
+ * 
+ *     cdef object init(self)
+ *     cpdef object update(self, dict data, bint is_initial=*)             # <<<<<<<<<<<<<<
+ * 
+ *     cdef object set_value(self, EntityAttribute attr, object value)
+ */
+struct __pyx_opt_args_5yapic_6entity_7_entity_11EntityState_update {
+  int __pyx_n;
+  int is_initial;
+};
 
 /* "_expression.pxd":4
  * 
@@ -1540,7 +1553,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl *__py
 
 struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState {
   PyObject *(*init)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *);
-  PyObject *(*update)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, PyObject *, int);
+  PyObject *(*update)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_5yapic_6entity_7_entity_11EntityState_update *__pyx_optional_args);
   PyObject *(*set_value)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *, PyObject *);
   PyObject *(*set_initial_value)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *, PyObject *);
   PyObject *(*get_value)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *);

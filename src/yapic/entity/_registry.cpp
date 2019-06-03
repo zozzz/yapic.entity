@@ -873,6 +873,19 @@ struct __pyx_obj_5yapic_6entity_12_entity_diff_EntityDiff;
 struct __pyx_obj_5yapic_6entity_9_registry_Registry;
 struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff;
 struct __pyx_obj_5yapic_6entity_9_registry___pyx_scope_struct____cinit__;
+struct __pyx_opt_args_5yapic_6entity_7_entity_11EntityState_update;
+
+/* "_entity.pxd":96
+ * 
+ *     cdef object init(self)
+ *     cpdef object update(self, dict data, bint is_initial=*)             # <<<<<<<<<<<<<<
+ * 
+ *     cdef object set_value(self, EntityAttribute attr, object value)
+ */
+struct __pyx_opt_args_5yapic_6entity_7_entity_11EntityState_update {
+  int __pyx_n;
+  int is_initial;
+};
 
 /* "_expression.pxd":4
  * 
@@ -1590,7 +1603,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl *__py
 
 struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState {
   PyObject *(*init)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *);
-  PyObject *(*update)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, PyObject *, int);
+  PyObject *(*update)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_5yapic_6entity_7_entity_11EntityState_update *__pyx_optional_args);
   PyObject *(*set_value)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *, PyObject *);
   PyObject *(*set_initial_value)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *, PyObject *);
   PyObject *(*get_value)(struct __pyx_obj_5yapic_6entity_7_entity_EntityState *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *);

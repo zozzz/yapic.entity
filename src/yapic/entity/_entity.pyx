@@ -817,6 +817,17 @@ cdef class EntityBase:
         else:
             return ()
 
+    @__pk__.setter
+    def __pk__(self, val):
+        cdef EntityAttribute attr
+        cdef EntityType ent = type(self)
+        cdef EntityState state = self.__state__
+        cdef tuple pk = (<tuple>val) if isinstance(val, tuple) else (val,)
+
+        for i, attr in enumerate(ent.__pk__):
+            state.set_value(attr, pk[i])
+
+
     def __hash__(self):
         return hash(type(self).__qname__) ^ hash(self.__pk__)
 

@@ -75,6 +75,8 @@ cdef _collect_entities(EntityBase entity, DependencyList order, list ops, object
     cdef EntityBase related
     cdef bint is_dirty
 
+    set_poly_id(entity)
+
     for attr, (add, rem, chg) in state.changed_realtions():
         is_dirty = True
         for related in add:
@@ -92,6 +94,24 @@ cdef _collect_entities(EntityBase entity, DependencyList order, list ops, object
     if (is_dirty or state.is_dirty) and entity not in ops:
         ops.append((op, entity))
         order.add(type(entity))
+
+
+cdef set_poly_id(EntityBase main):
+    cdef EntityType main_t = type(main)
+    try:
+        poly = main_t.__meta__["polymorph"]
+    except KeyError:
+        return
+
+    cdef tuple pk = main.__pk__
+    cdef EntityBase parent_entity
+    cdef Relation parent
+
+    if pk:
+        parent_entity = main
+        for parent in poly.parents(main_t):
+            parent_entity = parent_entity.__state__.get_value(parent)
+            parent_entity.__pk__ = pk
 
 
 cdef set_related_attrs(Relation attr, EntityBase main, EntityBase related, DependencyList order, list ops):
