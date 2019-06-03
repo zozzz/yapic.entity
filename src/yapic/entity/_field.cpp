@@ -2966,6 +2966,8 @@ static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static const char __pyx_k_registry_2[] = "__registry__";
 static const char __pyx_k_StorageType[] = "StorageType";
 static const char __pyx_k_is_sequence[] = "is_sequence";
+static const char __pyx_k_on_delete_2[] = ", on_delete=";
+static const char __pyx_k_on_update_2[] = ", on_update=";
 static const char __pyx_k_visit_field[] = "visit_field";
 static const char __pyx_k_ForeignKey_2[] = "ForeignKey";
 static const char __pyx_k_AutoIncrement[] = "AutoIncrement";
@@ -3038,7 +3040,9 @@ static PyObject *__pyx_n_s_name_2;
 static PyObject *__pyx_n_s_nullable;
 static PyObject *__pyx_kp_u_of;
 static PyObject *__pyx_n_s_on_delete;
+static PyObject *__pyx_kp_u_on_delete_2;
 static PyObject *__pyx_n_s_on_update;
+static PyObject *__pyx_kp_u_on_update_2;
 static PyObject *__pyx_n_s_pop;
 static PyObject *__pyx_n_s_pyx_vtable;
 static PyObject *__pyx_n_s_qualname;
@@ -6867,7 +6871,7 @@ static PyObject *__pyx_pf_5yapic_6entity_6_field_10ForeignKey_4clone(struct __py
  *         return type(self)(self._ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
- *         return "@ForeignKey(%s, %r)" % (self.name, self.ref)
+ *         return "@ForeignKey(%s, %r, on_update=%s, on_delete=%s)" % (self.name, self.ref, self.on_update, self.on_delete)
  * 
  */
 
@@ -6896,12 +6900,12 @@ static PyObject *__pyx_pf_5yapic_6entity_6_field_10ForeignKey_6__repr__(struct _
   /* "yapic/entity/_field.pyx":215
  * 
  *     def __repr__(self):
- *         return "@ForeignKey(%s, %r)" % (self.name, self.ref)             # <<<<<<<<<<<<<<
+ *         return "@ForeignKey(%s, %r, on_update=%s, on_delete=%s)" % (self.name, self.ref, self.on_update, self.on_delete)             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 215, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = 0;
   __pyx_t_3 = 127;
@@ -6927,11 +6931,33 @@ static PyObject *__pyx_pf_5yapic_6entity_6_field_10ForeignKey_6__repr__(struct _
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_1, 3, __pyx_t_4);
   __pyx_t_4 = 0;
+  __Pyx_INCREF(__pyx_kp_u_on_update_2);
+  __pyx_t_2 += 12;
+  __Pyx_GIVEREF(__pyx_kp_u_on_update_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 4, __pyx_kp_u_on_update_2);
+  __pyx_t_4 = __Pyx_PyUnicode_Unicode(__pyx_v_self->on_update); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
+  __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_1, 5, __pyx_t_4);
+  __pyx_t_4 = 0;
+  __Pyx_INCREF(__pyx_kp_u_on_delete_2);
+  __pyx_t_2 += 12;
+  __Pyx_GIVEREF(__pyx_kp_u_on_delete_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 6, __pyx_kp_u_on_delete_2);
+  __pyx_t_4 = __Pyx_PyUnicode_Unicode(__pyx_v_self->on_delete); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
+  __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_1, 7, __pyx_t_4);
+  __pyx_t_4 = 0;
   __Pyx_INCREF(__pyx_kp_u__8);
   __pyx_t_2 += 1;
   __Pyx_GIVEREF(__pyx_kp_u__8);
-  PyTuple_SET_ITEM(__pyx_t_1, 4, __pyx_kp_u__8);
-  __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_1, 5, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 215, __pyx_L1_error)
+  PyTuple_SET_ITEM(__pyx_t_1, 8, __pyx_kp_u__8);
+  __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_1, 9, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 215, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_4;
@@ -6942,7 +6968,7 @@ static PyObject *__pyx_pf_5yapic_6entity_6_field_10ForeignKey_6__repr__(struct _
  *         return type(self)(self._ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
- *         return "@ForeignKey(%s, %r)" % (self.name, self.ref)
+ *         return "@ForeignKey(%s, %r, on_update=%s, on_delete=%s)" % (self.name, self.ref, self.on_update, self.on_delete)
  * 
  */
 
@@ -8835,7 +8861,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_nullable, __pyx_k_nullable, sizeof(__pyx_k_nullable), 0, 0, 1, 1},
   {&__pyx_kp_u_of, __pyx_k_of, sizeof(__pyx_k_of), 0, 1, 0, 0},
   {&__pyx_n_s_on_delete, __pyx_k_on_delete, sizeof(__pyx_k_on_delete), 0, 0, 1, 1},
+  {&__pyx_kp_u_on_delete_2, __pyx_k_on_delete_2, sizeof(__pyx_k_on_delete_2), 0, 1, 0, 0},
   {&__pyx_n_s_on_update, __pyx_k_on_update, sizeof(__pyx_k_on_update), 0, 0, 1, 1},
+  {&__pyx_kp_u_on_update_2, __pyx_k_on_update_2, sizeof(__pyx_k_on_update_2), 0, 1, 0, 0},
   {&__pyx_n_s_pop, __pyx_k_pop, sizeof(__pyx_k_pop), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},
   {&__pyx_n_s_qualname, __pyx_k_qualname, sizeof(__pyx_k_qualname), 0, 0, 1, 1},

@@ -2562,6 +2562,11 @@ static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject 
 /* RaiseException.proto */
 static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
 
+/* WriteUnraisableException.proto */
+static void __Pyx_WriteUnraisable(const char *name, int clineno,
+                                  int lineno, const char *filename,
+                                  int full_traceback, int nogil);
+
 /* CallNextTpDealloc.proto */
 static void __Pyx_call_next_tp_dealloc(PyObject* obj, destructor current_tp_dealloc);
 
@@ -2772,6 +2777,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_related_attrs(st
 static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_del_related_attrs(struct __pyx_obj_5yapic_6entity_9_relation_Relation *, struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *, struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *, struct __pyx_obj_5yapic_6entity_7_entity_DependencyList *, PyObject *); /*proto*/
 static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_append_fields(struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *, struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *, struct __pyx_obj_5yapic_6entity_11_expression_Expression *, PyObject *); /*proto*/
 static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_determine_entity_op(struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *); /*proto*/
+static int __pyx_f_5yapic_6entity_17_entity_operation_test_entity_type_eq(struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *); /*proto*/
 #define __Pyx_MODULE_NAME "yapic.entity._entity_operation"
 extern int __pyx_module_is_main_yapic__entity___entity_operation;
 int __pyx_module_is_main_yapic__entity___entity_operation = 0;
@@ -5619,7 +5625,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
  *             if isinstance(right, EntityAttribute):
  *                 right = get_alias_target(right._entity_).__attrs__[right._index_]             # <<<<<<<<<<<<<<
  * 
- *             if isinstance(left, EntityAttribute) and left._entity_ is self.target_t:
+ *             if isinstance(left, EntityAttribute) and test_entity_type_eq(self.target_t, left._entity_):
  */
       __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_right, __pyx_n_s_entity); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 177, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
@@ -5652,8 +5658,8 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
     /* "yapic/entity/_entity_operation.pyx":179
  *                 right = get_alias_target(right._entity_).__attrs__[right._index_]
  * 
- *             if isinstance(left, EntityAttribute) and left._entity_ is self.target_t:             # <<<<<<<<<<<<<<
- *                 if isinstance(right, EntityAttribute) and right._entity_ is self.source_t:
+ *             if isinstance(left, EntityAttribute) and test_entity_type_eq(self.target_t, left._entity_):             # <<<<<<<<<<<<<<
+ *                 if isinstance(right, EntityAttribute) and test_entity_type_eq(self.source_t, right._entity_):
  *                     self.result.append((self.target, left, self.source, right))
  */
     __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_left, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute); 
@@ -5663,41 +5669,47 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
       __pyx_t_4 = __pyx_t_6;
       goto __pyx_L7_bool_binop_done;
     }
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_left, __pyx_n_s_entity); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 179, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_6 = (__pyx_t_2 == ((PyObject *)__pyx_v_self->target_t));
+    __pyx_t_2 = ((PyObject *)__pyx_v_self->target_t);
+    __Pyx_INCREF(__pyx_t_2);
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_left, __pyx_n_s_entity); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 179, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5yapic_6entity_7_entity_EntityType))))) __PYX_ERR(0, 179, __pyx_L1_error)
+    __pyx_t_6 = (__pyx_f_5yapic_6entity_17_entity_operation_test_entity_type_eq(((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_2), ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_5)) != 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_3 = (__pyx_t_6 != 0);
-    __pyx_t_4 = __pyx_t_3;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_4 = __pyx_t_6;
     __pyx_L7_bool_binop_done:;
     if (__pyx_t_4) {
 
       /* "yapic/entity/_entity_operation.pyx":180
  * 
- *             if isinstance(left, EntityAttribute) and left._entity_ is self.target_t:
- *                 if isinstance(right, EntityAttribute) and right._entity_ is self.source_t:             # <<<<<<<<<<<<<<
+ *             if isinstance(left, EntityAttribute) and test_entity_type_eq(self.target_t, left._entity_):
+ *                 if isinstance(right, EntityAttribute) and test_entity_type_eq(self.source_t, right._entity_):             # <<<<<<<<<<<<<<
  *                     self.result.append((self.target, left, self.source, right))
  *                 else:
  */
-      __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_right, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute); 
-      __pyx_t_6 = (__pyx_t_3 != 0);
-      if (__pyx_t_6) {
+      __pyx_t_6 = __Pyx_TypeCheck(__pyx_v_right, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute); 
+      __pyx_t_3 = (__pyx_t_6 != 0);
+      if (__pyx_t_3) {
       } else {
-        __pyx_t_4 = __pyx_t_6;
+        __pyx_t_4 = __pyx_t_3;
         goto __pyx_L10_bool_binop_done;
       }
+      __pyx_t_5 = ((PyObject *)__pyx_v_self->source_t);
+      __Pyx_INCREF(__pyx_t_5);
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_right, __pyx_n_s_entity); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 180, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_6 = (__pyx_t_2 == ((PyObject *)__pyx_v_self->source_t));
+      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5yapic_6entity_7_entity_EntityType))))) __PYX_ERR(0, 180, __pyx_L1_error)
+      __pyx_t_3 = (__pyx_f_5yapic_6entity_17_entity_operation_test_entity_type_eq(((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_5), ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_2)) != 0);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_3 = (__pyx_t_6 != 0);
       __pyx_t_4 = __pyx_t_3;
       __pyx_L10_bool_binop_done:;
       if (__pyx_t_4) {
 
         /* "yapic/entity/_entity_operation.pyx":181
- *             if isinstance(left, EntityAttribute) and left._entity_ is self.target_t:
- *                 if isinstance(right, EntityAttribute) and right._entity_ is self.source_t:
+ *             if isinstance(left, EntityAttribute) and test_entity_type_eq(self.target_t, left._entity_):
+ *                 if isinstance(right, EntityAttribute) and test_entity_type_eq(self.source_t, right._entity_):
  *                     self.result.append((self.target, left, self.source, right))             # <<<<<<<<<<<<<<
  *                 else:
  *                     self.target.__state__.set_value(left, right)
@@ -5725,8 +5737,8 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
 
         /* "yapic/entity/_entity_operation.pyx":180
  * 
- *             if isinstance(left, EntityAttribute) and left._entity_ is self.target_t:
- *                 if isinstance(right, EntityAttribute) and right._entity_ is self.source_t:             # <<<<<<<<<<<<<<
+ *             if isinstance(left, EntityAttribute) and test_entity_type_eq(self.target_t, left._entity_):
+ *                 if isinstance(right, EntityAttribute) and test_entity_type_eq(self.source_t, right._entity_):             # <<<<<<<<<<<<<<
  *                     self.result.append((self.target, left, self.source, right))
  *                 else:
  */
@@ -5737,8 +5749,8 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
  *                     self.result.append((self.target, left, self.source, right))
  *                 else:
  *                     self.target.__state__.set_value(left, right)             # <<<<<<<<<<<<<<
- *             elif isinstance(right, EntityAttribute) and right._entity_ is self.target_t:
- *                 if isinstance(left, EntityAttribute) and left._entity_ is self.source_t:
+ *             elif isinstance(right, EntityAttribute) and test_entity_type_eq(self.target_t, right._entity_):
+ *                 if isinstance(left, EntityAttribute) and test_entity_type_eq(self.source_t, left._entity_):
  */
       /*else*/ {
         if (!(likely(((__pyx_v_left) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_left, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute))))) __PYX_ERR(0, 183, __pyx_L1_error)
@@ -5751,8 +5763,8 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
       /* "yapic/entity/_entity_operation.pyx":179
  *                 right = get_alias_target(right._entity_).__attrs__[right._index_]
  * 
- *             if isinstance(left, EntityAttribute) and left._entity_ is self.target_t:             # <<<<<<<<<<<<<<
- *                 if isinstance(right, EntityAttribute) and right._entity_ is self.source_t:
+ *             if isinstance(left, EntityAttribute) and test_entity_type_eq(self.target_t, left._entity_):             # <<<<<<<<<<<<<<
+ *                 if isinstance(right, EntityAttribute) and test_entity_type_eq(self.source_t, right._entity_):
  *                     self.result.append((self.target, left, self.source, right))
  */
       goto __pyx_L6;
@@ -5761,8 +5773,8 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
     /* "yapic/entity/_entity_operation.pyx":184
  *                 else:
  *                     self.target.__state__.set_value(left, right)
- *             elif isinstance(right, EntityAttribute) and right._entity_ is self.target_t:             # <<<<<<<<<<<<<<
- *                 if isinstance(left, EntityAttribute) and left._entity_ is self.source_t:
+ *             elif isinstance(right, EntityAttribute) and test_entity_type_eq(self.target_t, right._entity_):             # <<<<<<<<<<<<<<
+ *                 if isinstance(left, EntityAttribute) and test_entity_type_eq(self.source_t, left._entity_):
  *                     self.result.append((self.target, right, self.source, left))
  */
     __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_right, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute); 
@@ -5772,41 +5784,47 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
       __pyx_t_4 = __pyx_t_6;
       goto __pyx_L12_bool_binop_done;
     }
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_right, __pyx_n_s_entity); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 184, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_6 = (__pyx_t_2 == ((PyObject *)__pyx_v_self->target_t));
+    __pyx_t_2 = ((PyObject *)__pyx_v_self->target_t);
+    __Pyx_INCREF(__pyx_t_2);
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_right, __pyx_n_s_entity); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 184, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5yapic_6entity_7_entity_EntityType))))) __PYX_ERR(0, 184, __pyx_L1_error)
+    __pyx_t_6 = (__pyx_f_5yapic_6entity_17_entity_operation_test_entity_type_eq(((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_2), ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_5)) != 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_3 = (__pyx_t_6 != 0);
-    __pyx_t_4 = __pyx_t_3;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_4 = __pyx_t_6;
     __pyx_L12_bool_binop_done:;
     if (__pyx_t_4) {
 
       /* "yapic/entity/_entity_operation.pyx":185
  *                     self.target.__state__.set_value(left, right)
- *             elif isinstance(right, EntityAttribute) and right._entity_ is self.target_t:
- *                 if isinstance(left, EntityAttribute) and left._entity_ is self.source_t:             # <<<<<<<<<<<<<<
+ *             elif isinstance(right, EntityAttribute) and test_entity_type_eq(self.target_t, right._entity_):
+ *                 if isinstance(left, EntityAttribute) and test_entity_type_eq(self.source_t, left._entity_):             # <<<<<<<<<<<<<<
  *                     self.result.append((self.target, right, self.source, left))
  *                 else:
  */
-      __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_left, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute); 
-      __pyx_t_6 = (__pyx_t_3 != 0);
-      if (__pyx_t_6) {
+      __pyx_t_6 = __Pyx_TypeCheck(__pyx_v_left, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute); 
+      __pyx_t_3 = (__pyx_t_6 != 0);
+      if (__pyx_t_3) {
       } else {
-        __pyx_t_4 = __pyx_t_6;
+        __pyx_t_4 = __pyx_t_3;
         goto __pyx_L15_bool_binop_done;
       }
+      __pyx_t_5 = ((PyObject *)__pyx_v_self->source_t);
+      __Pyx_INCREF(__pyx_t_5);
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_left, __pyx_n_s_entity); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 185, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_6 = (__pyx_t_2 == ((PyObject *)__pyx_v_self->source_t));
+      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5yapic_6entity_7_entity_EntityType))))) __PYX_ERR(0, 185, __pyx_L1_error)
+      __pyx_t_3 = (__pyx_f_5yapic_6entity_17_entity_operation_test_entity_type_eq(((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_5), ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_2)) != 0);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_3 = (__pyx_t_6 != 0);
       __pyx_t_4 = __pyx_t_3;
       __pyx_L15_bool_binop_done:;
       if (__pyx_t_4) {
 
         /* "yapic/entity/_entity_operation.pyx":186
- *             elif isinstance(right, EntityAttribute) and right._entity_ is self.target_t:
- *                 if isinstance(left, EntityAttribute) and left._entity_ is self.source_t:
+ *             elif isinstance(right, EntityAttribute) and test_entity_type_eq(self.target_t, right._entity_):
+ *                 if isinstance(left, EntityAttribute) and test_entity_type_eq(self.source_t, left._entity_):
  *                     self.result.append((self.target, right, self.source, left))             # <<<<<<<<<<<<<<
  *                 else:
  *                     self.target.__state__.set_value(right, left)
@@ -5834,8 +5852,8 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
 
         /* "yapic/entity/_entity_operation.pyx":185
  *                     self.target.__state__.set_value(left, right)
- *             elif isinstance(right, EntityAttribute) and right._entity_ is self.target_t:
- *                 if isinstance(left, EntityAttribute) and left._entity_ is self.source_t:             # <<<<<<<<<<<<<<
+ *             elif isinstance(right, EntityAttribute) and test_entity_type_eq(self.target_t, right._entity_):
+ *                 if isinstance(left, EntityAttribute) and test_entity_type_eq(self.source_t, left._entity_):             # <<<<<<<<<<<<<<
  *                     self.result.append((self.target, right, self.source, left))
  *                 else:
  */
@@ -5860,8 +5878,8 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
       /* "yapic/entity/_entity_operation.pyx":184
  *                 else:
  *                     self.target.__state__.set_value(left, right)
- *             elif isinstance(right, EntityAttribute) and right._entity_ is self.target_t:             # <<<<<<<<<<<<<<
- *                 if isinstance(left, EntityAttribute) and left._entity_ is self.source_t:
+ *             elif isinstance(right, EntityAttribute) and test_entity_type_eq(self.target_t, right._entity_):             # <<<<<<<<<<<<<<
+ *                 if isinstance(left, EntityAttribute) and test_entity_type_eq(self.source_t, left._entity_):
  *                     self.result.append((self.target, right, self.source, left))
  */
     }
@@ -6313,6 +6331,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_8vis
  * 
  *     def visit_const(self, ConstExpression expr):             # <<<<<<<<<<<<<<
  *         return expr.value
+ * 
  */
 
 /* Python wrapper */
@@ -6342,6 +6361,8 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_10vi
  * 
  *     def visit_const(self, ConstExpression expr):
  *         return expr.value             # <<<<<<<<<<<<<<
+ * 
+ * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_expr->value);
@@ -6353,11 +6374,142 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_10vi
  * 
  *     def visit_const(self, ConstExpression expr):             # <<<<<<<<<<<<<<
  *         return expr.value
+ * 
  */
 
   /* function exit code */
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "yapic/entity/_entity_operation.pyx":219
+ * 
+ * 
+ * cdef bint test_entity_type_eq(EntityType a, EntityType b):             # <<<<<<<<<<<<<<
+ *     if "polymorph" in b.__meta__ and issubclass(b, a):
+ *         return True
+ */
+
+static int __pyx_f_5yapic_6entity_17_entity_operation_test_entity_type_eq(struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_a, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_b) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  int __pyx_t_3;
+  int __pyx_t_4;
+  __Pyx_RefNannySetupContext("test_entity_type_eq", 0);
+
+  /* "yapic/entity/_entity_operation.pyx":220
+ * 
+ * cdef bint test_entity_type_eq(EntityType a, EntityType b):
+ *     if "polymorph" in b.__meta__ and issubclass(b, a):             # <<<<<<<<<<<<<<
+ *         return True
+ *     elif "polymorph" in a.__meta__ and issubclass(a, b):
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_b), __pyx_n_s_meta); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 220, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = (__Pyx_PySequence_ContainsTF(__pyx_n_u_polymorph, __pyx_t_2, Py_EQ)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 220, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_4 = (__pyx_t_3 != 0);
+  if (__pyx_t_4) {
+  } else {
+    __pyx_t_1 = __pyx_t_4;
+    goto __pyx_L4_bool_binop_done;
+  }
+  __pyx_t_4 = PyObject_IsSubclass(((PyObject *)__pyx_v_b), ((PyObject *)__pyx_v_a)); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 220, __pyx_L1_error)
+  __pyx_t_3 = (__pyx_t_4 != 0);
+  __pyx_t_1 = __pyx_t_3;
+  __pyx_L4_bool_binop_done:;
+  if (__pyx_t_1) {
+
+    /* "yapic/entity/_entity_operation.pyx":221
+ * cdef bint test_entity_type_eq(EntityType a, EntityType b):
+ *     if "polymorph" in b.__meta__ and issubclass(b, a):
+ *         return True             # <<<<<<<<<<<<<<
+ *     elif "polymorph" in a.__meta__ and issubclass(a, b):
+ *         return True
+ */
+    __pyx_r = 1;
+    goto __pyx_L0;
+
+    /* "yapic/entity/_entity_operation.pyx":220
+ * 
+ * cdef bint test_entity_type_eq(EntityType a, EntityType b):
+ *     if "polymorph" in b.__meta__ and issubclass(b, a):             # <<<<<<<<<<<<<<
+ *         return True
+ *     elif "polymorph" in a.__meta__ and issubclass(a, b):
+ */
+  }
+
+  /* "yapic/entity/_entity_operation.pyx":222
+ *     if "polymorph" in b.__meta__ and issubclass(b, a):
+ *         return True
+ *     elif "polymorph" in a.__meta__ and issubclass(a, b):             # <<<<<<<<<<<<<<
+ *         return True
+ *     else:
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_a), __pyx_n_s_meta); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 222, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = (__Pyx_PySequence_ContainsTF(__pyx_n_u_polymorph, __pyx_t_2, Py_EQ)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 222, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_4 = (__pyx_t_3 != 0);
+  if (__pyx_t_4) {
+  } else {
+    __pyx_t_1 = __pyx_t_4;
+    goto __pyx_L6_bool_binop_done;
+  }
+  __pyx_t_4 = PyObject_IsSubclass(((PyObject *)__pyx_v_a), ((PyObject *)__pyx_v_b)); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 222, __pyx_L1_error)
+  __pyx_t_3 = (__pyx_t_4 != 0);
+  __pyx_t_1 = __pyx_t_3;
+  __pyx_L6_bool_binop_done:;
+  if (__pyx_t_1) {
+
+    /* "yapic/entity/_entity_operation.pyx":223
+ *         return True
+ *     elif "polymorph" in a.__meta__ and issubclass(a, b):
+ *         return True             # <<<<<<<<<<<<<<
+ *     else:
+ *         return a is b
+ */
+    __pyx_r = 1;
+    goto __pyx_L0;
+
+    /* "yapic/entity/_entity_operation.pyx":222
+ *     if "polymorph" in b.__meta__ and issubclass(b, a):
+ *         return True
+ *     elif "polymorph" in a.__meta__ and issubclass(a, b):             # <<<<<<<<<<<<<<
+ *         return True
+ *     else:
+ */
+  }
+
+  /* "yapic/entity/_entity_operation.pyx":225
+ *         return True
+ *     else:
+ *         return a is b             # <<<<<<<<<<<<<<
+ */
+  /*else*/ {
+    __pyx_t_1 = (__pyx_v_a == __pyx_v_b);
+    __pyx_r = __pyx_t_1;
+    goto __pyx_L0;
+  }
+
+  /* "yapic/entity/_entity_operation.pyx":219
+ * 
+ * 
+ * cdef bint test_entity_type_eq(EntityType a, EntityType b):             # <<<<<<<<<<<<<<
+ *     if "polymorph" in b.__meta__ and issubclass(b, a):
+ *         return True
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_WriteUnraisable("yapic.entity._entity_operation.test_entity_type_eq", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __pyx_r = 0;
+  __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -8558,6 +8710,48 @@ bad:
     return;
 }
 #endif
+
+/* WriteUnraisableException */
+static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
+                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
+                                  int full_traceback, CYTHON_UNUSED int nogil) {
+    PyObject *old_exc, *old_val, *old_tb;
+    PyObject *ctx;
+    __Pyx_PyThreadState_declare
+#ifdef WITH_THREAD
+    PyGILState_STATE state;
+    if (nogil)
+        state = PyGILState_Ensure();
+#ifdef _MSC_VER
+    else state = (PyGILState_STATE)-1;
+#endif
+#endif
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
+    if (full_traceback) {
+        Py_XINCREF(old_exc);
+        Py_XINCREF(old_val);
+        Py_XINCREF(old_tb);
+        __Pyx_ErrRestore(old_exc, old_val, old_tb);
+        PyErr_PrintEx(1);
+    }
+    #if PY_MAJOR_VERSION < 3
+    ctx = PyString_FromString(name);
+    #else
+    ctx = PyUnicode_FromString(name);
+    #endif
+    __Pyx_ErrRestore(old_exc, old_val, old_tb);
+    if (!ctx) {
+        PyErr_WriteUnraisable(Py_None);
+    } else {
+        PyErr_WriteUnraisable(ctx);
+        Py_DECREF(ctx);
+    }
+#ifdef WITH_THREAD
+    if (nogil)
+        PyGILState_Release(state);
+#endif
+}
 
 /* CallNextTpDealloc */
 static void __Pyx_call_next_tp_dealloc(PyObject* obj, destructor current_tp_dealloc) {

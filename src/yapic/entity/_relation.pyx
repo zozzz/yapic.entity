@@ -352,6 +352,11 @@ cdef class RelatedItem(ValueStore):
                     return ([], [], [current])
                 else:
                     return NOTSET
+            elif current is NOTSET:
+                if initial.__state__.is_dirty:
+                    return ([], [initial], [])
+                else:
+                    return ([], [], [])
             else:
                 return ([current], [initial], [])
 

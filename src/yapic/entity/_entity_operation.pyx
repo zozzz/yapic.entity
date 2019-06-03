@@ -176,13 +176,13 @@ cdef class FieldUpdater(Visitor):
             if isinstance(right, EntityAttribute):
                 right = get_alias_target(right._entity_).__attrs__[right._index_]
 
-            if isinstance(left, EntityAttribute) and left._entity_ is self.target_t:
-                if isinstance(right, EntityAttribute) and right._entity_ is self.source_t:
+            if isinstance(left, EntityAttribute) and test_entity_type_eq(self.target_t, left._entity_):
+                if isinstance(right, EntityAttribute) and test_entity_type_eq(self.source_t, right._entity_):
                     self.result.append((self.target, left, self.source, right))
                 else:
                     self.target.__state__.set_value(left, right)
-            elif isinstance(right, EntityAttribute) and right._entity_ is self.target_t:
-                if isinstance(left, EntityAttribute) and left._entity_ is self.source_t:
+            elif isinstance(right, EntityAttribute) and test_entity_type_eq(self.target_t, right._entity_):
+                if isinstance(left, EntityAttribute) and test_entity_type_eq(self.source_t, left._entity_):
                     self.result.append((self.target, right, self.source, left))
                 else:
                     self.target.__state__.set_value(right, left)
@@ -214,3 +214,12 @@ cdef class FieldUpdater(Visitor):
 
     def visit_const(self, ConstExpression expr):
         return expr.value
+
+
+cdef bint test_entity_type_eq(EntityType a, EntityType b):
+    if "polymorph" in b.__meta__ and issubclass(b, a):
+        return True
+    elif "polymorph" in a.__meta__ and issubclass(a, b):
+        return True
+    else:
+        return a is b

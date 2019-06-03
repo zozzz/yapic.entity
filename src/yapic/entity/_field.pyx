@@ -212,7 +212,7 @@ cdef class ForeignKey(FieldExtension):
         return type(self)(self._ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)
 
     def __repr__(self):
-        return "@ForeignKey(%s, %r)" % (self.name, self.ref)
+        return "@ForeignKey(%s, %r, on_update=%s, on_delete=%s)" % (self.name, self.ref, self.on_update, self.on_delete)
 
 
 cdef compute_fk_name(Field field_from, Field field_to):
