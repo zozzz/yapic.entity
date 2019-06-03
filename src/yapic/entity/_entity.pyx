@@ -532,7 +532,7 @@ cdef class EntityState:
             PyTuple_SET_ITEM(<object>current, idx, <object>iv)
 
 
-    cdef object update(self, dict data, bint is_initial):
+    cpdef object update(self, dict data, bint is_initial = False):
         cdef EntityAttribute attr
         cdef EntityType entity = self.entity
 
@@ -931,15 +931,25 @@ cdef class PolymorphMeta:
         self.id_fields = PolymorphMeta.normalize_id(id)
         self.entities = {}
 
+    def new_entity(self, poly_id):
+        poly_id = PolymorphMeta.normalize_id(poly_id)
+        cdef EntityType entity = None
+
+        for entity, v in self.entities.items():
+            id, rel = <tuple>v
+            if id == poly_id:
+                # data = {}
+                # for i, f in enumerate(self.id_fields):
+                #     data[f] = poly_id[i]
+                return entity()
+
+        raise ValueError("Unexpected value for polymorph id: %r" % poly_id)
+
     cdef object add(self, object id, EntityType entity, object relation):
         if not isinstance(relation, Relation):
             raise TypeError("Relation expected, but got: %r" % relation)
 
         id = PolymorphMeta.normalize_id(id)
-
-        if id in self.entities:
-            raise ValueError("This polymorph_id is already registered: %r" % id)
-
         self.entities[entity] = (id, relation)
 
     @staticmethod

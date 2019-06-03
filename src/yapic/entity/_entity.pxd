@@ -93,7 +93,7 @@ cdef class EntityState:
     # cdef EntityState create_from_dict(EntityType entity, dict data)
 
     cdef object init(self)
-    cdef object update(self, dict data, bint is_initial)
+    cpdef object update(self, dict data, bint is_initial=*)
 
     cdef object set_value(self, EntityAttribute attr, object value)
     cdef object set_initial_value(self, EntityAttribute attr, object value)
