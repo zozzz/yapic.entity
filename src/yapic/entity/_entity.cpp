@@ -3622,7 +3622,6 @@ static const char __pyx_k_SerializerCtx[] = "SerializerCtx";
 static const char __pyx_k_StopIteration[] = "StopIteration";
 static const char __pyx_k_init_subclass[] = "__init_subclass__";
 static const char __pyx_k_DependencyList[] = "DependencyList";
-static const char __pyx_k_polymorph_fkey[] = "polymorph_fkey";
 static const char __pyx_k_EntityAttribute[] = "EntityAttribute";
 static const char __pyx_k_collections_abc[] = "collections.abc";
 static const char __pyx_k_EntitySerializer[] = "EntitySerializer";
@@ -3741,7 +3740,6 @@ static PyObject *__pyx_n_s_on_update;
 static PyObject *__pyx_n_s_operator;
 static PyObject *__pyx_n_s_pk;
 static PyObject *__pyx_n_u_polymorph;
-static PyObject *__pyx_n_u_polymorph_fkey;
 static PyObject *__pyx_n_u_polymorph_id;
 static PyObject *__pyx_n_s_pop;
 static PyObject *__pyx_n_s_prepare;
@@ -4822,7 +4820,7 @@ static int __pyx_pf_5yapic_6entity_7_entity_10EntityType___cinit__(struct __pyx_
  *                 for attr in base_entity.__attrs__:
  *                     if attr.get_ext(PrimaryKey):             # <<<<<<<<<<<<<<
  *                         self_pk = Field(AutoImpl(), name=attr._name_) \
- *                             // ForeignKey(attr, name="polymorph_fkey", on_delete="CASCADE", on_update="CASCADE") \
+ *                             // ForeignKey(attr, on_delete="CASCADE", on_update="CASCADE") \
  */
         __pyx_t_1 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute *)__pyx_v_attr->__pyx_base.__pyx_vtab)->get_ext(__pyx_v_attr, ((PyObject *)__pyx_ptype_5yapic_6entity_6_field_PrimaryKey), 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 95, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
@@ -4834,7 +4832,7 @@ static int __pyx_pf_5yapic_6entity_7_entity_10EntityType___cinit__(struct __pyx_
  *                 for attr in base_entity.__attrs__:
  *                     if attr.get_ext(PrimaryKey):
  *                         self_pk = Field(AutoImpl(), name=attr._name_) \             # <<<<<<<<<<<<<<
- *                             // ForeignKey(attr, name="polymorph_fkey", on_delete="CASCADE", on_update="CASCADE") \
+ *                             // ForeignKey(attr, on_delete="CASCADE", on_update="CASCADE") \
  *                             // PrimaryKey()
  */
           __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L1_error)
@@ -4855,7 +4853,7 @@ static int __pyx_pf_5yapic_6entity_7_entity_10EntityType___cinit__(struct __pyx_
           /* "yapic/entity/_entity.pyx":97
  *                     if attr.get_ext(PrimaryKey):
  *                         self_pk = Field(AutoImpl(), name=attr._name_) \
- *                             // ForeignKey(attr, name="polymorph_fkey", on_delete="CASCADE", on_update="CASCADE") \             # <<<<<<<<<<<<<<
+ *                             // ForeignKey(attr, on_delete="CASCADE", on_update="CASCADE") \             # <<<<<<<<<<<<<<
  *                             // PrimaryKey()
  *                         fields.append(self_pk)
  */
@@ -4864,9 +4862,8 @@ static int __pyx_pf_5yapic_6entity_7_entity_10EntityType___cinit__(struct __pyx_
           __Pyx_INCREF(((PyObject *)__pyx_v_attr));
           __Pyx_GIVEREF(((PyObject *)__pyx_v_attr));
           PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_attr));
-          __pyx_t_3 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 97, __pyx_L1_error)
+          __pyx_t_3 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 97, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_3);
-          if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_name, __pyx_n_u_polymorph_fkey) < 0) __PYX_ERR(0, 97, __pyx_L1_error)
           if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_on_delete, __pyx_n_u_CASCADE) < 0) __PYX_ERR(0, 97, __pyx_L1_error)
           if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_on_update, __pyx_n_u_CASCADE) < 0) __PYX_ERR(0, 97, __pyx_L1_error)
           __pyx_t_13 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_6_field_ForeignKey), __pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 97, __pyx_L1_error)
@@ -4880,7 +4877,7 @@ static int __pyx_pf_5yapic_6entity_7_entity_10EntityType___cinit__(struct __pyx_
 
           /* "yapic/entity/_entity.pyx":98
  *                         self_pk = Field(AutoImpl(), name=attr._name_) \
- *                             // ForeignKey(attr, name="polymorph_fkey", on_delete="CASCADE", on_update="CASCADE") \
+ *                             // ForeignKey(attr, on_delete="CASCADE", on_update="CASCADE") \
  *                             // PrimaryKey()             # <<<<<<<<<<<<<<
  *                         fields.append(self_pk)
  *                         (<EntityAttribute>self_pk)._key_ = attr._key_
@@ -4895,7 +4892,7 @@ static int __pyx_pf_5yapic_6entity_7_entity_10EntityType___cinit__(struct __pyx_
           __pyx_t_12 = 0;
 
           /* "yapic/entity/_entity.pyx":99
- *                             // ForeignKey(attr, name="polymorph_fkey", on_delete="CASCADE", on_update="CASCADE") \
+ *                             // ForeignKey(attr, on_delete="CASCADE", on_update="CASCADE") \
  *                             // PrimaryKey()
  *                         fields.append(self_pk)             # <<<<<<<<<<<<<<
  *                         (<EntityAttribute>self_pk)._key_ = attr._key_
@@ -4988,7 +4985,7 @@ static int __pyx_pf_5yapic_6entity_7_entity_10EntityType___cinit__(struct __pyx_
  *                 for attr in base_entity.__attrs__:
  *                     if attr.get_ext(PrimaryKey):             # <<<<<<<<<<<<<<
  *                         self_pk = Field(AutoImpl(), name=attr._name_) \
- *                             // ForeignKey(attr, name="polymorph_fkey", on_delete="CASCADE", on_update="CASCADE") \
+ *                             // ForeignKey(attr, on_delete="CASCADE", on_update="CASCADE") \
  */
           goto __pyx_L34;
         }
@@ -22200,7 +22197,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_operator, __pyx_k_operator, sizeof(__pyx_k_operator), 0, 0, 1, 1},
   {&__pyx_n_s_pk, __pyx_k_pk, sizeof(__pyx_k_pk), 0, 0, 1, 1},
   {&__pyx_n_u_polymorph, __pyx_k_polymorph, sizeof(__pyx_k_polymorph), 0, 1, 0, 1},
-  {&__pyx_n_u_polymorph_fkey, __pyx_k_polymorph_fkey, sizeof(__pyx_k_polymorph_fkey), 0, 1, 0, 1},
   {&__pyx_n_u_polymorph_id, __pyx_k_polymorph_id, sizeof(__pyx_k_polymorph_id), 0, 1, 0, 1},
   {&__pyx_n_s_pop, __pyx_k_pop, sizeof(__pyx_k_pop), 0, 0, 1, 1},
   {&__pyx_n_s_prepare, __pyx_k_prepare, sizeof(__pyx_k_prepare), 0, 0, 1, 1},

@@ -56,7 +56,7 @@ CREATE TABLE "poly"."Manager" (
   "id" INT4 NOT NULL,
   "manager_field" TEXT,
   PRIMARY KEY("id"),
-  CONSTRAINT "polymorph_fkey" FOREIGN KEY ("id") REFERENCES "poly"."Employee" ("id") ON UPDATE CASCADE ON DELETE CASCADE
+  CONSTRAINT "fk_Manager__id-Employee__id" FOREIGN KEY ("id") REFERENCES "poly"."Employee" ("id") ON UPDATE CASCADE ON DELETE CASCADE
 );
 CREATE SEQUENCE "poly"."Organization_id_seq";
 CREATE TABLE "poly"."Organization" (
@@ -69,19 +69,19 @@ CREATE TABLE "poly"."Worker" (
   "id" INT4 NOT NULL,
   "worker_field" TEXT,
   PRIMARY KEY("id"),
-  CONSTRAINT "polymorph_fkey" FOREIGN KEY ("id") REFERENCES "poly"."Employee" ("id") ON UPDATE CASCADE ON DELETE CASCADE
+  CONSTRAINT "fk_Worker__id-Employee__id" FOREIGN KEY ("id") REFERENCES "poly"."Employee" ("id") ON UPDATE CASCADE ON DELETE CASCADE
 );
 CREATE TABLE "poly"."WorkerX" (
   "id" INT4 NOT NULL,
   "workerx_field" TEXT,
   PRIMARY KEY("id"),
-  CONSTRAINT "polymorph_fkey" FOREIGN KEY ("id") REFERENCES "poly"."Worker" ("id") ON UPDATE CASCADE ON DELETE CASCADE
+  CONSTRAINT "fk_WorkerX__id-Worker__id" FOREIGN KEY ("id") REFERENCES "poly"."Worker" ("id") ON UPDATE CASCADE ON DELETE CASCADE
 );
 CREATE TABLE "poly"."WorkerY" (
   "id" INT4 NOT NULL,
   "workery_field" TEXT,
   PRIMARY KEY("id"),
-  CONSTRAINT "polymorph_fkey" FOREIGN KEY ("id") REFERENCES "poly"."Worker" ("id") ON UPDATE CASCADE ON DELETE CASCADE
+  CONSTRAINT "fk_WorkerY__id-Worker__id" FOREIGN KEY ("id") REFERENCES "poly"."Worker" ("id") ON UPDATE CASCADE ON DELETE CASCADE
 );"""
 
     await conn.conn.execute(result)

@@ -94,7 +94,7 @@ cdef class EntityType(type):
                 for attr in base_entity.__attrs__:
                     if attr.get_ext(PrimaryKey):
                         self_pk = Field(AutoImpl(), name=attr._name_) \
-                            // ForeignKey(attr, name="polymorph_fkey", on_delete="CASCADE", on_update="CASCADE") \
+                            // ForeignKey(attr, on_delete="CASCADE", on_update="CASCADE") \
                             // PrimaryKey()
                         fields.append(self_pk)
                         (<EntityAttribute>self_pk)._key_ = attr._key_

@@ -107,12 +107,16 @@ cdef class PostgreDDLReflect(DDLReflect):
             FROM "information_schema"."table_constraints" "tc"
                 INNER JOIN "information_schema"."key_column_usage" "kcu"
                     ON "tc"."constraint_name" = "kcu"."constraint_name"
+                    AND "tc"."constraint_catalog" = "kcu"."constraint_catalog"
                     AND "tc"."constraint_schema" = "kcu"."constraint_schema"
+                    AND "tc"."table_name" = "kcu"."table_name"
                 INNER JOIN "information_schema"."constraint_column_usage" "ccu"
                     ON "ccu"."constraint_name" = "tc"."constraint_name"
+                    AND "ccu"."constraint_catalog" = "tc"."constraint_catalog"
                     AND "ccu"."constraint_schema" = "tc"."constraint_schema"
                 INNER JOIN "information_schema"."referential_constraints" "rc"
                     ON "rc"."constraint_name" = "tc"."constraint_name"
+                    AND "rc"."constraint_catalog" = "tc"."constraint_catalog"
                     AND "rc"."constraint_schema" = "tc"."constraint_schema"
             WHERE "tc"."constraint_type" = 'FOREIGN KEY'
                 AND "tc"."table_schema" = '{schema}'
