@@ -148,6 +148,12 @@ cdef class EntityType(type):
 
                         setattr(self, name, attr)
 
+        # add dynamic attributes
+        for k, v in attrs.items():
+            if isinstance(v, DynamicAttribute):
+                __attrs__.append(v)
+                (<DynamicAttribute>v)._key_ = k
+
         self.__fix_entries__ = None
         self.__deferred__ = []
         self.__fields__ = tuple(fields)
@@ -398,6 +404,34 @@ cdef class EntityAttribute(Expression):
         for ext in self._exts_:
             if isinstance(ext, ext_type):
                 return ext
+
+
+cdef class DynamicAttribute(EntityAttribute):
+    def __cinit__(self, *args, get, set=None, delete=None):
+        self._get = get
+        self._set = set
+        self._delete = delete
+
+    def __get__(self, instance, owner):
+        return self._get(instance)
+
+    def __set__(self, EntityBase instance, value):
+        if self._set:
+            self._set(instance, value)
+        else:
+            raise ValueError("Can't set attribute: '%s'" % self._key_)
+
+    def __delete__(self, EntityBase instance):
+        if self._delete:
+            self._delete(instance)
+        else:
+            raise ValueError("Can't delete attribute: '%s'" % self._key_)
+
+    cpdef clone(self):
+        return type(self)(self._impl, get=self._get, set=self._set, delete=self._delete)
+
+    def __repr__(self):
+        return "<dynamic %s>" % self._key_
 
 
 cdef class EntityAttributeExt:

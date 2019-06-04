@@ -12,6 +12,7 @@ cdef class NOTSET:
 cdef class EntityType(type):
     cdef readonly tuple __attrs__
     cdef readonly tuple __fields__
+    cdef readonly tuple __props__
     cdef readonly tuple __pk__
     cdef readonly list __deferred__
     cdef public list __fix_entries__
@@ -52,6 +53,12 @@ cdef class EntityAttribute(Expression):
     cpdef clone(self)
     cpdef get_ext(self, ext_type)
     cpdef clone_exts(self, EntityAttribute attr)
+
+
+cdef class DynamicAttribute(EntityAttribute):
+    cdef object _get
+    cdef object _set
+    cdef object _delete
 
 
 cdef class EntityAttributeExt:

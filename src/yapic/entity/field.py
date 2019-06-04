@@ -6,7 +6,7 @@ from decimal import Decimal
 from enum import Enum
 import uuid
 
-from ._entity import Entity
+from ._entity import Entity, DynamicAttribute, EntityAttributeImpl
 from ._field import Field as _Field, Index, ForeignKey, PrimaryKey, AutoIncrement
 from ._field_impl import (
     StringImpl,
@@ -126,3 +126,7 @@ class Composite(Generic[EntityT], Field[CompositeImpl[EntityT], EntityT, str]):
 
 
 Point = Field[PointImpl, PointType, Any]
+
+
+def dynamic(fn) -> DynamicAttribute:
+    return DynamicAttribute(EntityAttributeImpl(), get=fn)
