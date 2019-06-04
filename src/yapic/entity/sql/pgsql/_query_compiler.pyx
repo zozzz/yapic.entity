@@ -500,8 +500,12 @@ cdef str path_expr(object d, str type, str base, list path):
 
 
 cdef compile_eq(left, right, bint neg):
-    if left == "NULL" or left == "TRUE" or left == "FALSE" \
-            or right == "NULL" or right == "TRUE" or right == "FALSE":
+    if left == "NULL" or left == "TRUE" or left == "FALSE":
+        tmp = left
+        left = right
+        right = tmp
+
+    if right == "NULL" or right == "TRUE" or right == "FALSE":
         if neg:
             return f"{left} IS NOT {right}"
         else:
