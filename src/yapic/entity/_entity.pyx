@@ -328,7 +328,7 @@ cdef class EntityAttribute(Expression):
         self._exts_ = []
         self._deps_ = set()
 
-    def __floordiv__(Field self, EntityAttributeExt other):
+    def __floordiv__(EntityAttribute self, EntityAttributeExt other):
         if other.attr is not None:
             if other.attr is not self:
                 raise RuntimeError("Can't rebind entity attribute")

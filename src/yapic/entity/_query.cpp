@@ -13942,7 +13942,7 @@ static PyObject *__pyx_pf_5yapic_6entity_6_query_14QueryFinalizer_36_rco_for_ent
  *                 loading = <Loading>attr.get_ext(Loading)
  *                 if attr._uid_ in self.q._load or (loading is not None and loading.always):             # <<<<<<<<<<<<<<
  *                     relation = <Relation>attr
- *                     if loading.eager:
+ *                     if loading is not None and loading.eager:
  */
       __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_attr->_uid_); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 541, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
@@ -13974,7 +13974,7 @@ static PyObject *__pyx_pf_5yapic_6entity_6_query_14QueryFinalizer_36_rco_for_ent
  *                 loading = <Loading>attr.get_ext(Loading)
  *                 if attr._uid_ in self.q._load or (loading is not None and loading.always):
  *                     relation = <Relation>attr             # <<<<<<<<<<<<<<
- *                     if loading.eager:
+ *                     if loading is not None and loading.eager:
  *                         relation_rco.append((relation, self._rco_for_eager_relation()))
  */
         __pyx_t_3 = ((PyObject *)__pyx_v_attr);
@@ -13985,16 +13985,25 @@ static PyObject *__pyx_pf_5yapic_6entity_6_query_14QueryFinalizer_36_rco_for_ent
         /* "yapic/entity/_query.pyx":543
  *                 if attr._uid_ in self.q._load or (loading is not None and loading.always):
  *                     relation = <Relation>attr
- *                     if loading.eager:             # <<<<<<<<<<<<<<
+ *                     if loading is not None and loading.eager:             # <<<<<<<<<<<<<<
  *                         relation_rco.append((relation, self._rco_for_eager_relation()))
  *                     else:
  */
-        __pyx_t_1 = (__pyx_v_loading->eager != 0);
+        __pyx_t_6 = (((PyObject *)__pyx_v_loading) != Py_None);
+        __pyx_t_2 = (__pyx_t_6 != 0);
+        if (__pyx_t_2) {
+        } else {
+          __pyx_t_1 = __pyx_t_2;
+          goto __pyx_L39_bool_binop_done;
+        }
+        __pyx_t_2 = (__pyx_v_loading->eager != 0);
+        __pyx_t_1 = __pyx_t_2;
+        __pyx_L39_bool_binop_done:;
         if (__pyx_t_1) {
 
           /* "yapic/entity/_query.pyx":544
  *                     relation = <Relation>attr
- *                     if loading.eager:
+ *                     if loading is not None and loading.eager:
  *                         relation_rco.append((relation, self._rco_for_eager_relation()))             # <<<<<<<<<<<<<<
  *                     else:
  *                         relation_rco.append((relation, self._rco_for_lazy_relation(relation)))
@@ -14030,7 +14039,7 @@ static PyObject *__pyx_pf_5yapic_6entity_6_query_14QueryFinalizer_36_rco_for_ent
           /* "yapic/entity/_query.pyx":543
  *                 if attr._uid_ in self.q._load or (loading is not None and loading.always):
  *                     relation = <Relation>attr
- *                     if loading.eager:             # <<<<<<<<<<<<<<
+ *                     if loading is not None and loading.eager:             # <<<<<<<<<<<<<<
  *                         relation_rco.append((relation, self._rco_for_eager_relation()))
  *                     else:
  */
@@ -14080,7 +14089,7 @@ static PyObject *__pyx_pf_5yapic_6entity_6_query_14QueryFinalizer_36_rco_for_ent
  *                 loading = <Loading>attr.get_ext(Loading)
  *                 if attr._uid_ in self.q._load or (loading is not None and loading.always):             # <<<<<<<<<<<<<<
  *                     relation = <Relation>attr
- *                     if loading.eager:
+ *                     if loading is not None and loading.eager:
  */
       }
 
@@ -14181,20 +14190,20 @@ static PyObject *__pyx_pf_5yapic_6entity_6_query_14QueryFinalizer_36_rco_for_ent
       __Pyx_GOTREF(__pyx_t_19);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_23 = Py_TYPE(__pyx_t_19)->tp_iternext;
-      index = 0; __pyx_t_10 = __pyx_t_23(__pyx_t_19); if (unlikely(!__pyx_t_10)) goto __pyx_L41_unpacking_failed;
+      index = 0; __pyx_t_10 = __pyx_t_23(__pyx_t_19); if (unlikely(!__pyx_t_10)) goto __pyx_L43_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_10);
-      index = 1; __pyx_t_7 = __pyx_t_23(__pyx_t_19); if (unlikely(!__pyx_t_7)) goto __pyx_L41_unpacking_failed;
+      index = 1; __pyx_t_7 = __pyx_t_23(__pyx_t_19); if (unlikely(!__pyx_t_7)) goto __pyx_L43_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_7);
       if (__Pyx_IternextUnpackEndCheck(__pyx_t_23(__pyx_t_19), 2) < 0) __PYX_ERR(0, 548, __pyx_L1_error)
       __pyx_t_23 = NULL;
       __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
-      goto __pyx_L42_unpacking_done;
-      __pyx_L41_unpacking_failed:;
+      goto __pyx_L44_unpacking_done;
+      __pyx_L43_unpacking_failed:;
       __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
       __pyx_t_23 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
       __PYX_ERR(0, 548, __pyx_L1_error)
-      __pyx_L42_unpacking_done:;
+      __pyx_L44_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_rel, __pyx_t_10);
     __pyx_t_10 = 0;
@@ -14209,8 +14218,8 @@ static PyObject *__pyx_pf_5yapic_6entity_6_query_14QueryFinalizer_36_rco_for_ent
  *                 rco.append(RowConvertOp(RCO.POP))
  */
     __pyx_t_1 = (__pyx_v_relco != Py_None);
-    __pyx_t_6 = (__pyx_t_1 != 0);
-    if (__pyx_t_6) {
+    __pyx_t_2 = (__pyx_t_1 != 0);
+    if (__pyx_t_2) {
 
       /* "yapic/entity/_query.pyx":550
  *         for rel, relco in relation_rco:

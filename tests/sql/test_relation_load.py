@@ -1,7 +1,7 @@
 import pytest
 from yapic.entity.sql import wrap_connection, Entity, sync
 from yapic.entity import (Serial, Int, String, ForeignKey, PrimaryKey, One, Many, ManyAcross, Registry, DependencyList,
-                          Json, Composite, save_operations, Auto, Query, Loading)
+                          Json, Composite, save_operations, Auto, Query, Loading, Relation)
 
 pytestmark = pytest.mark.asyncio  # type: ignore
 
@@ -58,7 +58,7 @@ class Article(Entity, registry=_registry, schema="ent_load"):
 class Something(Entity, registry=_registry, schema="ent_load"):
     id: Serial
     article_id: Auto = ForeignKey(Article.id)
-    article: One[Article] = Loading(always=True)
+    article: One[Article] = Relation(join="Article.id == Something.article_id") // Loading(always=True)
 
 
 async def test_sync(conn, pgclean):
@@ -164,3 +164,12 @@ async def test_always_load(conn):
     assert something.id == 1
     assert something.article is not None
     assert something.article.id == 1
+
+
+async def test_load_empty_across(conn):
+    user = User(name="User")
+    await conn.save(user)
+
+    user = await conn.select(Query(User).load(User, User.tags).where(User.id == user.id)).first()
+    assert user.name == "User"
+    assert user.tags == []

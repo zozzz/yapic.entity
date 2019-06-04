@@ -540,7 +540,7 @@ cdef class QueryFinalizer(Visitor):
                 loading = <Loading>attr.get_ext(Loading)
                 if attr._uid_ in self.q._load or (loading is not None and loading.always):
                     relation = <Relation>attr
-                    if loading.eager:
+                    if loading is not None and loading.eager:
                         relation_rco.append((relation, self._rco_for_eager_relation()))
                     else:
                         relation_rco.append((relation, self._rco_for_lazy_relation(relation)))

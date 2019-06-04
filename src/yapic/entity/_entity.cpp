@@ -3867,7 +3867,7 @@ static PyObject *__pyx_pf_5yapic_6entity_7_entity_10EntityType_8__deps_____get__
 static PyObject *__pyx_pf_5yapic_6entity_7_entity_is_entity_alias(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_o); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_7_entity_2get_alias_target(CYTHON_UNUSED PyObject *__pyx_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_o); /* proto */
 static int __pyx_pf_5yapic_6entity_7_entity_15EntityAttribute___cinit__(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *__pyx_v_self, PyObject *__pyx_v_args, CYTHON_UNUSED PyObject *__pyx_v_kwargs); /* proto */
-static PyObject *__pyx_pf_5yapic_6entity_7_entity_15EntityAttribute_2__floordiv__(struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt *__pyx_v_other); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_7_entity_15EntityAttribute_2__floordiv__(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt *__pyx_v_other); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_7_entity_15EntityAttribute_4__get__(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *__pyx_v_self, PyObject *__pyx_v_instance, CYTHON_UNUSED PyObject *__pyx_v_owner); /* proto */
 static int __pyx_pf_5yapic_6entity_7_entity_15EntityAttribute_6__set__(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *__pyx_v_instance, PyObject *__pyx_v_value); /* proto */
 static int __pyx_pf_5yapic_6entity_7_entity_15EntityAttribute_8__delete__(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *__pyx_v_instance); /* proto */
@@ -8680,7 +8680,7 @@ static int __pyx_pf_5yapic_6entity_7_entity_15EntityAttribute___cinit__(struct _
  *         self._exts_ = []
  *         self._deps_ = set()             # <<<<<<<<<<<<<<
  * 
- *     def __floordiv__(Field self, EntityAttributeExt other):
+ *     def __floordiv__(EntityAttribute self, EntityAttributeExt other):
  */
   __pyx_t_2 = PySet_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 329, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -8714,7 +8714,7 @@ static int __pyx_pf_5yapic_6entity_7_entity_15EntityAttribute___cinit__(struct _
 /* "yapic/entity/_entity.pyx":331
  *         self._deps_ = set()
  * 
- *     def __floordiv__(Field self, EntityAttributeExt other):             # <<<<<<<<<<<<<<
+ *     def __floordiv__(EntityAttribute self, EntityAttributeExt other):             # <<<<<<<<<<<<<<
  *         if other.attr is not None:
  *             if other.attr is not self:
  */
@@ -8725,9 +8725,9 @@ static PyObject *__pyx_pw_5yapic_6entity_7_entity_15EntityAttribute_3__floordiv_
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__floordiv__ (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_5yapic_6entity_6_field_Field, 1, "self", 0))) __PYX_ERR(0, 331, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute, 1, "self", 0))) __PYX_ERR(0, 331, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt, 1, "other", 0))) __PYX_ERR(0, 331, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_6entity_7_entity_15EntityAttribute_2__floordiv__(((struct __pyx_obj_5yapic_6entity_6_field_Field *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt *)__pyx_v_other));
+  __pyx_r = __pyx_pf_5yapic_6entity_7_entity_15EntityAttribute_2__floordiv__(((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *)__pyx_v_self), ((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt *)__pyx_v_other));
 
   /* function exit code */
   goto __pyx_L0;
@@ -8738,7 +8738,7 @@ static PyObject *__pyx_pw_5yapic_6entity_7_entity_15EntityAttribute_3__floordiv_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5yapic_6entity_7_entity_15EntityAttribute_2__floordiv__(struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt *__pyx_v_other) {
+static PyObject *__pyx_pf_5yapic_6entity_7_entity_15EntityAttribute_2__floordiv__(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt *__pyx_v_other) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -8749,7 +8749,7 @@ static PyObject *__pyx_pf_5yapic_6entity_7_entity_15EntityAttribute_2__floordiv_
 
   /* "yapic/entity/_entity.pyx":332
  * 
- *     def __floordiv__(Field self, EntityAttributeExt other):
+ *     def __floordiv__(EntityAttribute self, EntityAttributeExt other):
  *         if other.attr is not None:             # <<<<<<<<<<<<<<
  *             if other.attr is not self:
  *                 raise RuntimeError("Can't rebind entity attribute")
@@ -8759,13 +8759,13 @@ static PyObject *__pyx_pf_5yapic_6entity_7_entity_15EntityAttribute_2__floordiv_
   if (__pyx_t_2) {
 
     /* "yapic/entity/_entity.pyx":333
- *     def __floordiv__(Field self, EntityAttributeExt other):
+ *     def __floordiv__(EntityAttribute self, EntityAttributeExt other):
  *         if other.attr is not None:
  *             if other.attr is not self:             # <<<<<<<<<<<<<<
  *                 raise RuntimeError("Can't rebind entity attribute")
  *         else:
  */
-    __pyx_t_2 = (((PyObject *)__pyx_v_other->attr) != ((PyObject *)__pyx_v_self));
+    __pyx_t_2 = (__pyx_v_other->attr != __pyx_v_self);
     __pyx_t_1 = (__pyx_t_2 != 0);
     if (unlikely(__pyx_t_1)) {
 
@@ -8783,7 +8783,7 @@ static PyObject *__pyx_pf_5yapic_6entity_7_entity_15EntityAttribute_2__floordiv_
       __PYX_ERR(0, 334, __pyx_L1_error)
 
       /* "yapic/entity/_entity.pyx":333
- *     def __floordiv__(Field self, EntityAttributeExt other):
+ *     def __floordiv__(EntityAttribute self, EntityAttributeExt other):
  *         if other.attr is not None:
  *             if other.attr is not self:             # <<<<<<<<<<<<<<
  *                 raise RuntimeError("Can't rebind entity attribute")
@@ -8793,7 +8793,7 @@ static PyObject *__pyx_pf_5yapic_6entity_7_entity_15EntityAttribute_2__floordiv_
 
     /* "yapic/entity/_entity.pyx":332
  * 
- *     def __floordiv__(Field self, EntityAttributeExt other):
+ *     def __floordiv__(EntityAttribute self, EntityAttributeExt other):
  *         if other.attr is not None:             # <<<<<<<<<<<<<<
  *             if other.attr is not self:
  *                 raise RuntimeError("Can't rebind entity attribute")
@@ -8813,7 +8813,7 @@ static PyObject *__pyx_pf_5yapic_6entity_7_entity_15EntityAttribute_2__floordiv_
     __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
     __Pyx_GOTREF(__pyx_v_other->attr);
     __Pyx_DECREF(((PyObject *)__pyx_v_other->attr));
-    __pyx_v_other->attr = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *)__pyx_v_self);
+    __pyx_v_other->attr = __pyx_v_self;
   }
   __pyx_L3:;
 
@@ -8824,11 +8824,11 @@ static PyObject *__pyx_pf_5yapic_6entity_7_entity_15EntityAttribute_2__floordiv_
  *         return self
  * 
  */
-  if (unlikely(__pyx_v_self->__pyx_base._exts_ == Py_None)) {
+  if (unlikely(__pyx_v_self->_exts_ == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
     __PYX_ERR(0, 337, __pyx_L1_error)
   }
-  __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_self->__pyx_base._exts_, ((PyObject *)__pyx_v_other)); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 337, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_self->_exts_, ((PyObject *)__pyx_v_other)); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 337, __pyx_L1_error)
 
   /* "yapic/entity/_entity.pyx":338
  *             other.attr = self
@@ -8845,7 +8845,7 @@ static PyObject *__pyx_pf_5yapic_6entity_7_entity_15EntityAttribute_2__floordiv_
   /* "yapic/entity/_entity.pyx":331
  *         self._deps_ = set()
  * 
- *     def __floordiv__(Field self, EntityAttributeExt other):             # <<<<<<<<<<<<<<
+ *     def __floordiv__(EntityAttribute self, EntityAttributeExt other):             # <<<<<<<<<<<<<<
  *         if other.attr is not None:
  *             if other.attr is not self:
  */

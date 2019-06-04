@@ -14,6 +14,9 @@ from ._error cimport JoinError
 
 
 cdef class Relation(EntityAttribute):
+    def __cinit__(self, *args, join = None):
+        self._default_ = join
+
     cdef object bind(self, EntityType entity):
         cdef RelationImpl impl
         if EntityAttribute.bind(self, entity):

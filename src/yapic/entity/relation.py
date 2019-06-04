@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar, overload, Type, Union, Any
+from typing import Generic, TypeVar, overload, Type, Union, Any, Optional
 
 from . import _relation
 from .field import Field
@@ -20,7 +20,7 @@ class Relation(Generic[Impl, T], _relation.Relation):
     # def __new__(cls, *args, **kwargs):
     #     return _relation.Relation.__new__(_relation.Relation, *args, **kwargs)
 
-    def __init__(self, impl: Impl):
+    def __init__(self, impl: Impl = None, *, join: Optional[str] = None):
         pass
 
     # TODO: move to stub file

@@ -16,69 +16,6 @@ cdef class RCState:
         self.cache = {}
 
 
-# @cython.final
-# class RecordConverter:
-#     def __cinit__(self, RCState state):
-#         self.stack = []
-#         self.state = state
-#         self.tf = state.conn.dialect.create_type_factory()
-
-#     async def convert(object record, list rcos_list):
-#         cdef tuple converted = PyTuple_New(len(rcos_list))
-#         cdef list rcos
-#         cdef RowConvertOp rco
-
-#         push = self.stack.append
-#         pop = self.stack.pop
-
-#         for i in range(0, len(rcos_list)):
-#             rcos = <list>(<list>(rcos_list)[i])
-
-#             for j in range(0, len(rcos)):
-#                 rco = <RowConvertOp>(<list>(rcos)[j])
-
-#                 if rco.op == RCO.PUSH:
-#                     push(result)
-#                 elif rco.op == RCO.POP:
-#                     tmp = pop()
-#                 elif rco.op == RCO.CREATE_STATE:
-#                     self.entity_state = EntityState(rco.param1)
-#                 elif rco.op == RCO.CREATE_ENTITY:
-#                     result = rco.param1(entity_state)
-#                 elif rco.op == RCO.CREATE_POLYMORPH_ENTITY:
-#                     # TODO: refactor, very bad
-#                     poly_id = tuple(record[idx] for idx in rco.op)
-#                     poly_type = rco.param2[poly_id]
-
-
-#                 elif rco.op == RCO.LOAD_ENTITY:
-#                     raise NotImplementedError()
-#                 elif rco.op == RCO.SET_ATTR:
-#                     self.entity_state.set_initial_value(<EntityAttribute>rco.param1, tmp)
-#                 elif rco.op == RCO.SET_ATTR_RECORD:
-
-#                 elif rco.op == RCO.GET_RECORD:
-#                     result = record[rco.param1]
-
-#             Py_INCREF(<object>result)
-#             PyTuple_SET_ITEM(<object>converted, i, <object>result)
-
-#         if rcos_list_len == 1:
-#             return converted[0]
-#         else:
-#             return converted
-
-#     cdef set_attr_from_record(self, RowConvertOp rco, object record):
-#         cdef Field field = rco.param1
-#         tmp = record[rco.param2]
-#         if tmp is None:
-#             entity_state.set_initial_value(field, None)
-#         else:
-#             stype = field.get_type(self.tf)
-#             entity_state.set_initial_value(field, stype.decode(tmp))
-
-
-
 async def convert_record(object record, list rcos_list, RCState state):
     cdef int rcos_list_len = len(rcos_list)
     cdef tuple converted = PyTuple_New(rcos_list_len)
