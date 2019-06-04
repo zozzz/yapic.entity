@@ -5,7 +5,7 @@ from datetime import datetime
 from decimal import Decimal
 from yapic.entity.sql import wrap_connection, Entity, sync
 from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Bool, ForeignKey, PrimaryKey,
-                          One, Query, func, EntityDiff, Registry, Json, Composite, Auto, Numeric, Float, Point)
+                          One, Query, func, EntityDiff, Registry, Json, Composite, Auto, Numeric, Float, Point, UUID)
 
 pytestmark = pytest.mark.asyncio
 
@@ -22,6 +22,7 @@ class Address(Entity, schema="execution"):
 
 class User(Entity, schema="execution"):
     id: Serial
+    uuid: UUID
     name: String = Field(size=100)
     bio: String
     fixed_char: String = Field(size=[5, 5])
@@ -63,6 +64,7 @@ CREATE TABLE "execution"."Address" (
 CREATE SEQUENCE "execution"."User_id_seq";
 CREATE TABLE "execution"."User" (
   "id" INT4 NOT NULL DEFAULT nextval('"execution"."User_id_seq"'::regclass),
+  "uuid" UUID,
   "name" VARCHAR(100),
   "bio" TEXT,
   "fixed_char" CHAR(5),
@@ -200,6 +202,7 @@ async def test_diff(conn):
 
     class User(Entity, schema="execution", registry=new_reg):
         id: Serial
+        uuid: UUID
         name_x: String = Field(size=100)
         bio: String = Field(size=200)
         fixed_char: Bytes

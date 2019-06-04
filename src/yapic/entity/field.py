@@ -4,6 +4,8 @@ from typing import Generic, TypeVar, Union, Optional, List, Tuple, Type, Any
 from datetime import date, datetime
 from decimal import Decimal
 from enum import Enum
+import uuid
+
 from ._entity import Entity
 from ._field import Field as _Field, Index, ForeignKey, PrimaryKey, AutoIncrement
 from ._field_impl import (
@@ -17,6 +19,7 @@ from ._field_impl import (
     DateTimeTzImpl,
     NumericImpl,
     FloatImpl,
+    UUIDImpl,
     JsonImpl as _JsonImpl,
     CompositeImpl as _CompositeImpl,
     AutoImpl,
@@ -68,6 +71,12 @@ class Int(Field[IntImpl, int, int]):
 class Float(Field[FloatImpl, float, float]):
     def __new__(cls, *args, **kwargs):
         kwargs.setdefault("size", 4)
+        return Field.__new__(cls, *args, **kwargs)
+
+
+class UUID(Field[UUIDImpl, uuid.UUID, uuid.UUID]):
+    def __new__(cls, *args, **kwargs):
+        kwargs.setdefault("default", uuid.uuid4)
         return Field.__new__(cls, *args, **kwargs)
 
 

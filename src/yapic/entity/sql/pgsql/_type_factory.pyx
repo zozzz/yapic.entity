@@ -15,7 +15,8 @@ from yapic.entity._field_impl cimport (
     DateTimeTzImpl,
     ChoiceImpl,
     JsonImpl,
-    CompositeImpl
+    CompositeImpl,
+    UUIDImpl
 )
 from yapic.entity._geom_impl cimport (
     PointImpl,
@@ -49,6 +50,8 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
             return self.__numeric_type(field, <NumericImpl>impl)
         elif isinstance(impl, FloatImpl):
             return self.__float_type(field, <FloatImpl>impl)
+        elif isinstance(impl, UUIDImpl):
+            return self.__uuid_type(field, <UUIDImpl>impl)
         elif isinstance(impl, ChoiceImpl):
             return self.__choice_type(field, <ChoiceImpl>impl)
         elif isinstance(impl, JsonImpl):
@@ -97,6 +100,9 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
 
     cdef StorageType __float_type(self, Field field, FloatImpl impl):
         return FloatType(f"FLOAT{field.max_size}")
+
+    cdef StorageType __uuid_type(self, Field field, UUIDImpl impl):
+        return UUIDType(f"UUID")
 
     cdef StorageType __choice_type(self, Field field, ChoiceImpl impl):
         # hashid = Hashids(min_length=5, salt=impl.enum.__qualname__)
@@ -258,6 +264,14 @@ cdef class FloatType(PostgreType):
             return float(value)
         else:
             return value
+
+
+cdef class UUIDType(PostgreType):
+    cpdef object encode(self, object value):
+        return value
+
+    cpdef object decode(self, object value):
+        return value
 
 
 cdef class ChoiceType(PostgreType):

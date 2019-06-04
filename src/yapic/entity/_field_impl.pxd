@@ -38,6 +38,10 @@ cdef class FloatImpl(FieldImpl):
     pass
 
 
+cdef class UUIDImpl(FieldImpl):
+    pass
+
+
 cdef class ChoiceImpl(FieldImpl):
     cdef object _enum
     cdef readonly bint is_multi

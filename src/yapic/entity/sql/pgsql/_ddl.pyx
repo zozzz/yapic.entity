@@ -16,6 +16,7 @@ from yapic.entity._field_impl cimport (
     DateTimeTzImpl,
     NumericImpl,
     FloatImpl,
+    UUIDImpl,
     JsonImpl,
     CompositeImpl,
 )
@@ -200,6 +201,8 @@ cdef class PostgreDDLReflect(DDLReflect):
             field = Field(NumericImpl(), size=(record["numeric_precision"], record["numeric_scale"]), nullable=is_nullable)
         elif typename == "float4" or typename == "float8":
             field = Field(FloatImpl(), size=record["size"], nullable=is_nullable)
+        elif typename == "uuid":
+            field = Field(UUIDImpl(), nullable=is_nullable)
         elif typename == "jsonb":
             JSON_ENTITY_UID += 1
 

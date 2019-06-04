@@ -256,6 +256,11 @@ cdef object load_options(dict target, tuple input):
         elif isinstance(inp, PathExpression):
             if isinstance((<PathExpression>inp)._primary_, Relation):
                 target[(<EntityAttribute>(<PathExpression>inp)._primary_)._uid_] = inp
+            elif isinstance((<PathExpression>inp)._primary_, Field):
+                if isinstance((<Field>(<PathExpression>inp)._primary_)._impl_, CompositeImpl):
+                    target[(<Field>(<PathExpression>inp)._primary_)._impl_._entity_] = inp
+                else:
+                    raise NotImplementedError()
             else:
                 raise NotImplementedError()
         else:

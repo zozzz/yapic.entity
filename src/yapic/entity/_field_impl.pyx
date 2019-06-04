@@ -65,6 +65,11 @@ cdef class FloatImpl(FieldImpl):
         return "Float"
 
 
+cdef class UUIDImpl(FieldImpl):
+    def __repr__(self):
+        return "UUID"
+
+
 cdef class EntityTypeImpl(FieldImpl):
     def __init__(self, entity):
         entity.__meta__["is_type"] = True
