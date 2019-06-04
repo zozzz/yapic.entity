@@ -897,7 +897,7 @@ struct __pyx_obj_5yapic_6entity_9_relation_ValueStore;
 struct __pyx_obj_5yapic_6entity_9_relation_RelatedItem;
 struct __pyx_obj_5yapic_6entity_9_relation_RelatedList;
 struct __pyx_obj_5yapic_6entity_9_relation_RelatedDict;
-struct __pyx_obj_5yapic_6entity_9_relation_EagerLoad;
+struct __pyx_obj_5yapic_6entity_9_relation_Loading;
 struct __pyx_obj_5yapic_6entity_7_entity_NOTSET;
 struct __pyx_obj_5yapic_6entity_7_entity_EntityType;
 struct __pyx_obj_5yapic_6entity_7_entity_EntityBase;
@@ -1626,16 +1626,17 @@ struct __pyx_obj_5yapic_6entity_9_relation_RelatedDict {
 };
 
 
-/* "_relation.pxd":86
- *     pass
+/* "_relation.pxd":87
  * 
- * cdef class EagerLoad(EntityAttributeExt):             # <<<<<<<<<<<<<<
- *     cdef readonly str type
  * 
+ * cdef class Loading(EntityAttributeExt):             # <<<<<<<<<<<<<<
+ *     cdef readonly bint always
+ *     cdef readonly bint eager
  */
-struct __pyx_obj_5yapic_6entity_9_relation_EagerLoad {
+struct __pyx_obj_5yapic_6entity_9_relation_Loading {
   struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt __pyx_base;
-  PyObject *type;
+  int always;
+  int eager;
 };
 
 
@@ -2508,18 +2509,18 @@ struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedDict {
 static struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedDict *__pyx_vtabptr_5yapic_6entity_9_relation_RelatedDict;
 
 
-/* "_relation.pxd":86
- *     pass
+/* "_relation.pxd":87
  * 
- * cdef class EagerLoad(EntityAttributeExt):             # <<<<<<<<<<<<<<
- *     cdef readonly str type
  * 
+ * cdef class Loading(EntityAttributeExt):             # <<<<<<<<<<<<<<
+ *     cdef readonly bint always
+ *     cdef readonly bint eager
  */
 
-struct __pyx_vtabstruct_5yapic_6entity_9_relation_EagerLoad {
+struct __pyx_vtabstruct_5yapic_6entity_9_relation_Loading {
   struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt __pyx_base;
 };
-static struct __pyx_vtabstruct_5yapic_6entity_9_relation_EagerLoad *__pyx_vtabptr_5yapic_6entity_9_relation_EagerLoad;
+static struct __pyx_vtabstruct_5yapic_6entity_9_relation_Loading *__pyx_vtabptr_5yapic_6entity_9_relation_Loading;
 
 
 /* "yapic/entity/_entity.pyx":29
@@ -3487,7 +3488,7 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_9_relation_ValueStore = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_9_relation_RelatedItem = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_9_relation_RelatedList = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_9_relation_RelatedDict = 0;
-static PyTypeObject *__pyx_ptype_5yapic_6entity_9_relation_EagerLoad = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_9_relation_Loading = 0;
 
 /* Module declarations from 'yapic.entity._entity' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_7_entity_NOTSET = 0;
@@ -22710,9 +22711,9 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_5yapic_6entity_9_relation_RelatedDict = __Pyx_ImportType(__pyx_t_1, "yapic.entity._relation", "RelatedDict", sizeof(struct __pyx_obj_5yapic_6entity_9_relation_RelatedDict), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_6entity_9_relation_RelatedDict) __PYX_ERR(8, 83, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_9_relation_RelatedDict = (struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedDict*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_9_relation_RelatedDict->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_9_relation_RelatedDict)) __PYX_ERR(8, 83, __pyx_L1_error)
-  __pyx_ptype_5yapic_6entity_9_relation_EagerLoad = __Pyx_ImportType(__pyx_t_1, "yapic.entity._relation", "EagerLoad", sizeof(struct __pyx_obj_5yapic_6entity_9_relation_EagerLoad), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_9_relation_EagerLoad) __PYX_ERR(8, 86, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_9_relation_EagerLoad = (struct __pyx_vtabstruct_5yapic_6entity_9_relation_EagerLoad*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_9_relation_EagerLoad->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_9_relation_EagerLoad)) __PYX_ERR(8, 86, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_9_relation_Loading = __Pyx_ImportType(__pyx_t_1, "yapic.entity._relation", "Loading", sizeof(struct __pyx_obj_5yapic_6entity_9_relation_Loading), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_9_relation_Loading) __PYX_ERR(8, 87, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_9_relation_Loading = (struct __pyx_vtabstruct_5yapic_6entity_9_relation_Loading*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_9_relation_Loading->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_9_relation_Loading)) __PYX_ERR(8, 87, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

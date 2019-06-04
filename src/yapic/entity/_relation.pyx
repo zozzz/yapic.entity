@@ -41,6 +41,9 @@ cdef class Relation(EntityAttribute):
     cpdef object clone(self):
         cdef EntityAttribute res = type(self)(self._impl_.clone())
         res._exts_ = self.clone_exts(res)
+        res._default_ = self._default_
+        res._key_ = self._key_
+        res._name_ = self._name_
         res._deps_ = set(self._deps_)
         return res
 
@@ -407,9 +410,10 @@ cdef class RelatedDict(ValueStore):
     pass
 
 
-cdef class EagerLoad(EntityAttributeExt):
-    def __cinit__(self, str type="INNER"):
-        self.type = type
+cdef class Loading(EntityAttributeExt):
+    def __cinit__(self, *, bint always=False, str eager=None):
+        self.always = always
+        self.eager = eager
 
 
 # cdef class RelatedItem(ValueStore):

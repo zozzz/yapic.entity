@@ -2,9 +2,9 @@ from typing import Generic, TypeVar, overload, Type, Union, Any
 
 from . import _relation
 from .field import Field
-from ._relation import EagerLoad
+from ._relation import Loading
 
-__all__ = "Relation", "Many", "One", "ManyAcross", "EagerLoad"
+__all__ = "Relation", "Many", "One", "ManyAcross", "Loading"
 
 # TO MOVE THIS CODE INTO CYTHON:
 # https://github.com/cython/cython/issues/2753

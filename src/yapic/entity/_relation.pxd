@@ -83,8 +83,10 @@ cdef class RelatedList(ValueStore):
 cdef class RelatedDict(ValueStore):
     pass
 
-cdef class EagerLoad(EntityAttributeExt):
-    cdef readonly str type
+
+cdef class Loading(EntityAttributeExt):
+    cdef readonly bint always
+    cdef readonly bint eager
 
 
 # cdef class RelatedItem(ValueStore):

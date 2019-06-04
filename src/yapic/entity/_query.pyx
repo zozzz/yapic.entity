@@ -6,7 +6,7 @@ from yapic.entity._field_impl cimport CompositeImpl
 from yapic.entity._expression cimport (Expression, AliasExpression, DirectionExpression, Visitor, BinaryExpression,
     UnaryExpression, CastExpression, CallExpression, RawExpression, PathExpression)
 from yapic.entity._expression import and_
-from yapic.entity._relation cimport Relation, RelationImpl, ManyToOne, ManyToMany, RelatedAttribute, determine_join_expr, EagerLoad
+from yapic.entity._relation cimport Relation, RelationImpl, ManyToOne, ManyToMany, RelatedAttribute, determine_join_expr, Loading
 from yapic.entity._error cimport JoinError
 from yapic.entity._visitors cimport extract_fields, replace_fields, replace_entity
 
@@ -504,6 +504,7 @@ cdef class QueryFinalizer(Visitor):
         cdef Field field
         cdef Relation relation
         cdef relation_rco = []
+        cdef Loading loading
 
         for attr in entity_type.__attrs__:
             if isinstance(attr, Field):
@@ -530,12 +531,14 @@ cdef class QueryFinalizer(Visitor):
                                 existing[field._name_] = idx
 
                         rco.append(RowConvertOp(RCO.SET_ATTR_RECORD, aliased.__fields__[field._index_], idx))
-            elif isinstance(attr, Relation) and attr._uid_ in self.q._load:
-                relation = <Relation>attr
-                if relation.get_ext(EagerLoad):
-                    relation_rco.append((relation, self._rco_for_eager_relation()))
-                else:
-                    relation_rco.append((relation, self._rco_for_lazy_relation(relation)))
+            elif isinstance(attr, Relation):
+                loading = <Loading>attr.get_ext(Loading)
+                if attr._uid_ in self.q._load or (loading is not None and loading.always):
+                    relation = <Relation>attr
+                    if loading.eager:
+                        relation_rco.append((relation, self._rco_for_eager_relation()))
+                    else:
+                        relation_rco.append((relation, self._rco_for_lazy_relation(relation)))
 
         for rel, relco in relation_rco:
             if relco is not None:

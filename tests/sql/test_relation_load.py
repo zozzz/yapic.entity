@@ -1,7 +1,7 @@
 import pytest
 from yapic.entity.sql import wrap_connection, Entity, sync
 from yapic.entity import (Serial, Int, String, ForeignKey, PrimaryKey, One, Many, ManyAcross, Registry, DependencyList,
-                          Json, Composite, save_operations, Auto, Query)
+                          Json, Composite, save_operations, Auto, Query, Loading)
 
 pytestmark = pytest.mark.asyncio  # type: ignore
 
@@ -47,6 +47,20 @@ class UserChild(Entity, registry=_registry, schema="ent_load"):
     name: String
 
 
+class Article(Entity, registry=_registry, schema="ent_load"):
+    id: Serial
+    creator_id: Auto = ForeignKey(User.id)
+    creator: One[User] = "User.id == Article.creator_id"
+    updater_id: Auto = ForeignKey(User.id)
+    updater: One[User] = "User.id == Article.updater_id"
+
+
+class Something(Entity, registry=_registry, schema="ent_load"):
+    id: Serial
+    article_id: Auto = ForeignKey(Article.id)
+    article: One[Article] = Loading(always=True)
+
+
 async def test_sync(conn, pgclean):
     result = await sync(conn, _registry)
     assert result == """CREATE SCHEMA IF NOT EXISTS "ent_load";
@@ -56,12 +70,6 @@ CREATE TABLE "ent_load"."Address" (
   "addr" TEXT,
   PRIMARY KEY("id")
 );
-CREATE SEQUENCE "ent_load"."Tag_id_seq";
-CREATE TABLE "ent_load"."Tag" (
-  "id" INT4 NOT NULL DEFAULT nextval('"ent_load"."Tag_id_seq"'::regclass),
-  "value" TEXT,
-  PRIMARY KEY("id")
-);
 CREATE SEQUENCE "ent_load"."User_id_seq";
 CREATE TABLE "ent_load"."User" (
   "id" INT4 NOT NULL DEFAULT nextval('"ent_load"."User_id_seq"'::regclass),
@@ -69,6 +77,28 @@ CREATE TABLE "ent_load"."User" (
   "address_id" INT4,
   PRIMARY KEY("id"),
   CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "ent_load"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
+);
+CREATE SEQUENCE "ent_load"."Article_id_seq";
+CREATE TABLE "ent_load"."Article" (
+  "id" INT4 NOT NULL DEFAULT nextval('"ent_load"."Article_id_seq"'::regclass),
+  "creator_id" INT4,
+  "updater_id" INT4,
+  PRIMARY KEY("id"),
+  CONSTRAINT "fk_Article__creator_id-User__id" FOREIGN KEY ("creator_id") REFERENCES "ent_load"."User" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT "fk_Article__updater_id-User__id" FOREIGN KEY ("updater_id") REFERENCES "ent_load"."User" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
+);
+CREATE SEQUENCE "ent_load"."Something_id_seq";
+CREATE TABLE "ent_load"."Something" (
+  "id" INT4 NOT NULL DEFAULT nextval('"ent_load"."Something_id_seq"'::regclass),
+  "article_id" INT4,
+  PRIMARY KEY("id"),
+  CONSTRAINT "fk_Something__article_id-Article__id" FOREIGN KEY ("article_id") REFERENCES "ent_load"."Article" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
+);
+CREATE SEQUENCE "ent_load"."Tag_id_seq";
+CREATE TABLE "ent_load"."Tag" (
+  "id" INT4 NOT NULL DEFAULT nextval('"ent_load"."Tag_id_seq"'::regclass),
+  "value" TEXT,
+  PRIMARY KEY("id")
 );
 CREATE SEQUENCE "ent_load"."UserChild_id_seq";
 CREATE TABLE "ent_load"."UserChild" (
@@ -118,3 +148,19 @@ async def test_load(conn):
     assert user.tags[0].value in ("tag1", "tag2")
     assert user.tags[1].value in ("tag1", "tag2")
     assert user.tags[0].value != user.tags[1].value
+
+
+async def test_always_load(conn):
+    article = Article(
+        creator=User(name="Article Creator", address=Address(addr="Creator Addr")),
+        updater=User(name="Article Updater", address=Address(addr="Updater Addr")),
+    )
+
+    something = Something()
+    something.article = article
+    await conn.save(something)
+
+    something = await conn.select(Query(Something)).first()
+    assert something.id == 1
+    assert something.article is not None
+    assert something.article.id == 1

@@ -33,11 +33,11 @@ cdef class Connection:
         cdef QueryCompiler qc = self.dialect.create_query_compiler()
         sql, params = qc.compile_select(q)
 
-        # print("\n" + "=" * 50)
-        # print(sql)
-        # from pprint import pprint
-        # pprint(qc.rcos_list)
-        # print("=" * 50)
+        print("\n" + "=" * 50)
+        print(sql)
+        from pprint import pprint
+        pprint(qc.rcos_list)
+        print("=" * 50)
 
         return QueryContext(
             self,
