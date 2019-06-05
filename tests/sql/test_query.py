@@ -1,9 +1,10 @@
 import operator
 import pytest
+from typing import Any
 
 from yapic.entity.sql import PostgreDialect
 from yapic.entity import (Query, Entity, Serial, String, DateTimeTz, Json, Composite, and_, or_, Int, ForeignKey, One,
-                          ManyAcross, Field, func, Registry, Auto)
+                          ManyAcross, Field, func, Registry, Auto, startswith, endswith, contains, find, virtual)
 
 dialect = PostgreDialect()
 
@@ -19,6 +20,28 @@ class FullName(Entity):
     family: String
     given: String
     xyz: Json[XYZ]
+
+    @virtual
+    def formatted(self):
+        return " ".join(filter(bool, (self.title, self.family, self.given)))
+
+    @formatted.compare
+    def formatted_compare(cls, q: Query, op: Any, value: Any):
+        if op is contains:
+            res = []
+            parts = value.split(r"""\s+""")
+
+            for f in (cls.family, cls.given):
+                for p in parts:
+                    res.append(f.contains(p))
+
+            return or_(*res)
+        else:
+            return op(cls.formatted._val(cls, q) == value)
+
+    @formatted.value
+    def formatted_value(cls, q: Query):
+        return func.CONCAT_WS(" ", cls.title, cls.family, cls.given)
 
 
 class Address(Entity):
@@ -36,6 +59,23 @@ class User(Entity):
     address: One[Address]
     tags: ManyAcross["UserTags", "Tag"]
     # birth_date:
+
+    @virtual
+    def name_q(self):
+        return self.name
+
+    @name_q.compare
+    def name_q_compare(cls, q: Query, op: Any, value: Any):
+        if op is contains:
+            res = []
+            parts = value.split()
+
+            for p in parts:
+                res.append(cls.name.contains(p))
+
+            return or_(*res)
+        else:
+            return op(cls.name, value)
 
 
 class Tag(Entity):
@@ -293,6 +333,10 @@ binary_operator_cases = [
     (operator.__mul__, User.email, 1, '"t0"."email" * $1'),
     (operator.__truediv__, User.email, 1, '"t0"."email" / $1'),
     (operator.__pow__, User.email, 1, '"t0"."email" ^ $1'),
+    (startswith, User.email, 1, '"t0"."email" ILIKE ($1 || \'%\')'),
+    (endswith, User.email, 1, '"t0"."email" ILIKE (\'%\' || $1)'),
+    (contains, User.email, 1, '"t0"."email" ILIKE (\'%\' || $1 || \'%\')'),
+    (find, User.email, 1, 'POSITION(LOWER($1) IN LOWER("t0"."email"))'),
 ]
 
 
@@ -429,3 +473,24 @@ def test_ambiguous():
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == """SELECT "t0"."id", "t0"."creator_id", "t0"."updater_id" FROM "ArticleA" "t0" INNER JOIN "UserA" "t1" ON "t1"."id" = "t0"."creator_id" INNER JOIN "UserA" "t3" ON "t3"."id" = "t0"."updater_id" WHERE "t1"."id" = $1 AND "t3"."id" IS NULL"""
     assert params == (1, )
+
+
+def test_virtual():
+    q = Query(User).where(User.name_q.contains("Jane Doe"))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE "t0"."name" ILIKE ('%' || $1 || '%') OR "t0"."name" ILIKE ('%' || $2 || '%')"""
+    assert params == ("Jane", "Doe")
+
+
+def test_virtual2():
+    class UserComp3(Entity):
+        id: Serial
+        name: Composite[FullName]
+
+    print(UserComp3.name)
+    print(UserComp3.name.formatted)
+
+    q = Query(UserComp3).where(UserComp3.name.formatted.contains("Jane Doe"))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """ """
+    assert params == ("Jane", "Doe")

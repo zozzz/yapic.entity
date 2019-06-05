@@ -179,9 +179,9 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
         return " OR ".join(parts)
 
-    def visit_binary_in(self, expr):
-        left = (<BinaryExpression>expr).left
-        right = (<BinaryExpression>expr).right
+    def visit_binary_in(self, BinaryExpression expr):
+        left = expr.left
+        right = expr.right
 
         if isinstance(right, ConstExpression):
             value = (<ConstExpression>right).value
@@ -192,7 +192,31 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         else:
             entries = [self.visit(right)]
 
-        return f"{self.visit(left)} IN ({', '.join(entries)})"
+        op = " NOT IN " if expr.negated else " IN "
+        return f"{self.visit(left)}{op}({', '.join(entries)})"
+
+    def visit_binary_startswith(self, BinaryExpression expr):
+        left = expr.left
+        right = expr.right
+        op = " NOT ILIKE " if expr.negated else " ILIKE "
+        return f"{self.visit(left)}{op}({self.visit(right)} || '%')"
+
+    def visit_binary_endswith(self, BinaryExpression expr):
+        left = expr.left
+        right = expr.right
+        op = " NOT ILIKE " if expr.negated else " ILIKE "
+        return f"{self.visit(left)}{op}('%' || {self.visit(right)})"
+
+    def visit_binary_contains(self, BinaryExpression expr):
+        left = expr.left
+        right = expr.right
+        op = " NOT ILIKE " if expr.negated else " ILIKE "
+        return f"{self.visit(left)}{op}('%' || {self.visit(right)} || '%')"
+
+    def visit_binary_find(self, BinaryExpression expr):
+        left = expr.left
+        right = expr.right
+        return f"POSITION(LOWER({self.visit(right)}) IN LOWER({self.visit(left)}))"
 
     def visit_const(self, expr):
         value = (<ConstExpression>expr).value
@@ -254,9 +278,9 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                     compiled = self.visit(item)
             elif state == "json":
                 if isinstance(item, Field):
-                    attrs.append(self.dialect.quote_ident((<Field>item)._name_))
+                    attrs.append(self.dialect.quote_value((<Field>item)._name_))
                 elif isinstance(item, str):
-                    attrs.append(self.dialect.quote_ident(item))
+                    attrs.append(self.dialect.quote_value(item))
                 elif isinstance(item, int):
                     attrs.append(str(item))
                 else:

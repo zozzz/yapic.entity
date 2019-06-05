@@ -3,6 +3,7 @@ from datetime import date, datetime
 
 from ._entity cimport EntityType, EntityBase, EntityAttributeImpl, EntityAttribute, NOTSET
 from ._expression cimport PathExpression
+from ._virtual_attr cimport VirtualAttribute
 
 
 
@@ -81,7 +82,11 @@ cdef class EntityTypeImpl(FieldImpl):
         return True
 
     cpdef getattr(self, EntityAttribute attr, object key):
-        return PathExpression(attr, [getattr(self._entity_, key)])
+        obj = getattr(self._entity_, key)
+        if isinstance(obj, VirtualAttribute):
+            return obj
+        else:
+            return PathExpression(attr, [obj])
 
     cdef object state_init(self, object initial):
         if initial is NOTSET:

@@ -55,12 +55,6 @@ cdef class EntityAttribute(Expression):
     cpdef clone_exts(self, EntityAttribute attr)
 
 
-cdef class DynamicAttribute(EntityAttribute):
-    cdef object _get
-    cdef object _set
-    cdef object _delete
-
-
 cdef class EntityAttributeExt:
     cdef readonly EntityAttribute attr
     cdef list _tmp

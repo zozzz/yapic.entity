@@ -340,7 +340,7 @@ cdef class RelatedItem(ValueStore):
         return NOTSET
 
     cpdef object state_set(self, object initial, object current, object value):
-        if not isinstance(value, EntityBase):
+        if value is not None and not isinstance(value, EntityBase):
             raise TypeError("Can't set attribute with this value: %r" % value)
         return value
 
@@ -362,7 +362,7 @@ cdef class RelatedItem(ValueStore):
                 if initial.__state__.is_dirty:
                     return ([], [initial], [])
                 else:
-                    return ([], [], [])
+                    return NOTSET
             else:
                 return ([current], [initial], [])
 

@@ -8,7 +8,7 @@ from yapic.entity._expression cimport (Expression, AliasExpression, DirectionExp
 from yapic.entity._expression import and_
 from yapic.entity._relation cimport Relation, RelationImpl, ManyToOne, ManyToMany, RelatedAttribute, determine_join_expr, Loading
 from yapic.entity._error cimport JoinError
-from yapic.entity._visitors cimport extract_fields, replace_fields, replace_entity
+from yapic.entity._visitors cimport extract_fields, replace_fields, replace_entity, ReplacerBase
 
 
 cdef class Query(Expression):
@@ -691,3 +691,17 @@ cdef class QueryFactory:
 
     def __repr__(self):
         return "<QueryFactory>"
+
+
+# cdef class FinalizeVirtualAttr(ReplacerBase):
+#     cdef Query query
+
+#     def __cinit__(self, Query query):
+#         self.query = query
+
+#     def visit_virtual_attr(self, VirtualAttribute attr):
+#         if attr._expr:
+#             return attr._expr(attr._entity_, self.query, )
+#         else:
+#             raise ValueError("Expression not defined for: %r" % attr)
+#         return

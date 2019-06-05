@@ -6,7 +6,7 @@ from decimal import Decimal
 from yapic.entity.sql import wrap_connection, Entity, sync
 from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Bool, ForeignKey, PrimaryKey,
                           One, Query, func, EntityDiff, Registry, Json, Composite, Auto, Numeric, Float, Point, UUID,
-                          dynamic)
+                          virtual)
 
 pytestmark = pytest.mark.asyncio
 
@@ -44,9 +44,9 @@ class User(Entity, schema="execution"):
     created_time: DateTimeTz = func.now()
     updated_time: DateTimeTz
 
-    @dynamic
-    def dynamic_prop(self):
-        return f"DYNAMIC:{self.id}"
+    @virtual
+    def virtual_prop(self):
+        return f"VIRTUAL:{self.id}"
 
 
 class User2(Entity, schema="execution_private", name="User"):
@@ -111,7 +111,7 @@ async def test_basic_insert_update(conn):
     assert u.distance_mm == 12345.25
     assert u.distance_km == 0.25
     assert u.__state__.changes() == {}
-    assert u.as_dict()["dynamic_prop"] == f"DYNAMIC:{u.id}"
+    assert u.as_dict()["virtual_prop"] == f"VIRTUAL:{u.id}"
 
     u.name = "New Name"
     assert await conn.update(u) is True

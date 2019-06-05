@@ -6,7 +6,7 @@ from decimal import Decimal
 from enum import Enum
 import uuid
 
-from ._entity import Entity, DynamicAttribute, EntityAttributeImpl
+from ._entity import Entity, EntityAttributeImpl
 from ._field import Field as _Field, Index, ForeignKey, PrimaryKey, AutoIncrement
 from ._field_impl import (
     StringImpl,
@@ -28,6 +28,7 @@ from ._geom_impl import (
     PointType,
     PointImpl,
 )
+from ._virtual_attr import VirtualAttribute, VirtualAttributeImpl
 
 Impl = TypeVar("Impl")
 PyType = TypeVar("PyType")
@@ -48,7 +49,8 @@ class Field(Generic[Impl, PyType, RawType], _Field):
                  *,
                  name: Optional[str] = None,
                  default: Optional[Union[PyType, RawType]] = None,
-                 size: Union[int, Tuple[int, int], None] = None):
+                 size: Union[int, Tuple[int, int], None] = None,
+                 nullable: Optional[bool] = None):
         pass
 
 
@@ -128,5 +130,5 @@ class Composite(Generic[EntityT], Field[CompositeImpl[EntityT], EntityT, str]):
 Point = Field[PointImpl, PointType, Any]
 
 
-def dynamic(fn) -> DynamicAttribute:
-    return DynamicAttribute(EntityAttributeImpl(), get=fn)
+def virtual(fn) -> VirtualAttribute:
+    return VirtualAttribute(VirtualAttributeImpl(), get=fn)
