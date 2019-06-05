@@ -193,10 +193,9 @@ cpdef wrap_connection(conn, dialect):
 
 
 cdef str _compile_path(Dialect dialect, PathExpression path):
-    cdef list items = [path._primary_] + path._path_
     cdef list res = []
 
-    for item in items:
+    for item in path._path_:
         if isinstance(item, Field):
             if len(res) == 0:
                 res.append(dialect.quote_ident((<Field>item)._name_))

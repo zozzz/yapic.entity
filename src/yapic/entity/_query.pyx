@@ -4,7 +4,8 @@ from yapic.entity._entity cimport EntityType, EntityAttribute, PolymorphMeta, De
 from yapic.entity._field cimport Field, field_eq
 from yapic.entity._field_impl cimport CompositeImpl
 from yapic.entity._expression cimport (Expression, AliasExpression, DirectionExpression, Visitor, BinaryExpression,
-    UnaryExpression, CastExpression, CallExpression, RawExpression, PathExpression)
+    UnaryExpression, CastExpression, CallExpression, RawExpression, PathExpression,
+    VirtualExpressionVal, VirtualExpressionBinary, VirtualExpressionDir)
 from yapic.entity._expression import and_
 from yapic.entity._relation cimport Relation, RelationImpl, ManyToOne, ManyToMany, RelatedAttribute, determine_join_expr, Loading
 from yapic.entity._error cimport JoinError
@@ -45,7 +46,8 @@ cdef class Query(Expression):
                     or isinstance(col, Field) \
                     or isinstance(col, AliasExpression) \
                     or isinstance(col, PathExpression) \
-                    or isinstance(col, RawExpression):
+                    or isinstance(col, RawExpression) \
+                    or isinstance(col, VirtualExpressionVal):
                 self._columns.append(col)
             else:
                 raise ValueError("Invalid value for column: %r" % col)
@@ -67,7 +69,7 @@ cdef class Query(Expression):
             self._order = []
 
         for item in expr:
-            if isinstance(item, DirectionExpression) or isinstance(item, RawExpression):
+            if isinstance(item, (DirectionExpression, RawExpression, VirtualExpressionDir)):
                 self._order.append(item)
             elif isinstance(item, Expression):
                 self._order.append((<Expression>item).asc())
@@ -249,16 +251,17 @@ cdef class Query(Expression):
         return res, qf.rcos
 
 
+# TODO: beautify
 cdef object load_options(dict target, tuple input):
     for inp in input:
         if isinstance(inp, EntityAttribute):
             target[(<EntityAttribute>inp)._uid_] = inp
         elif isinstance(inp, PathExpression):
-            if isinstance((<PathExpression>inp)._primary_, Relation):
-                target[(<EntityAttribute>(<PathExpression>inp)._primary_)._uid_] = inp
-            elif isinstance((<PathExpression>inp)._primary_, Field):
-                if isinstance((<Field>(<PathExpression>inp)._primary_)._impl_, CompositeImpl):
-                    target[(<Field>(<PathExpression>inp)._primary_)._impl_._entity_] = inp
+            if isinstance((<PathExpression>inp)._path_[0], Relation):
+                target[(<EntityAttribute>(<PathExpression>inp)._path_[0])._uid_] = inp
+            elif isinstance((<PathExpression>inp)._path_[0], Field):
+                if isinstance((<Field>(<PathExpression>inp)._path_[0])._impl_, CompositeImpl):
+                    target[(<Field>(<PathExpression>inp)._path_[0])._impl_._entity_] = inp
                 else:
                     raise NotImplementedError()
             else:
@@ -299,44 +302,60 @@ cdef class QueryFinalizer(Visitor):
         self.rcos = []
 
     def visit_binary(self, BinaryExpression expr):
-        self.visit(expr.left)
-        self.visit(expr.right)
+        return expr.op(self.visit(expr.left), self.visit(expr.right))
 
     def visit_unary(self, UnaryExpression expr):
-        self.visit(expr.expr)
+        return expr.op(self.visit(expr.expr))
 
     def visit_cast(self, CastExpression expr):
-        self.visit(expr.expr)
+        return CastExpression(self.visit(expr.expr), expr.to)
 
     def visit_direction(self, DirectionExpression expr):
-        self.visit(expr.expr)
+        cdef Expression res = self.visit(expr.expr)
+        if expr.is_asc:
+            return res.asc()
+        else:
+            return res.desc()
 
     def visit_call(self, CallExpression expr):
-        self.visit(expr.callable)
+        cdef list args = []
+
         for a in expr.args:
-            self.visit(a)
+            args.append(self.visit(a))
+
+        return CallExpression(self.visit(expr.callable), args)
 
     def visit_raw(self, expr):
-        pass
+        return expr
 
     def visit_field(self, expr):
         self.q.join(expr._entity_)
+        return expr
 
     def visit_const(self, expr):
-        pass
+        return expr
 
     def visit_query(self, expr):
         # TODO: ...
-        pass
+        return expr
 
     def visit_alias(self, AliasExpression expr):
-        self.visit(expr.expr)
+        return self.visit(expr.expr).alias(expr.value)
 
     def visit_path(self, PathExpression expr):
-        if isinstance(expr._primary_, Relation):
-            self.q.join(expr._primary_)
+        if isinstance(expr._path_[0], Relation):
+            self.q.join(expr._path_[0])
 
-        return PathExpression(expr._primary_, list(expr._path_))
+        return PathExpression(list(expr._path_))
+
+    def visit_vexpr_val(self, VirtualExpressionVal expr):
+        return self.visit(expr._create_expr_(self.q))
+
+    def visit_vexpr_binary(self, VirtualExpressionBinary expr):
+        return self.visit(expr._create_expr_(self.q))
+
+    def visit_vexpr_dir(self, VirtualExpressionDir expr):
+        return self.visit(expr._create_expr_(self.q))
 
     def finalize(self, *expr_list):
         if self.q._columns:
@@ -347,11 +366,20 @@ cdef class QueryFinalizer(Visitor):
                 self.q.load(*self.q._select_from)
             self._visit_columns(self.q._select_from)
 
-        if self.q._where:       self._visit_list(self.q._where)
-        if self.q._order:       self._visit_list(self.q._order)
-        if self.q._group:       self._visit_list(self.q._group)
-        if self.q._having:      self._visit_list(self.q._having)
-        if self.q._distinct:    self._visit_list(self.q._distinct)
+        if self.q._where:
+            self.q._where = self._visit_list(self.q._where)
+
+        if self.q._order:
+            self.q._order = self._visit_list(self.q._order)
+
+        if self.q._group:
+            self.q._group = self._visit_list(self.q._group)
+
+        if self.q._having:
+            self.q._having = self._visit_list(self.q._having)
+
+        if self.q._distinct:
+            self.q._distinct = self._visit_list(self.q._distinct)
 
 
         # print("="*40)
@@ -367,18 +395,17 @@ cdef class QueryFinalizer(Visitor):
         for expr in expr_list:
             if isinstance(expr, EntityType):
                 self._select_entity(<EntityType>expr)
-                continue
             elif isinstance(expr, PathExpression):
                 path = <PathExpression>expr
                 last_entry = path._path_[len(path._path_) - 1]
 
                 if isinstance(last_entry, Field) and isinstance((<Field>last_entry)._impl_, CompositeImpl):
                     entity = (<CompositeImpl>(<Field>last_entry)._impl_)._entity_
-                    primary_field = path._primary_
-                    pstart = 0
+                    primary_field = path._path_[0]
+                    pstart = 1
                     if isinstance(primary_field, Relation):
-                        primary_field = path._path_[0]
-                        pstart = 1
+                        primary_field = path._path_[1]
+                        pstart = 2
 
                     _path = []
                     for i in range(pstart, len(path._path_)):
@@ -387,19 +414,24 @@ cdef class QueryFinalizer(Visitor):
 
                     self.rcos.append(self._rco_for_composite(primary_field, entity, _path))
                     self.visit(expr)
-                    continue
-            elif isinstance(expr, Field) and isinstance((<Field>expr)._impl_, CompositeImpl):
-                self.rcos.append(self._rco_for_composite((<Field>expr), (<CompositeImpl>(<Field>expr)._impl_)._entity_, []))
-                self.visit(expr)
-                continue
-
-            self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
-            self.q._columns.append(expr)
-            self.visit(expr)
+            elif isinstance(expr, Field):
+                if isinstance((<Field>expr)._impl_, CompositeImpl):
+                    self.rcos.append(self._rco_for_composite((<Field>expr), (<CompositeImpl>(<Field>expr)._impl_)._entity_, []))
+                    self.visit(expr)
+                else:
+                    self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
+                    self.q._columns.append(self.visit(expr))
+            elif isinstance(expr, (AliasExpression, VirtualExpressionVal)):
+                self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
+                self.q._columns.append(self.visit(expr))
+            else:
+                raise TypeError("Unexpected column: %r" % expr)
 
     def _visit_list(self, expr_list):
+        cdef list res = []
         for expr in expr_list:
-            self.visit(expr)
+            res.append(self.visit(expr))
+        return res
 
     def _select_entity(self, EntityType entity):
         cdef PolymorphMeta polymorph = entity.__meta__.get("polymorph", None)

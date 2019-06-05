@@ -1,18 +1,19 @@
 from ._entity cimport EntityAttribute, EntityAttributeImpl, EntityBase
-from ._expression cimport Expression, Visitor, BinaryExpression, ConstExpression, VirtualExpression
+from ._expression cimport Expression, Visitor, BinaryExpression, ConstExpression, VirtualExpressionVal, VirtualExpressionBinary
 
 
 cdef class VirtualAttribute(EntityAttribute):
-    def __cinit__(self, *args, get, set=None, delete=None, compare=None, value=None):
+    def __cinit__(self, *args, get, set=None, delete=None, compare=None, value=None, order=None):
         self._get = get
         self._set = set
         self._del = delete
         self._cmp = compare
         self._val = value
+        self._order = order
 
     def __get__(self, instance, owner):
         if instance is None:
-            return self
+            return VirtualExpressionVal(self, self._entity_)
         else:
             return self._get(instance)
 
@@ -34,7 +35,8 @@ cdef class VirtualAttribute(EntityAttribute):
             set=self._set,
             delete=self._del,
             compare=self._cmp,
-            value=self._val)
+            value=self._val,
+            order=self._order)
 
     def compare(self, fn):
         self._cmp = fn
@@ -44,12 +46,12 @@ cdef class VirtualAttribute(EntityAttribute):
         self._val = fn
         return self
 
-    cdef BinaryExpression _new_binary_expr(self, object left, object other, object op):
-        # print("VirtualAttribute", "VirtualExpression", left, other, op)
-        return VirtualExpression(left, other, op)
+    def order(self, fn):
+        self._order = fn
+        return self
 
     def __repr__(self):
-        return "<virtual %s>" % self._key_
+        return "<%s: Virtual>" % self._key_
 
     cpdef visit(self, Visitor visitor):
         return visitor.visit_virtual_attr(self)

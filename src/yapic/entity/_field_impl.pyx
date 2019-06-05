@@ -2,8 +2,7 @@ from enum import Enum, Flag
 from datetime import date, datetime
 
 from ._entity cimport EntityType, EntityBase, EntityAttributeImpl, EntityAttribute, NOTSET
-from ._expression cimport PathExpression
-from ._virtual_attr cimport VirtualAttribute
+from ._expression cimport PathExpression, VirtualExpressionVal
 
 
 
@@ -83,10 +82,10 @@ cdef class EntityTypeImpl(FieldImpl):
 
     cpdef getattr(self, EntityAttribute attr, object key):
         obj = getattr(self._entity_, key)
-        if isinstance(obj, VirtualAttribute):
-            return obj
+        if isinstance(obj, VirtualExpressionVal):
+            return VirtualExpressionVal((<VirtualExpressionVal>obj)._virtual_, PathExpression([attr]))
         else:
-            return PathExpression(attr, [obj])
+            return PathExpression([attr, obj])
 
     cdef object state_init(self, object initial):
         if initial is NOTSET:
@@ -149,7 +148,7 @@ cdef class NamedTupleImpl(CompositeImpl):
         super().__init__(entity)
 
     cpdef getattr(self, EntityAttribute attr, object key):
-        return PathExpression(attr, [getattr(self._entity_, key)._index_])
+        return PathExpression([attr, getattr(self._entity_, key)._index_])
 
     def __repr__(self):
         return "NamedTuple(%r)" % self._entity_

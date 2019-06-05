@@ -1,5 +1,6 @@
 import operator
 import cython
+
 from cpython.object cimport PyObject
 from cpython.tuple cimport PyTuple_New, PyTuple_GET_ITEM, PyTuple_SET_ITEM, PyTuple_GET_SIZE
 
@@ -13,78 +14,56 @@ cdef class Expression:
         raise NotImplementedError("%s::visit", type(self))
 
     def __hash__(self): return _Py_HashPointer(<PyObject*>(<object>self))
-    def __lt__(Expression self, other): return self._new_binary_expr(self, other, operator.__lt__)
-    def __le__(Expression self, other): return self._new_binary_expr(self, other, operator.__le__)
-    def __eq__(Expression self, other): return self._new_binary_expr(self, other, operator.__eq__)
-    def __ne__(Expression self, other): return self._new_binary_expr(self, other, operator.__ne__)
-    def __ge__(Expression self, other): return self._new_binary_expr(self, other, operator.__ge__)
-    def __gt__(Expression self, other): return self._new_binary_expr(self, other, operator.__gt__)
+    def __lt__(Expression self, other): return self._new_binary_expr(other, operator.__lt__)
+    def __le__(Expression self, other): return self._new_binary_expr(other, operator.__le__)
+    def __eq__(Expression self, other): return self._new_binary_expr(other, operator.__eq__)
+    def __ne__(Expression self, other): return self._new_binary_expr(other, operator.__ne__)
+    def __ge__(Expression self, other): return self._new_binary_expr(other, operator.__ge__)
+    def __gt__(Expression self, other): return self._new_binary_expr(other, operator.__gt__)
 
-    def __add__(Expression self, other): return self._new_binary_expr(self, other, operator.__add__)
-    def __sub__(Expression self, other): return self._new_binary_expr(self, other, operator.__sub__)
-    def __and__(Expression self, other): return self._new_binary_expr(self, other, operator.__and__)
-    def __or__(Expression self, other): return self._new_binary_expr(self, other, operator.__or__)
-    def __xor__(Expression self, other): return self._new_binary_expr(self, other, operator.__xor__)
-    def __invert__(Expression self):
-        if isinstance(self, BinaryExpression):
-            op = (<BinaryExpression>self).op
-            if op is operator.__lt__:
-                op = operator.__ge__
-            elif op is operator.__le__:
-                op = operator.__gt__
-            elif op is operator.__eq__:
-                op = operator.__ne__
-            elif op is operator.__ne__:
-                op = operator.__eq__
-            elif op is operator.__ge__:
-                op = operator.__lt__
-            elif op is operator.__gt__:
-                op = operator.__le__
-            else:
-                res = self._new_binary_expr((<BinaryExpression>self).left, (<BinaryExpression>self).right, op)
-                res.negated = True
-                return res
-            return self._new_binary_expr((<BinaryExpression>self).left, (<BinaryExpression>self).right, op)
-        else:
-            return UnaryExpression(self, operator.__invert__)
-
-    def __lshift__(Expression self, other): return self._new_binary_expr(self, other, operator.__lshift__)
-    def __rshift__(Expression self, other): return self._new_binary_expr(self, other, operator.__rshift__)
-    def __mod__(Expression self, other): return self._new_binary_expr(self, other, operator.__mod__)
-    def __mul__(Expression self, other): return self._new_binary_expr(self, other, operator.__mul__)
-    def __truediv__(Expression self, other): return self._new_binary_expr(self, other, operator.__truediv__)
+    def __add__(Expression self, other): return self._new_binary_expr(other, operator.__add__)
+    def __sub__(Expression self, other): return self._new_binary_expr(other, operator.__sub__)
+    def __and__(Expression self, other): return self._new_binary_expr(other, operator.__and__)
+    def __or__(Expression self, other): return self._new_binary_expr(other, operator.__or__)
+    def __xor__(Expression self, other): return self._new_binary_expr(other, operator.__xor__)
+    def __invert__(Expression self): return UnaryExpression(self, operator.__invert__)
+    def __lshift__(Expression self, other): return self._new_binary_expr(other, operator.__lshift__)
+    def __rshift__(Expression self, other): return self._new_binary_expr(other, operator.__rshift__)
+    def __mod__(Expression self, other): return self._new_binary_expr(other, operator.__mod__)
+    def __mul__(Expression self, other): return self._new_binary_expr(other, operator.__mul__)
+    def __truediv__(Expression self, other): return self._new_binary_expr(other, operator.__truediv__)
     def __neg__(Expression self): return UnaryExpression(self, operator.__neg__)
     def __pos__(Expression self): return UnaryExpression(self, operator.__pos__)
-    def __pow__(Expression self, other, modulo): return self._new_binary_expr(self, other, operator.__pow__)
+    def __pow__(Expression self, other, modulo): return self._new_binary_expr(other, operator.__pow__)
     def __abs__(Expression self): return UnaryExpression(self, operator.__abs__)
     def __call__(Expression self, *args): return CallExpression(self, args)
     def in_(Expression self, *values):
-        if len(values) == 1 and (isinstance(values[0], list) or isinstance(values[0], tuple)):
+        if len(values) == 1 and isinstance(values[0], (list, tuple, RawExpression, ConstExpression)):
             values = values[0]
-        return self._new_binary_expr(self, values, in_)
+        return self._new_binary_expr(values, in_)
     def is_true(Expression self): return self == True
     def is_false(Expression self): return self == False
     def is_null(Expression self): return self == None
     def is_none(Expression self): return self == None
-    def startswith(Expression self, other): return self._new_binary_expr(self, other, startswith)
-    def endswith(Expression self, other): return self._new_binary_expr(self, other, endswith)
-    def contains(Expression self, other): return self._new_binary_expr(self, other, contains)
-    def find(Expression self, other): return self._new_binary_expr(self, other, find)
+    def startswith(Expression self, other): return self._new_binary_expr(other, startswith)
+    def endswith(Expression self, other): return self._new_binary_expr(other, endswith)
+    def contains(Expression self, other): return self._new_binary_expr(other, contains)
+    def find(Expression self, other): return self._new_binary_expr(other, find)
 
     cpdef asc(Expression self): return DirectionExpression(self, True)
     cpdef desc(Expression self): return DirectionExpression(self, False)
     cpdef cast(Expression self, str to): return CastExpression(self, to)
     cpdef alias(Expression self, str alias): return AliasExpression(self, alias)
 
-    cdef BinaryExpression _new_binary_expr(Expression self, object left, object other, object op):
-        return BinaryExpression(left, other, op)
+    cdef BinaryExpression _new_binary_expr(Expression self, object other, object op):
+        return BinaryExpression(self, other, op)
 
     def __repr__(self):
         return "<Expr EMPTY>"
 
 
 cdef class BinaryExpression(Expression):
-    def __cinit__(self, left, right, op):
+    def __init__(self, left, right, op):
         self.left = coerce_expression(left)
         self.right = coerce_expression(right)
         self.op = op
@@ -92,6 +71,32 @@ cdef class BinaryExpression(Expression):
 
     def __repr__(self):
         return "<Expr %r %r %r>" % (self.left, self.op, self.right)
+
+    # TODO: maybe need to clone current + handle child classes as well
+    def __invert__(BinaryExpression self):
+        op = self.op
+        if op is operator.__lt__:
+            op = operator.__ge__
+        elif op is operator.__le__:
+            op = operator.__gt__
+        elif op is operator.__eq__:
+            op = operator.__ne__
+        elif op is operator.__ne__:
+            op = operator.__eq__
+        elif op is operator.__ge__:
+            op = operator.__lt__
+        elif op is operator.__gt__:
+            op = operator.__le__
+        else:
+            self.negated = not self.negated
+            return self
+
+        self.negated = False
+        self.op = op
+        return self
+
+    cdef BinaryExpression _new_binary_expr(self, object other, object op):
+        return BinaryExpression(self, other, op)
 
     cpdef visit(self, Visitor visitor):
         return visitor.visit_binary(self)
@@ -130,7 +135,7 @@ cdef class ConstExpression(Expression):
         self.type = type
 
     def __repr__(self):
-        return "<Expr %s typeof %s>" % (self.value, self.type.__name__)
+        return "<Const %s typeof %s>" % (self.value, self.type.__name__)
 
     cpdef visit(self, Visitor visitor):
         return visitor.visit_const(self)
@@ -199,8 +204,7 @@ cdef class AliasExpression(Expression):
 
 
 cdef class PathExpression(Expression):
-    def __cinit__(self, Expression primary, list path):
-        self._primary_ = primary
+    def __cinit__(self, list path):
         self._path_ = path
 
     # @cython.wraparound(True)
@@ -209,15 +213,15 @@ cdef class PathExpression(Expression):
         new_path = list(self._path_)
         if isinstance(last_item, Expression):
             obj = getattr(last_item, key)
-            if isinstance(obj, VirtualExpression):
-                return obj
-            elif isinstance(obj, PathExpression) and last_item is (<PathExpression>obj)._primary_:
-                new_path.extend((<PathExpression>obj)._path_)
+            if isinstance(obj, VirtualExpressionVal):
+                return VirtualExpressionVal((<VirtualExpressionVal>obj)._virtual_, self)
+            elif isinstance(obj, PathExpression) and last_item is (<PathExpression>obj)._path_[0]:
+                new_path.extend((<PathExpression>obj)._path_[1:])
             else:
                 new_path.append(obj)
         else:
             new_path.append(key)
-        return PathExpression(self._primary_, new_path)
+        return PathExpression(new_path)
 
     # @cython.wraparound(True)
     def __getitem__(self, object key):
@@ -225,34 +229,121 @@ cdef class PathExpression(Expression):
         new_path = list(self._path_)
         if isinstance(last_item, Expression):
             obj = last_item[key]
-            if isinstance(obj, PathExpression) and last_item is (<PathExpression>obj)._primary_:
-                new_path.extend((<PathExpression>obj)._path_)
+            if isinstance(obj, PathExpression) and last_item is (<PathExpression>obj)._path_[0]:
+                new_path.extend((<PathExpression>obj)._path_[1:])
             else:
                 new_path.append(obj)
         else:
             new_path.append(key)
-        return PathExpression(self._primary_, new_path)
+        return PathExpression(new_path)
 
     cpdef visit(self, Visitor visitor):
         return visitor.visit_path(self)
 
     def __repr__(self):
-        return "<Path %s %r>" % (self._primary_, self._path_)
+        return "<Path %r>" % self._path_
 
 
-cdef class VirtualExpression(BinaryExpression):
-    cpdef visit(self, Visitor visitor):
-        if self.left._cmp:
-            if not self._cached:
-                if isinstance(self.right, ConstExpression):
-                    value = (<ConstExpression>self.right).value
-                else:
-                    value = self.right
+cdef class VirtualExpressionVal(Expression):
+    def __cinit__(self, object virtual, object src):
+        self._virtual_ = virtual
+        self._source_ = src
 
-                self._cached = self.left._cmp(self.left._entity_, None, self.op, value)
-            return visitor.visit(self._cached)
+    cpdef Expression _create_expr_(self, object q):
+        if self._virtual_._val:
+            return self._virtual_._val(self._source_, q)
         else:
-            raise ValueError("Compare expression is not defined for: %r" % self.left)
+            raise ValueError("Virtual attribute is not define value expression: %r" % self._virtual_)
+
+    cdef BinaryExpression _new_binary_expr(self, object right, object op):
+        return VirtualExpressionBinary(self, right, op)
+
+    cpdef asc(VirtualExpressionVal self):
+        return VirtualExpressionDir(self, asc)
+
+    cpdef desc(VirtualExpressionVal self):
+        return VirtualExpressionDir(self, desc)
+
+    cpdef visit(self, Visitor visitor):
+        return visitor.visit_vexpr_val(self)
+
+    def __getattr__(self, key):
+        return getattr(self._virtual_, key)
+
+    def __repr__(self):
+        return "<VirtualVal %r :: %r>" % (self._source_, self._virtual_)
+
+
+cdef class VirtualExpressionBinary(BinaryExpression):
+    def __init__(self, VirtualExpressionVal left, object right, object op):
+        super().__init__(left, right, op)
+
+    cpdef Expression _create_expr_(self, object q):
+        if self.left._virtual_._cmp:
+            if isinstance(self.right, ConstExpression):
+                value = (<ConstExpression>self.right).value
+            else:
+                value = self.right
+
+            return self.left._virtual_._cmp(self.left._source_, q, self.op, value)
+        elif self.left._virtual_._val:
+            return self.op(self.left._virtual_._val(self.left._source_, q), self.right)
+        else:
+            raise ValueError("Virtual attribute is not define value expression: %r" % self.left._virtual_)
+
+    cdef BinaryExpression _new_binary_expr(self, object right, object op):
+        return VirtualExpressionBinary(self, right, op)
+
+    cpdef visit(self, Visitor visitor):
+        return visitor.visit_vexpr_binary(self)
+
+    def __getattr__(self, key):
+        return getattr(self.left, key)
+
+
+cdef class VirtualExpressionDir(Expression):
+    def __cinit__(self, object expr, object op):
+        self.expr = expr
+        self.op = op
+
+    cpdef Expression _create_expr_(self, object q):
+        if self.expr._virtual_._order:
+            return self.expr._virtual_._order(self.expr._source_, q, self.op)
+        elif self.expr._virtual_._val:
+            return self.op(self.expr._virtual_._val(self.expr._source_, q, self.op))
+        else:
+            raise ValueError("Virtual attribute is not define order or value expression: %r" % self.expr._virtual_)
+
+    cpdef visit(self, Visitor visitor):
+        return visitor.visit_vexpr_dir(self)
+
+    cpdef asc(VirtualExpressionDir self):
+        return VirtualExpressionDir(self.expr, asc)
+
+    cpdef desc(VirtualExpressionDir self):
+        return VirtualExpressionDir(self.expr, desc)
+
+    def __repr__(self):
+        return "<VirtualDir %r %r>" % (self.expr, self.op)
+
+
+# cdef class VirtualExpression(BinaryExpression):
+#     def __init__(self, object attr, Expression left, Expression right, object op):
+#         self._attr = attr
+#         super().__init__(left, right, op)
+
+#     cpdef visit(self, Visitor visitor):
+#         if self.left._cmp:
+#             if not self._cached:
+#                 if isinstance(self.right, ConstExpression):
+#                     value = (<ConstExpression>self.right).value
+#                 else:
+#                     value = self.right
+
+#                 self._cached = self.left._cmp(self.left._entity_, None, self.op, value)
+#             return visitor.visit(self._cached)
+#         else:
+#             raise ValueError("Compare expression is not defined for: %r" % self.left)
 
 # cdef class GetAttrExprisson(Expression):
 #     def __cinit__(self, Expression obj, object name):
@@ -304,6 +395,8 @@ cdef Expression coerce_expression(object expr):
     else:
         if isinstance(expr, list) or isinstance(expr, tuple):
             expr = tuple(coerce_expression(x) for x in expr)
+        elif isinstance(expr, str) and (<str>expr).isspace():
+            return RawExpression(f"'{expr}'")
         return ConstExpression(expr, type(expr))
 
 
@@ -331,8 +424,8 @@ def or_(*expr):
     return res
 
 
-def in_(expr, value):
-    return expr.in_(value)
+def in_(expr, *value):
+    return expr.in_(*value)
 
 def startswith(expr, value):
     return expr.startswith(value)
@@ -346,9 +439,17 @@ def contains(expr, value):
 def find(expr, value):
     return expr.find(value)
 
+def asc(expr):
+    return expr.asc()
+
+def desc(expr):
+    return expr.desc()
 
 cpdef direction(Expression expr, str dir):
-    return DirectionExpression(expr, str(dir).lower() == "asc")
+    if str(dir).lower() == "asc":
+        return expr.asc()
+    else:
+        return expr.desc()
 
 cpdef raw(str expr):
     return RawExpression(expr)

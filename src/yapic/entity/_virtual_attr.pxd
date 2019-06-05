@@ -8,6 +8,7 @@ cdef class VirtualAttribute(EntityAttribute):
     cdef readonly object _del
     cdef readonly object _cmp
     cdef readonly object _val
+    cdef readonly object _order
 
 
 cdef class VirtualAttributeImpl(EntityAttributeImpl):

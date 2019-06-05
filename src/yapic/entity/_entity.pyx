@@ -152,8 +152,9 @@ cdef class EntityType(type):
         # add virtual attributes
         for k, v in attrs.items():
             if isinstance(v, VirtualAttribute):
-                __attrs__.append(v)
-                (<VirtualAttribute>v)._key_ = k
+                if not (<VirtualAttribute>v)._key_:
+                    __attrs__.append(v)
+                    (<VirtualAttribute>v)._key_ = k
 
         self.__fix_entries__ = None
         self.__deferred__ = []

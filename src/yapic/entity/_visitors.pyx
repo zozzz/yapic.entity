@@ -33,7 +33,10 @@ cdef class ReplacerBase(Visitor):
         return expr
 
     def visit_path(self, PathExpression expr):
-        return PathExpression(self.visit(expr._primary_), [self.visit(a) for a in expr._path_])
+        cdef list path = []
+        for p in expr._path_:
+            path.append(self.visit(p))
+        return PathExpression(path)
 
 
 cdef class Walk(Visitor):

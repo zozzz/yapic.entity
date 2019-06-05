@@ -12,7 +12,7 @@ cdef class Expression:
     cpdef cast(self, str to)
     cpdef alias(self, str alias)
 
-    cdef BinaryExpression _new_binary_expr(self, object left, object other, object op)
+    cdef BinaryExpression _new_binary_expr(self, object other, object op)
 
 
 cdef class BinaryExpression(Expression):
@@ -60,12 +60,25 @@ cdef class RawExpression(Expression):
 
 
 cdef class PathExpression(Expression):
-    cdef readonly Expression _primary_
     cdef readonly list _path_
 
 
-cdef class VirtualExpression(BinaryExpression):
-    cdef object _cached
+cdef class VirtualExpressionVal(Expression):
+    cdef readonly object _virtual_
+    cdef readonly object _source_
+
+    cpdef Expression _create_expr_(self, object q)
+
+
+cdef class VirtualExpressionBinary(BinaryExpression):
+    cpdef Expression _create_expr_(self, object q)
+
+
+cdef class VirtualExpressionDir(Expression):
+    cdef readonly VirtualExpressionVal expr
+    cdef readonly object op
+
+    cpdef Expression _create_expr_(self, object q)
 
 
 # cdef class GetAttrExprisson(Expression):

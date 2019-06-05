@@ -6,7 +6,7 @@ from cpython.tuple cimport PyTuple_SetItem, PyTuple_GetItem, PyTuple_New, PyTupl
 from cpython.module cimport PyImport_Import, PyModule_GetDict
 
 from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeImpl, EntityAttributeExt, get_alias_target, NOTSET
-from ._expression cimport Expression, Visitor, PathExpression
+from ._expression cimport Expression, Visitor, PathExpression, VirtualExpressionVal
 from ._field cimport Field, ForeignKey, collect_foreign_keys
 from ._factory cimport Factory, ForwardDecl, new_instance_from_forward, is_forward_decl
 from ._visitors cimport replace_entity
@@ -32,8 +32,12 @@ cdef class Relation(EntityAttribute):
 
     def __getattr__(self, name):
         cdef EntityType joined = self._impl_.joined
-        cdef EntityAttribute attr = getattr(joined, name)
-        return PathExpression(self, [attr])
+        cdef Expression expr = getattr(joined, name)
+
+        if isinstance(expr, VirtualExpressionVal):
+            return expr
+
+        return PathExpression([self, expr])
 
     cpdef visit(self, Visitor visitor):
         return visitor.visit_relation(self)

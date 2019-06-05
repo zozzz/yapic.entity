@@ -261,16 +261,11 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         return f"({sql})"
 
     def visit_path(self, PathExpression expr):
-        cdef list path = [expr._primary_]  + expr._path_
-        cdef int i = 0
-        cdef int l = len(path)
         cdef str compiled = None
         cdef list attrs = []
         cdef str state = None
 
-        while i < l:
-            item = (<list>path)[i]
-
+        for item in (<list>expr._path_):
             if state == "relation":
                 if compiled:
                     raise NotImplementedError()
@@ -315,7 +310,6 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                     if not compiled:
                         compiled = self.visit(item)
 
-            i += 1
 
         return path_expr(self.dialect, state, compiled, attrs)
 

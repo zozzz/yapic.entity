@@ -29,7 +29,7 @@ class FullName(Entity):
     def formatted_compare(cls, q: Query, op: Any, value: Any):
         if op is contains:
             res = []
-            parts = value.split(r"""\s+""")
+            parts = value.split()
 
             for f in (cls.family, cls.given):
                 for p in parts:
@@ -42,6 +42,10 @@ class FullName(Entity):
     @formatted.value
     def formatted_value(cls, q: Query):
         return func.CONCAT_WS(" ", cls.title, cls.family, cls.given)
+
+    @formatted.order
+    def formatted_order(cls, q: Query, op):
+        return op(func.CONCAT_WS(" ", cls.family, cls.given))
 
 
 class Address(Entity):
@@ -482,15 +486,31 @@ def test_virtual():
     assert params == ("Jane", "Doe")
 
 
-def test_virtual2():
+def test_virtual_composite():
     class UserComp3(Entity):
         id: Serial
         name: Composite[FullName]
 
-    print(UserComp3.name)
-    print(UserComp3.name.formatted)
-
     q = Query(UserComp3).where(UserComp3.name.formatted.contains("Jane Doe"))
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == """ """
+    assert sql == """SELECT "t0"."id", ("t0"."name")."title", ("t0"."name")."family", ("t0"."name")."given", ("t0"."name")."xyz" FROM "UserComp3" "t0" WHERE ("t0"."name")."family" ILIKE ('%' || $1 || '%') OR ("t0"."name")."family" ILIKE ('%' || $2 || '%') OR ("t0"."name")."given" ILIKE ('%' || $1 || '%') OR ("t0"."name")."given" ILIKE ('%' || $2 || '%')"""
+    assert params == ("Jane", "Doe")
+
+
+def test_virtual_relation():
+    class UserCompVR(Entity):
+        id: Serial
+        name: Composite[FullName]
+
+    class ArticleVR(Entity):
+        id: Serial
+        user_id: Auto = ForeignKey(UserCompVR.id)
+        user: One[UserCompVR]
+
+    q = Query(ArticleVR) \
+        .columns(ArticleVR.user.name.formatted) \
+        .where(ArticleVR.user.name.formatted.contains("Jane Doe")) \
+        .order(ArticleVR.user.name.formatted.desc())
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT CONCAT_WS(' ', ("t1"."name")."title", ("t1"."name")."family", ("t1"."name")."given") FROM "ArticleVR" "t0" INNER JOIN "UserCompVR" "t1" ON "t0"."user_id" = "t1"."id" WHERE ("t1"."name")."family" ILIKE ('%' || $1 || '%') OR ("t1"."name")."family" ILIKE ('%' || $2 || '%') OR ("t1"."name")."given" ILIKE ('%' || $1 || '%') OR ("t1"."name")."given" ILIKE ('%' || $2 || '%') ORDER BY CONCAT_WS(' ', ("t1"."name")."family", ("t1"."name")."given") DESC"""
     assert params == ("Jane", "Doe")
