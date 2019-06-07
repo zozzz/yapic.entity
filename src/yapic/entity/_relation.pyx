@@ -184,7 +184,8 @@ cdef class ManyToOne(RelationImpl):
                 attr._default_ = self._eval(attr, attr._default_)
             except NameError:
                 return False
-
+        elif callable(attr._default_) and not isinstance(attr._default_, Expression):
+            attr._default_ = attr._default_(attr._entity_)
 
         if isinstance(attr._default_, Expression):
             return True
@@ -216,6 +217,8 @@ cdef class OneToMany(RelationImpl):
                 attr._default_ = self._eval(attr, attr._default_)
             except NameError:
                 return False
+        elif callable(attr._default_) and not isinstance(attr._default_, Expression):
+            attr._default_ = attr._default_(attr._entity_)
 
         if isinstance(attr._default_, Expression):
             return True

@@ -173,3 +173,21 @@ async def test_load_empty_across(conn):
     user = await conn.select(Query(User).load(User, User.tags).where(User.id == user.id)).first()
     assert user.name == "User"
     assert user.tags == []
+
+
+async def test_mixin(conn):
+    class Tracking:
+        creator_id: Auto = ForeignKey(User.id)
+        creator: One[User] = lambda cls: cls.creator_id == User.id
+
+    class Tracked(Entity, Tracking, registry=_registry, schema="ent_load"):
+        id: Serial
+
+    result = await sync(conn, _registry)
+    await conn.conn.execute(result)
+
+    t = Tracked(creator_id=1)
+    await conn.save(t)
+
+    t = await conn.select(Query(Tracked).load(Tracked.creator).where(Tracked.id == t.id)).first()
+    assert t.creator.id == 1
