@@ -185,15 +185,18 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
         if isinstance(right, ConstExpression):
             value = (<ConstExpression>right).value
-            if isinstance(value, list) or isinstance(value, tuple):
+            if isinstance(value, (list, tuple)):
                 entries = [self.visit(x) for x in value]
             else:
                 entries = [self.visit(value)]
         else:
             entries = [self.visit(right)]
 
-        op = " NOT IN " if expr.negated else " IN "
-        return f"{self.visit(left)}{op}({', '.join(entries)})"
+        if entries:
+            op = " NOT IN " if expr.negated else " IN "
+            return f"{self.visit(left)}{op}({', '.join(entries)})"
+        else:
+            return f"TRUE"
 
     def visit_binary_startswith(self, BinaryExpression expr):
         left = expr.left
