@@ -3876,7 +3876,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5pgsql_11_connection_17PostgreConn
  *             .compile_insert(ent, attrs, names, values, False)
  * 
  *         if not q:             # <<<<<<<<<<<<<<
- *             return entity
+ *             return False
  * 
  */
   __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_q); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 25, __pyx_L1_error)
@@ -3886,25 +3886,25 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5pgsql_11_connection_17PostgreConn
     /* "yapic/entity/sql/pgsql/_connection.pyx":26
  * 
  *         if not q:
- *             return entity             # <<<<<<<<<<<<<<
+ *             return False             # <<<<<<<<<<<<<<
  * 
  *         return await self.__exec_iou(q, p, entity, ent, timeout)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_r = NULL; __Pyx_ReturnWithStopIteration(((PyObject *)__pyx_cur_scope->__pyx_v_entity));
+    __pyx_r = NULL; __Pyx_ReturnWithStopIteration(Py_False);
     goto __pyx_L0;
 
     /* "yapic/entity/sql/pgsql/_connection.pyx":25
  *             .compile_insert(ent, attrs, names, values, False)
  * 
  *         if not q:             # <<<<<<<<<<<<<<
- *             return entity
+ *             return False
  * 
  */
   }
 
   /* "yapic/entity/sql/pgsql/_connection.pyx":28
- *             return entity
+ *             return False
  * 
  *         return await self.__exec_iou(q, p, entity, ent, timeout)             # <<<<<<<<<<<<<<
  * 

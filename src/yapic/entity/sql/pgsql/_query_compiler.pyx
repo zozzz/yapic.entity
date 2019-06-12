@@ -117,7 +117,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
             tbl = self.table_alias[field._entity_][1]
         except KeyError:
             # print("MISSING", field, field._entity_, get_alias_target(field._entity_), hash(field._entity_))
-            raise RuntimeError("Entity is missing from query: %r" % field._entity_)
+            raise RuntimeError("Field entity is not found in query: %r" % field)
             # tbl = self.dialect.table_qname(field._entity_)
 
         return f'{tbl}.{self.dialect.quote_ident(field._name_)}'
@@ -342,7 +342,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
     cpdef compile_insert(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
         if not values:
-            return (None, None)
+            return (f"INSERT INTO {self.dialect.table_qname(entity)} DEFAULT VALUES", [])
 
         cdef list inserts = []
         cdef list params = []

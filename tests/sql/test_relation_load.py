@@ -20,9 +20,15 @@ class Address(Entity, registry=_registry, schema="ent_load"):
     addr: String
 
 
+class FullName(Entity, registry=_registry, schema="ent_load"):
+    title: String
+    family: String
+    given: String
+
+
 class User(Entity, registry=_registry, schema="ent_load"):
     id: Serial
-    name: String
+    name: Composite[FullName]
 
     address_id: Auto = ForeignKey(Address.id)
     address: One[Address]
@@ -62,6 +68,12 @@ class Something(Entity, registry=_registry, schema="ent_load"):
     article: One[Article] = Relation(join="Article.id == Something.article_id") // Loading(always=True)
 
 
+class Something2(Entity, registry=_registry, schema="ent_load"):
+    id: Serial
+    something_id: Auto = ForeignKey(Something.id)
+    something: One[Something]
+
+
 async def test_sync(conn, pgclean):
     result = await sync(conn, _registry)
     assert result == """CREATE SCHEMA IF NOT EXISTS "ent_load";
@@ -72,9 +84,14 @@ CREATE TABLE "ent_load"."Address" (
   PRIMARY KEY("id")
 );
 CREATE SEQUENCE "ent_load"."User_id_seq";
+CREATE TYPE "ent_load"."FullName" AS (
+  "title" TEXT,
+  "family" TEXT,
+  "given" TEXT
+);
 CREATE TABLE "ent_load"."User" (
   "id" INT4 NOT NULL DEFAULT nextval('"ent_load"."User_id_seq"'::regclass),
-  "name" TEXT,
+  "name" "ent_load"."FullName",
   "address_id" INT4,
   PRIMARY KEY("id"),
   CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "ent_load"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
@@ -94,6 +111,13 @@ CREATE TABLE "ent_load"."Something" (
   "article_id" INT4,
   PRIMARY KEY("id"),
   CONSTRAINT "fk_Something__article_id-Article__id" FOREIGN KEY ("article_id") REFERENCES "ent_load"."Article" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
+);
+CREATE SEQUENCE "ent_load"."Something2_id_seq";
+CREATE TABLE "ent_load"."Something2" (
+  "id" INT4 NOT NULL DEFAULT nextval('"ent_load"."Something2_id_seq"'::regclass),
+  "something_id" INT4,
+  PRIMARY KEY("id"),
+  CONSTRAINT "fk_Something2__something_id-Something__id" FOREIGN KEY ("something_id") REFERENCES "ent_load"."Something" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 CREATE SEQUENCE "ent_load"."Tag_id_seq";
 CREATE TABLE "ent_load"."Tag" (
@@ -153,8 +177,20 @@ async def test_load(conn):
 
 async def test_always_load(conn):
     article = Article(
-        creator=User(name="Article Creator", address=Address(addr="Creator Addr")),
-        updater=User(name="Article Updater", address=Address(addr="Updater Addr")),
+        creator=User(
+            name={
+                "family": "Article",
+                "given": "Creator"
+            },
+            address=Address(addr="Creator Addr"),
+        ),
+        updater=User(
+            name={
+                "family": "Article",
+                "given": "Updater"
+            },
+            address=Address(addr="Updater Addr"),
+        ),
     )
 
     something = Something()
@@ -168,11 +204,11 @@ async def test_always_load(conn):
 
 
 async def test_load_empty_across(conn):
-    user = User(name="User")
+    user = User(name={"family": "User"})
     await conn.save(user)
 
     user = await conn.select(Query(User).load(User, User.tags).where(User.id == user.id)).first()
-    assert user.name == "User"
+    assert user.name.family == "User"
     assert user.tags == []
 
 
@@ -195,21 +231,58 @@ async def test_mixin(conn):
 
 
 async def test_load_only_relation_field(conn):
-    article = Article(
+    article_o = Article(
         id=42,
-        creator=User(name="Article Creator", address=Address(addr="Creator Addr")),
-        updater=User(name="Article Updater", address=Address(addr="Updater Addr")),
+        creator=User(
+            name={
+                "family": "Article",
+                "given": "Creator"
+            },
+            tags=[
+                Tag(value="ctag1"),
+                Tag(value="ctag2"),
+                Tag(value="ctag3"),
+            ],
+            address=Address(addr="Creator Addr"),
+        ),
+        updater=User(
+            name={
+                "family": "Article",
+                "given": "Updater"
+            },
+            address=Address(addr="Updater Addr"),
+        ),
     )
 
-    await conn.save(article)
+    await conn.save(article_o)
 
     # TODO: remove empty relations from result
     q = Query(Article).where(Article.id == 42).load(Article.creator.name)
     article = await conn.select(q).first()
     data = json.dumps(article)
-    assert data == """{"creator":{"name":"Article Creator","children":[],"tags":[]}}"""
+    assert data == """{"creator":{"name":{"family":"Article","given":"Creator"},"children":[],"tags":[]}}"""
 
+    # TODO: ...
+    # q = Query(Article).where(Article.id == 42).load(Article.creator.name.family)
+    # article = await conn.select(q).first()
+    # data = json.dumps(article)
+    # assert data == """{"creator":{"name":{"family":"Article"},"children":[],"tags":[]}}"""
+
+    # TODO: remove empty name from result
     q = Query(Article).where(Article.id == 42).load(Article.creator.address.addr)
     article = await conn.select(q).first()
     data = json.dumps(article)
-    assert data == """{"creator":{"address":{"addr":"Creator Addr"},"children":[],"tags":[]}}"""
+    assert data == """{"creator":{"name":{},"address":{"addr":"Creator Addr"},"children":[],"tags":[]}}"""
+
+    something2 = Something2(something=Something(article=article_o))
+    await conn.save(something2)
+
+    q = Query(Something2).where(Something2.id == something2.id).load(Something2.id, Something2.something)
+    s = await conn.select(q).first()
+    data = json.dumps(s)
+    assert data == """{"id":1,"something":{"id":2,"article_id":42,"article":{"id":42,"creator_id":5,"updater_id":6}}}"""
+
+    q = Query(Article).where(Article.id == 42).load(Article.creator.tags.value)
+    s = await conn.select(q).first()
+    data = json.dumps(s)
+    assert data == """ """

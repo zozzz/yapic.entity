@@ -175,6 +175,11 @@ cdef class ManyToOne(RelationImpl):
             self.join_expr = replace_entity(attr._default_, self._joined, self.joined)
         else:
             self.join_expr = determine_join_expr(entity, self.joined)
+
+        entity_aliased = get_alias_target(entity)
+        if entity_aliased is not entity:
+            self.join_expr = replace_entity(self.join_expr, entity_aliased, entity)
+
         attr._deps_.add(self._joined)
         return True
 
@@ -209,6 +214,11 @@ cdef class OneToMany(RelationImpl):
             self.join_expr = replace_entity(attr._default_, self._joined, self.joined)
         else:
             self.join_expr = determine_join_expr(self.joined, entity)
+
+        entity_aliased = get_alias_target(entity)
+        if entity_aliased is not entity:
+            self.join_expr = replace_entity(self.join_expr, entity_aliased, entity)
+
         return True
 
     cdef object resolve_default(self, Relation attr):
@@ -253,6 +263,12 @@ cdef class ManyToMany(RelationImpl):
         else:
             self.across_join_expr = determine_join_expr(self.across, entity)
             self.join_expr = determine_join_expr(self.across, self.joined)
+
+        entity_aliased = get_alias_target(entity)
+        if entity_aliased is not entity:
+            self.join_expr = replace_entity(self.join_expr, entity_aliased, entity)
+            self.across_join_expr = replace_entity(self.across_join_expr, entity_aliased, entity)
+
         return True
 
     cdef object resolve_default(self, Relation attr):
@@ -424,6 +440,12 @@ cdef class Loading(EntityAttributeExt):
     def __cinit__(self, *, bint always=False, str eager=None):
         self.always = always
         self.eager = eager
+
+    cpdef clone(self):
+        return Loading(always=self.always, eager=self.eager)
+
+    def __repr__(self):
+        return "@Loading(always=%s, eager=%s)" % (self.always, self.eager)
 
 
 # cdef class RelatedItem(ValueStore):

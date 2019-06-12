@@ -1571,12 +1571,12 @@ struct __pyx_obj_5yapic_6entity_9_relation_RelatedDict {
  * 
  * cdef class Loading(EntityAttributeExt):             # <<<<<<<<<<<<<<
  *     cdef readonly bint always
- *     cdef readonly bint eager
+ *     cdef readonly str eager
  */
 struct __pyx_obj_5yapic_6entity_9_relation_Loading {
   struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt __pyx_base;
   int always;
-  int eager;
+  PyObject *eager;
 };
 
 
@@ -2279,7 +2279,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedDict *__pyx_vtab
  * 
  * cdef class Loading(EntityAttributeExt):             # <<<<<<<<<<<<<<
  *     cdef readonly bint always
- *     cdef readonly bint eager
+ *     cdef readonly str eager
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_9_relation_Loading {
@@ -4451,7 +4451,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
  *             set_related_attrs(<Relation>attr, entity, related, order, ops)
  *             _collect_entities(related, order, ops, determine_entity_op(related))             # <<<<<<<<<<<<<<
  * 
- *     if (is_dirty or state.is_dirty) and entity not in ops:
+ *     if (is_dirty or state.is_dirty or not state.exists) and entity not in ops:
  */
       __pyx_t_6 = __pyx_f_5yapic_6entity_17_entity_operation_determine_entity_op(__pyx_v_related); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 92, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
@@ -4483,7 +4483,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
   /* "yapic/entity/_entity_operation.pyx":94
  *             _collect_entities(related, order, ops, determine_entity_op(related))
  * 
- *     if (is_dirty or state.is_dirty) and entity not in ops:             # <<<<<<<<<<<<<<
+ *     if (is_dirty or state.is_dirty or not state.exists) and entity not in ops:             # <<<<<<<<<<<<<<
  *         ops.append((op, entity))
  *         order.add(type(entity))
  */
@@ -4496,6 +4496,11 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_14 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_14 < 0)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (!__pyx_t_14) {
+  } else {
+    goto __pyx_L17_next_and;
+  }
+  __pyx_t_14 = ((!(__pyx_v_state->exists != 0)) != 0);
   if (__pyx_t_14) {
   } else {
     __pyx_t_13 = __pyx_t_14;
@@ -4510,7 +4515,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
 
     /* "yapic/entity/_entity_operation.pyx":95
  * 
- *     if (is_dirty or state.is_dirty) and entity not in ops:
+ *     if (is_dirty or state.is_dirty or not state.exists) and entity not in ops:
  *         ops.append((op, entity))             # <<<<<<<<<<<<<<
  *         order.add(type(entity))
  * 
@@ -4531,7 +4536,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
     /* "yapic/entity/_entity_operation.pyx":96
- *     if (is_dirty or state.is_dirty) and entity not in ops:
+ *     if (is_dirty or state.is_dirty or not state.exists) and entity not in ops:
  *         ops.append((op, entity))
  *         order.add(type(entity))             # <<<<<<<<<<<<<<
  * 
@@ -4545,7 +4550,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
     /* "yapic/entity/_entity_operation.pyx":94
  *             _collect_entities(related, order, ops, determine_entity_op(related))
  * 
- *     if (is_dirty or state.is_dirty) and entity not in ops:             # <<<<<<<<<<<<<<
+ *     if (is_dirty or state.is_dirty or not state.exists) and entity not in ops:             # <<<<<<<<<<<<<<
  *         ops.append((op, entity))
  *         order.add(type(entity))
  */

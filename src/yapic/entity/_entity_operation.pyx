@@ -91,7 +91,7 @@ cdef _collect_entities(EntityBase entity, DependencyList order, list ops, object
             set_related_attrs(<Relation>attr, entity, related, order, ops)
             _collect_entities(related, order, ops, determine_entity_op(related))
 
-    if (is_dirty or state.is_dirty) and entity not in ops:
+    if (is_dirty or state.is_dirty or not state.exists) and entity not in ops:
         ops.append((op, entity))
         order.add(type(entity))
 

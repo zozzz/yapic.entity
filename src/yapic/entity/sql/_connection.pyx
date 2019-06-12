@@ -35,6 +35,8 @@ cdef class Connection:
 
         # print("\n" + "=" * 50)
         # print(sql)
+        # print(q._load)
+        # print("." * 50)
         # from pprint import pprint
         # pprint(qc.rcos_list)
         # print("=" * 50)

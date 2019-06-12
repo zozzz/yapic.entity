@@ -23,7 +23,7 @@ cdef class PostgreConnection(Connection):
             .compile_insert(ent, attrs, names, values, False)
 
         if not q:
-            return entity
+            return False
 
         return await self.__exec_iou(q, p, entity, ent, timeout)
 

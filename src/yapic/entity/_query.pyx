@@ -260,16 +260,23 @@ cdef object load_options(dict target, tuple input):
         elif isinstance(inp, EntityAttribute):
             target[(<EntityAttribute>inp)._uid_] = inp
         elif isinstance(inp, PathExpression):
-            for entry in (<PathExpression>inp)._path_:
+            pl = len((<PathExpression>inp)._path_)
+            for i, entry in enumerate((<PathExpression>inp)._path_):
+                is_last = pl - 1 == i
                 if isinstance(entry, Relation):
                     target[(<Relation>entry)._uid_] = entry
+                    if is_last:
+                        target[(<Relation>entry)._impl_.joined] = entry
                 elif isinstance(entry, Field):
                     if isinstance((<Field>entry)._impl_, CompositeImpl):
-                        target[(<Field>entry)._impl_._entity_] = entry
-                    else:
-                        target[(<Field>entry)._uid_] = entry
+                        if is_last:
+                            target[(<Field>entry)._impl_._entity_] = entry
+
+                    target[(<Field>entry)._uid_] = entry
+                elif isinstance(entry, RelatedAttribute):
+                    target[(<RelatedAttribute>entry)._uid_] = entry
                 else:
-                    raise NotImplementedError()
+                    raise NotImplementedError(repr(entry))
         else:
             target[inp] = inp
 
@@ -744,7 +751,7 @@ cdef class QueryFactory:
         return self.query.clone().where(replace_fields(self.join_expr, self.fields, values))
 
     def __repr__(self):
-        return "<QueryFactory>"
+        return "<QueryFactory %r %r>" % (self.query._select_from, self.join_expr)
 
 
 # cdef class FinalizeVirtualAttr(ReplacerBase):
