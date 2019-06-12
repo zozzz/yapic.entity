@@ -2,6 +2,7 @@ import pytest
 from yapic.entity.sql import wrap_connection, Entity, sync
 from yapic.entity import (Serial, Int, String, ForeignKey, PrimaryKey, One, Many, ManyAcross, Registry, DependencyList,
                           Json, Composite, save_operations, Auto, Query, Loading, Relation)
+from yapic import json
 
 pytestmark = pytest.mark.asyncio  # type: ignore
 
@@ -191,3 +192,24 @@ async def test_mixin(conn):
 
     t = await conn.select(Query(Tracked).load(Tracked.creator).where(Tracked.id == t.id)).first()
     assert t.creator.id == 1
+
+
+async def test_load_only_relation_field(conn):
+    article = Article(
+        id=42,
+        creator=User(name="Article Creator", address=Address(addr="Creator Addr")),
+        updater=User(name="Article Updater", address=Address(addr="Updater Addr")),
+    )
+
+    await conn.save(article)
+
+    # TODO: remove empty relations from result
+    q = Query(Article).where(Article.id == 42).load(Article.creator.name)
+    article = await conn.select(q).first()
+    data = json.dumps(article)
+    assert data == """{"creator":{"name":"Article Creator","children":[],"tags":[]}}"""
+
+    q = Query(Article).where(Article.id == 42).load(Article.creator.address.addr)
+    article = await conn.select(q).first()
+    data = json.dumps(article)
+    assert data == """{"creator":{"address":{"addr":"Creator Addr"},"children":[],"tags":[]}}"""

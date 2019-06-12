@@ -254,18 +254,22 @@ cdef class Query(Expression):
 # TODO: beautify
 cdef object load_options(dict target, tuple input):
     for inp in input:
-        if isinstance(inp, EntityAttribute):
+        if isinstance(inp, Relation):
+            target[(<Relation>inp)._uid_] = inp
+            target[(<Relation>inp)._impl_.joined] = inp
+        elif isinstance(inp, EntityAttribute):
             target[(<EntityAttribute>inp)._uid_] = inp
         elif isinstance(inp, PathExpression):
-            if isinstance((<PathExpression>inp)._path_[0], Relation):
-                target[(<EntityAttribute>(<PathExpression>inp)._path_[0])._uid_] = inp
-            elif isinstance((<PathExpression>inp)._path_[0], Field):
-                if isinstance((<Field>(<PathExpression>inp)._path_[0])._impl_, CompositeImpl):
-                    target[(<Field>(<PathExpression>inp)._path_[0])._impl_._entity_] = inp
+            for entry in (<PathExpression>inp)._path_:
+                if isinstance(entry, Relation):
+                    target[(<Relation>entry)._uid_] = entry
+                elif isinstance(entry, Field):
+                    if isinstance((<Field>entry)._impl_, CompositeImpl):
+                        target[(<Field>entry)._impl_._entity_] = entry
+                    else:
+                        target[(<Field>entry)._uid_] = entry
                 else:
                     raise NotImplementedError()
-            else:
-                raise NotImplementedError()
         else:
             target[inp] = inp
 
@@ -572,6 +576,10 @@ cdef class QueryFinalizer(Visitor):
                 loading = <Loading>attr.get_ext(Loading)
                 if attr._uid_ in self.q._load or (loading is not None and loading.always):
                     relation = <Relation>attr
+
+                    if loading is not None and loading.always:
+                        self.q.load(attr)
+
                     if loading is not None and loading.eager:
                         relation_rco.append((relation, self._rco_for_eager_relation()))
                     else:
@@ -621,28 +629,42 @@ cdef class QueryFinalizer(Visitor):
         cdef RCO op
         cdef Query q
 
+        # if isinstance(relation._impl_, ManyToMany):
+        #     if load is not load_aliased:
+        #         expr = replace_entity(relation._impl_.across_join_expr, load, load_aliased)
+        #     else:
+        #         expr = relation._impl_.across_join_expr
+
+        #     expr = replace_entity(expr, relation._impl_.across, relation._impl_._across)
+        #     expr2 = replace_entity(relation._impl_.join_expr, relation._impl_.across, relation._impl_._across)
+        #     expr2 = replace_entity(expr2, relation._impl_.joined, relation._impl_._joined)
+
+        #     op = RCO.LOAD_MULTI_ENTITY
+        #     q = Query(relation._impl_._across) \
+        #         .columns(relation._impl_._joined) \
+        #         .join(relation._impl_._joined, expr2, "INNER")
+        # else:
+        #     if load is not load_aliased:
+        #         expr = replace_entity(relation._impl_.join_expr, load, load_aliased)
+        #     else:
+        #         expr = relation._impl_.join_expr
+
+        #     op = RCO.LOAD_ONE_ENTITY if isinstance(relation._impl_, ManyToOne) else RCO.LOAD_MULTI_ENTITY
+        #     q = Query(load_aliased)
+
         if isinstance(relation._impl_, ManyToMany):
-            if load is not load_aliased:
-                expr = replace_entity(relation._impl_.across_join_expr, load, load_aliased)
-            else:
-                expr = relation._impl_.across_join_expr
-
-            expr = replace_entity(expr, relation._impl_.across, relation._impl_._across)
-            expr2 = replace_entity(relation._impl_.join_expr, relation._impl_.across, relation._impl_._across)
-            expr2 = replace_entity(expr2, relation._impl_.joined, relation._impl_._joined)
-
+            expr = relation._impl_.across_join_expr
             op = RCO.LOAD_MULTI_ENTITY
-            q = Query(relation._impl_._across) \
-                .columns(relation._impl_._joined) \
-                .join(relation._impl_._joined, expr2, "INNER")
+            q = Query(relation._impl_.across) \
+                .columns(relation._impl_.joined) \
+                .join(relation._impl_.joined, relation._impl_.join_expr, "INNER")
         else:
-            if load is not load_aliased:
-                expr = replace_entity(relation._impl_.join_expr, load, load_aliased)
-            else:
-                expr = relation._impl_.join_expr
-
+            expr = relation._impl_.join_expr
             op = RCO.LOAD_ONE_ENTITY if isinstance(relation._impl_, ManyToOne) else RCO.LOAD_MULTI_ENTITY
-            q = Query(load_aliased)
+            q = Query(load)
+
+        if self.q._load:
+            q._load = dict(self.q._load)
 
         cdef tuple fields = extract_fields(relation._entity_, expr)
         cdef list indexes = []

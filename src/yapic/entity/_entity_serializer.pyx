@@ -15,7 +15,7 @@ cdef class SerializerCtx:
     cdef bint skip_attribute(self, EntityAttribute attr, object value):
         if attr.get_ext(DontSerialize):
             return True
-        return value is NOTSET
+        return value is NOTSET or value is None
 
     cdef SerializerCtx enter(self, str path):
         return self

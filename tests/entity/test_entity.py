@@ -169,3 +169,9 @@ def test_entity_serialize():
 
     serialized = json.dumps(u)
     assert serialized == """{"id":2,"name":"User","address":{"id":3,"addr":"ADDRESS 12"},"many":[{"id":4,"parent_id":2},{"id":5,"parent_id":2},{"id":6,"parent_id":2},{"id":7,"parent_id":2}]}"""
+
+
+def test_entity_serialize_skip_none():
+    addr = User4Addr(id=42)
+    serialized = json.dumps(addr)
+    assert serialized == """{"id":42}"""

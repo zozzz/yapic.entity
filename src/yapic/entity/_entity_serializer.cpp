@@ -2232,6 +2232,8 @@ static int __pyx_f_5yapic_6entity_18_entity_serializer_13SerializerCtx_skip_attr
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_t_2;
+  int __pyx_t_3;
+  int __pyx_t_4;
   __Pyx_RefNannySetupContext("skip_attribute", 0);
 
   /* "yapic/entity/_entity_serializer.pyx":16
@@ -2239,7 +2241,7 @@ static int __pyx_f_5yapic_6entity_18_entity_serializer_13SerializerCtx_skip_attr
  *     cdef bint skip_attribute(self, EntityAttribute attr, object value):
  *         if attr.get_ext(DontSerialize):             # <<<<<<<<<<<<<<
  *             return True
- *         return value is NOTSET
+ *         return value is NOTSET or value is None
  */
   __pyx_t_1 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute *)__pyx_v_attr->__pyx_base.__pyx_vtab)->get_ext(__pyx_v_attr, ((PyObject *)__pyx_ptype_5yapic_6entity_18_entity_serializer_DontSerialize), 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -2251,7 +2253,7 @@ static int __pyx_f_5yapic_6entity_18_entity_serializer_13SerializerCtx_skip_attr
  *     cdef bint skip_attribute(self, EntityAttribute attr, object value):
  *         if attr.get_ext(DontSerialize):
  *             return True             # <<<<<<<<<<<<<<
- *         return value is NOTSET
+ *         return value is NOTSET or value is None
  * 
  */
     __pyx_r = 1;
@@ -2262,18 +2264,28 @@ static int __pyx_f_5yapic_6entity_18_entity_serializer_13SerializerCtx_skip_attr
  *     cdef bint skip_attribute(self, EntityAttribute attr, object value):
  *         if attr.get_ext(DontSerialize):             # <<<<<<<<<<<<<<
  *             return True
- *         return value is NOTSET
+ *         return value is NOTSET or value is None
  */
   }
 
   /* "yapic/entity/_entity_serializer.pyx":18
  *         if attr.get_ext(DontSerialize):
  *             return True
- *         return value is NOTSET             # <<<<<<<<<<<<<<
+ *         return value is NOTSET or value is None             # <<<<<<<<<<<<<<
  * 
  *     cdef SerializerCtx enter(self, str path):
  */
-  __pyx_t_2 = (__pyx_v_value == ((PyObject *)__pyx_ptype_5yapic_6entity_7_entity_NOTSET));
+  __pyx_t_3 = (__pyx_v_value == ((PyObject *)__pyx_ptype_5yapic_6entity_7_entity_NOTSET));
+  __pyx_t_4 = (__pyx_t_3 != 0);
+  if (!__pyx_t_4) {
+  } else {
+    __pyx_t_2 = __pyx_t_4;
+    goto __pyx_L4_bool_binop_done;
+  }
+  __pyx_t_4 = (__pyx_v_value == Py_None);
+  __pyx_t_3 = (__pyx_t_4 != 0);
+  __pyx_t_2 = __pyx_t_3;
+  __pyx_L4_bool_binop_done:;
   __pyx_r = __pyx_t_2;
   goto __pyx_L0;
 
@@ -2296,7 +2308,7 @@ static int __pyx_f_5yapic_6entity_18_entity_serializer_13SerializerCtx_skip_attr
 }
 
 /* "yapic/entity/_entity_serializer.pyx":20
- *         return value is NOTSET
+ *         return value is NOTSET or value is None
  * 
  *     cdef SerializerCtx enter(self, str path):             # <<<<<<<<<<<<<<
  *         return self
@@ -2321,7 +2333,7 @@ static struct __pyx_obj_5yapic_6entity_18_entity_serializer_SerializerCtx *__pyx
   goto __pyx_L0;
 
   /* "yapic/entity/_entity_serializer.pyx":20
- *         return value is NOTSET
+ *         return value is NOTSET or value is None
  * 
  *     cdef SerializerCtx enter(self, str path):             # <<<<<<<<<<<<<<
  *         return self
