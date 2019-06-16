@@ -30,6 +30,14 @@ cdef class DateTimeTzImpl(FieldImpl):
     pass
 
 
+cdef class TimeImpl(FieldImpl):
+    pass
+
+
+cdef class TimeTzImpl(FieldImpl):
+    pass
+
+
 cdef class NumericImpl(FieldImpl):
     pass
 

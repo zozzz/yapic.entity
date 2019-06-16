@@ -1,7 +1,7 @@
 # flake8: noqa
 
 from typing import Generic, TypeVar, Union, Optional, List, Tuple, Type, Any
-from datetime import date, datetime
+from datetime import date, datetime, time
 from decimal import Decimal
 from enum import Enum
 import uuid
@@ -17,6 +17,8 @@ from ._field_impl import (
     DateImpl,
     DateTimeImpl,
     DateTimeTzImpl,
+    TimeImpl,
+    TimeTzImpl,
     NumericImpl,
     FloatImpl,
     UUIDImpl,
@@ -60,6 +62,8 @@ Bool = Field[BoolImpl, bool, int]
 Date = Field[DateImpl, date, str]
 DateTime = Field[DateTimeImpl, datetime, str]
 DateTimeTz = Field[DateTimeTzImpl, datetime, str]
+Time = Field[TimeImpl, time, str]
+TimeTz = Field[TimeTzImpl, time, str]
 Numeric = Field[NumericImpl, Decimal, str]
 Auto = Field[AutoImpl, Any, Any]
 

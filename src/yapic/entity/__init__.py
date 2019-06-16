@@ -1,7 +1,7 @@
 from ._entity import *  # noqa
 from .field import (  # noqa
-    Field, String, Bytes, Bool, Date, DateTime, DateTimeTz, Numeric, Float, UUID, Int, Serial, Choice, Json, Composite,
-    Auto, Point, PrimaryKey, Index, ForeignKey, AutoIncrement, virtual)
+    Field, String, Bytes, Bool, Date, DateTime, DateTimeTz, Time, TimeTz, Numeric, Float, UUID, Int, Serial, Choice,
+    Json, Composite, Auto, Point, PrimaryKey, Index, ForeignKey, AutoIncrement, virtual)
 from .relation import *  # noqa
 from ._query import *  # noqa
 from ._expression import *  # noqa

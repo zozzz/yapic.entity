@@ -13,6 +13,8 @@ from yapic.entity._field_impl cimport (
     DateImpl,
     DateTimeImpl,
     DateTimeTzImpl,
+    TimeImpl,
+    TimeTzImpl,
     ChoiceImpl,
     JsonImpl,
     CompositeImpl,
@@ -46,6 +48,10 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
             return self.__date_time_type(field, <DateTimeImpl>impl)
         elif isinstance(impl, DateTimeTzImpl):
             return self.__date_time_tz_type(field, <DateTimeTzImpl>impl)
+        elif isinstance(impl, TimeImpl):
+            return self.__time_type(field, <TimeImpl>impl)
+        elif isinstance(impl, TimeTzImpl):
+            return self.__time_tz_type(field, <TimeTzImpl>impl)
         elif isinstance(impl, NumericImpl):
             return self.__numeric_type(field, <NumericImpl>impl)
         elif isinstance(impl, FloatImpl):
@@ -91,6 +97,12 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
 
     cdef StorageType __date_time_tz_type(self, Field field, DateTimeTzImpl impl):
         return DateTimeTzType("TIMESTAMPTZ")
+
+    cdef StorageType __time_type(self, Field field, TimeImpl impl):
+        return TimeType("TIME")
+
+    cdef StorageType __time_tz_type(self, Field field, TimeTzImpl impl):
+        return TimeType("TIMETZ")
 
     cdef StorageType __numeric_type(self, Field field, NumericImpl impl):
         if field.min_size <= 0 or field.max_size <= 0:
@@ -237,6 +249,22 @@ cdef class DateTimeTzType(PostgreType):
         if isinstance(value, datetime):
             return value
         return datetime.strptime(value, "%Y-%m-%d %H:%M:%S.%f%z")
+
+
+cdef class TimeType(PostgreType):
+    cpdef object encode(self, object value):
+        return value
+
+    cpdef object decode(self, object value):
+        return value
+
+
+cdef class TimeTzType(PostgreType):
+    cpdef object encode(self, object value):
+        return value
+
+    cpdef object decode(self, object value):
+        return value
 
 
 cdef class NumericType(PostgreType):

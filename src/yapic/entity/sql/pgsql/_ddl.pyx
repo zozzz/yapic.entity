@@ -14,6 +14,8 @@ from yapic.entity._field_impl cimport (
     DateImpl,
     DateTimeImpl,
     DateTimeTzImpl,
+    TimeImpl,
+    TimeTzImpl,
     NumericImpl,
     FloatImpl,
     UUIDImpl,
@@ -197,6 +199,10 @@ cdef class PostgreDDLReflect(DDLReflect):
             field = Field(DateTimeTzImpl(), nullable=is_nullable)
         elif typename == "timestamp":
             field = Field(DateTimeImpl(), nullable=is_nullable)
+        elif typename == "time":
+            field = Field(TimeImpl(), nullable=is_nullable)
+        elif typename == "timetz":
+            field = Field(TimeTzImpl(), nullable=is_nullable)
         elif typename == "numeric":
             field = Field(NumericImpl(), size=(record["numeric_precision"], record["numeric_scale"]), nullable=is_nullable)
         elif typename == "float4" or typename == "float8":

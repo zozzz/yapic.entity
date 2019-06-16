@@ -4,9 +4,9 @@ import pytest
 from datetime import datetime
 from decimal import Decimal
 from yapic.entity.sql import wrap_connection, Entity, sync
-from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Bool, ForeignKey, PrimaryKey,
-                          One, Query, func, EntityDiff, Registry, Json, Composite, Auto, Numeric, Float, Point, UUID,
-                          virtual)
+from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool, ForeignKey,
+                          PrimaryKey, One, Query, func, EntityDiff, Registry, Json, Composite, Auto, Numeric, Float,
+                          Point, UUID, virtual)
 
 pytestmark = pytest.mark.asyncio
 
@@ -43,6 +43,8 @@ class User(Entity, schema="execution"):
     naive_date: DateTime = datetime(2019, 1, 1, 12, 34, 55)
     created_time: DateTimeTz = func.now()
     updated_time: DateTimeTz
+    time: Time
+    time_tz: TimeTz
 
     @virtual
     def virtual_prop(self):
@@ -84,6 +86,8 @@ CREATE TABLE "execution"."User" (
   "naive_date" TIMESTAMP NOT NULL DEFAULT '2019-01-01 12:34:55.000000',
   "created_time" TIMESTAMPTZ NOT NULL DEFAULT now(),
   "updated_time" TIMESTAMPTZ,
+  "time" TIME,
+  "time_tz" TIMETZ,
   PRIMARY KEY("id"),
   CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
 );
@@ -98,6 +102,9 @@ CREATE TABLE "execution_private"."User" (
   CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
 );"""
     await conn.conn.execute(result)
+
+    result = await sync(conn, Address.__registry__)
+    assert bool(result) is False
 
 
 async def test_basic_insert_update(conn):
@@ -228,6 +235,8 @@ async def test_diff(conn):
         naive_date: DateTimeTz = func.now()
         created_time: DateTimeTz = func.CURRENT_TIMESTAMP
         updated_time: DateTimeTz
+        time: Time
+        time_tz: TimeTz
 
     class NewTable(Entity, registry=new_reg, schema="_private"):
         id: Serial
