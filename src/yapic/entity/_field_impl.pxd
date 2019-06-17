@@ -63,6 +63,10 @@ cdef class JsonImpl(EntityTypeImpl):
     pass
 
 
+cdef class JsonArrayImpl(JsonImpl):
+    cdef bint __check_dirty(self, list value)
+
+
 cdef class CompositeImpl(EntityTypeImpl):
     pass
 

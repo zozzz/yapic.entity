@@ -5,8 +5,8 @@ from datetime import datetime, date, time, tzinfo, timedelta
 from decimal import Decimal
 from yapic.entity.sql import wrap_connection, Entity, sync
 from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool, ForeignKey,
-                          PrimaryKey, One, Query, func, EntityDiff, Registry, Json, Composite, Auto, Numeric, Float,
-                          Point, UUID, virtual)
+                          PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite, Auto, Numeric,
+                          Float, Point, UUID, virtual)
 
 pytestmark = pytest.mark.asyncio
 
@@ -328,6 +328,7 @@ async def test_json(conn):
     class JsonUser(Entity, registry=reg_a, schema="execution"):
         id: Serial
         name: Json[JsonName]
+        points: JsonArray[JsonXY]
 
     result = await sync(conn, reg_a)
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
@@ -335,17 +336,45 @@ CREATE SEQUENCE "execution"."JsonUser_id_seq";
 CREATE TABLE "execution"."JsonUser" (
   "id" INT4 NOT NULL DEFAULT nextval('"execution"."JsonUser_id_seq"'::regclass),
   "name" JSONB,
+  "points" JSONB,
   PRIMARY KEY("id")
 );"""
 
     await conn.conn.execute(result)
 
-    user = JsonUser(name={"given": "Given", "family": "Family", "xy": {"x": 1, "y": 2}})
+    points = [
+        {
+            "x": 1,
+            "y": 2
+        },
+        {
+            "x": 10,
+            "y": 20
+        },
+        {
+            "x": 30,
+            "y": 42
+        },
+    ]
+
+    user = JsonUser(name={"given": "Given", "family": "Family", "xy": {"x": 1, "y": 2}}, points=points)
     await conn.insert(user)
     assert user.name.given == "Given"
     assert user.name.family == "Family"
     assert user.name.xy.x == 1
     assert user.name.xy.y == 2
+
+    assert isinstance(user.points[0], JsonXY)
+    assert user.points[0].x == 1
+    assert user.points[0].y == 2
+
+    assert isinstance(user.points[1], JsonXY)
+    assert user.points[1].x == 10
+    assert user.points[1].y == 20
+
+    assert isinstance(user.points[2], JsonXY)
+    assert user.points[2].x == 30
+    assert user.points[2].y == 42
 
     result = await sync(conn, reg_a)
     assert bool(result) is False

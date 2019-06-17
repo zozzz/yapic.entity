@@ -137,6 +137,46 @@ cdef class JsonImpl(EntityTypeImpl):
         return "Json(%r)" % self._entity_
 
 
+cdef class JsonArrayImpl(JsonImpl):
+    cdef object state_init(self, object initial):
+        if initial is NOTSET:
+            return []
+        else:
+            return initial
+
+    cdef object state_set(self, object initial, object current, object value):
+        if value is None:
+            return None
+        elif isinstance(value, list):
+            return list(map(self.__make_entity, value))
+        else:
+            raise TypeError("JsonArray value must be list of entities")
+
+    cdef object state_get_dirty(self, object initial, object current):
+        if current is NOTSET:
+            if initial is NOTSET:
+                return NOTSET
+            elif self.__check_dirty(initial):
+                return initial
+        elif initial is not current:
+            return current
+        elif current is not None and self.__check_dirty(current):
+            return current
+        return NOTSET
+
+    def __make_entity(self, value):
+        if isinstance(value, EntityBase):
+            return value
+        else:
+            return self._entity_(value)
+
+    cdef bint __check_dirty(self, list value):
+        for item in value:
+            if item.__state__.is_dirty:
+                return True
+        return False
+
+
 cdef class CompositeImpl(EntityTypeImpl):
     def __eq__(self, other):
         if isinstance(other, CompositeImpl):

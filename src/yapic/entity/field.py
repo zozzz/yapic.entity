@@ -23,6 +23,7 @@ from ._field_impl import (
     FloatImpl,
     UUIDImpl,
     JsonImpl as _JsonImpl,
+    JsonArrayImpl as _JsonArrayImpl,
     CompositeImpl as _CompositeImpl,
     AutoImpl,
 )
@@ -117,6 +118,17 @@ class JsonImpl(Generic[EntityT], _JsonImpl):
 
 
 class Json(Generic[EntityT], Field[JsonImpl[EntityT], EntityT, str]):
+    pass
+
+
+class JsonArrayImpl(Generic[EntityT], _JsonArrayImpl):
+    _entity_: Type[EntityT]
+
+    def __init__(self, entity: Type[EntityT]):
+        super().__init__(entity)
+
+
+class JsonArray(Generic[EntityT], Field[JsonArrayImpl[EntityT], List[EntityT], str]):
     pass
 
 
