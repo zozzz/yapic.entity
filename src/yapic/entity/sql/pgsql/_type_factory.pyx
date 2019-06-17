@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, time
 from decimal import Decimal
 
 from yapic import json
@@ -221,7 +221,7 @@ cdef class BoolType(PostgreType):
 
 cdef class DateType(PostgreType):
     cpdef object encode(self, object value):
-        return value.strftime("%Y-%m-%d")
+        return RawExpression("'" + value.strftime("%Y-%m-%d") + "'")
 
     cpdef object decode(self, object value):
         if isinstance(value, date):
@@ -231,7 +231,7 @@ cdef class DateType(PostgreType):
 
 cdef class DateTimeType(PostgreType):
     cpdef object encode(self, object value):
-        return value.strftime("%Y-%m-%d %H:%M:%S.%f")
+        return RawExpression("'" + value.strftime("%Y-%m-%d %H:%M:%S.%f") + "'")
 
     cpdef object decode(self, object value):
         if isinstance(value, datetime):
@@ -243,7 +243,7 @@ cdef class DateTimeTzType(PostgreType):
     cpdef object encode(self, object value):
         if value.utcoffset() is None:
             raise ValueError("datetime value must have timezone information")
-        return value.strftime("%Y-%m-%d %H:%M:%S.%f%z")
+        return RawExpression("'" + value.strftime("%Y-%m-%d %H:%M:%S.%f%z") + "'")
 
     cpdef object decode(self, object value):
         if isinstance(value, datetime):
@@ -253,18 +253,26 @@ cdef class DateTimeTzType(PostgreType):
 
 cdef class TimeType(PostgreType):
     cpdef object encode(self, object value):
-        return value
+        return RawExpression("'" + value.isoformat() + "'")
 
     cpdef object decode(self, object value):
-        return value
+        if isinstance(value, time):
+            return value
+        else:
+            return time.fromisoformat(value)
 
 
 cdef class TimeTzType(PostgreType):
     cpdef object encode(self, object value):
-        return value
+        if value.utcoffset() is None:
+            raise ValueError("time value must have timezone information")
+        return RawExpression("'" + value.isoformat() + "'")
 
     cpdef object decode(self, object value):
-        return value
+        if isinstance(value, time):
+            return value
+        else:
+            return time.fromisoformat(value)
 
 
 cdef class NumericType(PostgreType):

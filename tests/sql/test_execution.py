@@ -1,7 +1,7 @@
 # flake8: noqa: E501
 
 import pytest
-from datetime import datetime
+from datetime import datetime, date, time, tzinfo, timedelta
 from decimal import Decimal
 from yapic.entity.sql import wrap_connection, Entity, sync
 from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool, ForeignKey,
@@ -726,3 +726,45 @@ async def test_point(conn, pgclean):
     assert await conn.save(p) is True
     assert p.point.x == 5.25
     assert p.point.y == 6.25
+
+
+async def test_date_types(conn):
+    reg = Registry()
+
+    class DateTest(Entity, registry=reg, schema="execution"):
+        id: Serial
+        date: Date
+        date_time: DateTime
+        date_time_tz: DateTimeTz
+        time: Time
+        time_tz: TimeTz
+
+    class FixedTz(tzinfo):
+        def __init__(self, utcoffset):
+            self._utcoffset = timedelta(hours=utcoffset)
+            self._dst = timedelta(hours=0)
+
+        def utcoffset(self, dt):
+            return self._utcoffset
+
+        def dst(self, dt):
+            return self._dst
+
+    result = await sync(conn, reg)
+    await conn.conn.execute(result)
+
+    inst = DateTest(
+        date=date(2001, 12, 21),
+        date_time=datetime(2019, 6, 1, 12, 23, 34),
+        date_time_tz=datetime(2019, 6, 1, 12, 23, 34, tzinfo=FixedTz(5)),
+        time=time(12, 23, 34),
+        time_tz=time(12, 23, 34, tzinfo=FixedTz(6)),
+    )
+
+    await conn.save(inst)
+    obj = await conn.select(Query(DateTest)).first()
+    assert obj.date == date(2001, 12, 21)
+    assert obj.date_time == datetime(2019, 6, 1, 12, 23, 34)
+    assert obj.date_time_tz == datetime(2019, 6, 1, 12, 23, 34, tzinfo=FixedTz(5))
+    assert obj.time == time(12, 23, 34)
+    assert obj.time_tz == time(12, 23, 34, tzinfo=FixedTz(6))

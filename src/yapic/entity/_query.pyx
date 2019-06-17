@@ -410,8 +410,7 @@ cdef class QueryFinalizer(Visitor):
                 path = <PathExpression>expr
                 last_entry = path._path_[len(path._path_) - 1]
 
-                if isinstance(last_entry, Field) and isinstance((<Field>last_entry)._impl_, CompositeImpl):
-                    entity = (<CompositeImpl>(<Field>last_entry)._impl_)._entity_
+                if isinstance(last_entry, Field):
                     primary_field = path._path_[0]
                     pstart = 1
                     if isinstance(primary_field, Relation):
@@ -423,8 +422,12 @@ cdef class QueryFinalizer(Visitor):
                         p = path._path_[i]
                         _path.append(p._key_)
 
-                    self.rcos.append(self._rco_for_composite(primary_field, entity, _path))
-                    self.visit(expr)
+                    if isinstance((<Field>last_entry)._impl_, CompositeImpl):
+                        self.rcos.append(self._rco_for_composite(primary_field, (<CompositeImpl>(<Field>last_entry)._impl_)._entity_, _path))
+                        self.visit(expr)
+                    else:
+                        self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
+                        self.q._columns.append(self.visit(expr))
             elif isinstance(expr, Field):
                 if isinstance((<Field>expr)._impl_, CompositeImpl):
                     self.rcos.append(self._rco_for_composite((<Field>expr), (<CompositeImpl>(<Field>expr)._impl_)._entity_, []))

@@ -1982,7 +1982,7 @@ struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_BoolType {
  * 
  * cdef class DateType(PostgreType):             # <<<<<<<<<<<<<<
  *     cpdef object encode(self, object value):
- *         return value.strftime("%Y-%m-%d")
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d") + "'")
  */
 struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_DateType {
   struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType __pyx_base;
@@ -1994,7 +1994,7 @@ struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_DateType {
  * 
  * cdef class DateTimeType(PostgreType):             # <<<<<<<<<<<<<<
  *     cpdef object encode(self, object value):
- *         return value.strftime("%Y-%m-%d %H:%M:%S.%f")
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d %H:%M:%S.%f") + "'")
  */
 struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_DateTimeType {
   struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType __pyx_base;
@@ -2018,26 +2018,26 @@ struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_DateTimeTzType {
  * 
  * cdef class TimeType(PostgreType):             # <<<<<<<<<<<<<<
  *     cpdef object encode(self, object value):
- *         return value
+ *         return RawExpression("'" + value.isoformat() + "'")
  */
 struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeType {
   struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType __pyx_base;
 };
 
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":262
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":265
  * 
  * 
  * cdef class TimeTzType(PostgreType):             # <<<<<<<<<<<<<<
  *     cpdef object encode(self, object value):
- *         return value
+ *         if value.utcoffset() is None:
  */
 struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType {
   struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType __pyx_base;
 };
 
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":270
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":278
  * 
  * 
  * cdef class NumericType(PostgreType):             # <<<<<<<<<<<<<<
@@ -2049,7 +2049,7 @@ struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType {
 };
 
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":283
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":291
  * 
  * 
  * cdef class FloatType(PostgreType):             # <<<<<<<<<<<<<<
@@ -2061,7 +2061,7 @@ struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType {
 };
 
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":297
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":305
  * 
  * 
  * cdef class UUIDType(PostgreType):             # <<<<<<<<<<<<<<
@@ -2073,7 +2073,7 @@ struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType {
 };
 
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":305
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":313
  * 
  * 
  * cdef class ChoiceType(PostgreType):             # <<<<<<<<<<<<<<
@@ -2085,7 +2085,7 @@ struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType {
 };
 
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":313
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":321
  * 
  * 
  * cdef class JsonType(PostgreType):             # <<<<<<<<<<<<<<
@@ -2098,7 +2098,7 @@ struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType {
 };
 
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":330
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":338
  * 
  * 
  * cdef class CompositeType(PostgreType):             # <<<<<<<<<<<<<<
@@ -2111,7 +2111,7 @@ struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType {
 };
 
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":340
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":348
  * 
  * 
  * cdef class PointType(PostgreType):             # <<<<<<<<<<<<<<
@@ -3067,7 +3067,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_BoolTy
  * 
  * cdef class DateType(PostgreType):             # <<<<<<<<<<<<<<
  *     cpdef object encode(self, object value):
- *         return value.strftime("%Y-%m-%d")
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d") + "'")
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_DateType {
@@ -3081,7 +3081,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_DateTy
  * 
  * cdef class DateTimeType(PostgreType):             # <<<<<<<<<<<<<<
  *     cpdef object encode(self, object value):
- *         return value.strftime("%Y-%m-%d %H:%M:%S.%f")
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d %H:%M:%S.%f") + "'")
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_DateTimeType {
@@ -3109,7 +3109,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_DateTi
  * 
  * cdef class TimeType(PostgreType):             # <<<<<<<<<<<<<<
  *     cpdef object encode(self, object value):
- *         return value
+ *         return RawExpression("'" + value.isoformat() + "'")
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeType {
@@ -3118,12 +3118,12 @@ struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeType {
 static struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeType *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeType;
 
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":262
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":265
  * 
  * 
  * cdef class TimeTzType(PostgreType):             # <<<<<<<<<<<<<<
  *     cpdef object encode(self, object value):
- *         return value
+ *         if value.utcoffset() is None:
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType {
@@ -3132,7 +3132,7 @@ struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType {
 static struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType;
 
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":270
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":278
  * 
  * 
  * cdef class NumericType(PostgreType):             # <<<<<<<<<<<<<<
@@ -3146,7 +3146,7 @@ struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType {
 static struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType;
 
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":283
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":291
  * 
  * 
  * cdef class FloatType(PostgreType):             # <<<<<<<<<<<<<<
@@ -3160,7 +3160,7 @@ struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType {
 static struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType;
 
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":297
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":305
  * 
  * 
  * cdef class UUIDType(PostgreType):             # <<<<<<<<<<<<<<
@@ -3174,7 +3174,7 @@ struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType {
 static struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType;
 
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":305
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":313
  * 
  * 
  * cdef class ChoiceType(PostgreType):             # <<<<<<<<<<<<<<
@@ -3188,7 +3188,7 @@ struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType {
 static struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType;
 
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":313
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":321
  * 
  * 
  * cdef class JsonType(PostgreType):             # <<<<<<<<<<<<<<
@@ -3202,7 +3202,7 @@ struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType {
 static struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType;
 
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":330
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":338
  * 
  * 
  * cdef class CompositeType(PostgreType):             # <<<<<<<<<<<<<<
@@ -3216,7 +3216,7 @@ struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType
 static struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType;
 
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":340
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":348
  * 
  * 
  * cdef class PointType(PostgreType):             # <<<<<<<<<<<<<<
@@ -3832,6 +3832,7 @@ static const char __pyx_k_BIT[] = "BIT(";
 static const char __pyx_k_INT[] = "INT";
 static const char __pyx_k__10[] = ")";
 static const char __pyx_k__16[] = "))";
+static const char __pyx_k__20[] = "'";
 static const char __pyx_k_yes[] = "yes";
 static const char __pyx_k_DATE[] = "DATE";
 static const char __pyx_k_INT2[] = "INT2";
@@ -3847,6 +3848,7 @@ static const char __pyx_k_json[] = "json";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "name";
 static const char __pyx_k_test[] = "__test__";
+static const char __pyx_k_time[] = "time";
 static const char __pyx_k_true[] = "true";
 static const char __pyx_k_BYTEA[] = "BYTEA";
 static const char __pyx_k_CHECK[] = ") CHECK(\"";
@@ -3893,6 +3895,7 @@ static const char __pyx_k_PointType[] = "PointType";
 static const char __pyx_k_TIMESTAMP[] = "TIMESTAMP";
 static const char __pyx_k_TypeError[] = "TypeError";
 static const char __pyx_k_VARCHAR_s[] = "VARCHAR(%s)";
+static const char __pyx_k_isoformat[] = "isoformat";
 static const char __pyx_k_utcoffset[] = "utcoffset";
 static const char __pyx_k_ChoiceType[] = "ChoiceType";
 static const char __pyx_k_StringType[] = "StringType";
@@ -3905,6 +3908,7 @@ static const char __pyx_k_TIMESTAMPTZ[] = "TIMESTAMPTZ";
 static const char __pyx_k_DateTimeType[] = "DateTimeType";
 static const char __pyx_k_CompositeType[] = "CompositeType";
 static const char __pyx_k_Y_m_d_H_M_S_f[] = "%Y-%m-%d %H:%M:%S.%f";
+static const char __pyx_k_fromisoformat[] = "fromisoformat";
 static const char __pyx_k_DateTimeTzType[] = "DateTimeTzType";
 static const char __pyx_k_Y_m_d_H_M_S_f_z[] = "%Y-%m-%d %H:%M:%S.%f%z";
 static const char __pyx_k_PostgreTypeFactory[] = "PostgreTypeFactory";
@@ -3915,6 +3919,7 @@ static const char __pyx_k_Invalid_values_for_Numeric_type[] = "Invalid values fo
 static const char __pyx_k_Bytes_type_only_accepts_byte_str[] = "Bytes type only accepts byte strings";
 static const char __pyx_k_Choice_of_Flags_must_be_only_con[] = "Choice of Flags must be only contains int values";
 static const char __pyx_k_datetime_value_must_have_timezon[] = "datetime value must have timezone information";
+static const char __pyx_k_time_value_must_have_timezone_in[] = "time value must have timezone information";
 static PyObject *__pyx_kp_u_1;
 static PyObject *__pyx_kp_u_BIT;
 static PyObject *__pyx_n_u_BOOLEAN;
@@ -3974,6 +3979,7 @@ static PyObject *__pyx_kp_u_Y_m_d_H_M_S_f;
 static PyObject *__pyx_kp_u_Y_m_d_H_M_S_f_z;
 static PyObject *__pyx_kp_u__10;
 static PyObject *__pyx_kp_u__16;
+static PyObject *__pyx_kp_u__20;
 static PyObject *__pyx_kp_u__9;
 static PyObject *__pyx_n_s_as_dict;
 static PyObject *__pyx_n_s_cline_in_traceback;
@@ -3987,7 +3993,9 @@ static PyObject *__pyx_n_s_dialect;
 static PyObject *__pyx_n_s_dumps;
 static PyObject *__pyx_n_s_encode;
 static PyObject *__pyx_kp_u_expected;
+static PyObject *__pyx_n_s_fromisoformat;
 static PyObject *__pyx_n_s_import;
+static PyObject *__pyx_n_s_isoformat;
 static PyObject *__pyx_n_s_json;
 static PyObject *__pyx_n_s_loads;
 static PyObject *__pyx_n_s_lower;
@@ -4002,6 +4010,8 @@ static PyObject *__pyx_n_s_strftime;
 static PyObject *__pyx_n_s_strptime;
 static PyObject *__pyx_n_u_t;
 static PyObject *__pyx_n_s_test;
+static PyObject *__pyx_n_s_time;
+static PyObject *__pyx_kp_u_time_value_must_have_timezone_in;
 static PyObject *__pyx_n_u_true;
 static PyObject *__pyx_n_s_utcoffset;
 static PyObject *__pyx_n_s_value;
@@ -4082,7 +4092,8 @@ static PyObject *__pyx_tuple__15;
 static PyObject *__pyx_tuple__17;
 static PyObject *__pyx_tuple__18;
 static PyObject *__pyx_tuple__19;
-static PyObject *__pyx_tuple__20;
+static PyObject *__pyx_tuple__21;
+static PyObject *__pyx_tuple__22;
 /* Late includes */
 
 /* "yapic/entity/sql/pgsql/_type_factory.pyx":31
@@ -8073,7 +8084,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_8BoolType_2
  * 
  * cdef class DateType(PostgreType):
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
- *         return value.strftime("%Y-%m-%d")
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d") + "'")
  * 
  */
 
@@ -8136,7 +8147,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8DateType_en
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":224
  * cdef class DateType(PostgreType):
  *     cpdef object encode(self, object value):
- *         return value.strftime("%Y-%m-%d")             # <<<<<<<<<<<<<<
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d") + "'")             # <<<<<<<<<<<<<<
  * 
  *     cpdef object decode(self, object value):
  */
@@ -8158,15 +8169,24 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8DateType_en
   if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 224, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
+  __pyx_t_2 = PyNumber_Add(__pyx_kp_u__20, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyNumber_Add(__pyx_t_2, __pyx_kp_u__20); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_RawExpression), __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
   goto __pyx_L0;
 
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":223
  * 
  * cdef class DateType(PostgreType):
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
- *         return value.strftime("%Y-%m-%d")
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d") + "'")
  * 
  */
 
@@ -8221,7 +8241,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_8DateType_e
 }
 
 /* "yapic/entity/sql/pgsql/_type_factory.pyx":226
- *         return value.strftime("%Y-%m-%d")
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d") + "'")
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
  *         if isinstance(value, date):
@@ -8404,7 +8424,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8DateType_de
   goto __pyx_L0;
 
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":226
- *         return value.strftime("%Y-%m-%d")
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d") + "'")
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
  *         if isinstance(value, date):
@@ -8466,7 +8486,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_8DateType_2
  * 
  * cdef class DateTimeType(PostgreType):
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
- *         return value.strftime("%Y-%m-%d %H:%M:%S.%f")
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d %H:%M:%S.%f") + "'")
  * 
  */
 
@@ -8529,7 +8549,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_12DateTimeTy
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":234
  * cdef class DateTimeType(PostgreType):
  *     cpdef object encode(self, object value):
- *         return value.strftime("%Y-%m-%d %H:%M:%S.%f")             # <<<<<<<<<<<<<<
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d %H:%M:%S.%f") + "'")             # <<<<<<<<<<<<<<
  * 
  *     cpdef object decode(self, object value):
  */
@@ -8551,15 +8571,24 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_12DateTimeTy
   if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
+  __pyx_t_2 = PyNumber_Add(__pyx_kp_u__20, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyNumber_Add(__pyx_t_2, __pyx_kp_u__20); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_RawExpression), __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
   goto __pyx_L0;
 
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":233
  * 
  * cdef class DateTimeType(PostgreType):
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
- *         return value.strftime("%Y-%m-%d %H:%M:%S.%f")
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d %H:%M:%S.%f") + "'")
  * 
  */
 
@@ -8614,7 +8643,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_12DateTimeT
 }
 
 /* "yapic/entity/sql/pgsql/_type_factory.pyx":236
- *         return value.strftime("%Y-%m-%d %H:%M:%S.%f")
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d %H:%M:%S.%f") + "'")
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
  *         if isinstance(value, datetime):
@@ -8778,7 +8807,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_12DateTimeTy
   goto __pyx_L0;
 
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":236
- *         return value.strftime("%Y-%m-%d %H:%M:%S.%f")
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d %H:%M:%S.%f") + "'")
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
  *         if isinstance(value, datetime):
@@ -8906,7 +8935,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_14DateTimeTz
  *     cpdef object encode(self, object value):
  *         if value.utcoffset() is None:             # <<<<<<<<<<<<<<
  *             raise ValueError("datetime value must have timezone information")
- *         return value.strftime("%Y-%m-%d %H:%M:%S.%f%z")
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d %H:%M:%S.%f%z") + "'")
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_value, __pyx_n_s_utcoffset); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 244, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -8934,10 +8963,10 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_14DateTimeTz
  *     cpdef object encode(self, object value):
  *         if value.utcoffset() is None:
  *             raise ValueError("datetime value must have timezone information")             # <<<<<<<<<<<<<<
- *         return value.strftime("%Y-%m-%d %H:%M:%S.%f%z")
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d %H:%M:%S.%f%z") + "'")
  * 
  */
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__20, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 245, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__21, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 245, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -8948,14 +8977,14 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_14DateTimeTz
  *     cpdef object encode(self, object value):
  *         if value.utcoffset() is None:             # <<<<<<<<<<<<<<
  *             raise ValueError("datetime value must have timezone information")
- *         return value.strftime("%Y-%m-%d %H:%M:%S.%f%z")
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d %H:%M:%S.%f%z") + "'")
  */
   }
 
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":246
  *         if value.utcoffset() is None:
  *             raise ValueError("datetime value must have timezone information")
- *         return value.strftime("%Y-%m-%d %H:%M:%S.%f%z")             # <<<<<<<<<<<<<<
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d %H:%M:%S.%f%z") + "'")             # <<<<<<<<<<<<<<
  * 
  *     cpdef object decode(self, object value):
  */
@@ -8977,8 +9006,17 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_14DateTimeTz
   if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 246, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
+  __pyx_t_2 = PyNumber_Add(__pyx_kp_u__20, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyNumber_Add(__pyx_t_2, __pyx_kp_u__20); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_RawExpression), __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
   goto __pyx_L0;
 
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":243
@@ -9040,7 +9078,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_14DateTimeT
 }
 
 /* "yapic/entity/sql/pgsql/_type_factory.pyx":248
- *         return value.strftime("%Y-%m-%d %H:%M:%S.%f%z")
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d %H:%M:%S.%f%z") + "'")
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
  *         if isinstance(value, datetime):
@@ -9204,7 +9242,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_14DateTimeTz
   goto __pyx_L0;
 
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":248
- *         return value.strftime("%Y-%m-%d %H:%M:%S.%f%z")
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d %H:%M:%S.%f%z") + "'")
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
  *         if isinstance(value, datetime):
@@ -9265,7 +9303,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_14DateTimeT
  * 
  * cdef class TimeType(PostgreType):
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
- *         return value
+ *         return RawExpression("'" + value.isoformat() + "'")
  * 
  */
 
@@ -9328,20 +9366,46 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8TimeType_en
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":256
  * cdef class TimeType(PostgreType):
  *     cpdef object encode(self, object value):
- *         return value             # <<<<<<<<<<<<<<
+ *         return RawExpression("'" + value.isoformat() + "'")             # <<<<<<<<<<<<<<
  * 
  *     cpdef object decode(self, object value):
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_v_value);
-  __pyx_r = __pyx_v_value;
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_value, __pyx_n_s_isoformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 256, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 256, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = PyNumber_Add(__pyx_kp_u__20, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 256, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyNumber_Add(__pyx_t_2, __pyx_kp_u__20); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 256, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_RawExpression), __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 256, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
   goto __pyx_L0;
 
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":255
  * 
  * cdef class TimeType(PostgreType):
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
- *         return value
+ *         return RawExpression("'" + value.isoformat() + "'")
  * 
  */
 
@@ -9396,11 +9460,11 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_8TimeType_e
 }
 
 /* "yapic/entity/sql/pgsql/_type_factory.pyx":258
- *         return value
+ *         return RawExpression("'" + value.isoformat() + "'")
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
- *         return value
- * 
+ *         if isinstance(value, time):
+ *             return value
  */
 
 static PyObject *__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_8TimeType_3decode(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
@@ -9411,6 +9475,8 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8TimeType_de
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
+  int __pyx_t_5;
+  int __pyx_t_6;
   __Pyx_RefNannySetupContext("decode", 0);
   /* Check if called by wrapper */
   if (unlikely(__pyx_skip_dispatch)) ;
@@ -9462,21 +9528,78 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8TimeType_de
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":259
  * 
  *     cpdef object decode(self, object value):
- *         return value             # <<<<<<<<<<<<<<
+ *         if isinstance(value, time):             # <<<<<<<<<<<<<<
+ *             return value
+ *         else:
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_time); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 259, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_5 = PyObject_IsInstance(__pyx_v_value, __pyx_t_1); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 259, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_6 = (__pyx_t_5 != 0);
+  if (__pyx_t_6) {
+
+    /* "yapic/entity/sql/pgsql/_type_factory.pyx":260
+ *     cpdef object decode(self, object value):
+ *         if isinstance(value, time):
+ *             return value             # <<<<<<<<<<<<<<
+ *         else:
+ *             return time.fromisoformat(value)
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __Pyx_INCREF(__pyx_v_value);
+    __pyx_r = __pyx_v_value;
+    goto __pyx_L0;
+
+    /* "yapic/entity/sql/pgsql/_type_factory.pyx":259
+ * 
+ *     cpdef object decode(self, object value):
+ *         if isinstance(value, time):             # <<<<<<<<<<<<<<
+ *             return value
+ *         else:
+ */
+  }
+
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":262
+ *             return value
+ *         else:
+ *             return time.fromisoformat(value)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_v_value);
-  __pyx_r = __pyx_v_value;
-  goto __pyx_L0;
+  /*else*/ {
+    __Pyx_XDECREF(__pyx_r);
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_time); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 262, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_fromisoformat); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 262, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = NULL;
+    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
+      __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
+      if (likely(__pyx_t_2)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+        __Pyx_INCREF(__pyx_t_2);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_3, function);
+      }
+    }
+    __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_2, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
+    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 262, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_r = __pyx_t_1;
+    __pyx_t_1 = 0;
+    goto __pyx_L0;
+  }
 
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":258
- *         return value
+ *         return RawExpression("'" + value.isoformat() + "'")
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
- *         return value
- * 
+ *         if isinstance(value, time):
+ *             return value
  */
 
   /* function exit code */
@@ -9529,12 +9652,12 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_8TimeType_2
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":263
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":266
  * 
  * cdef class TimeTzType(PostgreType):
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
- *         return value
- * 
+ *         if value.utcoffset() is None:
+ *             raise ValueError("time value must have timezone information")
  */
 
 static PyObject *__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_1encode(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
@@ -9545,6 +9668,8 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
+  int __pyx_t_5;
+  int __pyx_t_6;
   __Pyx_RefNannySetupContext("encode", 0);
   /* Check if called by wrapper */
   if (unlikely(__pyx_skip_dispatch)) ;
@@ -9555,143 +9680,9 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 263, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 266, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_1encode)) {
-        __Pyx_XDECREF(__pyx_r);
-        __Pyx_INCREF(__pyx_t_1);
-        __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
-        if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
-          __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-          if (likely(__pyx_t_4)) {
-            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-            __Pyx_INCREF(__pyx_t_4);
-            __Pyx_INCREF(function);
-            __Pyx_DECREF_SET(__pyx_t_3, function);
-          }
-        }
-        __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
-        __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 263, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_2);
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __pyx_r = __pyx_t_2;
-        __pyx_t_2 = 0;
-        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        goto __pyx_L0;
-      }
-      #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_PYTYPE_LOOKUP && CYTHON_USE_TYPE_SLOTS
-      __pyx_tp_dict_version = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
-      __pyx_obj_dict_version = __Pyx_get_object_dict_version(((PyObject *)__pyx_v_self));
-      if (unlikely(__pyx_type_dict_guard != __pyx_tp_dict_version)) {
-        __pyx_tp_dict_version = __pyx_obj_dict_version = __PYX_DICT_VERSION_INIT;
-      }
-      #endif
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_PYTYPE_LOOKUP && CYTHON_USE_TYPE_SLOTS
-    }
-    #endif
-  }
-
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":264
- * cdef class TimeTzType(PostgreType):
- *     cpdef object encode(self, object value):
- *         return value             # <<<<<<<<<<<<<<
- * 
- *     cpdef object decode(self, object value):
- */
-  __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_v_value);
-  __pyx_r = __pyx_v_value;
-  goto __pyx_L0;
-
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":263
- * 
- * cdef class TimeTzType(PostgreType):
- *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
- *         return value
- * 
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("yapic.entity.sql.pgsql._type_factory.TimeTzType.encode", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = 0;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* Python wrapper */
-static PyObject *__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_1encode(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
-static PyObject *__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_1encode(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("encode (wrapper)", 0);
-  __pyx_r = __pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_encode(((struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType *)__pyx_v_self), ((PyObject *)__pyx_v_value));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_encode(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType *__pyx_v_self, PyObject *__pyx_v_value) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  __Pyx_RefNannySetupContext("encode", 0);
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_encode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 263, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("yapic.entity.sql.pgsql._type_factory.TimeTzType.encode", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":266
- *         return value
- * 
- *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
- *         return value
- * 
- */
-
-static PyObject *__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_3decode(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
-static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_decode(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType *__pyx_v_self, PyObject *__pyx_v_value, int __pyx_skip_dispatch) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  __Pyx_RefNannySetupContext("decode", 0);
-  /* Check if called by wrapper */
-  if (unlikely(__pyx_skip_dispatch)) ;
-  /* Check if overridden in Python */
-  else if (unlikely((Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0) || (Py_TYPE(((PyObject *)__pyx_v_self))->tp_flags & (Py_TPFLAGS_IS_ABSTRACT | Py_TPFLAGS_HEAPTYPE)))) {
-    #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_PYTYPE_LOOKUP && CYTHON_USE_TYPE_SLOTS
-    static PY_UINT64_T __pyx_tp_dict_version = __PYX_DICT_VERSION_INIT, __pyx_obj_dict_version = __PYX_DICT_VERSION_INIT;
-    if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
-      PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
-      #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_decode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 266, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_3decode)) {
         __Pyx_XDECREF(__pyx_r);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
@@ -9728,23 +9719,100 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType
   }
 
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":267
- * 
- *     cpdef object decode(self, object value):
- *         return value             # <<<<<<<<<<<<<<
- * 
+ * cdef class TimeTzType(PostgreType):
+ *     cpdef object encode(self, object value):
+ *         if value.utcoffset() is None:             # <<<<<<<<<<<<<<
+ *             raise ValueError("time value must have timezone information")
+ *         return RawExpression("'" + value.isoformat() + "'")
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_value, __pyx_n_s_utcoffset); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 267, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 267, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_5 = (__pyx_t_1 == Py_None);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_6 = (__pyx_t_5 != 0);
+  if (unlikely(__pyx_t_6)) {
+
+    /* "yapic/entity/sql/pgsql/_type_factory.pyx":268
+ *     cpdef object encode(self, object value):
+ *         if value.utcoffset() is None:
+ *             raise ValueError("time value must have timezone information")             # <<<<<<<<<<<<<<
+ *         return RawExpression("'" + value.isoformat() + "'")
  * 
  */
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__22, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 268, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __PYX_ERR(0, 268, __pyx_L1_error)
+
+    /* "yapic/entity/sql/pgsql/_type_factory.pyx":267
+ * cdef class TimeTzType(PostgreType):
+ *     cpdef object encode(self, object value):
+ *         if value.utcoffset() is None:             # <<<<<<<<<<<<<<
+ *             raise ValueError("time value must have timezone information")
+ *         return RawExpression("'" + value.isoformat() + "'")
+ */
+  }
+
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":269
+ *         if value.utcoffset() is None:
+ *             raise ValueError("time value must have timezone information")
+ *         return RawExpression("'" + value.isoformat() + "'")             # <<<<<<<<<<<<<<
+ * 
+ *     cpdef object decode(self, object value):
+ */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_v_value);
-  __pyx_r = __pyx_v_value;
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_value, __pyx_n_s_isoformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 269, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 269, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = PyNumber_Add(__pyx_kp_u__20, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 269, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyNumber_Add(__pyx_t_2, __pyx_kp_u__20); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 269, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_RawExpression), __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 269, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
   goto __pyx_L0;
 
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":266
- *         return value
  * 
- *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
- *         return value
- * 
+ * cdef class TimeTzType(PostgreType):
+ *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
+ *         if value.utcoffset() is None:
+ *             raise ValueError("time value must have timezone information")
  */
 
   /* function exit code */
@@ -9753,7 +9821,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("yapic.entity.sql.pgsql._type_factory.TimeTzType.decode", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("yapic.entity.sql.pgsql._type_factory.TimeTzType.encode", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -9762,25 +9830,25 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_3decode(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
-static PyObject *__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_3decode(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+static PyObject *__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_1encode(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_1encode(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("decode (wrapper)", 0);
-  __pyx_r = __pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_2decode(((struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+  __Pyx_RefNannySetupContext("encode (wrapper)", 0);
+  __pyx_r = __pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_encode(((struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType *)__pyx_v_self), ((PyObject *)__pyx_v_value));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_2decode(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType *__pyx_v_self, PyObject *__pyx_v_value) {
+static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_encode(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType *__pyx_v_self, PyObject *__pyx_v_value) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  __Pyx_RefNannySetupContext("decode", 0);
+  __Pyx_RefNannySetupContext("encode", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_decode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 266, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_encode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 266, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -9789,7 +9857,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzTyp
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("yapic.entity.sql.pgsql._type_factory.TimeTzType.decode", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("yapic.entity.sql.pgsql._type_factory.TimeTzType.encode", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -9798,15 +9866,15 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzTyp
 }
 
 /* "yapic/entity/sql/pgsql/_type_factory.pyx":271
+ *         return RawExpression("'" + value.isoformat() + "'")
  * 
- * cdef class NumericType(PostgreType):
- *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
- *         if value is None:
- *             return None
+ *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
+ *         if isinstance(value, time):
+ *             return value
  */
 
-static PyObject *__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericType_1encode(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
-static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericType_encode(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType *__pyx_v_self, PyObject *__pyx_v_value, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_3decode(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_decode(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType *__pyx_v_self, PyObject *__pyx_v_value, int __pyx_skip_dispatch) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -9815,7 +9883,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericTyp
   PyObject *__pyx_t_4 = NULL;
   int __pyx_t_5;
   int __pyx_t_6;
-  __Pyx_RefNannySetupContext("encode", 0);
+  __Pyx_RefNannySetupContext("decode", 0);
   /* Check if called by wrapper */
   if (unlikely(__pyx_skip_dispatch)) ;
   /* Check if overridden in Python */
@@ -9825,9 +9893,9 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericTyp
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 271, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_decode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 271, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericType_1encode)) {
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_3decode)) {
         __Pyx_XDECREF(__pyx_r);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
@@ -9864,6 +9932,199 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericTyp
   }
 
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":272
+ * 
+ *     cpdef object decode(self, object value):
+ *         if isinstance(value, time):             # <<<<<<<<<<<<<<
+ *             return value
+ *         else:
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_time); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 272, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_5 = PyObject_IsInstance(__pyx_v_value, __pyx_t_1); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 272, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_6 = (__pyx_t_5 != 0);
+  if (__pyx_t_6) {
+
+    /* "yapic/entity/sql/pgsql/_type_factory.pyx":273
+ *     cpdef object decode(self, object value):
+ *         if isinstance(value, time):
+ *             return value             # <<<<<<<<<<<<<<
+ *         else:
+ *             return time.fromisoformat(value)
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __Pyx_INCREF(__pyx_v_value);
+    __pyx_r = __pyx_v_value;
+    goto __pyx_L0;
+
+    /* "yapic/entity/sql/pgsql/_type_factory.pyx":272
+ * 
+ *     cpdef object decode(self, object value):
+ *         if isinstance(value, time):             # <<<<<<<<<<<<<<
+ *             return value
+ *         else:
+ */
+  }
+
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":275
+ *             return value
+ *         else:
+ *             return time.fromisoformat(value)             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  /*else*/ {
+    __Pyx_XDECREF(__pyx_r);
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_time); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 275, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_fromisoformat); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 275, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = NULL;
+    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
+      __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
+      if (likely(__pyx_t_2)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+        __Pyx_INCREF(__pyx_t_2);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_3, function);
+      }
+    }
+    __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_2, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
+    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 275, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_r = __pyx_t_1;
+    __pyx_t_1 = 0;
+    goto __pyx_L0;
+  }
+
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":271
+ *         return RawExpression("'" + value.isoformat() + "'")
+ * 
+ *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
+ *         if isinstance(value, time):
+ *             return value
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_AddTraceback("yapic.entity.sql.pgsql._type_factory.TimeTzType.decode", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_3decode(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_3decode(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("decode (wrapper)", 0);
+  __pyx_r = __pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_2decode(((struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_2decode(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType *__pyx_v_self, PyObject *__pyx_v_value) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("decode", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_decode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 271, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("yapic.entity.sql.pgsql._type_factory.TimeTzType.decode", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":279
+ * 
+ * cdef class NumericType(PostgreType):
+ *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
+ *         if value is None:
+ *             return None
+ */
+
+static PyObject *__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericType_1encode(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericType_encode(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType *__pyx_v_self, PyObject *__pyx_v_value, int __pyx_skip_dispatch) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  int __pyx_t_5;
+  int __pyx_t_6;
+  __Pyx_RefNannySetupContext("encode", 0);
+  /* Check if called by wrapper */
+  if (unlikely(__pyx_skip_dispatch)) ;
+  /* Check if overridden in Python */
+  else if (unlikely((Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0) || (Py_TYPE(((PyObject *)__pyx_v_self))->tp_flags & (Py_TPFLAGS_IS_ABSTRACT | Py_TPFLAGS_HEAPTYPE)))) {
+    #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_PYTYPE_LOOKUP && CYTHON_USE_TYPE_SLOTS
+    static PY_UINT64_T __pyx_tp_dict_version = __PYX_DICT_VERSION_INIT, __pyx_obj_dict_version = __PYX_DICT_VERSION_INIT;
+    if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
+      PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
+      #endif
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 279, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericType_1encode)) {
+        __Pyx_XDECREF(__pyx_r);
+        __Pyx_INCREF(__pyx_t_1);
+        __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
+        if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
+          __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+          if (likely(__pyx_t_4)) {
+            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+            __Pyx_INCREF(__pyx_t_4);
+            __Pyx_INCREF(function);
+            __Pyx_DECREF_SET(__pyx_t_3, function);
+          }
+        }
+        __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
+        __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 279, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __pyx_r = __pyx_t_2;
+        __pyx_t_2 = 0;
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+        goto __pyx_L0;
+      }
+      #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_PYTYPE_LOOKUP && CYTHON_USE_TYPE_SLOTS
+      __pyx_tp_dict_version = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
+      __pyx_obj_dict_version = __Pyx_get_object_dict_version(((PyObject *)__pyx_v_self));
+      if (unlikely(__pyx_type_dict_guard != __pyx_tp_dict_version)) {
+        __pyx_tp_dict_version = __pyx_obj_dict_version = __PYX_DICT_VERSION_INIT;
+      }
+      #endif
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_PYTYPE_LOOKUP && CYTHON_USE_TYPE_SLOTS
+    }
+    #endif
+  }
+
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":280
  * cdef class NumericType(PostgreType):
  *     cpdef object encode(self, object value):
  *         if value is None:             # <<<<<<<<<<<<<<
@@ -9874,7 +10135,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericTyp
   __pyx_t_6 = (__pyx_t_5 != 0);
   if (__pyx_t_6) {
 
-    /* "yapic/entity/sql/pgsql/_type_factory.pyx":273
+    /* "yapic/entity/sql/pgsql/_type_factory.pyx":281
  *     cpdef object encode(self, object value):
  *         if value is None:
  *             return None             # <<<<<<<<<<<<<<
@@ -9885,7 +10146,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericTyp
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "yapic/entity/sql/pgsql/_type_factory.pyx":272
+    /* "yapic/entity/sql/pgsql/_type_factory.pyx":280
  * cdef class NumericType(PostgreType):
  *     cpdef object encode(self, object value):
  *         if value is None:             # <<<<<<<<<<<<<<
@@ -9894,7 +10155,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericTyp
  */
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":274
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":282
  *         if value is None:
  *             return None
  *         return str(value)             # <<<<<<<<<<<<<<
@@ -9902,13 +10163,13 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericTyp
  *     cpdef object decode(self, object value):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 282, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":271
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":279
  * 
  * cdef class NumericType(PostgreType):
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
@@ -9949,7 +10210,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericTy
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("encode", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericType_encode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 271, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericType_encode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 279, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -9966,7 +10227,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericTy
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":276
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":284
  *         return str(value)
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
@@ -9994,7 +10255,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericTyp
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_decode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 276, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_decode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 284, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericType_3decode)) {
         __Pyx_XDECREF(__pyx_r);
@@ -10011,7 +10272,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericTyp
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 276, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 284, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -10032,7 +10293,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericTyp
     #endif
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":277
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":285
  * 
  *     cpdef object decode(self, object value):
  *         if isinstance(value, str):             # <<<<<<<<<<<<<<
@@ -10043,7 +10304,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericTyp
   __pyx_t_6 = (__pyx_t_5 != 0);
   if (__pyx_t_6) {
 
-    /* "yapic/entity/sql/pgsql/_type_factory.pyx":278
+    /* "yapic/entity/sql/pgsql/_type_factory.pyx":286
  *     cpdef object decode(self, object value):
  *         if isinstance(value, str):
  *             return Decimal(value)             # <<<<<<<<<<<<<<
@@ -10051,7 +10312,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericTyp
  *             return value
  */
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_Decimal); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 278, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_Decimal); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 286, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_3 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -10065,14 +10326,14 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericTyp
     }
     __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 278, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 286, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "yapic/entity/sql/pgsql/_type_factory.pyx":277
+    /* "yapic/entity/sql/pgsql/_type_factory.pyx":285
  * 
  *     cpdef object decode(self, object value):
  *         if isinstance(value, str):             # <<<<<<<<<<<<<<
@@ -10081,7 +10342,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericTyp
  */
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":280
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":288
  *             return Decimal(value)
  *         else:
  *             return value             # <<<<<<<<<<<<<<
@@ -10095,7 +10356,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericTyp
     goto __pyx_L0;
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":276
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":284
  *         return str(value)
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
@@ -10136,7 +10397,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericTy
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("decode", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericType_decode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 276, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericType_decode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 284, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -10153,7 +10414,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericTy
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":284
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":292
  * 
  * cdef class FloatType(PostgreType):
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
@@ -10181,7 +10442,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_e
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 284, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 292, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_1encode)) {
         __Pyx_XDECREF(__pyx_r);
@@ -10198,7 +10459,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_e
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 284, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 292, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -10219,7 +10480,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_e
     #endif
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":285
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":293
  * cdef class FloatType(PostgreType):
  *     cpdef object encode(self, object value):
  *         if isinstance(value, str):             # <<<<<<<<<<<<<<
@@ -10230,7 +10491,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_e
   __pyx_t_6 = (__pyx_t_5 != 0);
   if (__pyx_t_6) {
 
-    /* "yapic/entity/sql/pgsql/_type_factory.pyx":286
+    /* "yapic/entity/sql/pgsql/_type_factory.pyx":294
  *     cpdef object encode(self, object value):
  *         if isinstance(value, str):
  *             return float(value)             # <<<<<<<<<<<<<<
@@ -10238,13 +10499,13 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_e
  *             return value
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = __Pyx_PyNumber_Float(__pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 286, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyNumber_Float(__pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 294, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "yapic/entity/sql/pgsql/_type_factory.pyx":285
+    /* "yapic/entity/sql/pgsql/_type_factory.pyx":293
  * cdef class FloatType(PostgreType):
  *     cpdef object encode(self, object value):
  *         if isinstance(value, str):             # <<<<<<<<<<<<<<
@@ -10253,7 +10514,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_e
  */
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":288
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":296
  *             return float(value)
  *         else:
  *             return value             # <<<<<<<<<<<<<<
@@ -10267,7 +10528,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_e
     goto __pyx_L0;
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":284
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":292
  * 
  * cdef class FloatType(PostgreType):
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
@@ -10308,7 +10569,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("encode", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_encode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 284, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_encode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 292, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -10325,7 +10586,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":290
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":298
  *             return value
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
@@ -10353,7 +10614,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_d
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_decode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_decode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 298, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_3decode)) {
         __Pyx_XDECREF(__pyx_r);
@@ -10370,7 +10631,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_d
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 290, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 298, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -10391,7 +10652,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_d
     #endif
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":291
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":299
  * 
  *     cpdef object decode(self, object value):
  *         if isinstance(value, str):             # <<<<<<<<<<<<<<
@@ -10402,7 +10663,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_d
   __pyx_t_6 = (__pyx_t_5 != 0);
   if (__pyx_t_6) {
 
-    /* "yapic/entity/sql/pgsql/_type_factory.pyx":292
+    /* "yapic/entity/sql/pgsql/_type_factory.pyx":300
  *     cpdef object decode(self, object value):
  *         if isinstance(value, str):
  *             return float(value)             # <<<<<<<<<<<<<<
@@ -10410,13 +10671,13 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_d
  *             return value
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = __Pyx_PyNumber_Float(__pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 292, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyNumber_Float(__pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 300, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "yapic/entity/sql/pgsql/_type_factory.pyx":291
+    /* "yapic/entity/sql/pgsql/_type_factory.pyx":299
  * 
  *     cpdef object decode(self, object value):
  *         if isinstance(value, str):             # <<<<<<<<<<<<<<
@@ -10425,7 +10686,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_d
  */
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":294
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":302
  *             return float(value)
  *         else:
  *             return value             # <<<<<<<<<<<<<<
@@ -10439,7 +10700,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_d
     goto __pyx_L0;
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":290
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":298
  *             return value
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
@@ -10480,7 +10741,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("decode", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_decode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_decode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 298, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -10497,7 +10758,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":298
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":306
  * 
  * cdef class UUIDType(PostgreType):
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
@@ -10523,7 +10784,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_en
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 298, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 306, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_1encode)) {
         __Pyx_XDECREF(__pyx_r);
@@ -10540,7 +10801,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_en
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 298, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 306, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -10561,7 +10822,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_en
     #endif
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":299
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":307
  * cdef class UUIDType(PostgreType):
  *     cpdef object encode(self, object value):
  *         return value             # <<<<<<<<<<<<<<
@@ -10573,7 +10834,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_en
   __pyx_r = __pyx_v_value;
   goto __pyx_L0;
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":298
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":306
  * 
  * cdef class UUIDType(PostgreType):
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
@@ -10614,7 +10875,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_e
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("encode", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_encode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 298, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_encode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 306, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -10631,7 +10892,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_e
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":301
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":309
  *         return value
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
@@ -10657,7 +10918,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_de
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_decode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 301, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_decode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 309, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_3decode)) {
         __Pyx_XDECREF(__pyx_r);
@@ -10674,7 +10935,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_de
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 301, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 309, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -10695,7 +10956,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_de
     #endif
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":302
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":310
  * 
  *     cpdef object decode(self, object value):
  *         return value             # <<<<<<<<<<<<<<
@@ -10707,7 +10968,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_de
   __pyx_r = __pyx_v_value;
   goto __pyx_L0;
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":301
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":309
  *         return value
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
@@ -10748,7 +11009,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_2
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("decode", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_decode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 301, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_decode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 309, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -10765,7 +11026,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_2
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":306
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":314
  * 
  * cdef class ChoiceType(PostgreType):
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
@@ -10791,7 +11052,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceType
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 306, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 314, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceType_1encode)) {
         __Pyx_XDECREF(__pyx_r);
@@ -10808,7 +11069,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceType
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 306, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 314, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -10829,7 +11090,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceType
     #endif
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":307
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":315
  * cdef class ChoiceType(PostgreType):
  *     cpdef object encode(self, object value):
  *         pass             # <<<<<<<<<<<<<<
@@ -10853,7 +11114,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceType
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":306
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":314
  * 
  * cdef class ChoiceType(PostgreType):
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
@@ -10880,7 +11141,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceTyp
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("encode", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceType_encode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 306, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceType_encode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 314, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -10897,7 +11158,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceTyp
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":309
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":317
  *         pass
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
@@ -10923,7 +11184,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceType
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_decode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 309, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_decode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 317, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceType_3decode)) {
         __Pyx_XDECREF(__pyx_r);
@@ -10940,7 +11201,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceType
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 309, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 317, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -10961,7 +11222,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceType
     #endif
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":310
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":318
  * 
  *     cpdef object decode(self, object value):
  *         pass             # <<<<<<<<<<<<<<
@@ -10985,7 +11246,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceType
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":309
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":317
  *         pass
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
@@ -11012,7 +11273,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceTyp
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("decode", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceType_decode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 309, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceType_decode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 317, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -11029,7 +11290,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceTyp
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":316
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":324
  *     cdef EntityType entity
  * 
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
@@ -11060,7 +11321,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 316, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 324, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_1encode)) {
         __Pyx_XDECREF(__pyx_r);
@@ -11077,7 +11338,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 316, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 324, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -11098,7 +11359,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
     #endif
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":317
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":325
  * 
  *     cpdef object encode(self, object value):
  *         if value is None:             # <<<<<<<<<<<<<<
@@ -11109,7 +11370,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
   __pyx_t_6 = (__pyx_t_5 != 0);
   if (__pyx_t_6) {
 
-    /* "yapic/entity/sql/pgsql/_type_factory.pyx":318
+    /* "yapic/entity/sql/pgsql/_type_factory.pyx":326
  *     cpdef object encode(self, object value):
  *         if value is None:
  *             return None             # <<<<<<<<<<<<<<
@@ -11120,7 +11381,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "yapic/entity/sql/pgsql/_type_factory.pyx":317
+    /* "yapic/entity/sql/pgsql/_type_factory.pyx":325
  * 
  *     cpdef object encode(self, object value):
  *         if value is None:             # <<<<<<<<<<<<<<
@@ -11129,7 +11390,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
  */
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":319
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":327
  *         if value is None:
  *             return None
  *         elif isinstance(value, EntityBase):             # <<<<<<<<<<<<<<
@@ -11140,7 +11401,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
   __pyx_t_5 = (__pyx_t_6 != 0);
   if (likely(__pyx_t_5)) {
 
-    /* "yapic/entity/sql/pgsql/_type_factory.pyx":320
+    /* "yapic/entity/sql/pgsql/_type_factory.pyx":328
  *             return None
  *         elif isinstance(value, EntityBase):
  *             if type(value) is not self.entity:             # <<<<<<<<<<<<<<
@@ -11151,14 +11412,14 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
     __pyx_t_6 = (__pyx_t_5 != 0);
     if (unlikely(__pyx_t_6)) {
 
-      /* "yapic/entity/sql/pgsql/_type_factory.pyx":321
+      /* "yapic/entity/sql/pgsql/_type_factory.pyx":329
  *         elif isinstance(value, EntityBase):
  *             if type(value) is not self.entity:
  *                 raise ValueError("Missmatch entity type: %r expected %r" % (type(value), self.entity))             # <<<<<<<<<<<<<<
  *             return json.dumps(value.as_dict())
  *         else:
  */
-      __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 321, __pyx_L1_error)
+      __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 329, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_7 = 0;
       __pyx_t_8 = 127;
@@ -11166,7 +11427,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
       __pyx_t_7 += 23;
       __Pyx_GIVEREF(__pyx_kp_u_Missmatch_entity_type);
       PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_Missmatch_entity_type);
-      __pyx_t_2 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(((PyObject *)Py_TYPE(__pyx_v_value))), __pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 321, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(((PyObject *)Py_TYPE(__pyx_v_value))), __pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 329, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_2) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_2) : __pyx_t_8;
       __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_2);
@@ -11177,24 +11438,24 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
       __pyx_t_7 += 10;
       __Pyx_GIVEREF(__pyx_kp_u_expected);
       PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_expected);
-      __pyx_t_2 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(((PyObject *)__pyx_v_self->entity)), __pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 321, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(((PyObject *)__pyx_v_self->entity)), __pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 329, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_2) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_2) : __pyx_t_8;
       __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_2);
       __Pyx_GIVEREF(__pyx_t_2);
       PyTuple_SET_ITEM(__pyx_t_1, 3, __pyx_t_2);
       __pyx_t_2 = 0;
-      __pyx_t_2 = __Pyx_PyUnicode_Join(__pyx_t_1, 4, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 321, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyUnicode_Join(__pyx_t_1, 4, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 329, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 321, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 329, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_Raise(__pyx_t_1, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __PYX_ERR(0, 321, __pyx_L1_error)
+      __PYX_ERR(0, 329, __pyx_L1_error)
 
-      /* "yapic/entity/sql/pgsql/_type_factory.pyx":320
+      /* "yapic/entity/sql/pgsql/_type_factory.pyx":328
  *             return None
  *         elif isinstance(value, EntityBase):
  *             if type(value) is not self.entity:             # <<<<<<<<<<<<<<
@@ -11203,7 +11464,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
  */
     }
 
-    /* "yapic/entity/sql/pgsql/_type_factory.pyx":322
+    /* "yapic/entity/sql/pgsql/_type_factory.pyx":330
  *             if type(value) is not self.entity:
  *                 raise ValueError("Missmatch entity type: %r expected %r" % (type(value), self.entity))
  *             return json.dumps(value.as_dict())             # <<<<<<<<<<<<<<
@@ -11211,12 +11472,12 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
  *             raise TypeError("Can convert value to json: %r" % value)
  */
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_json); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 322, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_json); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 330, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_dumps); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 322, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_dumps); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 330, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_value, __pyx_n_s_as_dict); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 322, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_value, __pyx_n_s_as_dict); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 330, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_9 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -11230,7 +11491,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
     }
     __pyx_t_2 = (__pyx_t_9) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_9) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 322, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 330, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_4 = NULL;
@@ -11246,14 +11507,14 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
     __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 322, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 330, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "yapic/entity/sql/pgsql/_type_factory.pyx":319
+    /* "yapic/entity/sql/pgsql/_type_factory.pyx":327
  *         if value is None:
  *             return None
  *         elif isinstance(value, EntityBase):             # <<<<<<<<<<<<<<
@@ -11262,7 +11523,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
  */
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":324
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":332
  *             return json.dumps(value.as_dict())
  *         else:
  *             raise TypeError("Can convert value to json: %r" % value)             # <<<<<<<<<<<<<<
@@ -11270,17 +11531,17 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
  *     cpdef object decode(self, object value):
  */
   /*else*/ {
-    __pyx_t_1 = __Pyx_PyUnicode_FormatSafe(__pyx_kp_u_Can_convert_value_to_json_r, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 324, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyUnicode_FormatSafe(__pyx_kp_u_Can_convert_value_to_json_r, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 332, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 324, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 332, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 324, __pyx_L1_error)
+    __PYX_ERR(0, 332, __pyx_L1_error)
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":316
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":324
  *     cdef EntityType entity
  * 
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
@@ -11322,7 +11583,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_e
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("encode", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_encode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 316, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_encode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 324, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -11339,7 +11600,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_e
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":326
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":334
  *             raise TypeError("Can convert value to json: %r" % value)
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
@@ -11365,7 +11626,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_de
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_decode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 326, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_decode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 334, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_3decode)) {
         __Pyx_XDECREF(__pyx_r);
@@ -11382,7 +11643,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_de
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 326, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 334, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -11403,7 +11664,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_de
     #endif
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":327
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":335
  * 
  *     cpdef object decode(self, object value):
  *         return self.entity(json.loads(value))             # <<<<<<<<<<<<<<
@@ -11411,9 +11672,9 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_de
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_json); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 327, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_json); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 335, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_loads); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 327, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_loads); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 335, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_3 = NULL;
@@ -11428,7 +11689,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_de
   }
   __pyx_t_2 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_3, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_v_value);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 327, __pyx_L1_error)
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 335, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_INCREF(((PyObject *)__pyx_v_self->entity));
@@ -11445,14 +11706,14 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_de
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 327, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 335, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":326
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":334
  *             raise TypeError("Can convert value to json: %r" % value)
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
@@ -11493,7 +11754,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_2
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("decode", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_decode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 326, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_decode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 334, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -11510,7 +11771,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_2
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":333
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":341
  *     cdef EntityType entity
  * 
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
@@ -11536,7 +11797,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_13CompositeT
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 333, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 341, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_13CompositeType_1encode)) {
         __Pyx_XDECREF(__pyx_r);
@@ -11553,7 +11814,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_13CompositeT
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 333, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 341, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -11574,7 +11835,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_13CompositeT
     #endif
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":334
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":342
  * 
  *     cpdef object encode(self, object value):
  *         return value             # <<<<<<<<<<<<<<
@@ -11586,7 +11847,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_13CompositeT
   __pyx_r = __pyx_v_value;
   goto __pyx_L0;
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":333
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":341
  *     cdef EntityType entity
  * 
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
@@ -11627,7 +11888,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_13Composite
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("encode", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_13CompositeType_encode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 333, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_13CompositeType_encode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 341, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -11644,7 +11905,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_13Composite
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":336
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":344
  *         return value
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
@@ -11670,7 +11931,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_13CompositeT
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_decode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 336, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_decode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 344, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_13CompositeType_3decode)) {
         __Pyx_XDECREF(__pyx_r);
@@ -11687,7 +11948,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_13CompositeT
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 336, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 344, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -11708,7 +11969,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_13CompositeT
     #endif
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":337
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":345
  * 
  *     cpdef object decode(self, object value):
  *         return value             # <<<<<<<<<<<<<<
@@ -11720,7 +11981,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_13CompositeT
   __pyx_r = __pyx_v_value;
   goto __pyx_L0;
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":336
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":344
  *         return value
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
@@ -11761,7 +12022,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_13Composite
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("decode", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_13CompositeType_decode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 336, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_13CompositeType_decode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 344, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -11778,7 +12039,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_13Composite
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":341
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":349
  * 
  * cdef class PointType(PostgreType):
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
@@ -11804,7 +12065,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9PointType_e
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 341, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_encode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 349, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_9PointType_1encode)) {
         __Pyx_XDECREF(__pyx_r);
@@ -11821,7 +12082,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9PointType_e
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 341, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 349, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -11842,7 +12103,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9PointType_e
     #endif
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":342
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":350
  * cdef class PointType(PostgreType):
  *     cpdef object encode(self, object value):
  *         return value             # <<<<<<<<<<<<<<
@@ -11854,7 +12115,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9PointType_e
   __pyx_r = __pyx_v_value;
   goto __pyx_L0;
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":341
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":349
  * 
  * cdef class PointType(PostgreType):
  *     cpdef object encode(self, object value):             # <<<<<<<<<<<<<<
@@ -11895,7 +12156,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_9PointType_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("encode", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9PointType_encode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 341, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9PointType_encode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 349, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -11912,7 +12173,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_9PointType_
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/pgsql/_type_factory.pyx":344
+/* "yapic/entity/sql/pgsql/_type_factory.pyx":352
  *         return value
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
@@ -11937,7 +12198,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9PointType_d
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_decode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 344, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_decode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 352, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5yapic_6entity_3sql_5pgsql_13_type_factory_9PointType_3decode)) {
         __Pyx_XDECREF(__pyx_r);
@@ -11954,7 +12215,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9PointType_d
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 344, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 352, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -11975,7 +12236,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9PointType_d
     #endif
   }
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":345
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":353
  * 
  *     cpdef object decode(self, object value):
  *         return value             # <<<<<<<<<<<<<<
@@ -11985,7 +12246,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9PointType_d
   __pyx_r = __pyx_v_value;
   goto __pyx_L0;
 
-  /* "yapic/entity/sql/pgsql/_type_factory.pyx":344
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":352
  *         return value
  * 
  *     cpdef object decode(self, object value):             # <<<<<<<<<<<<<<
@@ -12025,7 +12286,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_13_type_factory_9PointType_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("decode", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9PointType_decode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 344, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9PointType_decode(__pyx_v_self, __pyx_v_value, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 352, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -13667,6 +13928,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_Y_m_d_H_M_S_f_z, __pyx_k_Y_m_d_H_M_S_f_z, sizeof(__pyx_k_Y_m_d_H_M_S_f_z), 0, 1, 0, 0},
   {&__pyx_kp_u__10, __pyx_k__10, sizeof(__pyx_k__10), 0, 1, 0, 0},
   {&__pyx_kp_u__16, __pyx_k__16, sizeof(__pyx_k__16), 0, 1, 0, 0},
+  {&__pyx_kp_u__20, __pyx_k__20, sizeof(__pyx_k__20), 0, 1, 0, 0},
   {&__pyx_kp_u__9, __pyx_k__9, sizeof(__pyx_k__9), 0, 1, 0, 0},
   {&__pyx_n_s_as_dict, __pyx_k_as_dict, sizeof(__pyx_k_as_dict), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
@@ -13680,7 +13942,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_dumps, __pyx_k_dumps, sizeof(__pyx_k_dumps), 0, 0, 1, 1},
   {&__pyx_n_s_encode, __pyx_k_encode, sizeof(__pyx_k_encode), 0, 0, 1, 1},
   {&__pyx_kp_u_expected, __pyx_k_expected, sizeof(__pyx_k_expected), 0, 1, 0, 0},
+  {&__pyx_n_s_fromisoformat, __pyx_k_fromisoformat, sizeof(__pyx_k_fromisoformat), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
+  {&__pyx_n_s_isoformat, __pyx_k_isoformat, sizeof(__pyx_k_isoformat), 0, 0, 1, 1},
   {&__pyx_n_s_json, __pyx_k_json, sizeof(__pyx_k_json), 0, 0, 1, 1},
   {&__pyx_n_s_loads, __pyx_k_loads, sizeof(__pyx_k_loads), 0, 0, 1, 1},
   {&__pyx_n_s_lower, __pyx_k_lower, sizeof(__pyx_k_lower), 0, 0, 1, 1},
@@ -13695,6 +13959,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_strptime, __pyx_k_strptime, sizeof(__pyx_k_strptime), 0, 0, 1, 1},
   {&__pyx_n_u_t, __pyx_k_t, sizeof(__pyx_k_t), 0, 1, 0, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
+  {&__pyx_n_s_time, __pyx_k_time, sizeof(__pyx_k_time), 0, 0, 1, 1},
+  {&__pyx_kp_u_time_value_must_have_timezone_in, __pyx_k_time_value_must_have_timezone_in, sizeof(__pyx_k_time_value_must_have_timezone_in), 0, 1, 0, 0},
   {&__pyx_n_u_true, __pyx_k_true, sizeof(__pyx_k_true), 0, 1, 0, 1},
   {&__pyx_n_s_utcoffset, __pyx_k_utcoffset, sizeof(__pyx_k_utcoffset), 0, 0, 1, 1},
   {&__pyx_n_s_value, __pyx_k_value, sizeof(__pyx_k_value), 0, 0, 1, 1},
@@ -13895,12 +14161,23 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *     cpdef object encode(self, object value):
  *         if value.utcoffset() is None:
  *             raise ValueError("datetime value must have timezone information")             # <<<<<<<<<<<<<<
- *         return value.strftime("%Y-%m-%d %H:%M:%S.%f%z")
+ *         return RawExpression("'" + value.strftime("%Y-%m-%d %H:%M:%S.%f%z") + "'")
  * 
  */
-  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_kp_u_datetime_value_must_have_timezon); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 245, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__20);
-  __Pyx_GIVEREF(__pyx_tuple__20);
+  __pyx_tuple__21 = PyTuple_Pack(1, __pyx_kp_u_datetime_value_must_have_timezon); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(0, 245, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__21);
+  __Pyx_GIVEREF(__pyx_tuple__21);
+
+  /* "yapic/entity/sql/pgsql/_type_factory.pyx":268
+ *     cpdef object encode(self, object value):
+ *         if value.utcoffset() is None:
+ *             raise ValueError("time value must have timezone information")             # <<<<<<<<<<<<<<
+ *         return RawExpression("'" + value.isoformat() + "'")
+ * 
+ */
+  __pyx_tuple__22 = PyTuple_Pack(1, __pyx_kp_u_time_value_must_have_timezone_in); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 268, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__22);
+  __Pyx_GIVEREF(__pyx_tuple__22);
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -14111,104 +14388,104 @@ static int __Pyx_modinit_type_init_code(void) {
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType.__pyx_base.__pyx_base.encode = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_6_field_StorageType *, PyObject *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_encode;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType.__pyx_base.__pyx_base.decode = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_6_field_StorageType *, PyObject *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10TimeTzType_decode;
   __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType.tp_base = __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType) < 0) __PYX_ERR(0, 262, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType) < 0) __PYX_ERR(0, 265, __pyx_L1_error)
   __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType.tp_dict, __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType) < 0) __PYX_ERR(0, 262, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_TimeTzType, (PyObject *)&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType) < 0) __PYX_ERR(0, 262, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType.tp_dict, __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType) < 0) __PYX_ERR(0, 265, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_TimeTzType, (PyObject *)&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType) < 0) __PYX_ERR(0, 265, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType = &__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_TimeTzType;
   __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType = &__pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType.__pyx_base = *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType.__pyx_base.__pyx_base.encode = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_6_field_StorageType *, PyObject *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericType_encode;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType.__pyx_base.__pyx_base.decode = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_6_field_StorageType *, PyObject *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_11NumericType_decode;
   __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType.tp_base = __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType) < 0) __PYX_ERR(0, 270, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType) < 0) __PYX_ERR(0, 278, __pyx_L1_error)
   __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType.tp_dict, __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType) < 0) __PYX_ERR(0, 270, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_NumericType, (PyObject *)&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType) < 0) __PYX_ERR(0, 270, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType.tp_dict, __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType) < 0) __PYX_ERR(0, 278, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_NumericType, (PyObject *)&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType) < 0) __PYX_ERR(0, 278, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType = &__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_NumericType;
   __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType = &__pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType.__pyx_base = *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType.__pyx_base.__pyx_base.encode = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_6_field_StorageType *, PyObject *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_encode;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType.__pyx_base.__pyx_base.decode = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_6_field_StorageType *, PyObject *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9FloatType_decode;
   __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType.tp_base = __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType) < 0) __PYX_ERR(0, 283, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType) < 0) __PYX_ERR(0, 291, __pyx_L1_error)
   __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType.tp_dict, __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType) < 0) __PYX_ERR(0, 283, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_FloatType, (PyObject *)&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType) < 0) __PYX_ERR(0, 283, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType.tp_dict, __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType) < 0) __PYX_ERR(0, 291, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_FloatType, (PyObject *)&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType) < 0) __PYX_ERR(0, 291, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType = &__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_FloatType;
   __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType = &__pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType.__pyx_base = *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType.__pyx_base.__pyx_base.encode = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_6_field_StorageType *, PyObject *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_encode;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType.__pyx_base.__pyx_base.decode = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_6_field_StorageType *, PyObject *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8UUIDType_decode;
   __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType.tp_base = __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType) < 0) __PYX_ERR(0, 297, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType) < 0) __PYX_ERR(0, 305, __pyx_L1_error)
   __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType.tp_dict, __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType) < 0) __PYX_ERR(0, 297, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_UUIDType, (PyObject *)&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType) < 0) __PYX_ERR(0, 297, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType.tp_dict, __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType) < 0) __PYX_ERR(0, 305, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_UUIDType, (PyObject *)&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType) < 0) __PYX_ERR(0, 305, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType = &__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_UUIDType;
   __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType = &__pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType.__pyx_base = *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType.__pyx_base.__pyx_base.encode = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_6_field_StorageType *, PyObject *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceType_encode;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType.__pyx_base.__pyx_base.decode = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_6_field_StorageType *, PyObject *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_10ChoiceType_decode;
   __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType.tp_base = __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType) < 0) __PYX_ERR(0, 305, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType) < 0) __PYX_ERR(0, 313, __pyx_L1_error)
   __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType.tp_dict, __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType) < 0) __PYX_ERR(0, 305, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ChoiceType, (PyObject *)&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType) < 0) __PYX_ERR(0, 305, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType.tp_dict, __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType) < 0) __PYX_ERR(0, 313, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ChoiceType, (PyObject *)&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType) < 0) __PYX_ERR(0, 313, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType = &__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_ChoiceType;
   __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType = &__pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType.__pyx_base = *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType.__pyx_base.__pyx_base.encode = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_6_field_StorageType *, PyObject *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_encode;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType.__pyx_base.__pyx_base.decode = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_6_field_StorageType *, PyObject *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_decode;
   __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType.tp_base = __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType) < 0) __PYX_ERR(0, 313, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType) < 0) __PYX_ERR(0, 321, __pyx_L1_error)
   __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType.tp_dict, __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType) < 0) __PYX_ERR(0, 313, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_JsonType, (PyObject *)&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType) < 0) __PYX_ERR(0, 313, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType.tp_dict, __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType) < 0) __PYX_ERR(0, 321, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_JsonType, (PyObject *)&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType) < 0) __PYX_ERR(0, 321, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType = &__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_JsonType;
   __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType = &__pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType.__pyx_base = *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType.__pyx_base.__pyx_base.encode = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_6_field_StorageType *, PyObject *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_13CompositeType_encode;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType.__pyx_base.__pyx_base.decode = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_6_field_StorageType *, PyObject *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_13CompositeType_decode;
   __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType.tp_base = __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType) < 0) __PYX_ERR(0, 330, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType) < 0) __PYX_ERR(0, 338, __pyx_L1_error)
   __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType.tp_dict, __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType) < 0) __PYX_ERR(0, 330, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_CompositeType, (PyObject *)&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType) < 0) __PYX_ERR(0, 330, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType.tp_dict, __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType) < 0) __PYX_ERR(0, 338, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_CompositeType, (PyObject *)&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType) < 0) __PYX_ERR(0, 338, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType = &__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_CompositeType;
   __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType = &__pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType.__pyx_base = *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType.__pyx_base.__pyx_base.encode = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_6_field_StorageType *, PyObject *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9PointType_encode;
   __pyx_vtable_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType.__pyx_base.__pyx_base.decode = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_6_field_StorageType *, PyObject *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_9PointType_decode;
   __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType.tp_base = __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType;
-  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType) < 0) __PYX_ERR(0, 340, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType) < 0) __PYX_ERR(0, 348, __pyx_L1_error)
   __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType.tp_dictoffset && __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType.tp_dict, __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType) < 0) __PYX_ERR(0, 340, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PointType, (PyObject *)&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType) < 0) __PYX_ERR(0, 340, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType.tp_dict, __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType) < 0) __PYX_ERR(0, 348, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PointType, (PyObject *)&__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType) < 0) __PYX_ERR(0, 348, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType = &__pyx_type_5yapic_6entity_3sql_5pgsql_13_type_factory_PointType;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
@@ -14684,11 +14961,11 @@ if (!__Pyx_RefNanny) {
   #endif
 
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":1
- * from datetime import date, datetime             # <<<<<<<<<<<<<<
+ * from datetime import date, datetime, time             # <<<<<<<<<<<<<<
  * from decimal import Decimal
  * 
  */
-  __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_date);
   __Pyx_GIVEREF(__pyx_n_s_date);
@@ -14696,6 +14973,9 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_n_s_datetime);
   __Pyx_GIVEREF(__pyx_n_s_datetime);
   PyList_SET_ITEM(__pyx_t_1, 1, __pyx_n_s_datetime);
+  __Pyx_INCREF(__pyx_n_s_time);
+  __Pyx_GIVEREF(__pyx_n_s_time);
+  PyList_SET_ITEM(__pyx_t_1, 2, __pyx_n_s_time);
   __pyx_t_2 = __Pyx_Import(__pyx_n_s_datetime, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -14707,10 +14987,14 @@ if (!__Pyx_RefNanny) {
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_datetime, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_time); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_time, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":2
- * from datetime import date, datetime
+ * from datetime import date, datetime, time
  * from decimal import Decimal             # <<<<<<<<<<<<<<
  * 
  * from yapic import json
@@ -14751,7 +15035,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":1
- * from datetime import date, datetime             # <<<<<<<<<<<<<<
+ * from datetime import date, datetime, time             # <<<<<<<<<<<<<<
  * from decimal import Decimal
  * 
  */
