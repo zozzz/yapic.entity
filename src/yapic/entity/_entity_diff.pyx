@@ -25,6 +25,17 @@ cdef class EntityDiff:
         self.b = b
         self.changes = []
 
+        fk_changes = compare_fks(a, b)
+        if fk_changes:
+            self.changes.extend(fk_changes[0])
+
+        if a.__pk__ != b.__pk__:
+            recreate_pk = True
+            if a.__pk__:
+                self.changes.append((EntityDiffKind.REMOVE_PK, a))
+        else:
+            recreate_pk = False
+
         a_fields = {field._name_: field for field in a.__fields__ if not field._virtual_}
         b_fields = {field._name_: field for field in b.__fields__ if not field._virtual_}
         a_field_names = set(a_fields.keys())
@@ -38,16 +49,7 @@ cdef class EntityDiff:
         for r in sorted([b_fields[n] for n in created], key=lambda f: f._index_):
             self.changes.append((EntityDiffKind.CREATED, r))
 
-        fk_changes = compare_fks(a, b)
-        if fk_changes:
-            self.changes.extend(fk_changes[0])
 
-        if a.__pk__ != b.__pk__:
-            recreate_pk = True
-            if a.__pk__:
-                self.changes.append((EntityDiffKind.REMOVE_PK, a))
-        else:
-            recreate_pk = False
 
         cdef Field a_field
         cdef Field b_field
