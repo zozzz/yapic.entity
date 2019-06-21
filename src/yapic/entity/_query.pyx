@@ -355,7 +355,11 @@ cdef class QueryFinalizer(Visitor):
 
     def visit_path(self, PathExpression expr):
         if isinstance(expr._path_[0], Relation):
-            self.q.join(expr._path_[0])
+            for p in expr._path_:
+                if isinstance(p, Relation):
+                    self.q.join(p)
+                else:
+                    break
 
         return PathExpression(list(expr._path_))
 

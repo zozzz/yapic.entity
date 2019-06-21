@@ -272,6 +272,8 @@ cdef class PostgreQueryCompiler(QueryCompiler):
             if state == "relation":
                 if compiled:
                     raise NotImplementedError()
+                elif isinstance(item, Relation):
+                    continue
                 else:
                     compiled = self.visit(item)
             elif state == "json":
