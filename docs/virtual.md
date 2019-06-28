@@ -28,6 +28,10 @@ class User(Entity):
    def full_name(cls, query: Query):
       return func.CONCAT_WS(" ", cls.name.title, cls.name.family, cls.name.given)
 
+   @full_name.order
+   def full_name_order(cls, q: Query, op):
+      return op(func.CONCAT_WS(" ", cls.family, cls.given))
+
 
 q = Query(User).where(User.full_name == "John Doe")
 ```
