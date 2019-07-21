@@ -439,11 +439,9 @@ cdef class QueryFinalizer(Visitor):
                 else:
                     self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
                     self.q._columns.append(self.visit(expr))
-            elif isinstance(expr, (AliasExpression, VirtualExpressionVal)):
+            else:
                 self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
                 self.q._columns.append(self.visit(expr))
-            else:
-                raise TypeError("Unexpected column: %r" % expr)
 
     def _visit_list(self, expr_list):
         cdef list res = []
