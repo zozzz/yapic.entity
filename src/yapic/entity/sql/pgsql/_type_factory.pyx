@@ -177,6 +177,9 @@ cdef class PostgreType(StorageType):
 
 cdef class IntType(PostgreType):
     cpdef object encode(self, object value):
+        if value is None:
+            return None
+
         if isinstance(value, int):
             return value
         else:
@@ -188,6 +191,9 @@ cdef class IntType(PostgreType):
 
 cdef class StringType(PostgreType):
     cpdef object encode(self, object value):
+        if value is None:
+            return None
+
         if isinstance(value, str):
             return value
         elif isinstance(value, bytes):
@@ -201,6 +207,9 @@ cdef class StringType(PostgreType):
 
 cdef class BytesType(PostgreType):
     cpdef object encode(self, object value):
+        if value is None:
+            return None
+
         if not isinstance(value, bytes):
             raise ValueError("Bytes type only accepts byte strings")
         return value
@@ -211,6 +220,9 @@ cdef class BytesType(PostgreType):
 
 cdef class BoolType(PostgreType):
     cpdef object encode(self, object value):
+        if value is None:
+            return None
+
         return RawExpression("TRUE" if bool(value) else "FALSE")
 
     cpdef object decode(self, object value):
@@ -223,9 +235,15 @@ cdef class BoolType(PostgreType):
 
 cdef class DateType(PostgreType):
     cpdef object encode(self, object value):
+        if value is None:
+            return None
+
         return RawExpression("'" + value.strftime("%Y-%m-%d") + "'")
 
     cpdef object decode(self, object value):
+        if value is None:
+            return None
+
         if isinstance(value, date):
             return value
         return datetime.strptime(value, "%Y-%m-%d").date()
@@ -233,9 +251,15 @@ cdef class DateType(PostgreType):
 
 cdef class DateTimeType(PostgreType):
     cpdef object encode(self, object value):
+        if value is None:
+            return None
+
         return RawExpression("'" + value.strftime("%Y-%m-%d %H:%M:%S.%f") + "'")
 
     cpdef object decode(self, object value):
+        if value is None:
+            return None
+
         if isinstance(value, datetime):
             return value
         return datetime.strptime(value, "%Y-%m-%d %H:%M:%S.%f")
@@ -243,11 +267,17 @@ cdef class DateTimeType(PostgreType):
 
 cdef class DateTimeTzType(PostgreType):
     cpdef object encode(self, object value):
+        if value is None:
+            return None
+
         if value.utcoffset() is None:
             raise ValueError("datetime value must have timezone information")
         return RawExpression("'" + value.strftime("%Y-%m-%d %H:%M:%S.%f%z") + "'")
 
     cpdef object decode(self, object value):
+        if value is None:
+            return None
+
         if isinstance(value, datetime):
             return value
         return datetime.strptime(value, "%Y-%m-%d %H:%M:%S.%f%z")
@@ -255,9 +285,15 @@ cdef class DateTimeTzType(PostgreType):
 
 cdef class TimeType(PostgreType):
     cpdef object encode(self, object value):
+        if value is None:
+            return None
+
         return RawExpression("'" + value.isoformat() + "'")
 
     cpdef object decode(self, object value):
+        if value is None:
+            return None
+
         if isinstance(value, time):
             return value
         else:
@@ -266,11 +302,17 @@ cdef class TimeType(PostgreType):
 
 cdef class TimeTzType(PostgreType):
     cpdef object encode(self, object value):
+        if value is None:
+            return None
+
         if value.utcoffset() is None:
             raise ValueError("time value must have timezone information")
         return RawExpression("'" + value.isoformat() + "'")
 
     cpdef object decode(self, object value):
+        if value is None:
+            return None
+
         if isinstance(value, time):
             return value
         else:
@@ -284,6 +326,9 @@ cdef class NumericType(PostgreType):
         return str(value)
 
     cpdef object decode(self, object value):
+        if value is None:
+            return None
+
         if isinstance(value, str):
             return Decimal(value)
         else:
@@ -292,12 +337,18 @@ cdef class NumericType(PostgreType):
 
 cdef class FloatType(PostgreType):
     cpdef object encode(self, object value):
+        if value is None:
+            return None
+
         if isinstance(value, str):
             return float(value)
         else:
             return value
 
     cpdef object decode(self, object value):
+        if value is None:
+            return None
+
         if isinstance(value, str):
             return float(value)
         else:
