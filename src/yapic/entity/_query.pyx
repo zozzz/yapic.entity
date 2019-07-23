@@ -47,6 +47,7 @@ cdef class Query(Expression):
                     or isinstance(col, AliasExpression) \
                     or isinstance(col, PathExpression) \
                     or isinstance(col, RawExpression) \
+                    or isinstance(col, CallExpression) \
                     or isinstance(col, VirtualExpressionVal):
                 self._columns.append(col)
             else:

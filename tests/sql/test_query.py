@@ -485,6 +485,11 @@ def test_virtual():
     assert sql == """SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE "t0"."name" ILIKE ('%' || $1 || '%') OR "t0"."name" ILIKE ('%' || $2 || '%')"""
     assert params == ("Jane", "Doe")
 
+    q = Query(User).where(or_(User.name_q.contains("Jane Doe"), User.name_q.contains("Jhon Smith")))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE "t0"."name" ILIKE ('%' || $1 || '%') OR "t0"."name" ILIKE ('%' || $2 || '%') OR "t0"."name" ILIKE ('%' || $3 || '%') OR "t0"."name" ILIKE ('%' || $4 || '%')"""
+    assert params == ("Jane", "Doe", "Jhon", "Smith")
+
 
 def test_virtual_composite():
     class UserComp3(Entity):

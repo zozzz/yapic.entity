@@ -275,21 +275,33 @@ cdef class VirtualExpressionVal(Expression):
 
 
 cdef class VirtualExpressionBinary(BinaryExpression):
-    def __init__(self, VirtualExpressionVal left, object right, object op):
+    def __init__(self, Expression left, object right, object op):
         super().__init__(left, right, op)
 
+    @property
+    def _virtual_(self):
+        if isinstance(self.left, VirtualExpressionVal):
+            return (<VirtualExpressionVal>self.left)._virtual_
+        elif isinstance(self.left, VirtualExpressionBinary):
+            return (<VirtualExpressionBinary>self.left)._virtual_
+        else:
+            raise TypeError("Something went wrong...")
+
     cpdef Expression _create_expr_(self, object q):
-        if self.left._virtual_._cmp:
+        if self.op in (operator.__and__, operator.__or__):
+            return BinaryExpression(self.left, self.right, self.op)
+
+        if self._virtual_._cmp:
             if isinstance(self.right, ConstExpression):
                 value = (<ConstExpression>self.right).value
             else:
                 value = self.right
 
-            return self.left._virtual_._cmp(self.left._source_, q, self.op, value)
-        elif self.left._virtual_._val:
-            return self.op(self.left._virtual_._val(self.left._source_, q), self.right)
+            return self._virtual_._cmp(self.left._source_, q, self.op, value)
+        elif self._virtual_._val:
+            return self.op(self._virtual_._val(self.left._source_, q), self.right)
         else:
-            raise ValueError("Virtual attribute is not define value expression: %r" % self.left._virtual_)
+            raise ValueError("Virtual attribute is not define value expression: %r" % self._virtual_)
 
     cdef BinaryExpression _new_binary_expr(self, object right, object op):
         return VirtualExpressionBinary(self, right, op)
@@ -299,6 +311,9 @@ cdef class VirtualExpressionBinary(BinaryExpression):
 
     def __getattr__(self, key):
         return getattr(self.left, key)
+
+    def __repr__(self):
+        return "<VirtualBinaryExpr %r %r %r>" % (self.left, self.op, self.right)
 
 
 cdef class VirtualExpressionDir(Expression):
