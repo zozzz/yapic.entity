@@ -314,7 +314,10 @@ cdef class QueryFinalizer(Visitor):
         self.rcos = []
 
     def visit_binary(self, BinaryExpression expr):
-        return expr.op(self.visit(expr.left), self.visit(expr.right))
+        if expr.negated:
+            return ~expr.op(self.visit(expr.left), self.visit(expr.right))
+        else:
+            return expr.op(self.visit(expr.left), self.visit(expr.right))
 
     def visit_unary(self, UnaryExpression expr):
         return expr.op(self.visit(expr.expr))

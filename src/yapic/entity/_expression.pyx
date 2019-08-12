@@ -70,7 +70,7 @@ cdef class BinaryExpression(Expression):
         self.negated = False
 
     def __repr__(self):
-        return "<Expr %r %r %r>" % (self.left, self.op, self.right)
+        return "<Expr %r %s%r %r>" % (self.left, ("NOT " if self.negated else ""), self.op, self.right)
 
     # TODO: maybe need to clone current + handle child classes as well
     def __invert__(BinaryExpression self):
