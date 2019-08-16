@@ -87,7 +87,6 @@ CREATE TABLE "poly"."WorkerY" (
     await conn.conn.execute(result)
 
     result = await sync(conn, Worker.__registry__)
-    print(result)
     assert bool(result) is False
 
 
