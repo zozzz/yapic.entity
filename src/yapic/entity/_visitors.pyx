@@ -69,6 +69,9 @@ cdef class Walk(Visitor):
     def visit_field(self, expr):
         pass
 
+    def visit_const(self, expr):
+        pass
+
     def visit_path(self, PathExpression expr):
         for a in expr._path_:
             self.visit(a)
