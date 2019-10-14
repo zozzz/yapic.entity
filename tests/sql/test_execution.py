@@ -662,8 +662,8 @@ ALTER TABLE "execution"."Address"
     result = await sync(conn, reg)
     assert result == """CREATE SEQUENCE "execution"."Address_id2_seq";
 ALTER TABLE "execution"."Address"
-  ADD COLUMN "id2" INT4 NOT NULL DEFAULT nextval('"execution"."Address_id2_seq"'::regclass),
   DROP CONSTRAINT IF EXISTS "Address_pkey",
+  ADD COLUMN "id2" INT4 NOT NULL DEFAULT nextval('"execution"."Address_id2_seq"'::regclass),
   ADD PRIMARY KEY("id", "id2");"""
     await conn.conn.execute(result)
 
@@ -711,7 +711,7 @@ CREATE TABLE "execution"."User" (
 
     result = await sync(conn, reg)
     assert result == """ALTER TABLE "execution"."User"
-  DROP CONSTRAINT "fk_User__address_id-Address__id";"""
+  DROP CONSTRAINT IF EXISTS "fk_User__address_id-Address__id";"""
     await conn.conn.execute(result)
 
     # ADD FK
