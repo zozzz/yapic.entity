@@ -88,6 +88,16 @@ cdef class EntityType(type):
         else:
             hints = get_type_hints(self)
 
+            # TODO:
+            # CREATE OR REPLACE FUNCTION YapicDeletePolyParentOfNCaseDrop() RETURNS trigger AS $$
+            # BEGIN
+            #     DELETE FROM "notification"."Notification" WHERE "id"=OLD."id";
+            #     RETURN OLD;
+            # END ;$$ LANGUAGE plpgsql;
+
+            # DROP TRIGGER IF EXISTS "DeletePolyParent" ON "notification"."NCaseDrop";
+            # CREATE TRIGGER "DeletePolyParent" AFTER DELETE ON "notification"."NCaseDrop" FOR EACH ROW EXECUTE PROCEDURE YapicDeletePolyParentOfNCaseDrop();
+
             if poly_meta and base_entity.__fields__:
                 poly_join = None
                 poly_relation = Relation(ManyToOne(base_entity, RelatedItem()))
