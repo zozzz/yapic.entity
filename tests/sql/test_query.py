@@ -4,7 +4,7 @@ from typing import Any
 
 from yapic.entity.sql import PostgreDialect
 from yapic.entity import (Query, Entity, Serial, String, DateTimeTz, Json, Composite, and_, or_, Int, ForeignKey, One,
-                          ManyAcross, Field, func, Registry, Auto, startswith, endswith, contains, find, virtual)
+                          ManyAcross, Field, func, Registry, Auto, startswith, endswith, contains, find, virtual, in_)
 
 dialect = PostgreDialect()
 
@@ -120,13 +120,15 @@ def test_in():
     q = Query()
     q.select_from(User)
     q.where(User.id.in_(1, 2, 3))
+    q.where(~User.id.in_(1, 2, 3))
     q.where(User.id.in_([1, 2, 3]))
     q.where(User.id.in_([1, User.email, 3]))
     q.where(User.id.in_(1, User.email, 3))
 
     sql, params = dialect.create_query_compiler().compile_select(q)
 
-    assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE "t0"."id" IN ($1, $2, $3) AND "t0"."id" IN ($1, $2, $3) AND "t0"."id" IN ($1, "t0"."email", $3) AND "t0"."id" IN ($1, "t0"."email", $3)'
+    # assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE "t0"."id" IN ($1, $2, $3) AND "t0"."id" IN ($1, $2, $3) AND "t0"."id" IN ($1, "t0"."email", $3) AND "t0"."id" IN ($1, "t0"."email", $3)'
+    assert sql == """SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE "t0"."id" IN ($1, $2, $3) AND "t0"."id" NOT IN ($1, $2, $3) AND "t0"."id" IN ($1, $2, $3) AND "t0"."id" IN ($1, "t0"."email", $3) AND "t0"."id" IN ($1, "t0"."email", $3)"""
     assert params == (1, 2, 3)
 
 
@@ -374,14 +376,8 @@ def test_unary_operators(op, left, expected):
     assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE ' + expected
 
 
-invert_operators = [
-    (operator.__lt__, "<", ">="),
-    (operator.__le__, "<=", ">"),
-    (operator.__gt__, ">", "<="),
-    (operator.__ge__, ">=", "<"),
-    (operator.__eq__, "=", "!="),
-    (operator.__ne__, "!=", "="),
-]
+invert_operators = [(operator.__lt__, "<", ">="), (operator.__le__, "<=", ">"), (operator.__gt__, ">", "<="),
+                    (operator.__ge__, ">=", "<"), (operator.__eq__, "=", "!="), (operator.__ne__, "!=", "=")]
 
 
 @pytest.mark.parametrize("op,original,inverted", invert_operators, ids=[f"{x[1]} NOT {x[2]}" for x in invert_operators])
@@ -484,6 +480,11 @@ def test_virtual():
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == """SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE "t0"."name" ILIKE ('%' || $1 || '%') OR "t0"."name" ILIKE ('%' || $2 || '%')"""
     assert params == ("Jane", "Doe")
+
+    q = Query(User).where(or_(User.name_q.contains("Jane Doe"), User.name_q.contains("Jhon Smith")))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE "t0"."name" ILIKE ('%' || $1 || '%') OR "t0"."name" ILIKE ('%' || $2 || '%') OR "t0"."name" ILIKE ('%' || $3 || '%') OR "t0"."name" ILIKE ('%' || $4 || '%')"""
+    assert params == ("Jane", "Doe", "Jhon", "Smith")
 
 
 def test_virtual_composite():

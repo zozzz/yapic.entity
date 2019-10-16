@@ -47,6 +47,7 @@ cdef class Query(Expression):
                     or isinstance(col, AliasExpression) \
                     or isinstance(col, PathExpression) \
                     or isinstance(col, RawExpression) \
+                    or isinstance(col, CallExpression) \
                     or isinstance(col, VirtualExpressionVal):
                 self._columns.append(col)
             else:
@@ -313,7 +314,10 @@ cdef class QueryFinalizer(Visitor):
         self.rcos = []
 
     def visit_binary(self, BinaryExpression expr):
-        return expr.op(self.visit(expr.left), self.visit(expr.right))
+        if expr.negated:
+            return ~expr.op(self.visit(expr.left), self.visit(expr.right))
+        else:
+            return expr.op(self.visit(expr.left), self.visit(expr.right))
 
     def visit_unary(self, UnaryExpression expr):
         return expr.op(self.visit(expr.expr))
@@ -439,11 +443,9 @@ cdef class QueryFinalizer(Visitor):
                 else:
                     self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
                     self.q._columns.append(self.visit(expr))
-            elif isinstance(expr, (AliasExpression, VirtualExpressionVal)):
+            else:
                 self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
                 self.q._columns.append(self.visit(expr))
-            else:
-                raise TypeError("Unexpected column: %r" % expr)
 
     def _visit_list(self, expr_list):
         cdef list res = []

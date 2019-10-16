@@ -177,7 +177,7 @@ cdef class DDLCompiler:
                 pk_names = [self.dialect.quote_ident(pk._name_) for pk in param.__pk__]
                 alter.append(f"ADD PRIMARY KEY({', '.join(pk_names)})")
             elif kind == EntityDiffKind.REMOVE_FK:
-                alter.append(f"DROP CONSTRAINT {self.dialect.quote_ident(param[0])}")
+                alter.append(f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(param[0])}")
             elif kind == EntityDiffKind.CREATE_FK:
                 alter.append(f"ADD {self.compile_foreign_key(param[0], param[1])}")
 

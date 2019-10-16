@@ -6715,7 +6715,6 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_9ManyToOne_determine_join_exp
   PyObject *__pyx_t_5 = NULL;
   PyObject *__pyx_t_6 = NULL;
   PyObject *__pyx_t_7 = NULL;
-  int __pyx_t_8;
   __Pyx_RefNannySetupContext("determine_join_expr", 0);
 
   /* "yapic/entity/_relation.pyx":168
@@ -6903,7 +6902,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_9ManyToOne_determine_join_exp
  *         if entity_aliased is not entity:
  *             self.join_expr = replace_entity(self.join_expr, entity_aliased, entity)             # <<<<<<<<<<<<<<
  * 
- *         attr._deps_.add(self._joined)
+ *         # attr._deps_.add(self._joined)
  */
     if (!(likely(((__pyx_v_self->__pyx_base.join_expr) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_self->__pyx_base.join_expr, __pyx_ptype_5yapic_6entity_11_expression_Expression))))) __PYX_ERR(0, 181, __pyx_L1_error)
     __pyx_t_6 = __pyx_v_self->__pyx_base.join_expr;
@@ -6926,25 +6925,9 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_9ManyToOne_determine_join_exp
  */
   }
 
-  /* "yapic/entity/_relation.pyx":183
- *             self.join_expr = replace_entity(self.join_expr, entity_aliased, entity)
- * 
- *         attr._deps_.add(self._joined)             # <<<<<<<<<<<<<<
- *         return True
- * 
- */
-  if (unlikely(__pyx_v_attr->__pyx_base._deps_ == Py_None)) {
-    PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "add");
-    __PYX_ERR(0, 183, __pyx_L1_error)
-  }
-  __pyx_t_7 = ((PyObject *)__pyx_v_self->__pyx_base._joined);
-  __Pyx_INCREF(__pyx_t_7);
-  __pyx_t_8 = PySet_Add(__pyx_v_attr->__pyx_base._deps_, __pyx_t_7); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 183, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-
   /* "yapic/entity/_relation.pyx":184
  * 
- *         attr._deps_.add(self._joined)
+ *         # attr._deps_.add(self._joined)
  *         return True             # <<<<<<<<<<<<<<
  * 
  *     cdef object resolve_default(self, Relation attr):

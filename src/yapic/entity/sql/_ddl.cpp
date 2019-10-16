@@ -3066,7 +3066,6 @@ static const char __pyx_k_ADD_PRIMARY_KEY[] = "ADD PRIMARY KEY(";
 static const char __pyx_k_ALTER_ATTRIBUTE[] = "ALTER ATTRIBUTE ";
 static const char __pyx_k_CREATE_SEQUENCE[] = "CREATE SEQUENCE ";
 static const char __pyx_k_DEFAULT_nextval[] = " DEFAULT nextval(";
-static const char __pyx_k_DROP_CONSTRAINT[] = "DROP CONSTRAINT ";
 static const char __pyx_k_RegistryDiffKind[] = "RegistryDiffKind";
 static const char __pyx_k_compile_type_diff[] = "compile_type_diff";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
@@ -3113,7 +3112,6 @@ static PyObject *__pyx_kp_u_DEFAULT;
 static PyObject *__pyx_kp_u_DEFAULT_nextval;
 static PyObject *__pyx_kp_u_DROP_ATTRIBUTE;
 static PyObject *__pyx_kp_u_DROP_COLUMN;
-static PyObject *__pyx_kp_u_DROP_CONSTRAINT;
 static PyObject *__pyx_kp_u_DROP_CONSTRAINT_IF_EXISTS;
 static PyObject *__pyx_kp_u_DROP_DEFAULT;
 static PyObject *__pyx_kp_u_DROP_NOT_NULL;
@@ -6886,7 +6884,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_13compile_enti
  *                 pk_names = [self.dialect.quote_ident(pk._name_) for pk in param.__pk__]
  *                 alter.append(f"ADD PRIMARY KEY({', '.join(pk_names)})")             # <<<<<<<<<<<<<<
  *             elif kind == EntityDiffKind.REMOVE_FK:
- *                 alter.append(f"DROP CONSTRAINT {self.dialect.quote_ident(param[0])}")
+ *                 alter.append(f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(param[0])}")
  */
       __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 178, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
@@ -6927,7 +6925,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_13compile_enti
  *                 pk_names = [self.dialect.quote_ident(pk._name_) for pk in param.__pk__]
  *                 alter.append(f"ADD PRIMARY KEY({', '.join(pk_names)})")
  *             elif kind == EntityDiffKind.REMOVE_FK:             # <<<<<<<<<<<<<<
- *                 alter.append(f"DROP CONSTRAINT {self.dialect.quote_ident(param[0])}")
+ *                 alter.append(f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(param[0])}")
  *             elif kind == EntityDiffKind.CREATE_FK:
  */
     __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_EntityDiffKind); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 179, __pyx_L1_error)
@@ -6944,7 +6942,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_13compile_enti
       /* "yapic/entity/sql/_ddl.pyx":180
  *                 alter.append(f"ADD PRIMARY KEY({', '.join(pk_names)})")
  *             elif kind == EntityDiffKind.REMOVE_FK:
- *                 alter.append(f"DROP CONSTRAINT {self.dialect.quote_ident(param[0])}")             # <<<<<<<<<<<<<<
+ *                 alter.append(f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(param[0])}")             # <<<<<<<<<<<<<<
  *             elif kind == EntityDiffKind.CREATE_FK:
  *                 alter.append(f"ADD {self.compile_foreign_key(param[0], param[1])}")
  */
@@ -6957,7 +6955,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_13compile_enti
       __pyx_t_7 = __Pyx_PyUnicode_Unicode(__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 180, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __pyx_t_6 = __Pyx_PyUnicode_Concat(__pyx_kp_u_DROP_CONSTRAINT, __pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 180, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyUnicode_Concat(__pyx_kp_u_DROP_CONSTRAINT_IF_EXISTS, __pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 180, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_10 = __Pyx_PyObject_Append(__pyx_v_alter, __pyx_t_6); if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 180, __pyx_L1_error)
@@ -6967,7 +6965,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_13compile_enti
  *                 pk_names = [self.dialect.quote_ident(pk._name_) for pk in param.__pk__]
  *                 alter.append(f"ADD PRIMARY KEY({', '.join(pk_names)})")
  *             elif kind == EntityDiffKind.REMOVE_FK:             # <<<<<<<<<<<<<<
- *                 alter.append(f"DROP CONSTRAINT {self.dialect.quote_ident(param[0])}")
+ *                 alter.append(f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(param[0])}")
  *             elif kind == EntityDiffKind.CREATE_FK:
  */
       goto __pyx_L7;
@@ -6975,7 +6973,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_13compile_enti
 
     /* "yapic/entity/sql/_ddl.pyx":181
  *             elif kind == EntityDiffKind.REMOVE_FK:
- *                 alter.append(f"DROP CONSTRAINT {self.dialect.quote_ident(param[0])}")
+ *                 alter.append(f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(param[0])}")
  *             elif kind == EntityDiffKind.CREATE_FK:             # <<<<<<<<<<<<<<
  *                 alter.append(f"ADD {self.compile_foreign_key(param[0], param[1])}")
  * 
@@ -6992,7 +6990,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_13compile_enti
     if (__pyx_t_9) {
 
       /* "yapic/entity/sql/_ddl.pyx":182
- *                 alter.append(f"DROP CONSTRAINT {self.dialect.quote_ident(param[0])}")
+ *                 alter.append(f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(param[0])}")
  *             elif kind == EntityDiffKind.CREATE_FK:
  *                 alter.append(f"ADD {self.compile_foreign_key(param[0], param[1])}")             # <<<<<<<<<<<<<<
  * 
@@ -7064,7 +7062,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_13compile_enti
 
       /* "yapic/entity/sql/_ddl.pyx":181
  *             elif kind == EntityDiffKind.REMOVE_FK:
- *                 alter.append(f"DROP CONSTRAINT {self.dialect.quote_ident(param[0])}")
+ *                 alter.append(f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(param[0])}")
  *             elif kind == EntityDiffKind.CREATE_FK:             # <<<<<<<<<<<<<<
  *                 alter.append(f"ADD {self.compile_foreign_key(param[0], param[1])}")
  * 
@@ -10050,7 +10048,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_DEFAULT_nextval, __pyx_k_DEFAULT_nextval, sizeof(__pyx_k_DEFAULT_nextval), 0, 1, 0, 0},
   {&__pyx_kp_u_DROP_ATTRIBUTE, __pyx_k_DROP_ATTRIBUTE, sizeof(__pyx_k_DROP_ATTRIBUTE), 0, 1, 0, 0},
   {&__pyx_kp_u_DROP_COLUMN, __pyx_k_DROP_COLUMN, sizeof(__pyx_k_DROP_COLUMN), 0, 1, 0, 0},
-  {&__pyx_kp_u_DROP_CONSTRAINT, __pyx_k_DROP_CONSTRAINT, sizeof(__pyx_k_DROP_CONSTRAINT), 0, 1, 0, 0},
   {&__pyx_kp_u_DROP_CONSTRAINT_IF_EXISTS, __pyx_k_DROP_CONSTRAINT_IF_EXISTS, sizeof(__pyx_k_DROP_CONSTRAINT_IF_EXISTS), 0, 1, 0, 0},
   {&__pyx_kp_u_DROP_DEFAULT, __pyx_k_DROP_DEFAULT, sizeof(__pyx_k_DROP_DEFAULT), 0, 1, 0, 0},
   {&__pyx_kp_u_DROP_NOT_NULL, __pyx_k_DROP_NOT_NULL, sizeof(__pyx_k_DROP_NOT_NULL), 0, 1, 0, 0},

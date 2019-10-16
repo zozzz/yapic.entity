@@ -8056,7 +8056,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_15_query_compiler_20Postgre
  *             op = " NOT IN " if expr.negated else " IN "
  *             return f"{self.visit(left)}{op}({', '.join(entries)})"             # <<<<<<<<<<<<<<
  *         else:
- *             return f"TRUE"
+ *             return f"FALSE"
  */
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_1 = PyTuple_New(5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 197, __pyx_L1_error)
@@ -8114,14 +8114,14 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_15_query_compiler_20Postgre
   /* "yapic/entity/sql/pgsql/_query_compiler.pyx":199
  *             return f"{self.visit(left)}{op}({', '.join(entries)})"
  *         else:
- *             return f"TRUE"             # <<<<<<<<<<<<<<
+ *             return f"FALSE"             # <<<<<<<<<<<<<<
  * 
  *     def visit_binary_startswith(self, BinaryExpression expr):
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_INCREF(__pyx_n_u_TRUE);
-    __pyx_r = __pyx_n_u_TRUE;
+    __Pyx_INCREF(__pyx_n_u_FALSE);
+    __pyx_r = __pyx_n_u_FALSE;
     goto __pyx_L0;
   }
 
@@ -8153,7 +8153,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_15_query_compiler_20Postgre
 }
 
 /* "yapic/entity/sql/pgsql/_query_compiler.pyx":201
- *             return f"TRUE"
+ *             return f"FALSE"
  * 
  *     def visit_binary_startswith(self, BinaryExpression expr):             # <<<<<<<<<<<<<<
  *         left = expr.left
@@ -8287,7 +8287,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_15_query_compiler_20Postgre
   goto __pyx_L0;
 
   /* "yapic/entity/sql/pgsql/_query_compiler.pyx":201
- *             return f"TRUE"
+ *             return f"FALSE"
  * 
  *     def visit_binary_startswith(self, BinaryExpression expr):             # <<<<<<<<<<<<<<
  *         left = expr.left

@@ -34,7 +34,7 @@ cdef class Connection:
         sql, params = qc.compile_select(q)
 
         # print("\n" + "=" * 50)
-        # print(sql)
+        # print(sql, params)
         # print(q._load)
         # print("." * 50)
         # from pprint import pprint

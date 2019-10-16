@@ -196,7 +196,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
             op = " NOT IN " if expr.negated else " IN "
             return f"{self.visit(left)}{op}({', '.join(entries)})"
         else:
-            return f"TRUE"
+            return f"FALSE"
 
     def visit_binary_startswith(self, BinaryExpression expr):
         left = expr.left

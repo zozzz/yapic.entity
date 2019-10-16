@@ -180,7 +180,7 @@ cdef class ManyToOne(RelationImpl):
         if entity_aliased is not entity:
             self.join_expr = replace_entity(self.join_expr, entity_aliased, entity)
 
-        attr._deps_.add(self._joined)
+        # attr._deps_.add(self._joined)
         return True
 
     cdef object resolve_default(self, Relation attr):

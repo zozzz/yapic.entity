@@ -32,6 +32,9 @@ cdef class ReplacerBase(Visitor):
     def visit_field(self, expr):
         return expr
 
+    def visit_const(self, expr):
+        return expr
+
     def visit_path(self, PathExpression expr):
         cdef list path = []
         for p in expr._path_:
@@ -64,6 +67,9 @@ cdef class Walk(Visitor):
         pass
 
     def visit_field(self, expr):
+        pass
+
+    def visit_const(self, expr):
         pass
 
     def visit_path(self, PathExpression expr):
