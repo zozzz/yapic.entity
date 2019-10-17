@@ -1,8 +1,9 @@
 from ._entity cimport EntityType, EntityBase
 from ._entity import Entity
-from ._field cimport Field
+from ._field cimport Field, StorageType
 from ._field_impl cimport FloatImpl, NamedTupleImpl
 from ._registry cimport Registry
+from ._expression cimport CallExpression, RawExpression
 
 
 GEOM_REG = Registry()
@@ -20,6 +21,8 @@ class PointType(Entity,
 
     def __init__(self, data=None, **kwargs):
         if isinstance(data, (tuple, list)):
+            if len(data) < 2:
+                raise ValueError("Missing coordinates")
             data = dict(x=data[0], y=data[1])
         super().__init__(data, **kwargs)
 
@@ -27,6 +30,12 @@ class PointType(Entity,
 cdef class PointImpl(NamedTupleImpl):
     def __init__(self):
         super().__init__(PointType)
+
+    cpdef object data_for_write(self, EntityBase value, bint for_insert):
+        if for_insert:
+            return CallExpression(RawExpression("POINT"), [value.x, value.y])
+        else:
+            return value
 
     def __repr__(self):
         return "Point"

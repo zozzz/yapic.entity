@@ -846,6 +846,7 @@ static const char *__pyx_f[] = {
   "src\\yapic\\entity\\sql\\pgsql\\_query_compiler.pxd",
   "src\\yapic\\entity\\_field_impl.pxd",
   "src\\yapic\\entity\\_geom_impl.pxd",
+  "src\\yapic\\entity\\sql\\pgsql\\postgis\\_impl.pxd",
   "src\\yapic\\entity\\sql\\pgsql\\_type_factory.pxd",
 };
 
@@ -917,6 +918,9 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_CompositeImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_NamedTupleImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_AutoImpl;
 struct __pyx_obj_5yapic_6entity_10_geom_impl_PointImpl;
+struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISImpl;
+struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISPointImpl;
+struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl;
 struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory;
 struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType;
 struct __pyx_obj_5yapic_6entity_3sql_5pgsql_8_dialect_PostgreDialect;
@@ -1688,6 +1692,7 @@ struct __pyx_obj_5yapic_6entity_3sql_5pgsql_15_query_compiler_PostgreQueryCompil
   PyObject *params;
   struct __pyx_obj_5yapic_6entity_3sql_5pgsql_15_query_compiler_PostgreQueryCompiler *parent;
   PyObject *rcos_list;
+  int inline_values;
 };
 
 
@@ -1890,7 +1895,7 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_JsonArrayImpl {
  * 
  * 
  * cdef class CompositeImpl(EntityTypeImpl):             # <<<<<<<<<<<<<<
- *     pass
+ *     cpdef object data_for_write(self, EntityBase value, bint for_insert)
  * 
  */
 struct __pyx_obj_5yapic_6entity_11_field_impl_CompositeImpl {
@@ -1932,7 +1937,43 @@ struct __pyx_obj_5yapic_6entity_10_geom_impl_PointImpl {
 };
 
 
-/* "_type_factory.pxd":27
+/* "postgis/_impl.pxd":4
+ * 
+ * 
+ * cdef class PostGISImpl(CompositeImpl):             # <<<<<<<<<<<<<<
+ *     cdef readonly int srid
+ * 
+ */
+struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISImpl {
+  struct __pyx_obj_5yapic_6entity_11_field_impl_CompositeImpl __pyx_base;
+  int srid;
+};
+
+
+/* "postgis/_impl.pxd":7
+ *     cdef readonly int srid
+ * 
+ * cdef class PostGISPointImpl(PostGISImpl):             # <<<<<<<<<<<<<<
+ *     pass
+ * 
+ */
+struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISPointImpl {
+  struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISImpl __pyx_base;
+};
+
+
+/* "postgis/_impl.pxd":10
+ *     pass
+ * 
+ * cdef class PostGISLatLngImpl(PostGISImpl):             # <<<<<<<<<<<<<<
+ *     pass
+ */
+struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl {
+  struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISImpl __pyx_base;
+};
+
+
+/* "_type_factory.pxd":31
  * 
  * 
  * cdef class PostgreTypeFactory(StorageTypeFactory):             # <<<<<<<<<<<<<<
@@ -1945,7 +1986,7 @@ struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory {
 };
 
 
-/* "_type_factory.pxd":48
+/* "_type_factory.pxd":54
  * 
  * 
  * cdef class PostgreType(StorageType):             # <<<<<<<<<<<<<<
@@ -2776,12 +2817,13 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_JsonArrayImpl *__pyx
  * 
  * 
  * cdef class CompositeImpl(EntityTypeImpl):             # <<<<<<<<<<<<<<
- *     pass
+ *     cpdef object data_for_write(self, EntityBase value, bint for_insert)
  * 
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_CompositeImpl {
   struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_EntityTypeImpl __pyx_base;
+  PyObject *(*data_for_write)(struct __pyx_obj_5yapic_6entity_11_field_impl_CompositeImpl *, struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *, int, int __pyx_skip_dispatch);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_CompositeImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_CompositeImpl;
 
@@ -2826,7 +2868,48 @@ struct __pyx_vtabstruct_5yapic_6entity_10_geom_impl_PointImpl {
 static struct __pyx_vtabstruct_5yapic_6entity_10_geom_impl_PointImpl *__pyx_vtabptr_5yapic_6entity_10_geom_impl_PointImpl;
 
 
-/* "_type_factory.pxd":27
+/* "postgis/_impl.pxd":4
+ * 
+ * 
+ * cdef class PostGISImpl(CompositeImpl):             # <<<<<<<<<<<<<<
+ *     cdef readonly int srid
+ * 
+ */
+
+struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISImpl {
+  struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_CompositeImpl __pyx_base;
+};
+static struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISImpl *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISImpl;
+
+
+/* "postgis/_impl.pxd":7
+ *     cdef readonly int srid
+ * 
+ * cdef class PostGISPointImpl(PostGISImpl):             # <<<<<<<<<<<<<<
+ *     pass
+ * 
+ */
+
+struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISPointImpl {
+  struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISImpl __pyx_base;
+};
+static struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISPointImpl *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISPointImpl;
+
+
+/* "postgis/_impl.pxd":10
+ *     pass
+ * 
+ * cdef class PostGISLatLngImpl(PostGISImpl):             # <<<<<<<<<<<<<<
+ *     pass
+ */
+
+struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl {
+  struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISImpl __pyx_base;
+};
+static struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl;
+
+
+/* "_type_factory.pxd":31
  * 
  * 
  * cdef class PostgreTypeFactory(StorageTypeFactory):             # <<<<<<<<<<<<<<
@@ -2852,11 +2935,13 @@ struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFa
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___json_type)(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_11_field_impl_JsonImpl *);
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___composite_type)(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_11_field_impl_CompositeImpl *);
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___point_type)(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_10_geom_impl_PointImpl *);
+  struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___postgis_point_type)(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISPointImpl *);
+  struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___postgis_longlat_type)(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl *);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory;
 
 
-/* "_type_factory.pxd":48
+/* "_type_factory.pxd":54
  * 
  * 
  * cdef class PostgreType(StorageType):             # <<<<<<<<<<<<<<
@@ -3367,6 +3452,11 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl = 0;
 
 /* Module declarations from 'yapic.entity._geom_impl' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_10_geom_impl_PointImpl = 0;
+
+/* Module declarations from 'yapic.entity.sql.pgsql.postgis._impl' */
+static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISImpl = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISPointImpl = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl = 0;
 
 /* Module declarations from 'yapic.entity.sql.pgsql._type_factory' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory = 0;
@@ -5370,14 +5460,26 @@ static int __Pyx_modinit_type_import_code(void) {
    if (!__pyx_ptype_5yapic_6entity_10_geom_impl_PointImpl) __PYX_ERR(14, 4, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_10_geom_impl_PointImpl = (struct __pyx_vtabstruct_5yapic_6entity_10_geom_impl_PointImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_10_geom_impl_PointImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_10_geom_impl_PointImpl)) __PYX_ERR(14, 4, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyImport_ImportModule("yapic.entity.sql.pgsql._type_factory"); if (unlikely(!__pyx_t_1)) __PYX_ERR(15, 27, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("yapic.entity.sql.pgsql.postgis._impl"); if (unlikely(!__pyx_t_1)) __PYX_ERR(15, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_ptype_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity.sql.pgsql.postgis._impl", "PostGISImpl", sizeof(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISImpl), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISImpl) __PYX_ERR(15, 4, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISImpl = (struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISImpl)) __PYX_ERR(15, 4, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISPointImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity.sql.pgsql.postgis._impl", "PostGISPointImpl", sizeof(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISPointImpl), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISPointImpl) __PYX_ERR(15, 7, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISPointImpl = (struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISPointImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISPointImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISPointImpl)) __PYX_ERR(15, 7, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity.sql.pgsql.postgis._impl", "PostGISLatLngImpl", sizeof(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl) __PYX_ERR(15, 10, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl = (struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl)) __PYX_ERR(15, 10, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyImport_ImportModule("yapic.entity.sql.pgsql._type_factory"); if (unlikely(!__pyx_t_1)) __PYX_ERR(16, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory = __Pyx_ImportType(__pyx_t_1, "yapic.entity.sql.pgsql._type_factory", "PostgreTypeFactory", sizeof(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory) __PYX_ERR(15, 27, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory = (struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory)) __PYX_ERR(15, 27, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory) __PYX_ERR(16, 31, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory = (struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory)) __PYX_ERR(16, 31, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType = __Pyx_ImportType(__pyx_t_1, "yapic.entity.sql.pgsql._type_factory", "PostgreType", sizeof(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType) __PYX_ERR(15, 48, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType = (struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType)) __PYX_ERR(15, 48, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType) __PYX_ERR(16, 54, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType = (struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType)) __PYX_ERR(16, 54, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

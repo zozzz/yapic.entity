@@ -1660,7 +1660,7 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_JsonArrayImpl {
  * 
  * 
  * cdef class CompositeImpl(EntityTypeImpl):             # <<<<<<<<<<<<<<
- *     pass
+ *     cpdef object data_for_write(self, EntityBase value, bint for_insert)
  * 
  */
 struct __pyx_obj_5yapic_6entity_11_field_impl_CompositeImpl {
@@ -2758,12 +2758,13 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_JsonArrayImpl *__pyx
  * 
  * 
  * cdef class CompositeImpl(EntityTypeImpl):             # <<<<<<<<<<<<<<
- *     pass
+ *     cpdef object data_for_write(self, EntityBase value, bint for_insert)
  * 
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_CompositeImpl {
   struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_EntityTypeImpl __pyx_base;
+  PyObject *(*data_for_write)(struct __pyx_obj_5yapic_6entity_11_field_impl_CompositeImpl *, struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *, int, int __pyx_skip_dispatch);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_CompositeImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_CompositeImpl;
 

@@ -24,6 +24,11 @@ from yapic.entity._field_impl cimport (
 from yapic.entity._geom_impl cimport (
     PointImpl,
 )
+from .postgis._impl import DEFAULT_SRID
+from .postgis._impl cimport (
+    PostGISPointImpl,
+    PostGISLatLngImpl,
+)
 
 from ._dialect cimport PostgreDialect
 
@@ -65,6 +70,10 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
             return self.__json_type(field, <JsonImpl>impl)
         elif isinstance(impl, PointImpl):
             return self.__point_type(field, <PointImpl>impl)
+        elif isinstance(impl, PostGISPointImpl):
+            return self.__postgis_point_type(field, <PostGISPointImpl>impl)
+        elif isinstance(impl, PostGISLatLngImpl):
+            return self.__postgis_longlat_type(field, <PostGISLatLngImpl>impl)
         elif isinstance(impl, CompositeImpl):
             return self.__composite_type(field, <CompositeImpl>impl)
 
@@ -167,9 +176,15 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
     cdef StorageType __point_type(self, Field field, PointImpl impl):
         return PointType("POINT")
 
+    cdef StorageType __postgis_point_type(self, Field field, PostGISPointImpl impl):
+        return PostGISPointType("POINT", DEFAULT_SRID)
+
+    cdef StorageType __postgis_longlat_type(self, Field field, PostGISLatLngImpl impl):
+        return PostGISLatLngType("POINT", DEFAULT_SRID)
+
 
 cdef class PostgreType(StorageType):
-    def __cinit__(self, str name, str pre_sql = None, str post_sql = None):
+    def __init__(self, str name, str pre_sql = None, str post_sql = None):
         self.name = name
         self.pre_sql = pre_sql
         self.post_sql = post_sql
@@ -413,6 +428,34 @@ cdef class CompositeType(PostgreType):
 
 
 cdef class PointType(PostgreType):
+    cpdef object encode(self, object value):
+        return value
+
+    cpdef object decode(self, object value):
+        return value
+
+
+cdef class PostGISGeometryType(PostgreType):
+    def __init__(self, str name, srid):
+        typestr = f"geometry({name}, {srid})" if srid else f"geometry({name})"
+        PostgreType.__init__(self, typestr)
+
+
+cdef class PostGISGeographyType(PostgreType):
+    def __init__(self, str name, srid):
+        typestr = f"geography({name}, {srid})" if srid else f"geography({name})"
+        PostgreType.__init__(self, typestr)
+
+
+cdef class PostGISPointType(PostGISGeometryType):
+    cpdef object encode(self, object value):
+        return value
+
+    cpdef object decode(self, object value):
+        return value
+
+
+cdef class PostGISLatLngType(PostGISGeographyType):
     cpdef object encode(self, object value):
         return value
 

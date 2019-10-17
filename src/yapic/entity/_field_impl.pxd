@@ -1,4 +1,4 @@
-from ._entity cimport EntityType, EntityAttributeImpl
+from ._entity cimport EntityType, EntityBase, EntityAttributeImpl
 from ._field cimport Field, FieldImpl
 
 
@@ -68,7 +68,7 @@ cdef class JsonArrayImpl(JsonImpl):
 
 
 cdef class CompositeImpl(EntityTypeImpl):
-    pass
+    cpdef object data_for_write(self, EntityBase value, bint for_insert)
 
 
 cdef class NamedTupleImpl(CompositeImpl):

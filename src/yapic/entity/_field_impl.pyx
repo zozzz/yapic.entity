@@ -1,8 +1,10 @@
 from enum import Enum, Flag
 from datetime import date, datetime
+from inspect import iscoroutine
 
 from ._entity cimport EntityType, EntityBase, EntityAttributeImpl, EntityAttribute, NOTSET
-from ._expression cimport PathExpression, VirtualExpressionVal
+from ._expression cimport PathExpression, VirtualExpressionVal, CallExpression, RawExpression
+from ._field cimport StorageType
 
 
 
@@ -189,6 +191,9 @@ cdef class CompositeImpl(EntityTypeImpl):
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    cpdef object data_for_write(self, EntityBase value, bint for_insert):
+        return value
+
     def __repr__(self):
         return "Composite(%r)" % self._entity_
 
@@ -200,6 +205,9 @@ cdef class NamedTupleImpl(CompositeImpl):
 
     cpdef getattr(self, EntityAttribute attr, object key):
         return PathExpression([attr, getattr(self._entity_, key)._index_])
+
+    cpdef object data_for_write(self, EntityBase value, bint for_insert):
+        raise NotImplementedError()
 
     def __repr__(self):
         return "NamedTuple(%r)" % self._entity_

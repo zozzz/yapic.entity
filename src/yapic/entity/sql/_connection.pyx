@@ -120,48 +120,33 @@ cdef class Connection:
                 if iscoroutine(value):
                     value = await value
 
-                if for_insert and isinstance(attr._impl_, NamedTupleImpl):
-                    # TODO: beautify whole block...
-
+                if isinstance(attr._impl_, CompositeImpl):
                     if not isinstance(value, EntityBase):
                         value = (<CompositeImpl>(<Field>attr)._impl_)._entity_(value)
 
-                    attrs.append(attr)
+                    value = (<CompositeImpl>(<Field>attr)._impl_).data_for_write(value, for_insert)
 
-                    if path is None:
-                        names.append(self.dialect.quote_ident(attr._name_))
-                    else:
-                        names.append(_compile_path(self.dialect, getattr(path, attr._key_)))
-
-                    if value is None:
-                        values.append(None)
-                    else:
-                        value = _make_tuple(self.dialect, value)
-                        if value is None:
-                            values.append(None)
+                    if isinstance(value, EntityBase):
+                        if path is None:
+                            spath = getattr(entity_type, attr._key_)
                         else:
-                            field_type = self.dialect.get_field_type(<Field>attr)
-                            values.append(RawExpression(f"{field_type.name}{value}"))
-                elif isinstance(attr._impl_, CompositeImpl):
-                    if not isinstance(value, EntityBase):
-                        value = (<CompositeImpl>(<Field>attr)._impl_)._entity_(value)
+                            spath = getattr(path, attr._key_)
 
-                    if path is None:
-                        spath = getattr(entity_type, attr._key_)
-                    else:
-                        spath = getattr(path, attr._key_)
+                        await self._collect_attrs(value, for_insert, attrs, names, values, spath)
+                        continue
 
-                    await self._collect_attrs(value, for_insert, attrs, names, values, spath)
+                attrs.append(attr)
+
+                if path is None:
+                    names.append(self.dialect.quote_ident(attr._name_))
                 else:
-                    attrs.append(attr)
+                    names.append(_compile_path(self.dialect, getattr(path, attr._key_)))
 
-                    if path is None:
-                        names.append(self.dialect.quote_ident(attr._name_))
-                    else:
-                        names.append(_compile_path(self.dialect, getattr(path, attr._key_)))
-
-                    if value is None:
-                        values.append(None)
+                if value is None:
+                    values.append(None)
+                else:
+                    if isinstance(value, Expression):
+                        values.append(value)
                     else:
                         field_type = self.dialect.get_field_type(<Field>attr)
                         values.append(field_type.encode(value))
@@ -209,27 +194,4 @@ cdef str _compile_path(Dialect dialect, PathExpression path):
             raise RuntimeError("Invalid path entry: %r" % item)
 
     return "".join(res)
-
-
-cdef str _make_tuple(Dialect dialect, EntityBase value):
-    cdef EntityType entity_type = type(value)
-    cdef StorageType field_type
-    cdef Field field
-    cdef list res = []
-    cdef bint is_null = True
-
-    for field in entity_type.__fields__:
-        if field._key_ is not None:
-            field_type = dialect.get_field_type(field)
-            v = getattr(value, field._key_)
-            if v is None:
-                res.append("NULL")
-            else:
-                is_null = False
-                res.append(dialect.quote_value(field_type.encode(v)))
-
-    if is_null:
-        return None
-    else:
-        return f"({', '.join(res)})"
 

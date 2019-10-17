@@ -103,7 +103,7 @@ class PyTest(TestCommand):
 almafa = setup(
     name="yapic.entity",
     version="1.0.0",
-    packages=["yapic.entity", "yapic.entity.sql", "yapic.entity.sql.pgsql"],
+    packages=["yapic.entity", "yapic.entity.sql", "yapic.entity.sql.pgsql", "yapic.entity.sql.pgsql.postgis"],
     package_dir={"yapic.entity": "src/yapic/entity"},
     python_requires=">=3.7",
     ext_modules=cythonize(

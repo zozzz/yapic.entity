@@ -10,5 +10,6 @@ cdef class PostgreQueryCompiler(QueryCompiler):
     cdef list params
     cdef PostgreQueryCompiler parent
     cdef readonly list rcos_list
+    cdef bint inline_values
 
     cpdef init_subquery(self, PostgreQueryCompiler parent)

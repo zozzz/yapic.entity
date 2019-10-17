@@ -32,6 +32,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         self.parts = ["SELECT"]
         self.table_alias = self.parent.table_alias if self.parent else {}
         self.params = self.parent.params if self.parent else []
+        self.inline_values = False
 
         from_ = self.visit_select_from(query._select_from)
         if query._joins:
@@ -233,13 +234,16 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         # elif isinstance(value, int) or isinstance(value, float):
         #     return value
 
-        try:
-            idx = self.params.index(value)
-        except ValueError:
-            self.params.append(value)
-            return f"${len(self.params)}"
+        if self.inline_values:
+            return self.dialect.quote_value(value)
         else:
-            return f"${idx + 1}"
+            try:
+                idx = self.params.index(value)
+            except ValueError:
+                self.params.append(value)
+                return f"${len(self.params)}"
+            else:
+                return f"${idx + 1}"
 
     def visit_cast(self, expr):
         e = (<CastExpression>expr).expr
@@ -346,62 +350,71 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         if not values:
             return (f"INSERT INTO {self.dialect.table_qname(entity)} DEFAULT VALUES", [])
 
+        self.params = []
+        self.inline_values = inline_values
+
         cdef list inserts = []
-        cdef list params = []
-        cdef int idx
 
         if inline_values:
             for v in values:
-                inserts.append(self.dialect.quote_value(v))
+                if isinstance(v, Expression):
+                    inserts.append((<Expression>v).visit(self))
+                else:
+                    inserts.append(self.dialect.quote_value(v))
         else:
-            idx = 1
             for i in range(0, len(names)):
                 v = values[i]
-                if isinstance(v, RawExpression):
-                    inserts.append((<RawExpression>v).expr)
+                if isinstance(v, Expression):
+                    inserts.append((<Expression>v).visit(self))
                 else:
-                    inserts.append(f"${idx}")
-                    params.append(v)
-                    idx += 1
-
+                    self.params.append(v)
+                    inserts.append(f"${len(self.params)}")
 
         return "".join(("INSERT INTO ", self.dialect.table_qname(entity),
-            " (", ", ".join(names), ") VALUES (", ", ".join(inserts), ")")), params
+            " (", ", ".join(names), ") VALUES (", ", ".join(inserts), ")")), self.params
 
     cpdef compile_insert_or_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
         if not values:
             return (None, None)
 
+        self.params = []
+        self.inline_values = inline_values
+
         cdef EntityAttribute attr
         cdef list updates = []
         cdef list inserts = []
-        cdef list params = []
         cdef list pk_names = [self.dialect.quote_ident(attr._name_) for attr in entity.__pk__]
         cdef int idx
 
         if inline_values:
             for i, name in enumerate(names):
-                attr = <EntityAttribute>attrs[i]
-                val = self.dialect.quote_value(values[i])
-                inserts.append(val)
-                if not attr.get_ext(PrimaryKey):
-                    updates.append(f"{name}={val}")
+                v = values[i]
+
+                if isinstance(v, Expression):
+                    v = (<Expression>v).visit(self)
+                else:
+                    v = self.dialect.quote_value(v)
+
+                inserts.append(v)
+                if not (<EntityAttribute>attrs[i]).get_ext(PrimaryKey):
+                    updates.append(f"{name}={v}")
         else:
             idx = 1
             for i, name in enumerate(names):
                 v = values[i]
-                attr = <EntityAttribute>attrs[i]
 
-                if isinstance(v, RawExpression):
-                    inserts.append((<RawExpression>v).expr)
-                    if not attr.get_ext(PrimaryKey):
-                        updates.append(f"{name}={(<RawExpression>v).expr}")
+                if isinstance(v, Expression):
+                    v = (<Expression>v).visit(self)
+                    inserts.append(v)
+                    if not (<EntityAttribute>attrs[i]).get_ext(PrimaryKey):
+                        updates.append(f"{name}={v}")
                 else:
+                    self.params.append(v)
+                    idx = len(self.params)
                     inserts.append(f"${idx}")
-                    if not attr.get_ext(PrimaryKey):
+                    if not (<EntityAttribute>attrs[i]).get_ext(PrimaryKey):
                         updates.append(f"{name}=${idx}")
-                    params.append(v)
-                    idx += 1
+
 
         q = ["INSERT INTO ", self.dialect.table_qname(entity),
             " (", ", ".join(names), ") VALUES (", ", ".join(inserts), ")",
@@ -415,46 +428,49 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         else:
             q.append("DO NOTHING")
 
-        return "".join(q), params
+        return "".join(q), self.params
 
     cpdef compile_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
         if not values:
             return (None, None)
 
-        cdef EntityAttribute attr
+        self.params = []
+        self.inline_values = inline_values
+
         cdef list updates = []
         cdef list where = []
-        cdef list params = []
         cdef int idx
 
         if inline_values:
             for i, name in enumerate(names):
-                attr = <EntityAttribute>attrs[i]
-                val = self.dialect.quote_value(values[i])
+                v = values[i]
 
-                if attr.get_ext(PrimaryKey):
-                    where.append(f"{name}={val}")
+                if isinstance(v, Expression):
+                    v = (<Expression>v).visit(self)
                 else:
-                    updates.append(f"{name}={val}")
+                    v = self.dialect.quote_value(v)
+
+                if (<EntityAttribute>attrs[i]).get_ext(PrimaryKey):
+                    where.append(f"{name}={v}")
+                else:
+                    updates.append(f"{name}={v}")
         else:
             idx = 1
             for i, name in enumerate(names):
                 v = values[i]
-                attr = <EntityAttribute>attrs[i]
 
-                if isinstance(v, RawExpression):
-                    if attr.get_ext(PrimaryKey):
-                        where.append(f"{name}={(<RawExpression>v).expr}")
+                if isinstance(v, Expression):
+                    v = (<Expression>v).visit(self)
+                    if (<EntityAttribute>attrs[i]).get_ext(PrimaryKey):
+                        where.append(f"{name}={v}")
                     else:
-                        updates.append(f"{name}={(<RawExpression>v).expr}")
+                        updates.append(f"{name}={v}")
                 else:
-                    if attr.get_ext(PrimaryKey):
-                        where.append(f"{name}=${idx}")
+                    self.params.append(v)
+                    if (<EntityAttribute>attrs[i]).get_ext(PrimaryKey):
+                        where.append(f"{name}=${len(self.params)}")
                     else:
-                        updates.append(f"{name}=${idx}")
-
-                    params.append(v)
-                    idx += 1
+                        updates.append(f"{name}=${len(self.params)}")
 
         if not updates:
             return (None, None)
@@ -463,7 +479,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
             raise RuntimeError("TODO: ...")
 
         return "".join(("UPDATE ", self.dialect.table_qname(entity), " SET ",
-            ", ".join(updates), " WHERE ", " AND ".join(where))), params
+            ", ".join(updates), " WHERE ", " AND ".join(where))), self.params
 
     cpdef compile_delete(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
         """

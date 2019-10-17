@@ -36,8 +36,14 @@ def start_container(image, name, ports):
         return client.containers.get(name)
     except NotFound:
         return client.containers.run(
-            image, name=name, detach=True, remove=True, ports={f"{port}/tcp": port
-                                                               for port in ports})
+            image,
+            name=name,
+            detach=True,
+            remove=True,
+            ports={f"{port}/tcp": port
+                   for port in ports},
+            cap_add=["SYS_PTRACE"],
+        )
 
 
 @pytest.fixture

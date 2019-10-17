@@ -28,9 +28,7 @@ async def conn(pgsql):
     yield wrap_connection(pgsql, "pgsql")
 
 
-async def test_sync(conn):
-    await conn.conn.execute('DROP SCHEMA IF EXISTS "circular_deps" CASCADE')
-
+async def test_sync(conn, pgclean):
     result = await sync(conn, REGISTRY)
     assert result == """CREATE SCHEMA IF NOT EXISTS "circular_deps";
 CREATE SEQUENCE "circular_deps"."Document_id_seq";

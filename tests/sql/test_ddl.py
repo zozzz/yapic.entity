@@ -1,4 +1,5 @@
 from enum import Enum, Flag
+import pytest
 
 from yapic.entity import (Int, Serial, String, Choice, Field, PrimaryKey, ForeignKey, Date, DateTime, DateTimeTz, Bool,
                           func, const, Registry, Json, Composite, Auto, One)
@@ -69,22 +70,22 @@ def test_int():
 
     result = ddl.compile_entity(Pk_small)
     assert result == """CREATE TABLE "Pk_small" (
-  "id" SERIAL2 NOT NULL,
-  "id2" SERIAL2 NOT NULL,
+  "id" INT2 NOT NULL,
+  "id2" INT2 NOT NULL DEFAULT nextval('"Pk_small_id2_seq"'::regclass),
   PRIMARY KEY("id", "id2")
 );"""
 
     result = ddl.compile_entity(Pk_medium)
     assert result == """CREATE TABLE "Pk_medium" (
-  "id" SERIAL4 NOT NULL,
-  "id2" SERIAL4 NOT NULL,
+  "id" INT4 NOT NULL,
+  "id2" INT4 NOT NULL DEFAULT nextval('"Pk_medium_id2_seq"'::regclass),
   PRIMARY KEY("id", "id2")
 );"""
 
     result = ddl.compile_entity(Pk_large)
     assert result == """CREATE TABLE "Pk_large" (
-  "id" SERIAL8 NOT NULL,
-  "id2" SERIAL8 NOT NULL,
+  "id" INT8 NOT NULL,
+  "id2" INT8 NOT NULL DEFAULT nextval('"Pk_large_id2_seq"'::regclass),
   PRIMARY KEY("id", "id2")
 );"""
 
@@ -106,6 +107,7 @@ def test_string():
 );"""
 
 
+@pytest.mark.skip(reason="Enum is in planning stage...")
 def test_enum():
     class Mood(Enum):
         SAD = "sad"

@@ -25,6 +25,10 @@ from yapic.entity._field_impl cimport (
 from yapic.entity._geom_impl cimport (
     PointImpl,
 )
+from .postgis._impl cimport (
+    PostGISPointImpl,
+    PostGISLatLngImpl,
+)
 
 
 from .._ddl cimport DDLCompiler, DDLReflect
@@ -39,6 +43,15 @@ JSON_ENTITY_UID = 0
 
 
 cdef class PostgreDDLReflect(DDLReflect):
+    async def get_extensions(self, Connection conn):
+        exts = await conn.conn.fetch("""SELECT extname, extconfig FROM pg_catalog.pg_extension""")
+
+        result = {}
+        for name, config in exts:
+            result[name] = config or []
+
+        return result
+
     async def get_entities(self, Connection conn, Registry registry):
         types = await conn.conn.fetch("""
             SELECT
@@ -56,12 +69,25 @@ cdef class PostgreDDLReflect(DDLReflect):
 
         cdef EntityAttribute attr
 
+        extensions = await self.get_extensions(conn)
+        not_sync_ids = []
+        not_sync_names = []
+        for name, tables in extensions.items():
+            if tables:
+                not_sync_ids.extend(tables)
+
+            if name == "postgis":
+                not_sync_names.append("geometry_dump")
+                not_sync_names.append("valid_detail")
+
+        types = [v for v in types if v[0] not in not_sync_ids and v[2] not in not_sync_names]
+
         for id, schema, table, kind in types:
             if kind == b"S":
                 fields = []
                 entity = await self.create_entity(conn, registry, schema, table, fields)
             else:
-                fields = await self.get_fields(conn, registry, schema, table, id)
+                fields = await self.get_fields(conn, registry, extensions, schema, table, id)
                 entity = await self.create_entity(conn, registry, schema, table, fields)
             entity.__meta__["is_type"] = kind == b"c"
             entity.__meta__["is_sequence"] = kind == b"S"
@@ -127,7 +153,29 @@ cdef class PostgreDDLReflect(DDLReflect):
             ORDER BY "kcu"."ordinal_position"
             """)
 
-    async def get_fields(self, Connection conn, registry, str schema, str table, typeid):
+    async def get_fields(self, Connection conn, registry, extensions, str schema, str table, typeid):
+        if "postgis" in extensions:
+            postgis_select = f""",
+                "geom"."type" as "geom_type",
+                "geom"."srid" as "geom_srid",
+                "geom"."coord_dimension" as "geom_dim",
+                "geog"."type" as "geog_type",
+                "geog"."srid" as "geog_srid",
+                "geog"."coord_dimension" as "geog_dim"
+            """
+            postgis_join = f"""
+                LEFT JOIN "geometry_columns" "geom" ON
+                    "geom"."f_table_schema"={self.dialect.quote_value(schema)}
+                    AND "geom"."f_table_name"={self.dialect.quote_value(table)}
+                    AND "geom"."f_geometry_column"="pg_attribute"."attname"
+                LEFT JOIN "geography_columns" "geog" ON
+                    "geog"."f_table_schema"={self.dialect.quote_value(schema)}
+                    AND "geog"."f_table_name"={self.dialect.quote_value(table)}
+                    AND "geog"."f_geography_column"="pg_attribute"."attname" """
+        else:
+            postgis_select = f""
+            postgis_join = f""
+
         fields = await conn.conn.fetch(f"""
             SELECT
                 "pg_attribute"."attname" as "name",
@@ -144,10 +192,12 @@ cdef class PostgreDDLReflect(DDLReflect):
                 information_schema._pg_numeric_precision(information_schema._pg_truetypid(pg_attribute.*, pg_type.*), information_schema._pg_truetypmod(pg_attribute.*, pg_type.*)) AS numeric_precision,
                 information_schema._pg_numeric_scale(information_schema._pg_truetypid(pg_attribute.*, pg_type.*), information_schema._pg_truetypmod(pg_attribute.*, pg_type.*)) AS numeric_scale,
                 pg_attribute.attlen as "size"
+                {postgis_select}
             FROM pg_attribute
                 INNER JOIN pg_type ON pg_type.oid=pg_attribute.atttypid
                 INNER JOIN pg_namespace typens ON typens.oid=pg_type.typnamespace
                 LEFT JOIN pg_attrdef ON pg_attribute.attrelid = pg_attrdef.adrelid AND pg_attribute.attnum = pg_attrdef.adnum
+                {postgis_join}
             WHERE attrelid={typeid} AND attnum > 0 ORDER BY attnum""")
 
         pks = await self.get_primary_keys(conn, schema, table)
@@ -170,7 +220,7 @@ cdef class PostgreDDLReflect(DDLReflect):
         cdef bint is_nullable = record["is_nullable"] == "YES"
         default = record["default"]
 
-        if typename == "int2" or typename == "int4" or typename == "int8":
+        if typename in ("int2", "_int2", "int4", "_int4", "int8", "_int8"):
             field = Field(IntImpl(), size=int(record["size"]), nullable=is_nullable)
 
             if default is not None:
@@ -217,6 +267,18 @@ cdef class PostgreDDLReflect(DDLReflect):
             field = Field(JsonImpl(JsonEntity), nullable=is_nullable)
         elif typename == "point":
             field = Field(PointImpl(), nullable=is_nullable)
+        elif typename == "geometry":
+            geom_type = record["geom_type"].lower()
+            if geom_type == "point":
+                field = Field(PostGISPointImpl(record["geom_srid"]), nullable=is_nullable)
+            else:
+                raise ValueError(f"Unhandled geometry type: {record['geom_type']}")
+        elif typename == "geography":
+            geog_type = record["geog_type"].lower()
+            if geog_type == "point":
+                field = Field(PostGISLatLngImpl(record["geog_srid"]), nullable=is_nullable)
+            else:
+                raise ValueError(f"Unhandled geometry type: {record['geog_type']}")
         elif typeschema != "pg_catalog" and typeschema != "information_schema":
             ctypename = f"{typeschema}.{typename}" if typeschema != "public" else f"{typename}"
             centity = registry[ctypename]
