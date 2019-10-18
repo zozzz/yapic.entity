@@ -4332,7 +4332,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_16PostGISPo
 static PyObject *__pyx_pw_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_16PostGISPointImpl_5data_for_write(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_16PostGISPointImpl_data_for_write(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISPointImpl *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *__pyx_v_value, CYTHON_UNUSED int __pyx_v_for_insert, int __pyx_skip_dispatch) {
   struct __pyx_obj_5yapic_6entity_11_expression_CallExpression *__pyx_v_result = NULL;
-  CYTHON_UNUSED PyObject *__pyx_v_srid = NULL;
+  PyObject *__pyx_v_srid = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4430,7 +4430,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_16PostGISPoi
  *     cpdef object data_for_write(self, EntityBase value, bint for_insert):
  *         result = CallExpression(RawExpression("ST_MakePoint"), [value.x, value.y])             # <<<<<<<<<<<<<<
  *         srid = value.srid or self.srid
- *         return CallExpression(RawExpression("ST_SetSRID"), [result, value.srid])
+ *         return CallExpression(RawExpression("ST_SetSRID"), [result, srid])
  */
   __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_RawExpression), __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -4464,7 +4464,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_16PostGISPoi
  *     cpdef object data_for_write(self, EntityBase value, bint for_insert):
  *         result = CallExpression(RawExpression("ST_MakePoint"), [value.x, value.y])
  *         srid = value.srid or self.srid             # <<<<<<<<<<<<<<
- *         return CallExpression(RawExpression("ST_SetSRID"), [result, value.srid])
+ *         return CallExpression(RawExpression("ST_SetSRID"), [result, srid])
  * 
  */
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_value), __pyx_n_s_srid); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 56, __pyx_L1_error)
@@ -4489,36 +4489,34 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_16PostGISPoi
   /* "yapic/entity/sql/pgsql/postgis/_impl.pyx":57
  *         result = CallExpression(RawExpression("ST_MakePoint"), [value.x, value.y])
  *         srid = value.srid or self.srid
- *         return CallExpression(RawExpression("ST_SetSRID"), [result, value.srid])             # <<<<<<<<<<<<<<
+ *         return CallExpression(RawExpression("ST_SetSRID"), [result, srid])             # <<<<<<<<<<<<<<
  * 
  *     def __repr__(self):
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_RawExpression), __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_value), __pyx_n_s_srid); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_result));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_result));
-  PyList_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_result));
-  __Pyx_GIVEREF(__pyx_t_4);
-  PyList_SET_ITEM(__pyx_t_1, 1, __pyx_t_4);
-  __pyx_t_4 = 0;
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 57, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GIVEREF(__pyx_t_7);
-  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_7);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_1);
-  __pyx_t_7 = 0;
-  __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_CallExpression), __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
+  PyList_SET_ITEM(__pyx_t_4, 0, ((PyObject *)__pyx_v_result));
+  __Pyx_INCREF(__pyx_v_srid);
+  __Pyx_GIVEREF(__pyx_v_srid);
+  PyList_SET_ITEM(__pyx_t_4, 1, __pyx_v_srid);
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
+  __Pyx_GIVEREF(__pyx_t_7);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_7);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_4);
+  __pyx_t_7 = 0;
+  __pyx_t_4 = 0;
+  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_CallExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_4;
+  __pyx_t_4 = 0;
   goto __pyx_L0;
 
   /* "yapic/entity/sql/pgsql/postgis/_impl.pyx":54
@@ -4637,7 +4635,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_16PostGISPo
 }
 
 /* "yapic/entity/sql/pgsql/postgis/_impl.pyx":59
- *         return CallExpression(RawExpression("ST_SetSRID"), [result, value.srid])
+ *         return CallExpression(RawExpression("ST_SetSRID"), [result, srid])
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         return "PostGIS.Point"
@@ -4675,7 +4673,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_16PostGISPo
   goto __pyx_L0;
 
   /* "yapic/entity/sql/pgsql/postgis/_impl.pyx":59
- *         return CallExpression(RawExpression("ST_SetSRID"), [result, value.srid])
+ *         return CallExpression(RawExpression("ST_SetSRID"), [result, srid])
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         return "PostGIS.Point"
@@ -5492,7 +5490,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_17PostGISLa
 static PyObject *__pyx_pw_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_17PostGISLatLngImpl_5data_for_write(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_17PostGISLatLngImpl_data_for_write(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl *__pyx_v_self, struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *__pyx_v_value, CYTHON_UNUSED int __pyx_v_for_insert, int __pyx_skip_dispatch) {
   struct __pyx_obj_5yapic_6entity_11_expression_CallExpression *__pyx_v_result = NULL;
-  CYTHON_UNUSED PyObject *__pyx_v_srid = NULL;
+  PyObject *__pyx_v_srid = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5590,7 +5588,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_17PostGISLat
  *     cpdef object data_for_write(self, EntityBase value, bint for_insert):
  *         result = CallExpression(RawExpression("ST_MakePoint"), [value.lng, value.lat])             # <<<<<<<<<<<<<<
  *         srid = value.srid or self.srid
- *         return CallExpression(RawExpression("ST_SetSRID"), [result, value.srid])
+ *         return CallExpression(RawExpression("ST_SetSRID"), [result, srid])
  */
   __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_RawExpression), __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 95, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -5624,7 +5622,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_17PostGISLat
  *     cpdef object data_for_write(self, EntityBase value, bint for_insert):
  *         result = CallExpression(RawExpression("ST_MakePoint"), [value.lng, value.lat])
  *         srid = value.srid or self.srid             # <<<<<<<<<<<<<<
- *         return CallExpression(RawExpression("ST_SetSRID"), [result, value.srid])
+ *         return CallExpression(RawExpression("ST_SetSRID"), [result, srid])
  * 
  */
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_value), __pyx_n_s_srid); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 96, __pyx_L1_error)
@@ -5649,36 +5647,34 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_17PostGISLat
   /* "yapic/entity/sql/pgsql/postgis/_impl.pyx":97
  *         result = CallExpression(RawExpression("ST_MakePoint"), [value.lng, value.lat])
  *         srid = value.srid or self.srid
- *         return CallExpression(RawExpression("ST_SetSRID"), [result, value.srid])             # <<<<<<<<<<<<<<
+ *         return CallExpression(RawExpression("ST_SetSRID"), [result, srid])             # <<<<<<<<<<<<<<
  * 
  *     def __repr__(self):
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_RawExpression), __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_value), __pyx_n_s_srid); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_result));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_result));
-  PyList_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_result));
-  __Pyx_GIVEREF(__pyx_t_4);
-  PyList_SET_ITEM(__pyx_t_1, 1, __pyx_t_4);
-  __pyx_t_4 = 0;
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 97, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GIVEREF(__pyx_t_7);
-  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_7);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_1);
-  __pyx_t_7 = 0;
-  __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_CallExpression), __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
+  PyList_SET_ITEM(__pyx_t_4, 0, ((PyObject *)__pyx_v_result));
+  __Pyx_INCREF(__pyx_v_srid);
+  __Pyx_GIVEREF(__pyx_v_srid);
+  PyList_SET_ITEM(__pyx_t_4, 1, __pyx_v_srid);
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
+  __Pyx_GIVEREF(__pyx_t_7);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_7);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_4);
+  __pyx_t_7 = 0;
+  __pyx_t_4 = 0;
+  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_11_expression_CallExpression), __pyx_t_1, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_4;
+  __pyx_t_4 = 0;
   goto __pyx_L0;
 
   /* "yapic/entity/sql/pgsql/postgis/_impl.pyx":94
@@ -5797,7 +5793,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_17PostGISLa
 }
 
 /* "yapic/entity/sql/pgsql/postgis/_impl.pyx":99
- *         return CallExpression(RawExpression("ST_SetSRID"), [result, value.srid])
+ *         return CallExpression(RawExpression("ST_SetSRID"), [result, srid])
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         return "PostGIS.LatLng"
@@ -5832,7 +5828,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_17PostGISLa
   goto __pyx_L0;
 
   /* "yapic/entity/sql/pgsql/postgis/_impl.pyx":99
- *         return CallExpression(RawExpression("ST_SetSRID"), [result, value.srid])
+ *         return CallExpression(RawExpression("ST_SetSRID"), [result, srid])
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         return "PostGIS.LatLng"
@@ -6330,7 +6326,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *     cpdef object data_for_write(self, EntityBase value, bint for_insert):
  *         result = CallExpression(RawExpression("ST_MakePoint"), [value.x, value.y])             # <<<<<<<<<<<<<<
  *         srid = value.srid or self.srid
- *         return CallExpression(RawExpression("ST_SetSRID"), [result, value.srid])
+ *         return CallExpression(RawExpression("ST_SetSRID"), [result, srid])
  */
   __pyx_tuple__5 = PyTuple_Pack(1, __pyx_n_u_ST_MakePoint); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
@@ -6339,7 +6335,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   /* "yapic/entity/sql/pgsql/postgis/_impl.pyx":57
  *         result = CallExpression(RawExpression("ST_MakePoint"), [value.x, value.y])
  *         srid = value.srid or self.srid
- *         return CallExpression(RawExpression("ST_SetSRID"), [result, value.srid])             # <<<<<<<<<<<<<<
+ *         return CallExpression(RawExpression("ST_SetSRID"), [result, srid])             # <<<<<<<<<<<<<<
  * 
  *     def __repr__(self):
  */

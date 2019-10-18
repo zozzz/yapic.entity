@@ -511,14 +511,6 @@ cdef inline state_set_value(PyObject* initial, PyObject* current, EntityAttribut
 @cython.freelist(1000)
 cdef class EntityState:
 
-    # @staticmethod
-    # cdef EntityState create_from_dict(EntityType entity, dict data):
-    #     state = EntityState(entity)
-    #     state.update(data, True)
-    #     return state
-
-    #TODO: refactor, use dict instead of tuple
-    # remove create_from_dict
     def __cinit__(self, EntityType entity):
         cdef int length = len(entity.__attrs__)
         self.entity = entity

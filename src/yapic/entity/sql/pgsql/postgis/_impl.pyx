@@ -54,7 +54,7 @@ cdef class PostGISPointImpl(PostGISImpl):
     cpdef object data_for_write(self, EntityBase value, bint for_insert):
         result = CallExpression(RawExpression("ST_MakePoint"), [value.x, value.y])
         srid = value.srid or self.srid
-        return CallExpression(RawExpression("ST_SetSRID"), [result, value.srid])
+        return CallExpression(RawExpression("ST_SetSRID"), [result, srid])
 
     def __repr__(self):
         return "PostGIS.Point"
@@ -94,7 +94,7 @@ cdef class PostGISLatLngImpl(PostGISImpl):
     cpdef object data_for_write(self, EntityBase value, bint for_insert):
         result = CallExpression(RawExpression("ST_MakePoint"), [value.lng, value.lat])
         srid = value.srid or self.srid
-        return CallExpression(RawExpression("ST_SetSRID"), [result, value.srid])
+        return CallExpression(RawExpression("ST_SetSRID"), [result, srid])
 
     def __repr__(self):
         return "PostGIS.LatLng"

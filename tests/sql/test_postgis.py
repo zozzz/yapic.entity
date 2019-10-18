@@ -72,6 +72,16 @@ async def test_point_isu(conn):
     assert res.location.x == 19.0433738
     assert res.location.y == 47.5187817
 
+    p2 = Point(location={"x": 19.0424536, "y": 47.5135873})
+    assert p2.location.x == 19.0424536
+    assert p2.location.y == 47.5135873
+    assert await conn.insert(p2) is True
+
+    q = Query().select_from(Point).where(Point.id == p2.id)
+    res = await conn.select(q).first()
+    assert res.location.x == 19.0424536
+    assert res.location.y == 47.5135873
+
 
 async def test_latlng_isu(conn):
     p = LatLng(location=[47.5135873, 19.0424536])
@@ -91,3 +101,13 @@ async def test_latlng_isu(conn):
     res = await conn.select(q).first()
     assert res.location.lat == 47.5187817
     assert res.location.lng == 19.0433738
+
+    p2 = LatLng(location={"lat": 47.5135873, "lng": 19.0424536})
+    assert p2.location.lat == 47.5135873
+    assert p2.location.lng == 19.0424536
+    assert await conn.insert(p2) is True
+
+    q = Query().select_from(LatLng).where(LatLng.id == p2.id)
+    res = await conn.select(q).first()
+    assert res.location.lat == 47.5135873
+    assert res.location.lng == 19.0424536
