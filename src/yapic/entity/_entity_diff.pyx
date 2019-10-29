@@ -76,7 +76,7 @@ cdef class EntityDiff:
         a_triggers = {trigger.name: trigger for trigger in a.__triggers__}
         b_triggers = {trigger.name: trigger for trigger in b.__triggers__}
         a_trigger_names = set(a_triggers.keys())
-        b_trigger_names = set(a_triggers.keys())
+        b_trigger_names = set(b_triggers.keys())
 
         t_removed = a_trigger_names - b_trigger_names
         for trigger in sorted([a_triggers[k] for k in t_removed], key=lambda t: t.name):

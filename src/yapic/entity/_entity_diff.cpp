@@ -4033,7 +4033,7 @@ static int __pyx_pf_5yapic_6entity_12_entity_diff_10EntityDiff___cinit__(struct 
  *         a_triggers = {trigger.name: trigger for trigger in a.__triggers__}
  *         b_triggers = {trigger.name: trigger for trigger in b.__triggers__}             # <<<<<<<<<<<<<<
  *         a_trigger_names = set(a_triggers.keys())
- *         b_trigger_names = set(a_triggers.keys())
+ *         b_trigger_names = set(b_triggers.keys())
  */
   { /* enter inner scope */
     __pyx_t_4 = PyDict_New(); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 77, __pyx_L50_error)
@@ -4073,7 +4073,7 @@ static int __pyx_pf_5yapic_6entity_12_entity_diff_10EntityDiff___cinit__(struct 
  *         a_triggers = {trigger.name: trigger for trigger in a.__triggers__}
  *         b_triggers = {trigger.name: trigger for trigger in b.__triggers__}
  *         a_trigger_names = set(a_triggers.keys())             # <<<<<<<<<<<<<<
- *         b_trigger_names = set(a_triggers.keys())
+ *         b_trigger_names = set(b_triggers.keys())
  * 
  */
   __pyx_t_4 = __Pyx_PyDict_Keys(__pyx_v_a_triggers); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 78, __pyx_L1_error)
@@ -4087,11 +4087,11 @@ static int __pyx_pf_5yapic_6entity_12_entity_diff_10EntityDiff___cinit__(struct 
   /* "yapic/entity/_entity_diff.pyx":79
  *         b_triggers = {trigger.name: trigger for trigger in b.__triggers__}
  *         a_trigger_names = set(a_triggers.keys())
- *         b_trigger_names = set(a_triggers.keys())             # <<<<<<<<<<<<<<
+ *         b_trigger_names = set(b_triggers.keys())             # <<<<<<<<<<<<<<
  * 
  *         t_removed = a_trigger_names - b_trigger_names
  */
-  __pyx_t_8 = __Pyx_PyDict_Keys(__pyx_v_a_triggers); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyDict_Keys(__pyx_v_b_triggers); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 79, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __pyx_t_4 = PySet_New(__pyx_t_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 79, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
@@ -4100,7 +4100,7 @@ static int __pyx_pf_5yapic_6entity_12_entity_diff_10EntityDiff___cinit__(struct 
   __pyx_t_4 = 0;
 
   /* "yapic/entity/_entity_diff.pyx":81
- *         b_trigger_names = set(a_triggers.keys())
+ *         b_trigger_names = set(b_triggers.keys())
  * 
  *         t_removed = a_trigger_names - b_trigger_names             # <<<<<<<<<<<<<<
  *         for trigger in sorted([a_triggers[k] for k in t_removed], key=lambda t: t.name):
