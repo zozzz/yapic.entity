@@ -15,6 +15,8 @@ class EntityDiffKind(Enum):
     CREATE_PK = 6
     REMOVE_FK = 7
     CREATE_FK = 8
+    CREATE_TRIGGER = 9
+    REMOVE_TRIGGER = 10
 
 
 @cython.final
@@ -69,6 +71,26 @@ cdef class EntityDiff:
 
         if fk_changes:
             self.changes.extend(fk_changes[1])
+
+
+        a_triggers = {trigger.name: trigger for trigger in a.__triggers__}
+        b_triggers = {trigger.name: trigger for trigger in b.__triggers__}
+        a_trigger_names = set(a_triggers.keys())
+        b_trigger_names = set(a_triggers.keys())
+
+        t_removed = a_trigger_names - b_trigger_names
+        for trigger in sorted([a_triggers[k] for k in t_removed], key=lambda t: t.name):
+            self.changes.append((EntityDiffKind.REMOVE_TRIGGER, (a, trigger)))
+
+        t_created = b_trigger_names - a_trigger_names
+        for trigger in sorted([b_triggers[k] for k in t_created], key=lambda t: t.name):
+            self.changes.append((EntityDiffKind.CREATE_TRIGGER, (b, trigger)))
+
+        t_maybe_changed = a_trigger_names & b_trigger_names
+        for trigger_a, trigger_b in sorted([(a_triggers[k], b_triggers[k]) for k in t_maybe_changed], key=lambda t: t[0].name):
+            if not trigger_a.is_eq(b, trigger_b):
+                self.changes.append((EntityDiffKind.REMOVE_TRIGGER, (a, trigger_a)))
+                self.changes.append((EntityDiffKind.CREATE_TRIGGER, (b, trigger_b)))
 
         # print("\n".join(map(repr, self.changes)))
 

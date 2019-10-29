@@ -58,6 +58,14 @@ CREATE TABLE "poly"."Manager" (
   PRIMARY KEY("id"),
   CONSTRAINT "fk_Manager__id-Employee__id" FOREIGN KEY ("id") REFERENCES "poly"."Employee" ("id") ON UPDATE CASCADE ON DELETE CASCADE
 );
+CREATE OR REPLACE FUNCTION "poly"."YT-Manager-polyd_Employee"() RETURNS TRIGGER AS $$ BEGIN
+  DELETE FROM "poly"."Employee" "parent" WHERE "parent"."id"=OLD."id";
+  RETURN OLD;
+END; $$ language 'plpgsql' ;
+CREATE TRIGGER "polyd_Employee"
+  AFTER DELETE ON "poly"."Manager"
+  FOR EACH ROW
+  EXECUTE FUNCTION "poly"."YT-Manager-polyd_Employee"();
 CREATE SEQUENCE "poly"."Organization_id_seq";
 CREATE TABLE "poly"."Organization" (
   "id" INT4 NOT NULL DEFAULT nextval('"poly"."Organization_id_seq"'::regclass),
@@ -71,18 +79,42 @@ CREATE TABLE "poly"."Worker" (
   PRIMARY KEY("id"),
   CONSTRAINT "fk_Worker__id-Employee__id" FOREIGN KEY ("id") REFERENCES "poly"."Employee" ("id") ON UPDATE CASCADE ON DELETE CASCADE
 );
+CREATE OR REPLACE FUNCTION "poly"."YT-Worker-polyd_Employee"() RETURNS TRIGGER AS $$ BEGIN
+  DELETE FROM "poly"."Employee" "parent" WHERE "parent"."id"=OLD."id";
+  RETURN OLD;
+END; $$ language 'plpgsql' ;
+CREATE TRIGGER "polyd_Employee"
+  AFTER DELETE ON "poly"."Worker"
+  FOR EACH ROW
+  EXECUTE FUNCTION "poly"."YT-Worker-polyd_Employee"();
 CREATE TABLE "poly"."WorkerX" (
   "id" INT4 NOT NULL,
   "workerx_field" TEXT,
   PRIMARY KEY("id"),
   CONSTRAINT "fk_WorkerX__id-Worker__id" FOREIGN KEY ("id") REFERENCES "poly"."Worker" ("id") ON UPDATE CASCADE ON DELETE CASCADE
 );
+CREATE OR REPLACE FUNCTION "poly"."YT-WorkerX-polyd_Worker"() RETURNS TRIGGER AS $$ BEGIN
+  DELETE FROM "poly"."Worker" "parent" WHERE "parent"."id"=OLD."id";
+  RETURN OLD;
+END; $$ language 'plpgsql' ;
+CREATE TRIGGER "polyd_Worker"
+  AFTER DELETE ON "poly"."WorkerX"
+  FOR EACH ROW
+  EXECUTE FUNCTION "poly"."YT-WorkerX-polyd_Worker"();
 CREATE TABLE "poly"."WorkerY" (
   "id" INT4 NOT NULL,
   "workery_field" TEXT,
   PRIMARY KEY("id"),
   CONSTRAINT "fk_WorkerY__id-Worker__id" FOREIGN KEY ("id") REFERENCES "poly"."Worker" ("id") ON UPDATE CASCADE ON DELETE CASCADE
-);"""
+);
+CREATE OR REPLACE FUNCTION "poly"."YT-WorkerY-polyd_Worker"() RETURNS TRIGGER AS $$ BEGIN
+  DELETE FROM "poly"."Worker" "parent" WHERE "parent"."id"=OLD."id";
+  RETURN OLD;
+END; $$ language 'plpgsql' ;
+CREATE TRIGGER "polyd_Worker"
+  AFTER DELETE ON "poly"."WorkerY"
+  FOR EACH ROW
+  EXECUTE FUNCTION "poly"."YT-WorkerY-polyd_Worker"();"""
 
     await conn.conn.execute(result)
 
@@ -176,6 +208,36 @@ async def test_insert_with_specified_id(conn):
 
     w = await conn.select(Query().select_from(WorkerX).where(WorkerX.id == id)).first()
     test_worker_x_fields(w)
+
+
+async def test_delete(conn):
+    id = 12345
+    worker = WorkerX()
+    worker.id = id
+    worker.employee_field = "employee_field: set from workerx"
+    worker.worker_field = "worker_field: set from workerx"
+    worker.workerx_field = "workerx_field: set from workerx"
+    await conn.save(worker)
+
+    w = await conn.select(Query().select_from(Worker).where(Worker.id == id)).first()
+    assert w.id == id
+
+    w = await conn.select(Query().select_from(Employee).where(Employee.id == id)).first()
+    assert w.id == id
+
+    w = await conn.select(Query().select_from(WorkerX).where(WorkerX.id == id)).first()
+    assert w.id == id
+
+    await conn.delete(w)
+
+    w = await conn.select(Query().select_from(Worker).where(Worker.id == id)).first()
+    assert not w
+
+    w = await conn.select(Query().select_from(Employee).where(Employee.id == id)).first()
+    assert not w
+
+    w = await conn.select(Query().select_from(WorkerX).where(WorkerX.id == id)).first()
+    assert not w
 
 
 # async def test_end(conn):

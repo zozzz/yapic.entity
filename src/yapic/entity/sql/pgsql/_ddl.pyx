@@ -5,6 +5,7 @@ from yapic.entity._entity cimport EntityType, EntityAttribute
 from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, AutoIncrement, StorageType
 from yapic.entity._registry cimport Registry
 from yapic.entity._expression cimport RawExpression
+from yapic.entity._trigger cimport Trigger, PolymorphParentDeleteTrigger
 from yapic.entity._field_impl cimport (
     IntImpl,
     StringImpl,
@@ -33,10 +34,74 @@ from .postgis._impl cimport (
 
 from .._ddl cimport DDLCompiler, DDLReflect
 from .._connection cimport Connection
+from ._trigger cimport PostgreTrigger
 
 
 cdef class PostgreDDLCompiler(DDLCompiler):
-    pass
+    def create_trigger(self, EntityType entity, Trigger trigger):
+        trigger = self._special_trigger(entity, trigger)
+
+        if not isinstance(trigger, PostgreTrigger):
+            return
+
+        schema = entity.__meta__.get("schema", "public")
+        schema = f"{self.dialect.quote_ident(schema)}." if schema != "public" else ""
+        trigger_name = f"{schema}{self.dialect.quote_ident(trigger.get_unique_name(entity))}"
+        res = [f"CREATE OR REPLACE FUNCTION {trigger_name}() RETURNS TRIGGER AS $$ BEGIN"]
+        res.extend(reident_lines(trigger.body))
+        res.append("END; $$ language 'plpgsql' ;")
+
+        res.append(f"CREATE TRIGGER {self.dialect.quote_ident(trigger.name)}")
+        if trigger.before:
+            res.append(f"  BEFORE {trigger.before} ON {self.dialect.table_qname(entity)}")
+        elif trigger.after:
+            res.append(f"  AFTER {trigger.after} ON {self.dialect.table_qname(entity)}")
+
+        if trigger.for_each:
+            res.append(f"  FOR EACH {trigger.for_each}")
+
+        if trigger.when:
+            res.append(f"  WHEN ({trigger.when})")
+
+        res.append(f"  EXECUTE FUNCTION {trigger_name}();")
+
+        return '\n'.join(res)
+
+    def remove_trigger(self, EntityType entity, Trigger trigger):
+        trigger = self._special_trigger(entity, trigger)
+        if not isinstance(trigger, PostgreTrigger):
+            return
+
+        schema = entity.__meta__.get("schema", "public")
+        schema = f"{self.dialect.quote_ident(schema)}." if schema != "public" else ""
+        trigger_name = f"{schema}{self.dialect.quote_ident(trigger.get_unique_name(entity))}"
+
+        res = [
+            f"DROP TRIGGER IF EXISTS {self.dialect.quote_ident(trigger.name)} ON {self.dialect.table_qname(entity)};",
+            f"DROP FUNCTION IF EXISTS {trigger_name};"
+        ]
+        return '\n'.join(res)
+
+    def _special_trigger(self, EntityType entity, Trigger trigger):
+        cdef PolymorphParentDeleteTrigger poly_delete
+
+        if isinstance(trigger, PolymorphParentDeleteTrigger):
+            poly_delete = <PolymorphParentDeleteTrigger>trigger
+            where = [f'"parent".{self.dialect.quote_ident(pk._name_)}=OLD.{self.dialect.quote_ident(pk._name_)}' for pk in poly_delete.parent_entity.__pk__]
+
+            return PostgreTrigger(
+                name=poly_delete.name,
+                before=poly_delete.before,
+                after=poly_delete.after,
+                for_each=poly_delete.for_each,
+                unique_name=trigger.get_unique_name(entity),
+                body=f"""
+                    DELETE FROM {self.dialect.table_qname(poly_delete.parent_entity)} "parent" WHERE {' AND '.join(where)};
+                    RETURN OLD;
+                """
+            )
+        else:
+            return trigger
 
 
 JSON_ENTITY_UID = 0
@@ -99,6 +164,8 @@ cdef class PostgreDDLReflect(DDLReflect):
                         attr._default_ = type_impl.decode(attr._default_)
                     except:
                         attr._default_ = RawExpression(str(attr._default_))
+
+            entity.__triggers__ = await self.get_triggers(conn, registry, schema, table, id)
 
         for id, schema, table, kind in types:
             fks = await self.update_foreign_keys(conn, schema, table, registry)
@@ -205,6 +272,37 @@ cdef class PostgreDDLReflect(DDLReflect):
         result = []
         for record in fields:
             result.append(await self.create_field(conn, registry, schema, table, record["name"] in pks, record))
+
+        return result
+
+    async def get_triggers(self, Connection conn, registry, str schema, str table, typeid):
+        triggers = await conn.conn.fetch(f"""
+            SELECT
+                "pg_trigger"."tgname",
+                "it"."action_timing",
+                "it"."event_manipulation",
+                "it"."action_orientation",
+                "pg_proc"."proname"
+            FROM "pg_trigger"
+                INNER JOIN "pg_proc" ON "pg_proc"."oid" = "pg_trigger"."tgfoid"
+                INNER JOIN "information_schema"."triggers" "it"
+                    ON "it"."trigger_schema" = '{schema}'
+                    AND it."trigger_name" = "pg_trigger"."tgname"
+            WHERE "pg_trigger"."tgrelid" = {typeid}
+                AND "pg_proc"."proname" LIKE 'YT-%'
+        """)
+
+        cdef Trigger trigger
+        result = []
+
+        for record in triggers:
+            trigger = PostgreTrigger(name=record[0], for_each=record[3])
+            if record[1] == "BEFORE":
+                trigger.before = record[2].upper()
+            else:
+                trigger.after = record[2].upper()
+            trigger.unique_name = record[4]
+            result.append(trigger)
 
         return result
 
@@ -354,3 +452,8 @@ cdef class PostgreDDLReflect(DDLReflect):
 
 
 
+cdef list reident_lines(str data, int ident_size = 2):
+    lines = list(filter(lambda l: bool(l.strip()), data.splitlines(False)))
+    first_line = lines[0]
+    initial_ident = first_line[:-len(first_line.lstrip())]
+    return [" " * ident_size + line[len(initial_ident):] for line in lines]

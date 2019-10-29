@@ -18,6 +18,7 @@ from ._expression cimport Visitor, Expression
 from ._registry cimport Registry
 from ._entity_serializer import EntitySerializer, SerializerCtx
 from ._virtual_attr cimport VirtualAttribute
+from ._trigger cimport PolymorphParentDeleteTrigger
 
 
 cdef class NOTSET:
@@ -35,6 +36,7 @@ cdef class EntityType(type):
 
         cdef list fields = kwargs.get("__fields__", [])
         cdef list __attrs__ = []
+        cdef list __triggers__ = []
 
         cdef Factory factory
         cdef EntityAttribute attr
@@ -50,6 +52,11 @@ cdef class EntityType(type):
                     base_entity = base
                 else:
                     raise ValueError("More than one Entity base is not allowed")
+
+            if hasattr(base, "__triggers__"):
+                for t in base.__triggers__:
+                    if t not in __triggers__:
+                        __triggers__.append(t)
 
         try:
             is_alias = self.__meta__["is_alias"] is True
@@ -88,15 +95,17 @@ cdef class EntityType(type):
         else:
             hints = get_type_hints(self)
 
-            # TODO:
-            # CREATE OR REPLACE FUNCTION YapicDeletePolyParentOfNCaseDrop() RETURNS trigger AS $$
-            # BEGIN
-            #     DELETE FROM "notification"."Notification" WHERE "id"=OLD."id";
-            #     RETURN OLD;
-            # END ;$$ LANGUAGE plpgsql;
+            if poly_meta and base_entity and base_entity.__pk__:
+                found = None
+                for i, t in enumerate(__triggers__):
+                    if isinstance(t, PolymorphParentDeleteTrigger):
+                        found = i
+                        break
 
-            # DROP TRIGGER IF EXISTS "DeletePolyParent" ON "notification"."NCaseDrop";
-            # CREATE TRIGGER "DeletePolyParent" AFTER DELETE ON "notification"."NCaseDrop" FOR EACH ROW EXECUTE PROCEDURE YapicDeletePolyParentOfNCaseDrop();
+                if found is not None:
+                    __triggers__[found] = PolymorphParentDeleteTrigger(base_entity)
+                else:
+                    __triggers__.append(PolymorphParentDeleteTrigger(base_entity))
 
             if poly_meta and base_entity.__fields__:
                 poly_join = None
@@ -167,6 +176,7 @@ cdef class EntityType(type):
                     (<VirtualAttribute>v)._key_ = k
 
         self.__fix_entries__ = None
+        self.__triggers__ = __triggers__
         self.__deferred__ = []
         self.__fields__ = tuple(fields)
         self.__attrs__ = tuple(fields + __attrs__)

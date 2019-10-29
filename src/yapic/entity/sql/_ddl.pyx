@@ -5,6 +5,7 @@ from yapic.entity._registry cimport RegistryDiff
 from yapic.entity._registry import RegistryDiffKind
 from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, AutoIncrement, collect_foreign_keys, StorageType
 from yapic.entity._expression cimport Expression
+from yapic.entity._trigger cimport Trigger
 
 from ._dialect cimport Dialect
 
@@ -55,6 +56,10 @@ cdef class DDLCompiler:
         if requirements:
             requirements.append("")
             table_parts.insert(0, "\n".join(requirements))
+
+        for trigger in entity.__triggers__:
+            table_parts.append('\n')
+            table_parts.append(self.create_trigger(entity, trigger))
 
         return "".join(table_parts)
 
@@ -163,6 +168,8 @@ cdef class DDLCompiler:
     def compile_entity_diff(self, EntityDiff diff):
         requirements = []
         alter = []
+        pre = []
+        post = []
 
         for kind, param in diff:
             if kind == EntityDiffKind.REMOVED:
@@ -180,12 +187,18 @@ cdef class DDLCompiler:
                 alter.append(f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(param[0])}")
             elif kind == EntityDiffKind.CREATE_FK:
                 alter.append(f"ADD {self.compile_foreign_key(param[0], param[1])}")
+            elif kind == EntityDiffKind.REMOVE_TRIGGER:
+                pre.append(self.remove_trigger(param[0], param[1]))
+            elif kind == EntityDiffKind.CREATE_TRIGGER:
+                post.append(self.create_trigger(param[0], param[1]))
 
         if alter:
             alter = ',\n  '.join(alter)
-            return f"ALTER TABLE {self.dialect.table_qname(diff.b)}\n  {alter};"
+            alter = f"ALTER TABLE {self.dialect.table_qname(diff.b)}\n  {alter};"
         else:
-            return ""
+            alter = ""
+
+        return '\n'.join(filter(bool, ['\n'.join(pre), alter, '\n'.join(post)]))
 
     def compile_type_diff(self, EntityDiff diff):
         requirements = []
@@ -270,6 +283,12 @@ cdef class DDLCompiler:
             return f"DROP SEQUENCE {self.dialect.table_qname(entity)} CASCADE;"
         else:
             return f"DROP TABLE {self.dialect.table_qname(entity)} CASCADE;"
+
+    def create_trigger(self, EntityType entity, Trigger trigger):
+        raise NotImplementedError()
+
+    def remove_trigger(self, EntityType entity, Trigger trigger):
+        raise NotImplementedError()
 
 
 cdef class DDLReflect:
