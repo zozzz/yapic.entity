@@ -78,6 +78,14 @@ cdef class Field(EntityAttribute):
     cpdef visit(self, Visitor visitor):
         return visitor.visit_field(self)
 
+    cpdef copy_into(self, EntityAttribute other):
+        EntityAttribute.copy_into(self, other)
+        cdef Field other_field = other
+        other_field.type_cache = self.type_cache
+        other_field.min_size = self.min_size
+        other_field.max_size = self.max_size
+        other_field.nullable = self.nullable
+
 
 # field_proxy_attrs = ("__proxied__", "__repr__", "clone")
 

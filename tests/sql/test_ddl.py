@@ -90,6 +90,16 @@ def test_int():
 );"""
 
 
+def test_int_with_defaults():
+    class IntWithDef(BaseEntity):
+        int_small: Int = 0
+
+    result = ddl.compile_entity(IntWithDef)
+    assert result == """CREATE TABLE "IntWithDef" (
+  "int_small" INT4 NOT NULL DEFAULT 0
+);"""
+
+
 def test_string():
     class A(BaseEntity):
         id: String = Field(size=[10, 10]) // PrimaryKey()

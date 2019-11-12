@@ -54,6 +54,7 @@ cdef class EntityAttribute(Expression):
     cpdef clone(self)
     cpdef get_ext(self, ext_type)
     cpdef clone_exts(self, EntityAttribute attr)
+    cpdef copy_into(self, EntityAttribute other)
 
 
 cdef class EntityAttributeExt:

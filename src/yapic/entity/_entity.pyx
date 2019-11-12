@@ -297,18 +297,13 @@ cpdef EntityType get_alias_target(EntityType o):
         return o
 
 cdef EntityAttribute init_attribute(EntityAttribute by_type, object value):
-    cdef EntityAttribute res
+    cdef EntityAttribute field
     cdef EntityAttributeExt ext
 
     if isinstance(value, EntityAttribute):
-        res = <EntityAttribute>value
-
-        if res._impl is None:
-            res._impl = by_type._impl
-
-        if by_type._exts_:
-            res._exts_[0:0] = by_type._exts_
-        return res
+        field = <EntityAttribute>value
+        field.copy_into(by_type)
+        return by_type
     elif isinstance(value, EntityAttributeExt):
         ext = <EntityAttributeExt>value
 
@@ -426,6 +421,11 @@ cdef class EntityAttribute(Expression):
         for ext in self._exts_:
             if isinstance(ext, ext_type):
                 return ext
+
+    cpdef copy_into(self, EntityAttribute other):
+        other._exts_[0:0] = self._exts_
+        other._deps_ &= self._deps_
+        other._default_ = self._default_
 
 
 cdef class EntityAttributeExt:

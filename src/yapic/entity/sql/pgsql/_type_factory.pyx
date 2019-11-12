@@ -201,7 +201,13 @@ cdef class IntType(PostgreType):
             return int(value)
 
     cpdef object decode(self, object value):
-        return value
+        if value is None:
+            return None
+
+        if isinstance(value, int):
+            return value
+        else:
+            return int(value)
 
 
 cdef class StringType(PostgreType):

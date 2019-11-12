@@ -309,10 +309,30 @@ UPDATE "execution"."Gender" SET "title"='FemaleY' WHERE "value"='female';"""
     await conn.conn.execute(result)
 
 
-async def test_json(conn):
-    await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
-    await conn.conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
+async def test_diff_defaults(conn, pgclean):
+    reg = Registry()
 
+    class Defaults(Entity, registry=reg, schema="execution"):
+        int_w_def: Int = 0
+        int2_w_def: Int = Field(size=2, default=1)
+        string_w_def: String = "Hello"
+        bool_w_def: Bool = True
+
+    result = await sync(conn, reg)
+    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE TABLE "execution"."Defaults" (
+  "int_w_def" INT4 NOT NULL DEFAULT 0,
+  "int2_w_def" INT2 NOT NULL DEFAULT 1,
+  "string_w_def" TEXT NOT NULL DEFAULT 'Hello',
+  "bool_w_def" BOOLEAN NOT NULL DEFAULT TRUE
+);"""
+    await conn.conn.execute(result)
+
+    result = await sync(conn, reg)
+    assert bool(result) is False
+
+
+async def test_json(conn, pgclean):
     reg_a = Registry()
     reg_b = Registry()
 
@@ -380,10 +400,7 @@ CREATE TABLE "execution"."JsonUser" (
     assert bool(result) is False
 
 
-async def test_json_fix(conn):
-    await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
-    await conn.conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
-
+async def test_json_fix(conn, pgclean):
     reg_a = Registry()
 
     class JsonName(Entity, registry=reg_a, schema="execution"):
