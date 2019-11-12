@@ -317,6 +317,7 @@ async def test_diff_defaults(conn, pgclean):
         int2_w_def: Int = Field(size=2, default=1)
         string_w_def: String = "Hello"
         bool_w_def: Bool = True
+        interval: Int = Field(nullable=False)
 
     result = await sync(conn, reg)
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
@@ -324,7 +325,8 @@ CREATE TABLE "execution"."Defaults" (
   "int_w_def" INT4 NOT NULL DEFAULT 0,
   "int2_w_def" INT2 NOT NULL DEFAULT 1,
   "string_w_def" TEXT NOT NULL DEFAULT 'Hello',
-  "bool_w_def" BOOLEAN NOT NULL DEFAULT TRUE
+  "bool_w_def" BOOLEAN NOT NULL DEFAULT TRUE,
+  "interval" INT4 NOT NULL
 );"""
     await conn.conn.execute(result)
 

@@ -82,8 +82,13 @@ cdef class Field(EntityAttribute):
         EntityAttribute.copy_into(self, other)
         cdef Field other_field = other
         other_field.type_cache = self.type_cache
-        other_field.min_size = self.min_size
-        other_field.max_size = self.max_size
+
+        if self.min_size >= 0:
+            other_field.min_size = self.min_size
+
+        if self.max_size >= 0:
+            other_field.max_size = self.max_size
+
         other_field.nullable = self.nullable
 
 
