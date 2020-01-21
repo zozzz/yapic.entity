@@ -3,7 +3,7 @@ from yapic.entity._entity_diff cimport EntityDiff
 from yapic.entity._entity_diff import EntityDiffKind
 from yapic.entity._registry cimport RegistryDiff
 from yapic.entity._registry import RegistryDiffKind
-from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, AutoIncrement, collect_foreign_keys, StorageType
+from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, Index, AutoIncrement, collect_foreign_keys, StorageType
 from yapic.entity._expression cimport Expression
 from yapic.entity._trigger cimport Trigger
 
@@ -18,6 +18,7 @@ cdef class DDLCompiler:
         cdef list elements = []
         cdef list table_parts = []
         cdef list requirements = []
+        cdef list indexes = []
         is_type = entity.__meta__.get("is_type", False) is True
         is_sequence = entity.__meta__.get("is_sequence", False) is True
 
@@ -32,6 +33,10 @@ cdef class DDLCompiler:
         for i, field in enumerate(entity.__fields__):
             if not field._virtual_:
                 elements.append(self.compile_field(<Field>field, requirements))
+
+                for ext in field._exts_:
+                    if isinstance(ext, Index):
+                        indexes.append(self.compile_create_index(<Index>ext))
 
         primary_keys = entity.__pk__
         if primary_keys:
@@ -56,6 +61,10 @@ cdef class DDLCompiler:
         if requirements:
             requirements.append("")
             table_parts.insert(0, "\n".join(requirements))
+
+        if indexes:
+            table_parts.append("\n")
+            table_parts.append(";\n".join(indexes) + ";")
 
         for trigger in entity.__triggers__:
             table_parts.append('\n')
@@ -125,6 +134,17 @@ cdef class DDLCompiler:
                 res += ", "
 
         return res + f") ON UPDATE {keys[0].on_update} ON DELETE {keys[0].on_delete}"
+
+    def compile_create_index(self, Index index):
+        cdef str res = f"CREATE {'UNIQUE ' if index.unique else ''}INDEX" \
+            f"{' CONCURRENTLY' if index.concurrent else ''}" \
+            f" {self.dialect.quote_ident(index.name)} ON {self.dialect.table_qname(index.attr._entity_)}" \
+            f" USING {index.method} ({index.expr if index.expr else self.dialect.quote_ident(index.attr._name_)})"
+
+        if index.collate:
+            res += f" COLLATE \"{index.collate}\""
+
+        return res
 
 
     def compile_registry_diff(self, RegistryDiff diff):

@@ -169,7 +169,33 @@ cdef class AutoIncrement(FieldExtension):
         return "@AutoIncrement(%r)" % self.sequence
 
 
+
 cdef class Index(FieldExtension):
+    def __cinit__(self, str expr = None, *, str name = None, str method = "btree", bint unique = False, bint concurrent = False, str collate = None):
+        self.name = name
+        self.method = method
+        self.unique = unique
+        self.concurrent = concurrent
+        self.collate = collate
+        self.expr = expr
+
+    cpdef object clone(self):
+        return type(self)(self.expr, name=self.name, method=self.method, unique=self.unique, concurrent=self.concurrent, collate=self.collate)
+
+    cpdef object bind(self, EntityAttribute attr):
+        if FieldExtension.bind(self, attr) is False:
+            return False
+
+        if not self.name:
+            self.name = f"idx_{attr._name_}"
+
+        return True
+
+    def __repr__(self):
+        return "@Index(%s USING %s ON %s)" % (self.name, self.method, self.attr)
+
+
+cdef class Unique(FieldExtension):
     pass
 
 
@@ -218,6 +244,16 @@ cdef class ForeignKey(FieldExtension):
             field._impl_ = self.ref._impl_
             field.min_size = self.ref.min_size
             field.max_size = self.ref.max_size
+
+        cdef Index index = attr.get_ext(Index)
+        if not index:
+            index = Index()
+            index.attr = attr
+            attr._exts_.append(index)
+            if index.bind(attr):
+                index.bound = True
+            else:
+                return False
 
         return True
 

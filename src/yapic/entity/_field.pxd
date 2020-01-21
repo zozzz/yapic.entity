@@ -1,6 +1,7 @@
 import cython
 
 from ._entity cimport EntityType, EntityAttribute, EntityAttributeExt, EntityAttributeImpl, get_alias_target
+from ._expression cimport Expression
 
 
 cdef class Field(EntityAttribute):
@@ -50,7 +51,17 @@ cdef class AutoIncrement(FieldExtension):
 
 
 cdef class Index(FieldExtension):
-    pass
+    cdef readonly str name
+    cdef readonly str method
+    cdef readonly bint unique
+    cdef readonly bint concurrent
+    cdef readonly str collate
+    cdef readonly str expr
+
+
+
+cdef class Unique(FieldExtension):
+    cdef readonly str name
 
 
 cdef class ForeignKey(FieldExtension):
