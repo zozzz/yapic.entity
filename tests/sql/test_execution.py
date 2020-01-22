@@ -9,6 +9,7 @@ from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, Dat
                           Float, Point, UUID, virtual)
 
 pytestmark = pytest.mark.asyncio
+REGISTRY = Registry()
 
 
 @pytest.yield_fixture
@@ -16,12 +17,12 @@ async def conn(pgsql):
     yield wrap_connection(pgsql, "pgsql")
 
 
-class Address(Entity, schema="execution"):
+class Address(Entity, schema="execution", registry=REGISTRY):
     id: Serial
     title: String
 
 
-class User(Entity, schema="execution"):
+class User(Entity, schema="execution", registry=REGISTRY):
     id: Serial
     uuid: UUID
     name: String = Field(size=100)
@@ -51,7 +52,7 @@ class User(Entity, schema="execution"):
         return f"VIRTUAL:{self.id}"
 
 
-class User2(Entity, schema="execution_private", name="User"):
+class User2(Entity, schema="execution_private", name="User", registry=REGISTRY):
     id: Serial
     name: String
     email: String
@@ -60,7 +61,7 @@ class User2(Entity, schema="execution_private", name="User"):
 
 
 async def test_ddl(conn, pgclean):
-    result = await sync(conn, Address.__registry__)
+    result = await sync(conn, REGISTRY)
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
 CREATE SEQUENCE "execution"."Address_id_seq";
 CREATE TABLE "execution"."Address" (

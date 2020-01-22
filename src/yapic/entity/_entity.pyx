@@ -282,6 +282,10 @@ cdef class EntityType(type):
         for attr in self.__attrs__:
             self.__deps__ |= attr._deps_
 
+        cdef EntityAttributeExtGroup group
+        for group in self.__extgroups__:
+            type(group.items[0]).validate_group(group)
+
 
 cdef tuple group_extensions(EntityType entity):
     cdef dict ext_groups = {}
@@ -305,9 +309,6 @@ cdef tuple group_extensions(EntityType entity):
         group = EntityAttributeExtGroup(exts[0].name, type(exts[0]))
         group.items = tuple(exts)
         ext_group_list.append(group)
-
-    for group in ext_group_list:
-        type(group.items[0]).validate_group(group.items)
 
     return tuple(ext_group_list)
 
@@ -466,7 +467,7 @@ cdef class EntityAttribute(Expression):
 
 cdef class EntityAttributeExt:
     @classmethod
-    def validate_group(self, tuple items):
+    def validate_group(self, EntityAttributeExtGroup group):
         pass
 
     def __cinit__(self, *args, **kwargs):

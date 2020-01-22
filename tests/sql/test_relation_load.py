@@ -96,6 +96,7 @@ CREATE TABLE "ent_load"."User" (
   PRIMARY KEY("id"),
   CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "ent_load"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
 );
+CREATE INDEX "idx_User__address_id" ON "ent_load"."User" USING btree ("address_id");
 CREATE SEQUENCE "ent_load"."Article_id_seq";
 CREATE TABLE "ent_load"."Article" (
   "id" INT4 NOT NULL DEFAULT nextval('"ent_load"."Article_id_seq"'::regclass),
@@ -105,6 +106,8 @@ CREATE TABLE "ent_load"."Article" (
   CONSTRAINT "fk_Article__creator_id-User__id" FOREIGN KEY ("creator_id") REFERENCES "ent_load"."User" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT "fk_Article__updater_id-User__id" FOREIGN KEY ("updater_id") REFERENCES "ent_load"."User" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
 );
+CREATE INDEX "idx_Article__creator_id" ON "ent_load"."Article" USING btree ("creator_id");
+CREATE INDEX "idx_Article__updater_id" ON "ent_load"."Article" USING btree ("updater_id");
 CREATE SEQUENCE "ent_load"."Something_id_seq";
 CREATE TABLE "ent_load"."Something" (
   "id" INT4 NOT NULL DEFAULT nextval('"ent_load"."Something_id_seq"'::regclass),
@@ -112,6 +115,7 @@ CREATE TABLE "ent_load"."Something" (
   PRIMARY KEY("id"),
   CONSTRAINT "fk_Something__article_id-Article__id" FOREIGN KEY ("article_id") REFERENCES "ent_load"."Article" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
 );
+CREATE INDEX "idx_Something__article_id" ON "ent_load"."Something" USING btree ("article_id");
 CREATE SEQUENCE "ent_load"."Something2_id_seq";
 CREATE TABLE "ent_load"."Something2" (
   "id" INT4 NOT NULL DEFAULT nextval('"ent_load"."Something2_id_seq"'::regclass),
@@ -119,6 +123,7 @@ CREATE TABLE "ent_load"."Something2" (
   PRIMARY KEY("id"),
   CONSTRAINT "fk_Something2__something_id-Something__id" FOREIGN KEY ("something_id") REFERENCES "ent_load"."Something" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
 );
+CREATE INDEX "idx_Something2__something_id" ON "ent_load"."Something2" USING btree ("something_id");
 CREATE SEQUENCE "ent_load"."Tag_id_seq";
 CREATE TABLE "ent_load"."Tag" (
   "id" INT4 NOT NULL DEFAULT nextval('"ent_load"."Tag_id_seq"'::regclass),
@@ -133,6 +138,7 @@ CREATE TABLE "ent_load"."UserChild" (
   PRIMARY KEY("id"),
   CONSTRAINT "fk_UserChild__parent_id-User__id" FOREIGN KEY ("parent_id") REFERENCES "ent_load"."User" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
 );
+CREATE INDEX "idx_UserChild__parent_id" ON "ent_load"."UserChild" USING btree ("parent_id");
 CREATE TABLE "ent_load"."UserTags" (
   "user_id" INT4 NOT NULL,
   "tag_id" INT4 NOT NULL,

@@ -156,11 +156,11 @@ def test_index():
   "idx_4" INT4,
   "idx_5" INT4
 );
-CREATE INDEX "idx_idx_1" ON "IndexedTable" USING btree ("idx_1");
+CREATE INDEX "idx_IndexedTable__idx_1" ON "IndexedTable" USING btree ("idx_1");
 CREATE INDEX "custom_name" ON "IndexedTable" USING btree ("idx_2");
-CREATE INDEX "idx_idx_3" ON "IndexedTable" USING gin ("idx_3");
-CREATE UNIQUE INDEX "idx_idx_4" ON "IndexedTable" USING btree ("idx_4");
-CREATE INDEX "idx_idx_5" ON "IndexedTable" USING btree ("idx_5") COLLATE "hu_HU";"""
+CREATE INDEX "idx_IndexedTable__idx_3" ON "IndexedTable" USING gin ("idx_3");
+CREATE UNIQUE INDEX "idx_IndexedTable__idx_4" ON "IndexedTable" USING btree ("idx_4");
+CREATE INDEX "idx_IndexedTable__idx_5" ON "IndexedTable" USING btree ("idx_5") COLLATE "hu_HU";"""
 
 
 def test_fk():
@@ -196,9 +196,8 @@ def test_fk():
   CONSTRAINT "fk_B__id_a-A3__id" FOREIGN KEY ("id_a") REFERENCES "A3" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT "fk_B__id_x-y__id" FOREIGN KEY ("id_x") REFERENCES "x_schema"."y" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
 );
-CREATE INDEX "idx_id" ON "B" USING btree ("id");
-CREATE INDEX "idx_id_a" ON "B" USING btree ("id_a");
-CREATE INDEX "idx_id_x" ON "B" USING btree ("id_x");"""
+CREATE INDEX "idx_B__id_a" ON "B" USING btree ("id_a");
+CREATE INDEX "idx_B__id_x" ON "B" USING btree ("id_x");"""
 
 
 def test_date():
@@ -276,7 +275,7 @@ def test_self_ref():
   PRIMARY KEY("id"),
   CONSTRAINT "fk_Node__parent_id-Node__id" FOREIGN KEY ("parent_id") REFERENCES "Node" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
 );
-CREATE INDEX "idx_parent_id" ON "Node" USING btree ("parent_id");"""
+CREATE INDEX "idx_Node__parent_id" ON "Node" USING btree ("parent_id");"""
 
 
 def test_mixin():
@@ -300,4 +299,4 @@ def test_mixin():
   PRIMARY KEY("id"),
   CONSTRAINT "fk_MEntity__user_id-FKUser__id" FOREIGN KEY ("user_id") REFERENCES "FKUser" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
 );
-CREATE INDEX "idx_user_id" ON "MEntity" USING btree ("user_id");"""
+CREATE INDEX "idx_MEntity__user_id" ON "MEntity" USING btree ("user_id");"""

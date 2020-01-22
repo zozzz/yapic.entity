@@ -35,7 +35,7 @@ CREATE SEQUENCE "circular_deps"."Document_id_seq";
 CREATE SEQUENCE "circular_deps"."DocumentGroup_id_seq";
 CREATE TABLE "circular_deps"."DocumentGroup" (
   "id" INT4 NOT NULL DEFAULT nextval('"circular_deps"."DocumentGroup_id_seq"'::regclass),
-  "primary_document_id" INT NOT NULL,
+  "primary_document_id" INT4 NOT NULL,
   PRIMARY KEY("id")
 );
 CREATE TABLE "circular_deps"."Document" (
@@ -43,4 +43,5 @@ CREATE TABLE "circular_deps"."Document" (
   "group_id" INT4 NOT NULL,
   PRIMARY KEY("id"),
   CONSTRAINT "fk_Document__group_id-DocumentGroup__id" FOREIGN KEY ("group_id") REFERENCES "circular_deps"."DocumentGroup" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
-);"""
+);
+CREATE INDEX "idx_Document__group_id" ON "circular_deps"."Document" USING btree ("group_id");"""

@@ -4,6 +4,7 @@ from yapic.entity import (Serial, Int, String, ForeignKey, PrimaryKey, One, Many
                           Json, Composite, save_operations, Auto, Query)
 
 pytestmark = pytest.mark.asyncio  # type: ignore
+REGISTRY = Registry()
 
 
 @pytest.yield_fixture  # type: ignore
@@ -14,36 +15,36 @@ async def conn(pgsql):
 _registry = Registry()
 
 
-class Employee(Entity, schema="poly", polymorph="variant"):
+class Employee(Entity, schema="poly", polymorph="variant", registry=REGISTRY):
     id: Serial
     variant: String
     employee_field: String
 
 
-class Manager(Employee, polymorph_id="manager"):
+class Manager(Employee, polymorph_id="manager", registry=REGISTRY):
     manager_field: String
 
 
-class Worker(Employee, polymorph_id="worker"):
+class Worker(Employee, polymorph_id="worker", registry=REGISTRY):
     worker_field: String
 
 
-class WorkerX(Worker, polymorph_id="workerx"):
+class WorkerX(Worker, polymorph_id="workerx", registry=REGISTRY):
     workerx_field: String
 
 
-class WorkerY(Worker, polymorph_id="workery"):
+class WorkerY(Worker, polymorph_id="workery", registry=REGISTRY):
     workery_field: String
 
 
-class Organization(Entity, schema="poly"):
+class Organization(Entity, schema="poly", registry=REGISTRY):
     id: Serial
     employee_id: Auto = ForeignKey(Employee.id)
     employee: One[Employee]
 
 
 async def test_sync(conn, pgclean):
-    result = await sync(conn, Worker.__registry__)
+    result = await sync(conn, REGISTRY)
     assert result == """CREATE SCHEMA IF NOT EXISTS "poly";
 CREATE SEQUENCE "poly"."Employee_id_seq";
 CREATE TABLE "poly"."Employee" (

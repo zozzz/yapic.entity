@@ -4,7 +4,7 @@ from cpython.weakref cimport PyWeakref_NewRef, PyWeakref_GetObject
 from cpython.module cimport PyImport_Import, PyModule_GetDict
 
 from ._expression cimport Expression, Visitor
-from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeExt, EntityAttributeImpl, get_alias_target
+from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeExt, EntityAttributeExtGroup, EntityAttributeImpl, get_alias_target
 from ._factory cimport ForwardDecl, get_type_hints, new_instance, new_instance_from_forward, is_forward_decl
 from ._field_impl cimport AutoImpl
 
@@ -202,7 +202,8 @@ _CodeType = type(compile("1", "<string>", "eval"))
 
 cdef class ForeignKey(FieldExtension):
     @classmethod
-    def validate_group(self, tuple items):
+    def validate_group(self, EntityAttributeExtGroup group):
+        cdef tuple items = group.items
         cdef ForeignKey main = items[0]
         cdef ForeignKey fk
 
@@ -214,6 +215,8 @@ cdef class ForeignKey(FieldExtension):
                 raise ValueError(f"Can't use different 'on_update' value in the same foreign key: '{main.name}'")
             elif fk.on_delete != main.on_delete:
                 raise ValueError(f"Can't use different 'on_update' value in the same foreign key: '{main.name}'")
+
+        group.name = main.name
 
     def __cinit__(self, field, *, str name = None, str on_update = "RESTRICT", str on_delete = "RESTRICT"):
         self.ref = None
@@ -239,8 +242,9 @@ cdef class ForeignKey(FieldExtension):
             index.init(attr)
 
         if self.name is None:
-            self.name = compute_fk_name(attr, self.ref)
-        self.group_by = self.name
+            self.group_by = attr._name_
+        else:
+            self.group_by = self.name
 
         FieldExtension.init(self, attr)
 
@@ -261,6 +265,9 @@ cdef class ForeignKey(FieldExtension):
                 return False
 
         field._deps_.add(self.ref._entity_)
+
+        if self.name is None:
+            self.name = compute_fk_name(field, self.ref)
 
         if isinstance(field._impl_, AutoImpl):
             field._impl_ = self.ref._impl_
