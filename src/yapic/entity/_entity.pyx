@@ -12,7 +12,7 @@ from cpython.module cimport PyImport_Import, PyModule_GetDict
 
 from ._field cimport Field, PrimaryKey, ForeignKey
 from ._field_impl cimport AutoImpl
-from ._relation cimport Relation, ManyToOne, RelatedItem, RelatedAttribute
+from ._relation cimport Relation, ManyToOne, RelatedItem, RelatedAttribute, RelationImpl
 from ._factory cimport Factory, get_type_hints, new_instance_from_forward, is_forward_decl
 from ._expression cimport Visitor, Expression
 from ._registry cimport Registry
@@ -186,14 +186,17 @@ cdef class EntityType(type):
 
         for i, attr in enumerate(self.__attrs__):
             attr._index_ = i
+            attr.init(self)
 
-            if not attr.bind(self):
-                self.__deferred__.append(attr)
-
-            if isinstance(attr, Field) and attr.get_ext(PrimaryKey):
+            if isinstance(attr, Field) and (<Field>attr).get_ext(PrimaryKey):
                 pk.append(attr)
 
         self.__pk__ = tuple(pk)
+        self.__extgroups__ = group_extensions(self)
+
+        for attr in self.__attrs__:
+            if not attr.bind():
+                self.__deferred__.append(attr)
 
         if not self.__deferred__:
             self.__entity_ready__()
@@ -265,7 +268,7 @@ cdef class EntityType(type):
 
         while index >= 0:
             attr = deferred[index]
-            if attr.bind(self):
+            if attr.bind():
                 deferred.pop(index)
             index -= 1
 
@@ -278,6 +281,35 @@ cdef class EntityType(type):
     cpdef object __entity_ready__(self):
         for attr in self.__attrs__:
             self.__deps__ |= attr._deps_
+
+
+cdef tuple group_extensions(EntityType entity):
+    cdef dict ext_groups = {}
+    cdef EntityAttributeExt ext
+    cdef list ext_group_list = []
+    cdef EntityAttributeExtGroup group
+
+    for attr in entity.__attrs__:
+        if not isinstance(attr, Field):
+            continue
+
+        for ext in (<Field>attr)._exts_:
+            if not isinstance(ext, PrimaryKey) and ext.group_by:
+                key = (ext.group_by, type(ext))
+                try:
+                    ext_groups[key].append(ext)
+                except KeyError:
+                    ext_groups[key] = [ext]
+
+    for exts in ext_groups.values():
+        group = EntityAttributeExtGroup(exts[0].name, type(exts[0]))
+        group.items = tuple(exts)
+        ext_group_list.append(group)
+
+    for group in ext_group_list:
+        type(group.items[0]).validate_group(group.items)
+
+    return tuple(ext_group_list)
 
 
 cpdef bint is_entity_alias(object o):
@@ -372,11 +404,15 @@ cdef class EntityAttribute(Expression):
     def __delete__(self, EntityBase instance):
         instance.__state__.del_value(self)
 
-    cdef object bind(self, EntityType entity):
+    cdef object init(self, EntityType entity):
         if self._entity_ is not None and self._entity_ is not entity:
             raise RuntimeError("Can't rebind entity attribute")
         self._entity_ = entity
 
+        for ext in self._exts_:
+            ext.init(self)
+
+    cdef object bind(self):
         if self._impl_ is None:
             if self._impl is None:
                 raise TypeError("Missing attribute implementation: %r" % self)
@@ -398,7 +434,7 @@ cdef class EntityAttribute(Expression):
 
         cdef EntityAttributeExt ext
         for ext in self._exts_:
-            if not ext.bound and not ext.bind(self):
+            if not ext.bound and not ext.bind():
                 return False
             ext.bound = True
 
@@ -429,6 +465,10 @@ cdef class EntityAttribute(Expression):
 
 
 cdef class EntityAttributeExt:
+    @classmethod
+    def validate_group(self, tuple items):
+        pass
+
     def __cinit__(self, *args, **kwargs):
         self._tmp = []
         self.bound = False
@@ -446,7 +486,7 @@ cdef class EntityAttributeExt:
             self._tmp.extend(other._tmp)
             return self
 
-    cpdef object bind(self, EntityAttribute attr):
+    cpdef object init(self, EntityAttribute attr):
         # TODO: handle error, only if after bind is called
         # if self.attr is not None:
         #     if self.attr is not attr:
@@ -454,6 +494,8 @@ cdef class EntityAttributeExt:
         #     else:
         #         return
         self.attr = attr
+
+    cpdef object bind(self):
         return True
 
     cpdef object clone(self):
@@ -466,10 +508,28 @@ cdef class EntityAttributeExt:
         return repr(self) == repr(other)
 
     def __ne__(self, other):
-        return repr(self) == repr(other)
+        return repr(self) != repr(other)
 
     def __repr__(self):
         return f"@{type(self).__name__}()"
+
+
+cdef class EntityAttributeExtGroup:
+    def __cinit__(self, str name, object type):
+        self.name = name
+        self.type = type
+
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __eq__(self, other):
+        return repr(self) == repr(other)
+
+    def __ne__(self, other):
+        return repr(self) != repr(other)
+
+    def __repr__(self):
+        return "@%s:%s[%s]" % (self.type.__name__, self.name, ", ".join(map(repr, self.items)))
 
 
 cdef class EntityAttributeImpl:

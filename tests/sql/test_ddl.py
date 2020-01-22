@@ -146,25 +146,21 @@ def test_index():
         idx_2: Int = Index(name="custom_name")
         idx_3: Int = Index(method="gin")
         idx_4: Int = Index(unique=True)
-        idx_5: Int = Index(concurrent=True)
-        idx_6: Int = Index(collate="hu_HU")
+        idx_5: Int = Index(collate="hu_HU")
 
     result = ddl.compile_entity(IndexedTable)
-    print(result)
     assert result == """CREATE TABLE "IndexedTable" (
   "idx_1" INT4,
   "idx_2" INT4,
   "idx_3" INT4,
   "idx_4" INT4,
-  "idx_5" INT4,
-  "idx_6" INT4
+  "idx_5" INT4
 );
 CREATE INDEX "idx_idx_1" ON "IndexedTable" USING btree ("idx_1");
 CREATE INDEX "custom_name" ON "IndexedTable" USING btree ("idx_2");
 CREATE INDEX "idx_idx_3" ON "IndexedTable" USING gin ("idx_3");
 CREATE UNIQUE INDEX "idx_idx_4" ON "IndexedTable" USING btree ("idx_4");
-CREATE INDEX CONCURRENTLY "idx_idx_5" ON "IndexedTable" USING btree ("idx_5");
-CREATE INDEX "idx_idx_6" ON "IndexedTable" USING btree ("idx_6") COLLATE "hu_HU";"""
+CREATE INDEX "idx_idx_5" ON "IndexedTable" USING btree ("idx_5") COLLATE "hu_HU";"""
 
 
 def test_fk():

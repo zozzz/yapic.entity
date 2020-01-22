@@ -17,6 +17,7 @@ cdef class EntityType(type):
     cdef readonly list __deferred__
     cdef public list __fix_entries__
     cdef public list __triggers__
+    cdef public tuple __extgroups__
     cdef PyObject* registry
     cdef PyObject* meta
     cdef readonly set __deps__
@@ -48,8 +49,9 @@ cdef class EntityAttribute(Expression):
     cdef readonly bint _virtual_
     cdef readonly int _uid_
 
+    cdef object init(self, EntityType entity)
     # returns true when successfully bind, otherwise the system can try bind in the later time
-    cdef object bind(self, EntityType entity)
+    cdef object bind(self)
     # cdef object entity_ready(self, EntityType entity)
     cpdef clone(self)
     cpdef get_ext(self, ext_type)
@@ -61,11 +63,19 @@ cdef class EntityAttributeExt:
     cdef readonly EntityAttribute attr
     cdef list _tmp
     cdef bint bound
+    cdef str group_by
 
+    cpdef object init(self, EntityAttribute attr)
     # returns true when successfully bind, otherwise the system can try bind in the later time
-    cpdef object bind(self, EntityAttribute attr)
+    cpdef object bind(self)
     cpdef object clone(self)
     # cpdef object entity_ready(self, EntityType entity)
+
+
+cdef class EntityAttributeExtGroup:
+    cdef readonly str name
+    cdef readonly tuple items
+    cdef readonly object type
 
 
 cdef class EntityAttributeImpl:

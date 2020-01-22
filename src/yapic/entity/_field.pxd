@@ -54,10 +54,8 @@ cdef class Index(FieldExtension):
     cdef readonly str name
     cdef readonly str method
     cdef readonly bint unique
-    cdef readonly bint concurrent
     cdef readonly str collate
     cdef readonly str expr
-
 
 
 cdef class Unique(FieldExtension):

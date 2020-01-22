@@ -73,6 +73,7 @@ CREATE TABLE "poly"."Organization" (
   PRIMARY KEY("id"),
   CONSTRAINT "fk_Organization__employee_id-Employee__id" FOREIGN KEY ("employee_id") REFERENCES "poly"."Employee" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
 );
+CREATE INDEX "idx_Organization__employee_id" ON "poly"."Organization" USING btree ("employee_id");
 CREATE TABLE "poly"."Worker" (
   "id" INT4 NOT NULL,
   "worker_field" TEXT,

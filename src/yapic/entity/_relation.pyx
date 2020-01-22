@@ -5,9 +5,9 @@ from cpython.object cimport PyObject, PyObject_RichCompareBool, Py_EQ
 from cpython.tuple cimport PyTuple_SetItem, PyTuple_GetItem, PyTuple_New, PyTuple_GET_SIZE, PyTuple_SET_ITEM, PyTuple_GET_ITEM, PyTuple_Pack
 from cpython.module cimport PyImport_Import, PyModule_GetDict
 
-from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeImpl, EntityAttributeExt, get_alias_target, NOTSET
+from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeImpl, EntityAttributeExt, EntityAttributeExtGroup, get_alias_target, NOTSET
 from ._expression cimport Expression, Visitor, PathExpression, VirtualExpressionVal
-from ._field cimport Field, ForeignKey, collect_foreign_keys
+from ._field cimport Field, ForeignKey
 from ._factory cimport Factory, ForwardDecl, new_instance_from_forward, is_forward_decl
 from ._visitors cimport replace_entity
 from ._error cimport JoinError
@@ -17,16 +17,16 @@ cdef class Relation(EntityAttribute):
     def __cinit__(self, *args, join = None):
         self._default_ = join
 
-    cdef object bind(self, EntityType entity):
+    cdef object bind(self):
         cdef RelationImpl impl
-        if EntityAttribute.bind(self, entity):
+        if EntityAttribute.bind(self):
             impl = self._impl_
             if self._default_:
                 impl = self._impl_
                 if not impl.resolve_default(self):
                     return False
 
-            return impl.determine_join_expr(entity, self)
+            return impl.determine_join_expr(self._entity_, self)
         else:
             return False
 
@@ -101,8 +101,8 @@ cdef class RelatedAttribute(EntityAttribute):
     cpdef clone(self):
         return type(self)(self.__relation__.clone(), name=self._name_)
 
-    cdef object bind(self, EntityType entity):
-        if self.__relation__.bind(entity):
+    cdef object bind(self):
+        if self.__relation__.bind():
             if not isinstance(self.__relation__._impl_, ManyToOne):
                 raise ValueError("RelatedAttribute only accepts ManyToOne type ralations")
 
@@ -307,23 +307,25 @@ cdef class ManyToMany(RelationImpl):
 
 
 cdef determine_join_expr(EntityType entity, EntityType joined):
-    cdef dict fks = collect_foreign_keys(entity)
+    if not entity.__extgroups__:
+        raise JoinError("Can't determine join condition between %s <-> %s" % (entity, joined))
 
     cdef tuple keys
     cdef Field field
     cdef ForeignKey fk
     cdef object found = None
+    cdef EntityAttributeExtGroup group
 
-    for fk_name, keys in fks.items():
-        fk = <ForeignKey>keys[0]
+    for group in filter(lambda v: v.type is ForeignKey, entity.__extgroups__):
+        fk = <ForeignKey>group.items[0]
 
         if fk.ref._entity_ is joined:
             if found is not None:
                 raise JoinError("Multiple join conditions between %s <-> %s" % (entity, joined))
 
             found = fk.attr == fk.ref
-            for i in range(1, len(keys)):
-                fk = <ForeignKey>keys[i]
+            for i in range(1, len(group.items)):
+                fk = <ForeignKey>group.items[i]
                 found &= fk.attr == fk.ref
 
     if found is None:

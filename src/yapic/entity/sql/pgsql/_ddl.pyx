@@ -1,8 +1,8 @@
 # from hashids import Hashids
 
 from yapic.entity._entity import Entity
-from yapic.entity._entity cimport EntityType, EntityAttribute
-from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, AutoIncrement, StorageType
+from yapic.entity._entity cimport EntityType, EntityAttribute, EntityAttributeExtGroup
+from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, Index, AutoIncrement, StorageType
 from yapic.entity._registry cimport Registry
 from yapic.entity._expression cimport RawExpression
 from yapic.entity._trigger cimport Trigger, PolymorphParentDeleteTrigger
@@ -168,7 +168,8 @@ cdef class PostgreDDLReflect(DDLReflect):
             entity.__triggers__ = await self.get_triggers(conn, registry, schema, table, id)
 
         for id, schema, table, kind in types:
-            fks = await self.update_foreign_keys(conn, schema, table, registry)
+            await self.update_foreign_keys(conn, schema, table, registry)
+            await self.update_indexes(conn, schema, table, id, registry)
 
     async def create_entity(self, Connection conn, Registry registry, str schema, str table, list fields):
         schema = None if schema == "public" else schema
@@ -219,6 +220,25 @@ cdef class PostgreDDLReflect(DDLReflect):
                 AND "tc"."table_name" = '{table}'
             ORDER BY "kcu"."ordinal_position"
             """)
+
+    async def get_indexes(self, Connection conn, int table_id):
+        return await conn.conn.fetch(f"""
+        SELECT
+            pg_class.relname as "name",
+            pg_am.amname as "method",
+            pg_attribute.attname as field,
+            pg_collation.collcollate as "collation",
+            pg_index.indisunique as is_unique
+        FROM pg_index
+            INNER JOIN pg_class ON pg_class.oid=pg_index.indexrelid
+            INNER JOIN pg_am ON pg_am.oid=pg_class.relam
+            INNER JOIN pg_attribute ON pg_attribute.attrelid = pg_index.indrelid
+                AND pg_attribute.attnum = ANY(pg_index.indkey)
+            LEFT JOIN pg_collation ON pg_collation.oid = ANY(pg_index.indcollation)
+        WHERE pg_index.indrelid={table_id}
+            AND pg_index.indisprimary IS FALSE
+            AND pg_index.indislive IS TRUE
+        """)
 
     async def get_fields(self, Connection conn, registry, extensions, str schema, str table, typeid):
         if "postgis" in extensions:
@@ -405,7 +425,8 @@ cdef class PostgreDDLReflect(DDLReflect):
         cdef ForeignKey fk
 
         fks = await self.get_foreign_keys(conn, schema, table)
-        entity = registry[f"{schema}.{table}" if schema != "public" else table]
+        cdef EntityType entity = registry[f"{schema}.{table}" if schema != "public" else table]
+        cdef dict groups = {}
 
         for fk_desc in fks:
             field = getattr(entity, fk_desc["field_name"])
@@ -421,7 +442,53 @@ cdef class PostgreDDLReflect(DDLReflect):
                 on_delete=fk_desc["delete_rule"])
 
             field // fk
-            fk.bind(field)
+            fk.init(field)
+            fk.bind()
+
+            try:
+                groups[fk.group_by].append(fk)
+            except KeyError:
+                groups[fk.group_by] = [fk]
+
+        entity.__extgroups__ += create_ext_groups(groups)
+
+    async def update_indexes(self, Connection conn, str schema, str table, table_id, Registry registry):
+        indexes = await self.get_indexes(conn, table_id)
+
+        cdef EntityType entity = registry[f"{schema}.{table}" if schema != "public" else table]
+        cdef dict groups = {}
+        cdef Index idx
+
+        for idx_desc in indexes:
+            if idx_desc["field"]:
+                field = getattr(entity, idx_desc["field"])
+
+                idx = Index(
+                    name=idx_desc["name"],
+                    method=idx_desc["method"],
+                    unique=bool(idx_desc["is_unique"]),
+                    collate=idx_desc["collation"],
+                )
+            else:
+                raise NotImplementedError()
+
+            field // idx
+            idx.init(field)
+            idx.bind()
+
+            try:
+                groups[idx.group_by].append(idx)
+            except KeyError:
+                groups[idx.group_by] = [idx]
+
+        not_exists = []
+        for g in create_ext_groups(groups):
+            if g not in entity.__extgroups__:
+                not_exists.append(g)
+
+        if not_exists:
+            entity.__extgroups__ += tuple(not_exists)
+
 
     async def get_auto_increment(self, Connection conn, Registry registry, str schema, str table, str field, default):
         if schema != "public":
@@ -449,6 +516,15 @@ cdef class PostgreDDLReflect(DDLReflect):
 
     async def real_quote_ident(self, Connection conn, ident):
         return await conn.conn.fetchval(f"SELECT quote_ident({self.dialect.quote_value(ident)})")
+
+
+cdef tuple create_ext_groups(dict groups):
+    cdef list res = []
+    for grouped in groups.values():
+        group = EntityAttributeExtGroup(grouped[0].name, type(grouped[0]))
+        group.items = tuple(grouped)
+        res.append(group)
+    return tuple(res)
 
 
 

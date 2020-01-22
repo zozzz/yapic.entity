@@ -91,6 +91,7 @@ CREATE TABLE "execution"."User" (
   PRIMARY KEY("id"),
   CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
 );
+CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_id");
 CREATE SCHEMA IF NOT EXISTS "execution_private";
 CREATE SEQUENCE "execution_private"."User_id_seq";
 CREATE TABLE "execution_private"."User" (
@@ -100,7 +101,8 @@ CREATE TABLE "execution_private"."User" (
   "address_id" INT4,
   PRIMARY KEY("id"),
   CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
-);"""
+);
+CREATE INDEX "idx_User__address_id" ON "execution_private"."User" USING btree ("address_id");"""
     await conn.conn.execute(result)
 
     result = await sync(conn, Address.__registry__)
@@ -473,7 +475,8 @@ CREATE TABLE "execution"."Article" (
   "author_id" INT4,
   PRIMARY KEY("id"),
   CONSTRAINT "fk_Article__author_id-CompUser__id" FOREIGN KEY ("author_id") REFERENCES "execution"."CompUser" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
-);"""
+);
+CREATE INDEX "idx_Article__author_id" ON "execution"."Article" USING btree ("author_id");"""
     await conn.conn.execute(result)
 
     # TODO: kitalálni, hogyan lehet módosítani a composite typeot
@@ -714,7 +717,8 @@ CREATE TABLE "execution"."User" (
   "address_id" INT4,
   PRIMARY KEY("id"),
   CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
-);"""
+);
+CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_id");"""
     await conn.conn.execute(result)
 
     # DROP FK
@@ -729,7 +733,8 @@ CREATE TABLE "execution"."User" (
         address_id: Int
 
     result = await sync(conn, reg)
-    assert result == """ALTER TABLE "execution"."User"
+    assert result == """DROP INDEX IF EXISTS "execution"."idx_User__address_id";
+ALTER TABLE "execution"."User"
   DROP CONSTRAINT IF EXISTS "fk_User__address_id-Address__id";"""
     await conn.conn.execute(result)
 
@@ -745,7 +750,8 @@ CREATE TABLE "execution"."User" (
         address_id: Auto = ForeignKey(Address.id)
 
     result = await sync(conn, reg)
-    assert result == """ALTER TABLE "execution"."User"
+    assert result == """CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_id");
+ALTER TABLE "execution"."User"
   ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
     await conn.conn.execute(result)
 

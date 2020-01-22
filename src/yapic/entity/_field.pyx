@@ -39,7 +39,7 @@ cdef class Field(EntityAttribute):
     def __getitem__(self, key):
         return self._impl_.getitem(self, key)
 
-    cdef object bind(self, EntityType entity):
+    cdef object init(self, EntityType entity):
         if self.nullable is None:
             self.nullable = True
             if self.get_ext(PrimaryKey):
@@ -48,7 +48,7 @@ cdef class Field(EntityAttribute):
                 self.nullable = bool(self._default_ is None)
             elif isinstance(self._default_, Expression):
                 self.nullable = False
-        return EntityAttribute.bind(self, entity)
+        return EntityAttribute.init(self, entity)
 
     cpdef clone(self):
         cdef Field res = type(self)(self._impl_,
@@ -143,12 +143,12 @@ cdef class AutoIncrement(FieldExtension):
     def __cinit__(self, EntityType sequence=None):
         self.sequence = sequence
 
-    cpdef object bind(self, EntityAttribute attr):
+    cpdef object bind(self):
         cdef EntityType entity
         cdef EntityType aliased
 
         if self.sequence is None:
-            entity = attr._entity_
+            entity = self.attr._entity_
             aliased = get_alias_target(entity)
 
             if entity is aliased:
@@ -157,13 +157,13 @@ cdef class AutoIncrement(FieldExtension):
                 except KeyError:
                     schema = None
 
-                name = f"{entity.__name__}_{attr._name_}_seq"
+                name = f"{entity.__name__}_{self.attr._name_}_seq"
                 self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=entity.__registry__, is_sequence=True)
             else:
-                self.sequence = getattr(aliased, attr._key_).get_ext(AutoIncrement).sequence
+                self.sequence = getattr(aliased, self.attr._key_).get_ext(AutoIncrement).sequence
 
-        attr._deps_.add(self.sequence)
-        return True
+        self.attr._deps_.add(self.sequence)
+        return FieldExtension.bind(self)
 
     def __repr__(self):
         return "@AutoIncrement(%r)" % self.sequence
@@ -171,28 +171,25 @@ cdef class AutoIncrement(FieldExtension):
 
 
 cdef class Index(FieldExtension):
-    def __cinit__(self, str expr = None, *, str name = None, str method = "btree", bint unique = False, bint concurrent = False, str collate = None):
+    def __cinit__(self, str expr = None, *, str name = None, str method = "btree", bint unique = False, str collate = None):
         self.name = name
         self.method = method
         self.unique = unique
-        self.concurrent = concurrent
         self.collate = collate
         self.expr = expr
 
     cpdef object clone(self):
-        return type(self)(self.expr, name=self.name, method=self.method, unique=self.unique, concurrent=self.concurrent, collate=self.collate)
+        return type(self)(self.expr, name=self.name, method=self.method, unique=self.unique, collate=self.collate)
 
-    cpdef object bind(self, EntityAttribute attr):
-        if FieldExtension.bind(self, attr) is False:
-            return False
-
+    cpdef object init(self, EntityAttribute attr):
         if not self.name:
-            self.name = f"idx_{attr._name_}"
+            self.name = f"idx_{attr._entity_.__name__}__{attr._name_}"
+        self.group_by = self.name
 
-        return True
+        FieldExtension.init(self, attr)
 
     def __repr__(self):
-        return "@Index(%s USING %s ON %s)" % (self.name, self.method, self.attr)
+        return "@%sIndex(%s USING %s ON %s %s)" % ("Unique" if self.unique else "", self.name, self.method, self.expr or self.attr._name_, self.collate or "")
 
 
 cdef class Unique(FieldExtension):
@@ -204,6 +201,20 @@ cdef class Unique(FieldExtension):
 _CodeType = type(compile("1", "<string>", "eval"))
 
 cdef class ForeignKey(FieldExtension):
+    @classmethod
+    def validate_group(self, tuple items):
+        cdef ForeignKey main = items[0]
+        cdef ForeignKey fk
+
+        for i in range(1, len(items)):
+            fk = <ForeignKey>items[i]
+            if fk.ref._entity_ != main.ref._entity_:
+                raise ValueError(f"Can't use fields from different entities in the same foreign key: '{main.name}'")
+            elif fk.on_update != main.on_update:
+                raise ValueError(f"Can't use different 'on_update' value in the same foreign key: '{main.name}'")
+            elif fk.on_delete != main.on_delete:
+                raise ValueError(f"Can't use different 'on_update' value in the same foreign key: '{main.name}'")
+
     def __cinit__(self, field, *, str name = None, str on_update = "RESTRICT", str on_delete = "RESTRICT"):
         self.ref = None
 
@@ -220,40 +231,41 @@ cdef class ForeignKey(FieldExtension):
         self.on_update = on_update
         self.on_delete = on_delete
 
-    cpdef object bind(self, EntityAttribute attr):
-        if FieldExtension.bind(self, attr) is False:
+    cpdef object init(self, EntityAttribute attr):
+        cdef Index index = attr.get_ext(Index)
+        if not index and not attr.get_ext(PrimaryKey):
+            index = Index()
+            attr // index
+            index.init(attr)
+
+        if self.name is None:
+            self.name = compute_fk_name(attr, self.ref)
+        self.group_by = self.name
+
+        FieldExtension.init(self, attr)
+
+
+    cpdef object bind(self):
+        if FieldExtension.bind(self) is False:
             return False
 
-        cdef Field field = attr
+        cdef Field field = self.attr
 
         if self.ref is None:
-            module = PyImport_Import(self.attr._entity_.__module__)
+            module = PyImport_Import(field._entity_.__module__)
             mdict = PyModule_GetDict(module)
-            ldict = {attr._entity_.__qualname__.split(".").pop(): attr._entity_}
+            ldict = {field._entity_.__qualname__.split(".").pop(): field._entity_}
             try:
                 self.ref = eval(self._ref, <object>mdict, <object>ldict)
             except NameError as e:
                 return False
 
-        attr._deps_.add(self.ref._entity_)
+        field._deps_.add(self.ref._entity_)
 
-        if self.name is None:
-            self.name = compute_fk_name(attr, self.ref)
-
-        if isinstance(attr._impl_, AutoImpl):
+        if isinstance(field._impl_, AutoImpl):
             field._impl_ = self.ref._impl_
             field.min_size = self.ref.min_size
             field.max_size = self.ref.max_size
-
-        cdef Index index = attr.get_ext(Index)
-        if not index:
-            index = Index()
-            index.attr = attr
-            attr._exts_.append(index)
-            if index.bind(attr):
-                index.bound = True
-            else:
-                return False
 
         return True
 

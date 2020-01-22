@@ -1,9 +1,9 @@
-from yapic.entity._entity cimport EntityType, EntityAttributeExt
+from yapic.entity._entity cimport EntityType, EntityAttributeExt, EntityAttributeExtGroup
 from yapic.entity._entity_diff cimport EntityDiff
 from yapic.entity._entity_diff import EntityDiffKind
 from yapic.entity._registry cimport RegistryDiff
 from yapic.entity._registry import RegistryDiffKind
-from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, Index, AutoIncrement, collect_foreign_keys, StorageType
+from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, Index, AutoIncrement, StorageType
 from yapic.entity._expression cimport Expression
 from yapic.entity._trigger cimport Trigger
 
@@ -18,7 +18,6 @@ cdef class DDLCompiler:
         cdef list elements = []
         cdef list table_parts = []
         cdef list requirements = []
-        cdef list indexes = []
         is_type = entity.__meta__.get("is_type", False) is True
         is_sequence = entity.__meta__.get("is_sequence", False) is True
 
@@ -34,10 +33,6 @@ cdef class DDLCompiler:
             if not field._virtual_:
                 elements.append(self.compile_field(<Field>field, requirements))
 
-                for ext in field._exts_:
-                    if isinstance(ext, Index):
-                        indexes.append(self.compile_create_index(<Index>ext))
-
         primary_keys = entity.__pk__
         if primary_keys:
             if is_type:
@@ -45,7 +40,7 @@ cdef class DDLCompiler:
             pk_names = [self.dialect.quote_ident(pk._name_) for pk in primary_keys]
             elements.append(f"PRIMARY KEY({', '.join(pk_names)})")
 
-        cdef dict fks = collect_foreign_keys(entity)
+        cdef tuple fks = tuple(filter(lambda v: v.type is ForeignKey, entity.__extgroups__))
         if fks:
             if is_type:
                 raise ValueError("Foreign keys is not supported on Composite Types")
@@ -62,9 +57,13 @@ cdef class DDLCompiler:
             requirements.append("")
             table_parts.insert(0, "\n".join(requirements))
 
+        indexes = []
+        for x in filter(lambda v: v.type is Index, entity.__extgroups__):
+            indexes.append(self.compile_create_index(x))
+
         if indexes:
             table_parts.append("\n")
-            table_parts.append(";\n".join(indexes) + ";")
+            table_parts.append("\n".join(indexes))
 
         for trigger in entity.__triggers__:
             table_parts.append('\n')
@@ -107,44 +106,50 @@ cdef class DDLCompiler:
 
         return res
 
-    def compile_foreign_keys(self, dict fks):
-        cdef str key_name
-        cdef tuple foreign_keys
+    def compile_foreign_keys(self, tuple fks):
+        for group in fks:
+            yield self.compile_foreign_key(group)
 
-        for key_name, foreign_keys in fks.items():
-            yield self.compile_foreign_key(key_name, foreign_keys)
-
-    def compile_foreign_key(self, str name, tuple keys):
-        cdef str res = f"CONSTRAINT {self.dialect.quote_ident(name)} FOREIGN KEY ("
-        cdef int length = len(keys)
+    def compile_foreign_key(self, EntityAttributeExtGroup key):
+        cdef str res = f"CONSTRAINT {self.dialect.quote_ident(key.name)} FOREIGN KEY ("
+        cdef int length = len(key.items)
         cdef ForeignKey fk
 
         for i in range(length):
-            fk = keys[i]
+            fk = key.items[i]
             res += self.dialect.quote_ident(fk.attr._name_)
             if i != length - 1:
                 res += ", "
 
-        res += f") REFERENCES {self.dialect.table_qname(keys[0].ref._entity_)} ("
+        res += f") REFERENCES {self.dialect.table_qname(key.items[0].ref._entity_)} ("
 
         for i in range(length):
-            fk = keys[i]
+            fk = key.items[i]
             res += self.dialect.quote_ident(fk.ref._name_)
             if i != length - 1:
                 res += ", "
 
-        return res + f") ON UPDATE {keys[0].on_update} ON DELETE {keys[0].on_delete}"
+        return res + f") ON UPDATE {key.items[0].on_update} ON DELETE {key.items[0].on_delete}"
 
-    def compile_create_index(self, Index index):
-        cdef str res = f"CREATE {'UNIQUE ' if index.unique else ''}INDEX" \
-            f"{' CONCURRENTLY' if index.concurrent else ''}" \
-            f" {self.dialect.quote_ident(index.name)} ON {self.dialect.table_qname(index.attr._entity_)}" \
-            f" USING {index.method} ({index.expr if index.expr else self.dialect.quote_ident(index.attr._name_)})"
+    def compile_create_index(self, EntityAttributeExtGroup group):
+        cdef Index main = group.items[0]
+        cdef str res = f"CREATE {'UNIQUE ' if main.unique else ''}INDEX" \
+            f" {self.dialect.quote_ident(group.name)} ON {self.dialect.table_qname(main.attr._entity_)}" \
+            f" USING {main.method} "
 
-        if index.collate:
-            res += f" COLLATE \"{index.collate}\""
+        cdef exprs = []
+        cdef Index idx
 
-        return res
+        for idx in group.items:
+            if idx.expr:
+                expr = f"({idx.expr})"
+            else:
+                expr = f"({self.dialect.quote_ident(idx.attr._name_)})"
+            if idx.collate:
+                expr += f" COLLATE \"{idx.collate}\""
+            exprs.append(expr)
+
+        return res + ", ".join(exprs) + ";"
 
 
     def compile_registry_diff(self, RegistryDiff diff):
@@ -186,6 +191,7 @@ cdef class DDLCompiler:
         return "\n".join(lines)
 
     def compile_entity_diff(self, EntityDiff diff):
+        cdef EntityAttributeExtGroup group
         requirements = []
         alter = []
         pre = []
@@ -203,10 +209,20 @@ cdef class DDLCompiler:
             elif kind == EntityDiffKind.CREATE_PK:
                 pk_names = [self.dialect.quote_ident(pk._name_) for pk in param.__pk__]
                 alter.append(f"ADD PRIMARY KEY({', '.join(pk_names)})")
-            elif kind == EntityDiffKind.REMOVE_FK:
-                alter.append(f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(param[0])}")
-            elif kind == EntityDiffKind.CREATE_FK:
-                alter.append(f"ADD {self.compile_foreign_key(param[0], param[1])}")
+            elif kind == EntityDiffKind.REMOVE_EXTGROUP:
+                group = param
+                if group.type is ForeignKey:
+                    alter.append(f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(group.name)}")
+                elif group.type is Index:
+                    schema = group.items[0].attr._entity_.__meta__.get("schema", "public")
+                    schema = f"{self.dialect.quote_ident(schema)}." if schema != "public" else ""
+                    pre.append(f"DROP INDEX IF EXISTS {schema}{self.dialect.quote_ident(group.name)};")
+            elif kind == EntityDiffKind.CREATE_EXTGROUP:
+                group = param
+                if group.type is ForeignKey:
+                    alter.append(f"ADD {self.compile_foreign_key(group)}")
+                elif group.type is Index:
+                    pre.append(self.compile_create_index(group))
             elif kind == EntityDiffKind.REMOVE_TRIGGER:
                 pre.append(self.remove_trigger(param[0], param[1]))
             elif kind == EntityDiffKind.CREATE_TRIGGER:
@@ -219,6 +235,22 @@ cdef class DDLCompiler:
             alter = ""
 
         return '\n'.join(filter(bool, ['\n'.join(pre), alter, '\n'.join(post)]))
+
+    def compile_create_extgroup(self, EntityAttributeExtGroup group):
+        if group.type is ForeignKey:
+            pass
+        elif group.type is Index:
+            pass
+        else:
+            pass
+
+    def compile_remove_extgroup(self, EntityAttributeExtGroup group):
+        if group.type is ForeignKey:
+            yield
+        elif group.type is Index:
+            pass
+        else:
+            pass
 
     def compile_type_diff(self, EntityDiff diff):
         requirements = []

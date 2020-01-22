@@ -2,7 +2,7 @@ import cython
 from enum import Enum
 
 from ._entity cimport EntityType
-from ._field cimport Field, AutoIncrement, collect_foreign_keys
+from ._field cimport Field, AutoIncrement, ForeignKey
 from ._expression cimport Expression
 
 
@@ -13,8 +13,8 @@ class EntityDiffKind(Enum):
     RENAMED = 4
     REMOVE_PK = 5
     CREATE_PK = 6
-    REMOVE_FK = 7
-    CREATE_FK = 8
+    REMOVE_EXTGROUP = 7
+    CREATE_EXTGROUP = 8
     CREATE_TRIGGER = 9
     REMOVE_TRIGGER = 10
 
@@ -27,9 +27,9 @@ cdef class EntityDiff:
         self.b = b
         self.changes = []
 
-        fk_changes = compare_fks(a, b)
-        if fk_changes:
-            self.changes.extend(fk_changes[0])
+        extgroup_changes = compare_extgroups(a, b)
+        if extgroup_changes:
+            self.changes.extend(extgroup_changes[0])
 
         if a.__pk__ != b.__pk__:
             recreate_pk = True
@@ -69,9 +69,8 @@ cdef class EntityDiff:
             if b.__pk__:
                 self.changes.append((EntityDiffKind.CREATE_PK, b))
 
-        if fk_changes:
-            self.changes.extend(fk_changes[1])
-
+        if extgroup_changes:
+            self.changes.extend(extgroup_changes[1])
 
         a_triggers = {trigger.name: trigger for trigger in a.__triggers__}
         b_triggers = {trigger.name: trigger for trigger in b.__triggers__}
@@ -173,18 +172,30 @@ cdef inline list compare_exts(list a, list b):
 
 
 
-cdef inline tuple compare_fks(EntityType a, EntityType b):
-    removed = []
-    created = []
+# cdef inline tuple compare_fks(EntityType a, EntityType b):
+#     removed = []
+#     created = []
 
-    a_fks = set(collect_foreign_keys(a).values())
-    b_fks = set(collect_foreign_keys(b).values())
+#     a_fks = set(filter(lambda v: v.type is ForeignKey, a.__extgroups__))
+#     b_fks = set(filter(lambda v: v.type is ForeignKey, b.__extgroups__))
 
-    removed = [(EntityDiffKind.REMOVE_FK, (x[0].name, x)) for x in a_fks - b_fks]
-    created = [(EntityDiffKind.CREATE_FK, (x[0].name, x)) for x in b_fks - a_fks]
+#     removed = [(EntityDiffKind.REMOVE_EXTGROUP, (x[0].name, x)) for x in a_fks - b_fks]
+#     created = [(EntityDiffKind.CREATE_EXTGROUP, (x[0].name, x)) for x in b_fks - a_fks]
+
+#     if removed or created:
+#         return (removed, created)
+#     else:
+#         return None
+
+
+cdef inline tuple compare_extgroups(EntityType a, EntityType b):
+    a_groups = set(a.__extgroups__)
+    b_groups = set(b.__extgroups__)
+
+    removed = [(EntityDiffKind.REMOVE_EXTGROUP, x) for x in a_groups - b_groups]
+    created = [(EntityDiffKind.CREATE_EXTGROUP, x) for x in b_groups - a_groups]
 
     if removed or created:
         return (removed, created)
     else:
         return None
-
