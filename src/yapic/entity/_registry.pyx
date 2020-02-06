@@ -2,8 +2,9 @@ import cython
 from enum import Enum
 from weakref import WeakValueDictionary
 
-from ._entity cimport DependencyList, EntityBase, EntityType, EntityAttribute
+from ._entity cimport DependencyList, EntityBase, EntityType, EntityAttribute, EntityAttributeExt
 from ._entity_diff cimport EntityDiff
+from ._field cimport ForeignKey
 
 
 @cython.final
@@ -46,6 +47,30 @@ cdef class Registry:
         reg = Registry()
         reg.entities = res
         return reg
+
+    cpdef list get_foreign_key_refs(self, EntityAttribute column):
+        cdef list result = []
+        cdef list per_entity
+        cdef EntityType entity
+        cdef EntityAttribute field
+        cdef EntityAttributeExt ext
+        cdef ForeignKey fk
+
+        for entity in self.entities.values():
+            per_entity = []
+
+            for field in entity.__fields__:
+                for ext in field._exts_:
+                    if isinstance(ext, ForeignKey):
+                        fk = <ForeignKey>ext
+                        if fk.ref._entity_ is column._entity_ and fk.ref._name_ == column._name_:
+                            per_entity.append(field._key_)
+
+            if len(per_entity) != 0:
+                result.append((entity, per_entity))
+
+        return result
+
 
     cdef resolve_deferred(self):
         cdef EntityType entity

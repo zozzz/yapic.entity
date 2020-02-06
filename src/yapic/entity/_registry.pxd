@@ -1,5 +1,5 @@
 import cython
-from ._entity cimport EntityType
+from ._entity cimport EntityType, EntityAttribute
 
 
 
@@ -13,6 +13,7 @@ cdef class Registry:
     cpdef values(self)
     cpdef items(self)
     cpdef filter(self, fn)
+    cpdef list get_foreign_key_refs(self, EntityAttribute column)
 
     cdef resolve_deferred(self)
 

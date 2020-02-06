@@ -11,6 +11,8 @@ from yapic.entity import (
     Relation,
     Index,
     ForeignKey,
+    Registry,
+    Auto,
 )
 from yapic.entity._entity import NOTSET
 from yapic.entity._relation import RelatedList
@@ -129,8 +131,8 @@ def test_relation_many():
     # assert list(b2.fw_many.__added__) == []
     # assert list(b2.fw_many.__removed__) == []
 
-    assert (repr(B.n_many._impl_.join_expr) ==
-            "<Expr <Field id_a: Int of B> <built-in function eq> <Field id: Int of GlobalA>>")
+    assert (repr(
+        B.n_many._impl_.join_expr) == "<Expr <Field id_a: Int of B> <built-in function eq> <Field id: Int of GlobalA>>")
 
 
 def test_relation_many_many():
@@ -140,8 +142,7 @@ def test_relation_many_many():
 
     assert (repr(across_join_expr) ==
             "<Expr <Field id_a: Int of AcrossAB> <built-in function eq> <Field id: Int of GlobalA>>")
-    assert (repr(join_expr) ==
-            "<Expr <Field id_b: Int of AcrossAB> <built-in function eq> <Field id: Int of GlobalB>>")
+    assert (repr(join_expr) == "<Expr <Field id_b: Int of AcrossAB> <built-in function eq> <Field id: Int of GlobalB>>")
     assert rel._impl_.dependency == [GlobalB, GlobalA, AcrossAB]
 
 
@@ -159,3 +160,32 @@ def test_fk_field():
 
     assert fk1.ref is GlobalA.id
     assert fk2.ref is GlobalA.id
+
+
+def test_get_foreign_key_refs():
+    registry = Registry()
+
+    class A(Entity, registry=registry):
+        id: Serial
+
+    class B(Entity, registry=registry):
+        id: Serial
+        a_id: Auto = ForeignKey(A.id)
+
+    class C(Entity, registry=registry):
+        id: Serial
+        a_id: Auto = ForeignKey(A.id)
+        b_id: Auto = ForeignKey("B.id")
+
+    class D(Entity, registry=registry):
+        id: Serial
+        a_id_1: Auto = ForeignKey(A.id)
+        a_id_2: Auto = ForeignKey(A.id)
+
+    result = registry.get_foreign_key_refs(A.id)
+    assert result[0] == (B, ["a_id"])
+    assert result[1] == (C, ["a_id"])
+    assert result[2] == (D, ["a_id_1", "a_id_2"])
+
+    result = registry.get_foreign_key_refs(B.id)
+    assert result[0] == (C, ["b_id"])
