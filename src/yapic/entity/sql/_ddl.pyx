@@ -222,7 +222,7 @@ cdef class DDLCompiler:
                 if group.type is ForeignKey:
                     alter.append(f"ADD {self.compile_foreign_key(group)}")
                 elif group.type is Index:
-                    pre.append(self.compile_create_index(group))
+                    post.append(self.compile_create_index(group))
             elif kind == EntityDiffKind.REMOVE_TRIGGER:
                 pre.append(self.remove_trigger(param[0], param[1]))
             elif kind == EntityDiffKind.CREATE_TRIGGER:
