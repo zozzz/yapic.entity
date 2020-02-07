@@ -10,6 +10,7 @@ from yapic.entity._expression import and_
 from yapic.entity._relation cimport Relation, RelationImpl, ManyToOne, ManyToMany, RelatedAttribute, determine_join_expr, Loading
 from yapic.entity._error cimport JoinError
 from yapic.entity._visitors cimport extract_fields, replace_fields, replace_entity, ReplacerBase
+from yapic.entity._virtual_attr cimport VirtualAttribute
 
 
 cdef class Query(Expression):
@@ -216,6 +217,10 @@ cdef class Query(Expression):
         return self
 
     def load(self, *load):
+        for entry in load:
+            if isinstance(entry, VirtualExpressionVal):
+                self._load[(<VirtualExpressionVal>entry)._virtual_._uid_] = (<VirtualExpressionVal>entry)._create_expr_(self)
+
         load_options(self._load, load)
         return self
 
@@ -260,6 +265,9 @@ cdef object load_options(dict target, tuple input):
             target[(<Relation>inp)._impl_.joined] = inp
         elif isinstance(inp, EntityAttribute):
             target[(<EntityAttribute>inp)._uid_] = inp
+        elif isinstance(inp, VirtualExpressionVal):
+            # handled in Query class
+            pass
         elif isinstance(inp, PathExpression):
             pl = len((<PathExpression>inp)._path_)
             for i, entry in enumerate((<PathExpression>inp)._path_):
@@ -600,6 +608,22 @@ cdef class QueryFinalizer(Visitor):
                         relation_rco.append((relation, self._rco_for_eager_relation()))
                     else:
                         relation_rco.append((relation, self._rco_for_lazy_relation(relation)))
+            elif isinstance(attr, VirtualAttribute) and attr._uid_ in self.q._load:
+                try:
+                    idx = existing[attr._name_]
+                except KeyError:
+                    try:
+                        idx = self._find_column_index(attr)
+                    except ValueError:
+                        idx = len(self.q._columns)
+                        self.q._columns.append(self.q._load[attr._uid_])
+                        existing[attr._name_] = idx
+
+                # not optimal, but working
+                rco.append(RowConvertOp(RCO.GET_RECORD, idx))
+                rco.append(RowConvertOp(RCO.PUSH))
+                rco.append(RowConvertOp(RCO.POP))
+                rco.append(RowConvertOp(RCO.SET_ATTR, aliased.__attrs__[attr._index_]))
 
         for rel, relco in relation_rco:
             if relco is not None:
@@ -727,9 +751,9 @@ cdef class QueryFinalizer(Visitor):
     #         return None, None
 
 
-    def _find_column_index(self, Field field):
+    def _find_column_index(self, EntityAttribute field):
         for i, c in enumerate(self.q._columns):
-            if isinstance(c, Field) and field_eq(field, c):
+            if isinstance(c, EntityAttribute) and (<EntityAttribute>c)._uid_ is field._uid_:
                 return i
         raise ValueError()
 

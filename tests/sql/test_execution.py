@@ -3,13 +3,14 @@
 import pytest
 from datetime import datetime, date, time, tzinfo, timedelta
 from decimal import Decimal
-from yapic.entity.sql import wrap_connection, Entity, sync
+from yapic.entity.sql import wrap_connection, Entity, sync, PostgreDialect
 from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool, ForeignKey,
                           PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite, Auto, Numeric,
                           Float, Point, UUID, virtual)
 
 pytestmark = pytest.mark.asyncio
 REGISTRY = Registry()
+dialect = PostgreDialect()
 
 
 @pytest.yield_fixture
@@ -751,9 +752,9 @@ ALTER TABLE "execution"."User"
         address_id: Auto = ForeignKey(Address.id)
 
     result = await sync(conn, reg)
-    assert result == """CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_id");
-ALTER TABLE "execution"."User"
-  ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
+    assert result == """ALTER TABLE "execution"."User"
+  ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_id");"""
     await conn.conn.execute(result)
 
 
@@ -823,3 +824,43 @@ async def test_date_types(conn):
     assert obj.date_time_tz == datetime(2019, 6, 1, 12, 23, 34, tzinfo=FixedTz(5))
     assert obj.time == time(12, 23, 34)
     assert obj.time_tz == time(12, 23, 34, tzinfo=FixedTz(6))
+
+
+async def test_virtual_load(conn):
+    registry = Registry()
+
+    class VirtualLoad(Entity, registry=registry, schema="execution"):
+        id: Int
+        data_1: String
+        data_2: String
+
+        @virtual
+        def data_concat(cls):
+            return "NotLoaded"
+
+        @data_concat.value
+        def data_concat_val(cls, q):
+            return func.CONCAT_WS(" / ", cls.data_1, cls.data_2)
+
+    result = await sync(conn, registry)
+    if result:
+        await conn.conn.execute(result)
+
+    inst = VirtualLoad(id=1, data_1="Hello", data_2="World")
+    await conn.save(inst)
+
+    query = Query(VirtualLoad).load(VirtualLoad.data_concat)
+    sql, params = dialect.create_query_compiler().compile_select(query)
+    assert sql == 'SELECT CONCAT_WS($1, "t0"."data_1", "t0"."data_2") FROM "execution"."VirtualLoad" "t0"'
+    assert params == (" / ", )
+
+    obj = await conn.select(query).first()
+    assert obj.data_concat == "Hello / World"
+
+    query = Query(VirtualLoad)
+    sql, params = dialect.create_query_compiler().compile_select(query)
+    assert sql == 'SELECT "t0"."id", "t0"."data_1", "t0"."data_2" FROM "execution"."VirtualLoad" "t0"'
+    assert len(params) == 0
+
+    obj = await conn.select(query).first()
+    assert obj.data_concat == "NotLoaded"

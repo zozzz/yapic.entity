@@ -893,8 +893,8 @@ struct __pyx_obj_5yapic_6entity_11_expression_Expression {
  * 
  * 
  * cdef class BinaryExpression(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly Expression left
- *     cdef readonly Expression right
+ *     cpdef readonly Expression left
+ *     cpdef readonly Expression right
  */
 struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression {
   struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
@@ -965,8 +965,8 @@ struct __pyx_obj_5yapic_6entity_11_expression_AliasExpression {
  * 
  * 
  * cdef class DirectionExpression(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly Expression expr
- *     cdef readonly bint is_asc
+ *     cpdef readonly Expression expr
+ *     cpdef readonly bint is_asc
  */
 struct __pyx_obj_5yapic_6entity_11_expression_DirectionExpression {
   struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
@@ -979,8 +979,8 @@ struct __pyx_obj_5yapic_6entity_11_expression_DirectionExpression {
  * 
  * 
  * cdef class CallExpression(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly Expression callable
- *     cdef readonly tuple args
+ *     cpdef readonly Expression callable
+ *     cpdef readonly tuple args
  */
 struct __pyx_obj_5yapic_6entity_11_expression_CallExpression {
   struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
@@ -993,7 +993,7 @@ struct __pyx_obj_5yapic_6entity_11_expression_CallExpression {
  * 
  * 
  * cdef class RawExpression(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly str expr
+ *     cpdef readonly str expr
  * 
  */
 struct __pyx_obj_5yapic_6entity_11_expression_RawExpression {
@@ -1006,7 +1006,7 @@ struct __pyx_obj_5yapic_6entity_11_expression_RawExpression {
  * 
  * 
  * cdef class PathExpression(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly list _path_
+ *     cpdef readonly list _path_
  * 
  */
 struct __pyx_obj_5yapic_6entity_11_expression_PathExpression {
@@ -1019,8 +1019,8 @@ struct __pyx_obj_5yapic_6entity_11_expression_PathExpression {
  * 
  * 
  * cdef class VirtualExpressionVal(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly object _virtual_
- *     cdef readonly object _source_
+ *     cpdef readonly object _virtual_
+ *     cpdef readonly object _source_
  */
 struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionVal {
   struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
@@ -1045,8 +1045,8 @@ struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionBinary {
  * 
  * 
  * cdef class VirtualExpressionDir(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly VirtualExpressionVal expr
- *     cdef readonly object op
+ *     cpdef readonly VirtualExpressionVal expr
+ *     cpdef readonly object op
  */
 struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionDir {
   struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
@@ -5932,9 +5932,9 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_16BinaryExpression_6visit
 /* "yapic/entity/_expression.pxd":19
  * 
  * cdef class BinaryExpression(Expression):
- *     cdef readonly Expression left             # <<<<<<<<<<<<<<
- *     cdef readonly Expression right
- *     cdef readonly object op
+ *     cpdef readonly Expression left             # <<<<<<<<<<<<<<
+ *     cpdef readonly Expression right
+ *     cpdef readonly object op
  */
 
 /* Python wrapper */
@@ -5968,10 +5968,10 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_16BinaryExpression_4left_
 
 /* "yapic/entity/_expression.pxd":20
  * cdef class BinaryExpression(Expression):
- *     cdef readonly Expression left
- *     cdef readonly Expression right             # <<<<<<<<<<<<<<
- *     cdef readonly object op
- *     cdef readonly bint negated
+ *     cpdef readonly Expression left
+ *     cpdef readonly Expression right             # <<<<<<<<<<<<<<
+ *     cpdef readonly object op
+ *     cpdef readonly bint negated
  */
 
 /* Python wrapper */
@@ -6004,10 +6004,10 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_16BinaryExpression_5right
 }
 
 /* "yapic/entity/_expression.pxd":21
- *     cdef readonly Expression left
- *     cdef readonly Expression right
- *     cdef readonly object op             # <<<<<<<<<<<<<<
- *     cdef readonly bint negated
+ *     cpdef readonly Expression left
+ *     cpdef readonly Expression right
+ *     cpdef readonly object op             # <<<<<<<<<<<<<<
+ *     cpdef readonly bint negated
  * 
  */
 
@@ -6041,9 +6041,9 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_16BinaryExpression_2op___
 }
 
 /* "yapic/entity/_expression.pxd":22
- *     cdef readonly Expression right
- *     cdef readonly object op
- *     cdef readonly bint negated             # <<<<<<<<<<<<<<
+ *     cpdef readonly Expression right
+ *     cpdef readonly object op
+ *     cpdef readonly bint negated             # <<<<<<<<<<<<<<
  * 
  * 
  */
@@ -8383,8 +8383,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_19DirectionExpression_8de
 /* "yapic/entity/_expression.pxd":49
  * 
  * cdef class DirectionExpression(Expression):
- *     cdef readonly Expression expr             # <<<<<<<<<<<<<<
- *     cdef readonly bint is_asc
+ *     cpdef readonly Expression expr             # <<<<<<<<<<<<<<
+ *     cpdef readonly bint is_asc
  * 
  */
 
@@ -8419,8 +8419,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_19DirectionExpression_4ex
 
 /* "yapic/entity/_expression.pxd":50
  * cdef class DirectionExpression(Expression):
- *     cdef readonly Expression expr
- *     cdef readonly bint is_asc             # <<<<<<<<<<<<<<
+ *     cpdef readonly Expression expr
+ *     cpdef readonly bint is_asc             # <<<<<<<<<<<<<<
  * 
  * 
  */
@@ -8895,8 +8895,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14CallExpression_4visit(s
 /* "yapic/entity/_expression.pxd":54
  * 
  * cdef class CallExpression(Expression):
- *     cdef readonly Expression callable             # <<<<<<<<<<<<<<
- *     cdef readonly tuple args
+ *     cpdef readonly Expression callable             # <<<<<<<<<<<<<<
+ *     cpdef readonly tuple args
  * 
  */
 
@@ -8931,8 +8931,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14CallExpression_8callabl
 
 /* "yapic/entity/_expression.pxd":55
  * cdef class CallExpression(Expression):
- *     cdef readonly Expression callable
- *     cdef readonly tuple args             # <<<<<<<<<<<<<<
+ *     cpdef readonly Expression callable
+ *     cpdef readonly tuple args             # <<<<<<<<<<<<<<
  * 
  * 
  */
@@ -9280,7 +9280,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_13RawExpression_4visit(st
 /* "yapic/entity/_expression.pxd":59
  * 
  * cdef class RawExpression(Expression):
- *     cdef readonly str expr             # <<<<<<<<<<<<<<
+ *     cpdef readonly str expr             # <<<<<<<<<<<<<<
  * 
  * 
  */
@@ -10700,7 +10700,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_8__repr_
 /* "yapic/entity/_expression.pxd":63
  * 
  * cdef class PathExpression(Expression):
- *     cdef readonly list _path_             # <<<<<<<<<<<<<<
+ *     cpdef readonly list _path_             # <<<<<<<<<<<<<<
  * 
  * 
  */
@@ -11747,8 +11747,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_20VirtualExpressionVal_12
 /* "yapic/entity/_expression.pxd":67
  * 
  * cdef class VirtualExpressionVal(Expression):
- *     cdef readonly object _virtual_             # <<<<<<<<<<<<<<
- *     cdef readonly object _source_
+ *     cpdef readonly object _virtual_             # <<<<<<<<<<<<<<
+ *     cpdef readonly object _source_
  * 
  */
 
@@ -11783,8 +11783,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_20VirtualExpressionVal_9_
 
 /* "yapic/entity/_expression.pxd":68
  * cdef class VirtualExpressionVal(Expression):
- *     cdef readonly object _virtual_
- *     cdef readonly object _source_             # <<<<<<<<<<<<<<
+ *     cpdef readonly object _virtual_
+ *     cpdef readonly object _source_             # <<<<<<<<<<<<<<
  * 
  *     cpdef Expression _create_expr_(self, object q)
  */
@@ -14049,8 +14049,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_20VirtualExpressionDir_10
 /* "yapic/entity/_expression.pxd":78
  * 
  * cdef class VirtualExpressionDir(Expression):
- *     cdef readonly VirtualExpressionVal expr             # <<<<<<<<<<<<<<
- *     cdef readonly object op
+ *     cpdef readonly VirtualExpressionVal expr             # <<<<<<<<<<<<<<
+ *     cpdef readonly object op
  * 
  */
 
@@ -14085,8 +14085,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_20VirtualExpressionDir_4e
 
 /* "yapic/entity/_expression.pxd":79
  * cdef class VirtualExpressionDir(Expression):
- *     cdef readonly VirtualExpressionVal expr
- *     cdef readonly object op             # <<<<<<<<<<<<<<
+ *     cpdef readonly VirtualExpressionVal expr
+ *     cpdef readonly object op             # <<<<<<<<<<<<<<
  * 
  *     cpdef Expression _create_expr_(self, object q)
  */

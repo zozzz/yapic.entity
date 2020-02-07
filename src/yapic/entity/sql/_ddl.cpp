@@ -1018,8 +1018,8 @@ struct __pyx_obj_5yapic_6entity_11_expression_Expression {
  * 
  * 
  * cdef class BinaryExpression(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly Expression left
- *     cdef readonly Expression right
+ *     cpdef readonly Expression left
+ *     cpdef readonly Expression right
  */
 struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression {
   struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
@@ -1090,8 +1090,8 @@ struct __pyx_obj_5yapic_6entity_11_expression_AliasExpression {
  * 
  * 
  * cdef class DirectionExpression(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly Expression expr
- *     cdef readonly bint is_asc
+ *     cpdef readonly Expression expr
+ *     cpdef readonly bint is_asc
  */
 struct __pyx_obj_5yapic_6entity_11_expression_DirectionExpression {
   struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
@@ -1104,8 +1104,8 @@ struct __pyx_obj_5yapic_6entity_11_expression_DirectionExpression {
  * 
  * 
  * cdef class CallExpression(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly Expression callable
- *     cdef readonly tuple args
+ *     cpdef readonly Expression callable
+ *     cpdef readonly tuple args
  */
 struct __pyx_obj_5yapic_6entity_11_expression_CallExpression {
   struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
@@ -1118,7 +1118,7 @@ struct __pyx_obj_5yapic_6entity_11_expression_CallExpression {
  * 
  * 
  * cdef class RawExpression(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly str expr
+ *     cpdef readonly str expr
  * 
  */
 struct __pyx_obj_5yapic_6entity_11_expression_RawExpression {
@@ -1131,7 +1131,7 @@ struct __pyx_obj_5yapic_6entity_11_expression_RawExpression {
  * 
  * 
  * cdef class PathExpression(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly list _path_
+ *     cpdef readonly list _path_
  * 
  */
 struct __pyx_obj_5yapic_6entity_11_expression_PathExpression {
@@ -1144,8 +1144,8 @@ struct __pyx_obj_5yapic_6entity_11_expression_PathExpression {
  * 
  * 
  * cdef class VirtualExpressionVal(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly object _virtual_
- *     cdef readonly object _source_
+ *     cpdef readonly object _virtual_
+ *     cpdef readonly object _source_
  */
 struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionVal {
   struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
@@ -1170,8 +1170,8 @@ struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionBinary {
  * 
  * 
  * cdef class VirtualExpressionDir(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly VirtualExpressionVal expr
- *     cdef readonly object op
+ *     cpdef readonly VirtualExpressionVal expr
+ *     cpdef readonly object op
  */
 struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionDir {
   struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
@@ -1799,8 +1799,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression *__pyx_vt
  * 
  * 
  * cdef class BinaryExpression(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly Expression left
- *     cdef readonly Expression right
+ *     cpdef readonly Expression left
+ *     cpdef readonly Expression right
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_11_expression_BinaryExpression {
@@ -1869,8 +1869,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_AliasExpression *__p
  * 
  * 
  * cdef class DirectionExpression(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly Expression expr
- *     cdef readonly bint is_asc
+ *     cpdef readonly Expression expr
+ *     cpdef readonly bint is_asc
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_11_expression_DirectionExpression {
@@ -1883,8 +1883,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_DirectionExpression 
  * 
  * 
  * cdef class CallExpression(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly Expression callable
- *     cdef readonly tuple args
+ *     cpdef readonly Expression callable
+ *     cpdef readonly tuple args
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_11_expression_CallExpression {
@@ -1897,7 +1897,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_CallExpression *__py
  * 
  * 
  * cdef class RawExpression(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly str expr
+ *     cpdef readonly str expr
  * 
  */
 
@@ -1911,7 +1911,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_RawExpression *__pyx
  * 
  * 
  * cdef class PathExpression(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly list _path_
+ *     cpdef readonly list _path_
  * 
  */
 
@@ -1925,8 +1925,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_PathExpression *__py
  * 
  * 
  * cdef class VirtualExpressionVal(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly object _virtual_
- *     cdef readonly object _source_
+ *     cpdef readonly object _virtual_
+ *     cpdef readonly object _source_
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_11_expression_VirtualExpressionVal {
@@ -1955,8 +1955,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_VirtualExpressionBin
  * 
  * 
  * cdef class VirtualExpressionDir(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly VirtualExpressionVal expr
- *     cdef readonly object op
+ *     cpdef readonly VirtualExpressionVal expr
+ *     cpdef readonly object op
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_11_expression_VirtualExpressionDir {
@@ -8196,7 +8196,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_15compile_enti
  *                 if group.type is ForeignKey:
  *                     alter.append(f"ADD {self.compile_foreign_key(group)}")             # <<<<<<<<<<<<<<
  *                 elif group.type is Index:
- *                     pre.append(self.compile_create_index(group))
+ *                     post.append(self.compile_create_index(group))
  */
         __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_compile_foreign_key); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 223, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
@@ -8238,7 +8238,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_15compile_enti
  *                 if group.type is ForeignKey:
  *                     alter.append(f"ADD {self.compile_foreign_key(group)}")
  *                 elif group.type is Index:             # <<<<<<<<<<<<<<
- *                     pre.append(self.compile_create_index(group))
+ *                     post.append(self.compile_create_index(group))
  *             elif kind == EntityDiffKind.REMOVE_TRIGGER:
  */
       __pyx_t_19 = (__pyx_v_group->type == ((PyObject *)__pyx_ptype_5yapic_6entity_6_field_Index));
@@ -8248,7 +8248,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_15compile_enti
         /* "yapic/entity/sql/_ddl.pyx":225
  *                     alter.append(f"ADD {self.compile_foreign_key(group)}")
  *                 elif group.type is Index:
- *                     pre.append(self.compile_create_index(group))             # <<<<<<<<<<<<<<
+ *                     post.append(self.compile_create_index(group))             # <<<<<<<<<<<<<<
  *             elif kind == EntityDiffKind.REMOVE_TRIGGER:
  *                 pre.append(self.remove_trigger(param[0], param[1]))
  */
@@ -8269,14 +8269,14 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_15compile_enti
         if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 225, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __pyx_t_10 = __Pyx_PyList_Append(__pyx_v_pre, __pyx_t_7); if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 225, __pyx_L1_error)
+        __pyx_t_10 = __Pyx_PyList_Append(__pyx_v_post, __pyx_t_7); if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 225, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
         /* "yapic/entity/sql/_ddl.pyx":224
  *                 if group.type is ForeignKey:
  *                     alter.append(f"ADD {self.compile_foreign_key(group)}")
  *                 elif group.type is Index:             # <<<<<<<<<<<<<<
- *                     pre.append(self.compile_create_index(group))
+ *                     post.append(self.compile_create_index(group))
  *             elif kind == EntityDiffKind.REMOVE_TRIGGER:
  */
       }
@@ -8294,7 +8294,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_15compile_enti
 
     /* "yapic/entity/sql/_ddl.pyx":226
  *                 elif group.type is Index:
- *                     pre.append(self.compile_create_index(group))
+ *                     post.append(self.compile_create_index(group))
  *             elif kind == EntityDiffKind.REMOVE_TRIGGER:             # <<<<<<<<<<<<<<
  *                 pre.append(self.remove_trigger(param[0], param[1]))
  *             elif kind == EntityDiffKind.CREATE_TRIGGER:
@@ -8311,7 +8311,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_15compile_enti
     if (__pyx_t_9) {
 
       /* "yapic/entity/sql/_ddl.pyx":227
- *                     pre.append(self.compile_create_index(group))
+ *                     post.append(self.compile_create_index(group))
  *             elif kind == EntityDiffKind.REMOVE_TRIGGER:
  *                 pre.append(self.remove_trigger(param[0], param[1]))             # <<<<<<<<<<<<<<
  *             elif kind == EntityDiffKind.CREATE_TRIGGER:
@@ -8377,7 +8377,7 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_15compile_enti
 
       /* "yapic/entity/sql/_ddl.pyx":226
  *                 elif group.type is Index:
- *                     pre.append(self.compile_create_index(group))
+ *                     post.append(self.compile_create_index(group))
  *             elif kind == EntityDiffKind.REMOVE_TRIGGER:             # <<<<<<<<<<<<<<
  *                 pre.append(self.remove_trigger(param[0], param[1]))
  *             elif kind == EntityDiffKind.CREATE_TRIGGER:

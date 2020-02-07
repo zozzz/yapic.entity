@@ -18,6 +18,7 @@ from yapic.entity._expression import and_
 from yapic.entity._field cimport Field, PrimaryKey
 from yapic.entity._field_impl cimport JsonImpl, CompositeImpl
 from yapic.entity._relation cimport Relation
+from yapic.entity._virtual_attr cimport VirtualAttribute
 
 from .._query_compiler cimport QueryCompiler
 from ._dialect cimport PostgreDialect

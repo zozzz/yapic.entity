@@ -1,4 +1,4 @@
-from ._entity cimport EntityAttribute, EntityAttributeImpl, EntityBase
+from ._entity cimport EntityAttribute, EntityAttributeImpl, EntityBase, NOTSET
 from ._expression cimport Expression, Visitor, BinaryExpression, ConstExpression, VirtualExpressionVal, VirtualExpressionBinary
 
 
@@ -14,8 +14,14 @@ cdef class VirtualAttribute(EntityAttribute):
     def __get__(self, instance, owner):
         if instance is None:
             return VirtualExpressionVal(self, self._entity_)
+        elif isinstance(instance, EntityBase):
+            res = (<EntityBase>instance).__state__.get_value(self)
+            if res is NOTSET:
+                return self._get(instance)
+            else:
+                return res
         else:
-            return self._get(instance)
+            raise RuntimeError()
 
     def __set__(self, EntityBase instance, value):
         if self._set:
