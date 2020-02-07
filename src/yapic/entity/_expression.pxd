@@ -16,10 +16,10 @@ cdef class Expression:
 
 
 cdef class BinaryExpression(Expression):
-    cdef readonly Expression left
-    cdef readonly Expression right
-    cdef readonly object op
-    cdef readonly bint negated
+    cpdef readonly Expression left
+    cpdef readonly Expression right
+    cpdef readonly object op
+    cpdef readonly bint negated
 
 
 cdef class UnaryExpression(Expression):
@@ -46,26 +46,26 @@ cdef Expression coerce_expression(object expr)
 
 
 cdef class DirectionExpression(Expression):
-    cdef readonly Expression expr
-    cdef readonly bint is_asc
+    cpdef readonly Expression expr
+    cpdef readonly bint is_asc
 
 
 cdef class CallExpression(Expression):
-    cdef readonly Expression callable
-    cdef readonly tuple args
+    cpdef readonly Expression callable
+    cpdef readonly tuple args
 
 
 cdef class RawExpression(Expression):
-    cdef readonly str expr
+    cpdef readonly str expr
 
 
 cdef class PathExpression(Expression):
-    cdef readonly list _path_
+    cpdef readonly list _path_
 
 
 cdef class VirtualExpressionVal(Expression):
-    cdef readonly object _virtual_
-    cdef readonly object _source_
+    cpdef readonly object _virtual_
+    cpdef readonly object _source_
 
     cpdef Expression _create_expr_(self, object q)
 
@@ -75,8 +75,8 @@ cdef class VirtualExpressionBinary(BinaryExpression):
 
 
 cdef class VirtualExpressionDir(Expression):
-    cdef readonly VirtualExpressionVal expr
-    cdef readonly object op
+    cpdef readonly VirtualExpressionVal expr
+    cpdef readonly object op
 
     cpdef Expression _create_expr_(self, object q)
 
