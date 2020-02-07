@@ -325,7 +325,7 @@ cdef class VirtualExpressionDir(Expression):
         if self.expr._virtual_._order:
             return self.expr._virtual_._order(self.expr._source_, q, self.op)
         elif self.expr._virtual_._val:
-            return self.op(self.expr._virtual_._val(self.expr._source_, q, self.op))
+            return self.op(self.expr._virtual_._val(self.expr._source_, q))
         else:
             raise ValueError("Virtual attribute is not define order or value expression: %r" % self.expr._virtual_)
 
