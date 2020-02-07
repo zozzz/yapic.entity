@@ -218,7 +218,7 @@ cdef class Query(Expression):
 
     def load(self, *load):
         for entry in load:
-            if isinstance(entry, VirtualExpressionVal):
+            if isinstance(entry, VirtualExpressionVal) and (<VirtualExpressionVal>entry)._virtual_._val:
                 self._load[(<VirtualExpressionVal>entry)._virtual_._uid_] = (<VirtualExpressionVal>entry)._create_expr_(self)
 
         load_options(self._load, load)
