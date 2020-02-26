@@ -3902,6 +3902,7 @@ static const char __pyx_k_and[] = "and_";
 static const char __pyx_k_get[] = "get";
 static const char __pyx_k_key[] = "_key_";
 static const char __pyx_k_uid[] = "_uid_";
+static const char __pyx_k_val[] = "_val";
 static const char __pyx_k_JUMP[] = "JUMP";
 static const char __pyx_k_LEFT[] = "LEFT";
 static const char __pyx_k_PUSH[] = "PUSH";
@@ -4082,6 +4083,7 @@ static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_type;
 static PyObject *__pyx_n_s_uid;
 static PyObject *__pyx_n_s_upper;
+static PyObject *__pyx_n_s_val;
 static PyObject *__pyx_n_s_values;
 static PyObject *__pyx_n_s_visit_columns;
 static PyObject *__pyx_n_s_visit_list;
@@ -7611,7 +7613,7 @@ static PyObject *__pyx_pf_5yapic_6entity_6_query_5Query_28offset(struct __pyx_ob
  * 
  *     def load(self, *load):             # <<<<<<<<<<<<<<
  *         for entry in load:
- *             if isinstance(entry, VirtualExpressionVal):
+ *             if isinstance(entry, VirtualExpressionVal) and (<VirtualExpressionVal>entry)._virtual_._val:
  */
 
 /* Python wrapper */
@@ -7641,14 +7643,15 @@ static PyObject *__pyx_pf_5yapic_6entity_6_query_5Query_30load(struct __pyx_obj_
   PyObject *__pyx_t_3 = NULL;
   int __pyx_t_4;
   int __pyx_t_5;
-  PyObject *__pyx_t_6 = NULL;
+  int __pyx_t_6;
+  PyObject *__pyx_t_7 = NULL;
   __Pyx_RefNannySetupContext("load", 0);
 
   /* "yapic/entity/_query.pyx":220
  * 
  *     def load(self, *load):
  *         for entry in load:             # <<<<<<<<<<<<<<
- *             if isinstance(entry, VirtualExpressionVal):
+ *             if isinstance(entry, VirtualExpressionVal) and (<VirtualExpressionVal>entry)._virtual_._val:
  *                 self._load[(<VirtualExpressionVal>entry)._virtual_._uid_] = (<VirtualExpressionVal>entry)._create_expr_(self)
  */
   __pyx_t_1 = __pyx_v_load; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
@@ -7666,17 +7669,28 @@ static PyObject *__pyx_pf_5yapic_6entity_6_query_5Query_30load(struct __pyx_obj_
     /* "yapic/entity/_query.pyx":221
  *     def load(self, *load):
  *         for entry in load:
- *             if isinstance(entry, VirtualExpressionVal):             # <<<<<<<<<<<<<<
+ *             if isinstance(entry, VirtualExpressionVal) and (<VirtualExpressionVal>entry)._virtual_._val:             # <<<<<<<<<<<<<<
  *                 self._load[(<VirtualExpressionVal>entry)._virtual_._uid_] = (<VirtualExpressionVal>entry)._create_expr_(self)
  * 
  */
-    __pyx_t_4 = __Pyx_TypeCheck(__pyx_v_entry, __pyx_ptype_5yapic_6entity_11_expression_VirtualExpressionVal); 
-    __pyx_t_5 = (__pyx_t_4 != 0);
-    if (__pyx_t_5) {
+    __pyx_t_5 = __Pyx_TypeCheck(__pyx_v_entry, __pyx_ptype_5yapic_6entity_11_expression_VirtualExpressionVal); 
+    __pyx_t_6 = (__pyx_t_5 != 0);
+    if (__pyx_t_6) {
+    } else {
+      __pyx_t_4 = __pyx_t_6;
+      goto __pyx_L6_bool_binop_done;
+    }
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionVal *)__pyx_v_entry)->_virtual_, __pyx_n_s_val); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 221, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 221, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_4 = __pyx_t_6;
+    __pyx_L6_bool_binop_done:;
+    if (__pyx_t_4) {
 
       /* "yapic/entity/_query.pyx":222
  *         for entry in load:
- *             if isinstance(entry, VirtualExpressionVal):
+ *             if isinstance(entry, VirtualExpressionVal) and (<VirtualExpressionVal>entry)._virtual_._val:
  *                 self._load[(<VirtualExpressionVal>entry)._virtual_._uid_] = (<VirtualExpressionVal>entry)._create_expr_(self)             # <<<<<<<<<<<<<<
  * 
  *         load_options(self._load, load)
@@ -7687,16 +7701,16 @@ static PyObject *__pyx_pf_5yapic_6entity_6_query_5Query_30load(struct __pyx_obj_
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
         __PYX_ERR(0, 222, __pyx_L1_error)
       }
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionVal *)__pyx_v_entry)->_virtual_, __pyx_n_s_uid); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 222, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_6);
-      if (unlikely(PyDict_SetItem(__pyx_v_self->_load, __pyx_t_6, __pyx_t_3) < 0)) __PYX_ERR(0, 222, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionVal *)__pyx_v_entry)->_virtual_, __pyx_n_s_uid); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 222, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      if (unlikely(PyDict_SetItem(__pyx_v_self->_load, __pyx_t_7, __pyx_t_3) < 0)) __PYX_ERR(0, 222, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
       /* "yapic/entity/_query.pyx":221
  *     def load(self, *load):
  *         for entry in load:
- *             if isinstance(entry, VirtualExpressionVal):             # <<<<<<<<<<<<<<
+ *             if isinstance(entry, VirtualExpressionVal) and (<VirtualExpressionVal>entry)._virtual_._val:             # <<<<<<<<<<<<<<
  *                 self._load[(<VirtualExpressionVal>entry)._virtual_._uid_] = (<VirtualExpressionVal>entry)._create_expr_(self)
  * 
  */
@@ -7706,7 +7720,7 @@ static PyObject *__pyx_pf_5yapic_6entity_6_query_5Query_30load(struct __pyx_obj_
  * 
  *     def load(self, *load):
  *         for entry in load:             # <<<<<<<<<<<<<<
- *             if isinstance(entry, VirtualExpressionVal):
+ *             if isinstance(entry, VirtualExpressionVal) and (<VirtualExpressionVal>entry)._virtual_._val:
  *                 self._load[(<VirtualExpressionVal>entry)._virtual_._uid_] = (<VirtualExpressionVal>entry)._create_expr_(self)
  */
   }
@@ -7743,14 +7757,14 @@ static PyObject *__pyx_pf_5yapic_6entity_6_query_5Query_30load(struct __pyx_obj_
  * 
  *     def load(self, *load):             # <<<<<<<<<<<<<<
  *         for entry in load:
- *             if isinstance(entry, VirtualExpressionVal):
+ *             if isinstance(entry, VirtualExpressionVal) and (<VirtualExpressionVal>entry)._virtual_._val:
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7);
   __Pyx_AddTraceback("yapic.entity._query.Query.load", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -19926,6 +19940,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_type, __pyx_k_type, sizeof(__pyx_k_type), 0, 0, 1, 1},
   {&__pyx_n_s_uid, __pyx_k_uid, sizeof(__pyx_k_uid), 0, 0, 1, 1},
   {&__pyx_n_s_upper, __pyx_k_upper, sizeof(__pyx_k_upper), 0, 0, 1, 1},
+  {&__pyx_n_s_val, __pyx_k_val, sizeof(__pyx_k_val), 0, 0, 1, 1},
   {&__pyx_n_s_values, __pyx_k_values, sizeof(__pyx_k_values), 0, 0, 1, 1},
   {&__pyx_n_s_visit_columns, __pyx_k_visit_columns, sizeof(__pyx_k_visit_columns), 0, 0, 1, 1},
   {&__pyx_n_s_visit_list, __pyx_k_visit_list, sizeof(__pyx_k_visit_list), 0, 0, 1, 1},

@@ -13255,7 +13255,7 @@ static struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_f_5yapic_
  *         if self.expr._virtual_._order:
  *             return self.expr._virtual_._order(self.expr._source_, q, self.op)             # <<<<<<<<<<<<<<
  *         elif self.expr._virtual_._val:
- *             return self.op(self.expr._virtual_._val(self.expr._source_, q, self.op))
+ *             return self.op(self.expr._virtual_._val(self.expr._source_, q))
  */
     __Pyx_XDECREF(((PyObject *)__pyx_r));
     __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->expr->_virtual_, __pyx_n_s_order); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 326, __pyx_L1_error)
@@ -13326,7 +13326,7 @@ static struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_f_5yapic_
  *         if self.expr._virtual_._order:
  *             return self.expr._virtual_._order(self.expr._source_, q, self.op)
  *         elif self.expr._virtual_._val:             # <<<<<<<<<<<<<<
- *             return self.op(self.expr._virtual_._val(self.expr._source_, q, self.op))
+ *             return self.op(self.expr._virtual_._val(self.expr._source_, q))
  *         else:
  */
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->expr->_virtual_, __pyx_n_s_val); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 327, __pyx_L1_error)
@@ -13338,7 +13338,7 @@ static struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_f_5yapic_
     /* "yapic/entity/_expression.pyx":328
  *             return self.expr._virtual_._order(self.expr._source_, q, self.op)
  *         elif self.expr._virtual_._val:
- *             return self.op(self.expr._virtual_._val(self.expr._source_, q, self.op))             # <<<<<<<<<<<<<<
+ *             return self.op(self.expr._virtual_._val(self.expr._source_, q))             # <<<<<<<<<<<<<<
  *         else:
  *             raise ValueError("Virtual attribute is not define order or value expression: %r" % self.expr._virtual_)
  */
@@ -13359,22 +13359,22 @@ static struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_f_5yapic_
     }
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_4)) {
-      PyObject *__pyx_temp[4] = {__pyx_t_3, __pyx_v_self->expr->_source_, __pyx_v_q, __pyx_v_self->op};
-      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 328, __pyx_L1_error)
+      PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_self->expr->_source_, __pyx_v_q};
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 328, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
     #endif
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
-      PyObject *__pyx_temp[4] = {__pyx_t_3, __pyx_v_self->expr->_source_, __pyx_v_q, __pyx_v_self->op};
-      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 3+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 328, __pyx_L1_error)
+      PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_self->expr->_source_, __pyx_v_q};
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 328, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
     #endif
     {
-      __pyx_t_7 = PyTuple_New(3+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 328, __pyx_L1_error)
+      __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 328, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       if (__pyx_t_3) {
         __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -13385,9 +13385,6 @@ static struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_f_5yapic_
       __Pyx_INCREF(__pyx_v_q);
       __Pyx_GIVEREF(__pyx_v_q);
       PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_v_q);
-      __Pyx_INCREF(__pyx_v_self->op);
-      __Pyx_GIVEREF(__pyx_v_self->op);
-      PyTuple_SET_ITEM(__pyx_t_7, 2+__pyx_t_6, __pyx_v_self->op);
       __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 328, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
@@ -13419,13 +13416,13 @@ static struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_f_5yapic_
  *         if self.expr._virtual_._order:
  *             return self.expr._virtual_._order(self.expr._source_, q, self.op)
  *         elif self.expr._virtual_._val:             # <<<<<<<<<<<<<<
- *             return self.op(self.expr._virtual_._val(self.expr._source_, q, self.op))
+ *             return self.op(self.expr._virtual_._val(self.expr._source_, q))
  *         else:
  */
   }
 
   /* "yapic/entity/_expression.pyx":330
- *             return self.op(self.expr._virtual_._val(self.expr._source_, q, self.op))
+ *             return self.op(self.expr._virtual_._val(self.expr._source_, q))
  *         else:
  *             raise ValueError("Virtual attribute is not define order or value expression: %r" % self.expr._virtual_)             # <<<<<<<<<<<<<<
  * 
