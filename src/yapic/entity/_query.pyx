@@ -216,6 +216,34 @@ cdef class Query(Expression):
             self._range = slice(offset, stop)
         return self
 
+    def reset_columns(self):
+        self._columns = None
+        return self
+
+    def reset_where(self):
+        self._where = None
+        return self
+
+    def reset_order(self):
+        self._order = None
+        return self
+
+    def reset_group(self):
+        self._group = None
+        return self
+
+    def reset_range(self):
+        self._range = None
+        return self
+
+    def reset_load(self):
+        self._load = {}
+        return self
+
+    def reset_exclude(self):
+        self._exclude = {}
+        return self
+
     def load(self, *load):
         for entry in load:
             if isinstance(entry, VirtualExpressionVal) and (<VirtualExpressionVal>entry)._virtual_._val:
