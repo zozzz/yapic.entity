@@ -211,7 +211,7 @@ cdef class EntityType(type):
                 mdict = PyModule_GetDict(module)
                 (<object>mdict)[args[0]] = self
 
-                self.__register__()
+                (<Registry>self.__registry__).register(self.__qname__, self)
 
     @property
     def __meta__(self):
@@ -238,6 +238,31 @@ cdef class EntityType(type):
         scope = type.__prepare__(*args, **kwargs)
         scope["__slots__"] = ()
         return scope
+
+    # def __getattr__(self, name):
+    #     cdef PolymorphMeta poly
+    #     cdef list result
+
+    #     try:
+    #         return object.__getattr__(self, name)
+    #     except AttributeError:
+    #         print("__getattr__ 1", self, name)
+    #         poly = object.__getattribute__(self, "__meta__").get("polymorph", None)
+    #         result = []
+
+    #         print("__getattr__ 2", name, poly)
+
+    #         if poly:
+    #             for poly_ent, v in poly.entities.item():
+    #                 if hasattr(poly_ent, name):
+    #                     result.append(getattr(v[1], name))
+
+    #             print(result)
+    #             if len(result) != 0:
+    #                 return result
+
+    #         # return object.__getattr__(self, name)
+    #         raise AttributeError(f"type object '{self}' has no attribute '{name}'")
 
     def __repr__(self):
         aliased = get_alias_target(self)
@@ -867,11 +892,6 @@ cdef class EntityBase:
         Py_XDECREF(ent.registry)
         ent.registry = _registry
         Py_XINCREF(ent.registry)
-
-
-    @classmethod
-    def __register__(cls):
-        (<Registry>cls.__registry__).register(cls.__qname__, cls)
 
     @property
     def __pk__(self):

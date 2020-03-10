@@ -38,8 +38,14 @@ cdef class Expression:
     def __abs__(Expression self): return UnaryExpression(self, operator.__abs__)
     def __call__(Expression self, *args): return CallExpression(self, args)
     def in_(Expression self, *values):
-        if len(values) == 1 and isinstance(values[0], (list, tuple, RawExpression, ConstExpression)):
-            values = values[0]
+        if len(values) == 1:
+            if isinstance(values[0], (list, tuple, RawExpression, ConstExpression)):
+                values = values[0]
+            elif isinstance(values[0], set):
+                values = list(values[0])
+
+            if isinstance(values, (list, tuple)) and len(values) == 1:
+                return self._new_binary_expr(values[0], operator.__eq__)
         return self._new_binary_expr(values, in_)
     def is_true(Expression self): return self == True
     def is_false(Expression self): return self == False
