@@ -545,7 +545,7 @@ cdef class QueryFinalizer(Visitor):
 
             id_fields = []
             for ent_id in poly.id_fields:
-                id_fields.append(fields[ent_id])
+                id_fields.append(fields[getattr(entity, ent_id)._uid_])
 
             rco.append(RowConvertOp(RCO.CREATE_POLYMORPH_ENTITY, tuple(id_fields), create_poly))
             end = RowConvertOp(RCO.JUMP, 0)
@@ -614,14 +614,14 @@ cdef class QueryFinalizer(Visitor):
                         rco.append(RowConvertOp(RCO.SET_ATTR, aliased.__fields__[field._index_]))
                     else:
                         try:
-                            idx = existing[field._name_]
+                            idx = existing[field._uid_]
                         except KeyError:
                             try:
                                 idx = self._find_column_index(field)
                             except ValueError:
                                 idx = len(self.q._columns)
                                 self.q._columns.append(field)
-                                existing[field._name_] = idx
+                                existing[field._uid_] = idx
 
                         rco.append(RowConvertOp(RCO.SET_ATTR_RECORD, aliased.__fields__[field._index_], idx))
             elif isinstance(attr, Relation):
@@ -638,14 +638,14 @@ cdef class QueryFinalizer(Visitor):
                         relation_rco.append((relation, self._rco_for_lazy_relation(relation)))
             elif isinstance(attr, VirtualAttribute) and attr._uid_ in self.q._load:
                 try:
-                    idx = existing[attr._name_]
+                    idx = existing[attr._uid_]
                 except KeyError:
                     try:
                         idx = self._find_column_index(attr)
                     except ValueError:
                         idx = len(self.q._columns)
                         self.q._columns.append(self.q._load[attr._uid_])
-                        existing[attr._name_] = idx
+                        existing[attr._uid_] = idx
 
                 # not optimal, but working
                 rco.append(RowConvertOp(RCO.GET_RECORD, idx))
