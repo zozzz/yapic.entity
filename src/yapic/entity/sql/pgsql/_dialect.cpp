@@ -947,7 +947,7 @@ struct __pyx_opt_args_5yapic_6entity_7_entity_11EntityState_update {
   int is_initial;
 };
 
-/* "yapic/entity/_query.pxd":82
+/* "yapic/entity/_query.pxd":83
  * """
  * 
  * ctypedef enum RCO:             # <<<<<<<<<<<<<<
@@ -1599,10 +1599,11 @@ struct __pyx_obj_5yapic_6entity_6_query_QueryFinalizer {
   struct __pyx_obj_5yapic_6entity_11_expression_Visitor __pyx_base;
   struct __pyx_obj_5yapic_6entity_6_query_Query *q;
   PyObject *rcos;
+  int in_or;
 };
 
 
-/* "yapic/entity/_query.pxd":141
+/* "yapic/entity/_query.pxd":142
  * @cython.final
  * @cython.freelist(1000)
  * cdef class RowConvertOp:             # <<<<<<<<<<<<<<
@@ -1617,7 +1618,7 @@ struct __pyx_obj_5yapic_6entity_6_query_RowConvertOp {
 };
 
 
-/* "yapic/entity/_query.pxd":148
+/* "yapic/entity/_query.pxd":149
  * 
  * @cython.final
  * cdef class QueryFactory:             # <<<<<<<<<<<<<<
@@ -5442,9 +5443,9 @@ static int __Pyx_modinit_type_import_code(void) {
    if (!__pyx_ptype_5yapic_6entity_6_query_QueryFinalizer) __PYX_ERR(7, 29, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_6_query_QueryFinalizer = (struct __pyx_vtabstruct_5yapic_6entity_6_query_QueryFinalizer*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_6_query_QueryFinalizer->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_6_query_QueryFinalizer)) __PYX_ERR(7, 29, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_6_query_RowConvertOp = __Pyx_ImportType(__pyx_t_1, "yapic.entity._query", "RowConvertOp", sizeof(struct __pyx_obj_5yapic_6entity_6_query_RowConvertOp), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_6_query_RowConvertOp) __PYX_ERR(7, 141, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_6_query_RowConvertOp) __PYX_ERR(7, 142, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_6_query_QueryFactory = __Pyx_ImportType(__pyx_t_1, "yapic.entity._query", "QueryFactory", sizeof(struct __pyx_obj_5yapic_6entity_6_query_QueryFactory), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_6_query_QueryFactory) __PYX_ERR(7, 148, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_6_query_QueryFactory) __PYX_ERR(7, 149, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("yapic.entity.sql._connection"); if (unlikely(!__pyx_t_1)) __PYX_ERR(8, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);

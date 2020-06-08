@@ -527,3 +527,25 @@ def test_deep_raltion():
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == """SELECT "t0"."id", "t0"."user_id" FROM "Deep" "t0" INNER JOIN "User" "t1" ON "t0"."user_id" = "t1"."id" INNER JOIN "UserTags" "t3" ON "t3"."user_id" = "t1"."id" INNER JOIN "Tag" "t5" ON "t3"."tag_id" = "t5"."id" WHERE "t5"."value" = $1"""
     assert params == ("OK", )
+
+
+def test_join_type_in_or():
+    R = Registry()
+
+    class A(Entity, registry=R):
+        id: Serial
+
+    class B(Entity, registry=R):
+        id: Serial
+        a_id: Auto = ForeignKey(A.id)
+        a: One[A]
+
+    q = Query(B).where(B.a.id == 2)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."a_id" FROM "B" "t0" INNER JOIN "A" "t1" ON "t0"."a_id" = "t1"."id" WHERE "t1"."id" = $1"""
+    assert params == (2, )
+
+    q = Query(B).where(or_(B.a.id == 2, B.id == 3))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."a_id" FROM "B" "t0" LEFT JOIN "A" "t1" ON "t0"."a_id" = "t1"."id" WHERE "t1"."id" = $1 OR "t0"."id" = $2"""
+    assert params == (2, 3)

@@ -1,3 +1,4 @@
+import operator
 import cython
 
 from yapic.entity._entity cimport EntityType, EntityAttribute, PolymorphMeta, DependencyList, get_alias_target
@@ -348,12 +349,20 @@ cdef class QueryFinalizer(Visitor):
     def __cinit__(self, Query q):
         self.q = q
         self.rcos = []
+        self.in_or = 0
 
     def visit_binary(self, BinaryExpression expr):
-        if expr.negated:
-            return ~expr.op(self.visit(expr.left), self.visit(expr.right))
-        else:
-            return expr.op(self.visit(expr.left), self.visit(expr.right))
+        if expr.op == operator.__or__:
+            self.in_or += 1
+
+        try:
+            if expr.negated:
+                return ~expr.op(self.visit(expr.left), self.visit(expr.right))
+            else:
+                return expr.op(self.visit(expr.left), self.visit(expr.right))
+        finally:
+            if expr.op == operator.__or__:
+                self.in_or -= 1
 
     def visit_unary(self, UnaryExpression expr):
         return expr.op(self.visit(expr.expr))
@@ -380,7 +389,7 @@ cdef class QueryFinalizer(Visitor):
         return expr
 
     def visit_field(self, expr):
-        self.q.join(expr._entity_)
+        self.q.join(expr._entity_, type="LEFT" if self.in_or > 0 else "INNER")
         return expr
 
     def visit_const(self, expr):
@@ -397,7 +406,7 @@ cdef class QueryFinalizer(Visitor):
         if isinstance(expr._path_[0], Relation):
             for p in expr._path_:
                 if isinstance(p, Relation):
-                    self.q.join(p)
+                    self.q.join(p, type="LEFT" if self.in_or > 0 else "INNER")
                 else:
                     break
 
