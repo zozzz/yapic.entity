@@ -275,6 +275,25 @@ def test_entity_alias():
     assert params == (42, )
 
 
+def test_entity_alias_mixin():
+    R = Registry()
+
+    class Mixin:
+        created_time: DateTimeTz
+
+    class A(Entity, Mixin, registry=R):
+        id: Serial
+
+    q = Query(A).order(A.created_time)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."created_time" FROM "A" "t0" ORDER BY "t0"."created_time" ASC"""
+
+    alias = A.alias("XXX")
+    q = Query(alias).order(alias.created_time)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "XXX"."id", "XXX"."created_time" FROM "A" "XXX" ORDER BY "XXX"."created_time" ASC"""
+
+
 def test_join_relation():
     q = Query().select_from(User).join(User.address)
     sql, params = dialect.create_query_compiler().compile_select(q)
