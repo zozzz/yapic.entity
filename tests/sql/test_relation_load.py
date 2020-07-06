@@ -1,5 +1,5 @@
 import pytest
-from yapic.entity.sql import wrap_connection, Entity, sync
+from yapic.entity.sql import wrap_connection, Entity, sync, raw
 from yapic.entity import (Serial, Int, String, ForeignKey, PrimaryKey, One, Many, ManyAcross, Registry, DependencyList,
                           Json, Composite, save_operations, Auto, Query, Loading, Relation)
 from yapic import json
@@ -301,3 +301,23 @@ async def test_deep_relation_where(conn):
 
     assert bool(something2) is True
     assert something2.id == 1
+
+
+async def test_load_multi_entity(conn):
+    user = User(
+        name={"family": "User"},
+        address=Address(addr="XYZ Addr"),
+    )
+    await conn.save(user)
+
+    other_field = raw(f"1").alias("something")
+
+    q = Query(User) \
+        .columns(User, other_field) \
+        .load(User.id, User.address.addr) \
+        .where(User.id == user.id)
+
+    user = await conn.select(q).first()
+    data = json.dumps(user)
+    # TODO: üres nem kívánt értékek törlése
+    assert data == """[{"id":7,"name":{},"address":{"addr":"XYZ Addr"},"children":[],"tags":[]},1]"""

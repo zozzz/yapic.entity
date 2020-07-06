@@ -423,7 +423,8 @@ cdef class QueryFinalizer(Visitor):
 
     def finalize(self, *expr_list):
         if self.q._columns:
-            self.q.load(*self.q._columns)
+            if not self.q._load:
+                self.q.load(*self.q._columns)
             self._visit_columns(list(self.q._columns))
         else:
             if not self.q._load:
