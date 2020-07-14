@@ -743,6 +743,17 @@ cdef class EntityState:
             res[attr._name_] = value
         return res
 
+    def changes_with_previous(self):
+        cdef dict res = {}
+        cdef int idx
+        cdef tuple initial = self.initial
+
+        for attr, value in self.data_for_update():
+            idx = attr._index_
+            res[attr._name_] = (initial[idx], value)
+
+        return res
+
     cdef object attr_changes(self, EntityAttribute attr):
         cdef int idx = attr._index_
         cdef PyObject* iv
@@ -820,6 +831,30 @@ cdef class EntityState:
                 val = self.attr_changes(attr)
                 if val is not NOTSET:
                     yield (attr, val)
+
+    def __eq__(EntityState self, other):
+        if not isinstance(other, EntityState):
+            return False
+
+        if self.entity is not (<EntityState>other).entity:
+            return False
+
+        cdef int idx
+        cdef EntityAttribute attr
+
+        for attr in self.entity.__attrs__:
+            sv = self.get_value(attr)
+            ov = (<EntityState>other).get_value(attr)
+            nv = (<EntityAttributeImpl>attr._impl_).state_get_dirty(sv, ov)
+
+            if nv is NOTSET:
+                continue
+
+            return False
+        return True
+
+    def __ne__(EntityState self, other):
+        return not self.__eq__(other)
 
 
 cdef class EntityBase:

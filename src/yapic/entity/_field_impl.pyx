@@ -124,7 +124,13 @@ cdef class EntityTypeImpl(FieldImpl):
             elif initial.__state__.is_dirty:
                 return initial
         elif initial is not current:
-            return current
+            if type(initial) is type(current):
+                if initial.__state__ == current.__state__:
+                    return NOTSET
+                else:
+                    return current
+            else:
+                return current
         elif current is not None and current.__state__.is_dirty:
             return current
         return NOTSET

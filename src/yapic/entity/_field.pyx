@@ -222,7 +222,14 @@ cdef class ForeignKey(FieldExtension):
         self.ref = None
 
         if isinstance(field, str):
-            self._ref = compile(field, "<string>", "eval")
+            if field.startswith("~"):
+                parts = field[1:].split(".")
+                if len(parts) < 2:
+                    raise ValueError("Incorrect reference format")
+                field_name = parts.pop()
+                self._ref = (".".join(parts), field_name)
+            else:
+                self._ref = compile(field, "<string>", "eval")
         elif isinstance(field, _CodeType):
             self._ref = field
         elif not isinstance(field, Field):
@@ -256,13 +263,21 @@ cdef class ForeignKey(FieldExtension):
         cdef Field field = self.attr
 
         if self.ref is None:
-            module = PyImport_Import(field._entity_.__module__)
-            mdict = PyModule_GetDict(module)
-            ldict = {field._entity_.__qualname__.split(".").pop(): field._entity_}
-            try:
-                self.ref = eval(self._ref, <object>mdict, <object>ldict)
-            except NameError as e:
-                return False
+            if isinstance(self._ref, tuple):
+                try:
+                    entity = field._entity_.__registry__[self._ref[0]]
+                except KeyError:
+                    return False
+
+                self.ref = getattr(entity, self._ref[1])
+            else:
+                module = PyImport_Import(field._entity_.__module__)
+                mdict = PyModule_GetDict(module)
+                ldict = {field._entity_.__qualname__.split(".").pop(): field._entity_}
+                try:
+                    self.ref = eval(self._ref, <object>mdict, <object>ldict)
+                except NameError as e:
+                    return False
 
         field._deps_.add(self.ref._entity_)
 
