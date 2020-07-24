@@ -1078,19 +1078,20 @@ cdef class PolymorphMeta:
         self.id_fields = PolymorphMeta.normalize_id(id)
         self.entities = {}
 
-    def new_entity(self, poly_id):
+    def get_entity(self, poly_id):
         poly_id = PolymorphMeta.normalize_id(poly_id)
         cdef EntityType entity = None
 
         for entity, v in self.entities.items():
             id, rel = <tuple>v
             if id == poly_id:
-                # data = {}
-                # for i, f in enumerate(self.id_fields):
-                #     data[f] = poly_id[i]
-                return entity()
+                return entity
 
         raise ValueError("Unexpected value for polymorph id: %r" % poly_id)
+
+    def new_entity(self, poly_id):
+        cdef EntityType entity = self.get_entity(poly_id)
+        return entity()
 
     cdef object add(self, object id, EntityType entity, object relation):
         if not isinstance(relation, Relation):
