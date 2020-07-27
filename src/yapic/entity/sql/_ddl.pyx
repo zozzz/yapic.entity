@@ -142,14 +142,14 @@ cdef class DDLCompiler:
 
         for idx in group.items:
             if idx.expr:
-                expr = f"({idx.expr})"
+                expr = f"{idx.expr}"
             else:
-                expr = f"({self.dialect.quote_ident(idx.attr._name_)})"
+                expr = f"{self.dialect.quote_ident(idx.attr._name_)}"
             if idx.collate:
                 expr += f" COLLATE \"{idx.collate}\""
             exprs.append(expr)
 
-        return res + ", ".join(exprs) + ";"
+        return res + "(" + ", ".join(exprs) + ");"
 
 
     def compile_registry_diff(self, RegistryDiff diff):
