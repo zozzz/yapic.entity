@@ -42,10 +42,10 @@ cdef class Factory:
         return self.invoke()
 
     cdef object invoke(self):
-        return new_instance(self.orig_type, self.hints, not self.has_forward_ref)
+        return new_instance(self.orig_type, self.hints, not self.has_forward_ref, None)
 
 
-cdef object new_instance(object type, tuple hints, bint resolve_forward):
+cdef object new_instance(object type, tuple hints, bint resolve_forward, dict locals):
     cdef object cls
     cdef dict attrs
     cdef tuple init
@@ -63,7 +63,7 @@ cdef object new_instance(object type, tuple hints, bint resolve_forward):
             if argType is not None:
                 if is_forward_decl(argType):
                     if resolve_forward:
-                        args.append(new_instance_from_forward(argType))
+                        args.append(new_instance_from_forward(argType, locals))
                     else:
                         args.append(argType)
                 else:
@@ -71,15 +71,15 @@ cdef object new_instance(object type, tuple hints, bint resolve_forward):
                         args.append(argType.__args__[0])
                     else:
                         hints = typing_.TypeHints(argType)
-                        args.append(new_instance(argType, hints, resolve_forward))
+                        args.append(new_instance(argType, hints, resolve_forward, locals))
             else:
                 raise TypeError("Positional arguments must have a type hint: %r" % type)
 
     return type(*args)
 
 
-cdef object new_instance_from_forward(object fwd):
+cdef object new_instance_from_forward(object fwd, dict locals):
     cdef ForwardDecl* forward = (<ForwardDecl*>(<PyObject*>fwd))
-    argType = forward.Resolve()
+    argType = forward.Resolve(locals)
     hints = typing_.TypeHints(argType)
-    return new_instance(argType, hints, True)
+    return new_instance(argType, hints, True, locals)

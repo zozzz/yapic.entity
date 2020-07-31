@@ -8,7 +8,7 @@ from ._field cimport Field
 
 
 cdef class Relation(EntityAttribute):
-    pass
+    cdef object update_join_expr(self)
 
 
 @cython.final

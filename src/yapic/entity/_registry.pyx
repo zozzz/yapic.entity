@@ -12,17 +12,22 @@ cdef class Registry:
     def __cinit__(self):
         # self.entities = WeakValueDictionary()
         self.entities = {}
+        self.locals = {}
         self.deferred = []
 
     cpdef object register(self, str name, EntityType entity):
         if name in self.entities:
             raise ValueError("entity already registered: %r" % entity)
         else:
+            insert_local_ref(self.locals, name, entity)
+
             self.entities[name] = entity
+            self.deferred.append(entity)
+
             self.resolve_deferred()
 
-            if not entity.resolve_deferred():
-                self.deferred.append(entity)
+            # if not entity.resolve_deferred():
+            #     self.deferred.append(entity)
 
     def __getitem__(self, str name):
         return self.entities[name]
@@ -72,17 +77,38 @@ cdef class Registry:
         return result
 
 
+    # cdef resolve_deferred(self):
+    #     cdef EntityType entity
+    #     cdef list deferred = self.deferred
+    #     cdef int index = len(deferred) - 1
+
+    #     while index >= 0:
+    #         entity = deferred[index]
+    #         if entity.resolve_deferred():
+    #             deferred.pop(index)
+
+    #         index -= 1
     cdef resolve_deferred(self):
         cdef EntityType entity
         cdef list deferred = self.deferred
-        cdef int index = len(deferred) - 1
+        cdef int lastLen = -1
+        cdef int length
+        cdef int i
 
-        while index >= 0:
-            entity = deferred[index]
-            if entity.resolve_deferred():
-                deferred.pop(index)
+        while True:
+            length = len(deferred)
+            if length == 0 or length == lastLen:
+                break
+            lastLen = length
 
-            index -= 1
+            length -= 1
+            while length >= 0:
+                entity = deferred[length]
+                if entity.resolve_deferred():
+                    deferred.pop(length)
+
+                length -= 1
+
 
 
 class RegistryDiffKind(Enum):
@@ -205,3 +231,35 @@ cdef object entity_data_is_eq(EntityBase a, EntityBase b):
             return False
 
     return True
+
+
+cdef insert_local_ref(dict locals, str name, EntityType entity):
+    parts = name.split(".")
+    last_part = parts.pop()
+
+    container = locals
+    for p in parts:
+        try:
+            container = container[p]
+        except KeyError:
+            new_container = _localdict()
+            container[p] = new_container
+            container = new_container
+    container[last_part] = entity
+
+
+class _localdict(dict):
+    def __getattr__(self, name):
+        if name in self:
+            return self[name]
+        else:
+            raise NameError("No such attribute: " + name)
+
+    def __setattr__(self, name, value):
+        self[name] = value
+
+    def __delattr__(self, name):
+        if name in self:
+            del self[name]
+        else:
+            raise NameError("No such attribute: " + name)

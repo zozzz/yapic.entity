@@ -222,14 +222,7 @@ cdef class ForeignKey(FieldExtension):
         self.ref = None
 
         if isinstance(field, str):
-            if field.startswith("~"):
-                parts = field[1:].split(".")
-                if len(parts) < 2:
-                    raise ValueError("Incorrect reference format")
-                field_name = parts.pop()
-                self._ref = (".".join(parts), field_name)
-            else:
-                self._ref = compile(field, "<string>", "eval")
+            self._ref = compile(field, field, "eval")
         elif isinstance(field, _CodeType):
             self._ref = field
         elif not isinstance(field, Field):
@@ -263,21 +256,14 @@ cdef class ForeignKey(FieldExtension):
         cdef Field field = self.attr
 
         if self.ref is None:
-            if isinstance(self._ref, tuple):
-                try:
-                    entity = field._entity_.__registry__[self._ref[0]]
-                except KeyError:
-                    return False
-
-                self.ref = getattr(entity, self._ref[1])
-            else:
-                module = PyImport_Import(field._entity_.__module__)
-                mdict = PyModule_GetDict(module)
-                ldict = {field._entity_.__qualname__.split(".").pop(): field._entity_}
-                try:
-                    self.ref = eval(self._ref, <object>mdict, <object>ldict)
-                except NameError as e:
-                    return False
+            module = PyImport_Import(field._entity_.__module__)
+            mdict = PyModule_GetDict(module)
+            ldict = {field._entity_.__qualname__.split(".").pop(): field._entity_}
+            ldict.update(field._entity_.__registry__.locals)
+            try:
+                self.ref = eval(self._ref, <object>mdict, <object>ldict)
+            except NameError as e:
+                return False
 
         field._deps_.add(self.ref._entity_)
 
@@ -292,7 +278,11 @@ cdef class ForeignKey(FieldExtension):
         return True
 
     cpdef object clone(self):
-        return type(self)(self._ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)
+        if isinstance(self._ref, tuple):
+            ref = ".".join(self._ref)
+        else:
+            ref = self._ref
+        return type(self)(ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)
 
     def __repr__(self):
         return "@ForeignKey(%s, %r, on_update=%s, on_delete=%s)" % (self.name, self.ref, self.on_update, self.on_delete)

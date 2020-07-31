@@ -1,7 +1,7 @@
 import operator
 import cython
 
-from yapic.entity._entity cimport EntityType, EntityAttribute, PolymorphMeta, DependencyList, get_alias_target
+from yapic.entity._entity cimport EntityType, EntityAttribute, PolymorphMeta, get_alias_target
 from yapic.entity._field cimport Field, field_eq
 from yapic.entity._field_impl cimport CompositeImpl
 from yapic.entity._expression cimport (Expression, AliasExpression, DirectionExpression, Visitor, BinaryExpression,
@@ -143,6 +143,7 @@ cdef class Query(Expression):
             self._joins = {}
 
         if isinstance(what, Relation):
+            (<Relation>what).update_join_expr()
             impl = (<Relation>what)._impl_
 
             if isinstance(impl, ManyToMany):
@@ -707,29 +708,7 @@ cdef class QueryFinalizer(Visitor):
         cdef RCO op
         cdef Query q
 
-        # if isinstance(relation._impl_, ManyToMany):
-        #     if load is not load_aliased:
-        #         expr = replace_entity(relation._impl_.across_join_expr, load, load_aliased)
-        #     else:
-        #         expr = relation._impl_.across_join_expr
-
-        #     expr = replace_entity(expr, relation._impl_.across, relation._impl_._across)
-        #     expr2 = replace_entity(relation._impl_.join_expr, relation._impl_.across, relation._impl_._across)
-        #     expr2 = replace_entity(expr2, relation._impl_.joined, relation._impl_._joined)
-
-        #     op = RCO.LOAD_MULTI_ENTITY
-        #     q = Query(relation._impl_._across) \
-        #         .columns(relation._impl_._joined) \
-        #         .join(relation._impl_._joined, expr2, "INNER")
-        # else:
-        #     if load is not load_aliased:
-        #         expr = replace_entity(relation._impl_.join_expr, load, load_aliased)
-        #     else:
-        #         expr = relation._impl_.join_expr
-
-        #     op = RCO.LOAD_ONE_ENTITY if isinstance(relation._impl_, ManyToOne) else RCO.LOAD_MULTI_ENTITY
-        #     q = Query(load_aliased)
-
+        relation.update_join_expr()
         if isinstance(relation._impl_, ManyToMany):
             expr = relation._impl_.across_join_expr
             op = RCO.LOAD_MULTI_ENTITY

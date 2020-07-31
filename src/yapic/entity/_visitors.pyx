@@ -172,6 +172,7 @@ cdef class FieldReplacer(ReplacerBase):
         clone.init(relation._entity_)
         if not clone.bind():
             raise RuntimeError("...")
+        clone.update_join_expr()
 
         if isinstance(clone._impl_, ManyToMany):
             clone._impl_.join_expr = self.visit(clone._impl_.join_expr)

@@ -73,6 +73,7 @@ cdef class EntityType(type):
         if is_alias:
             aliased = <EntityType>bases[0]
 
+            # aliased.resolve_deferred()
             if not aliased.resolve_deferred():
                 raise RuntimeError("Can't alias deferred entity")
 
@@ -445,7 +446,7 @@ cdef class EntityAttribute(Expression):
 
             if is_forward_decl(self._impl):
                 try:
-                    self._impl_ = new_instance_from_forward(self._impl)
+                    self._impl_ = new_instance_from_forward(self._impl, self._entity_.__registry__.locals)
                 except NameError as e:
                     return False
             else:
@@ -1051,26 +1052,65 @@ class Entity(EntityBase, metaclass=EntityType, registry=REGISTRY, _root=True):
 
 @cython.final
 cdef class DependencyList(list):
-    cpdef add(self, EntityType item):
-        cdef list self_ = <list>self
+    def __cinit__(self):
+        self.circular = {}
 
-        try:
-            idx = self_.index(item)
-        except ValueError:
-            idx = len(self)
-            self_.append(item)
+    cpdef add(self, EntityType item):
+        cdef set cd = set()
+        cd.add(item)
+
+        if item not in self:
+            self.append(item)
 
         for dep in sorted(item.__deps__, key=attrgetter("__name__")):
-            try:
-                didx = self_.index(dep)
-            except ValueError:
-                self_.insert(idx, dep)
-                self.add(dep)
-            else:
-                if didx > idx:
-                    self_.pop(didx)
-                    self_.insert(idx, dep)
-                    self.add(dep)
+            self._add(item, dep, cd)
+
+    cdef _add(self, EntityType entity, EntityType dep, set cd):
+        cdef int index
+        cdef int dindex
+
+        if dep in cd:
+            self._resolve_circular(entity, dep, cd)
+            return
+
+        cd.add(dep)
+
+        try:
+            index = self.index(entity)
+        except ValueError:
+            index = len(self)
+            self.append(entity)
+
+        try:
+            dindex = self.index(dep)
+        except ValueError:
+            self.insert(index, dep)
+        else:
+            if dindex > index:
+                self.pop(dindex)
+                self.insert(dindex, dep)
+
+        for dd in sorted(dep.__deps__, key=attrgetter("__name__")):
+            self._add(dep, dd, cd)
+
+    cdef _resolve_circular(self, EntityType entity, EntityType dep, set cd):
+        # print("_resolve_circular", entity, dep, cd)
+        try:
+            cdeps = self.circular[entity]
+        except KeyError:
+            cdeps = self.circular[entity] = set()
+        cdeps.add(dep)
+
+        try:
+            cdeps = self.circular[dep]
+        except KeyError:
+            cdeps = self.circular[dep] = set()
+        cdeps.add(entity)
+
+        # TODO: foreign key alapján esetleg megállapítható, hogy melyik legyen előbb
+
+        cd.remove(dep)
+
 
 @cython.final
 cdef class PolymorphMeta:

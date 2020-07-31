@@ -18,13 +18,14 @@ cdef class DDLCompiler:
         cdef list elements = []
         cdef list table_parts = []
         cdef list requirements = []
+        cdef list deferred = []
         is_type = entity.__meta__.get("is_type", False) is True
         is_sequence = entity.__meta__.get("is_sequence", False) is True
 
         if is_type is True:
             table_parts.append(f"CREATE TYPE {self.dialect.table_qname(entity)} AS (\n")
         elif is_sequence is True:
-            return f"CREATE SEQUENCE {self.dialect.table_qname(entity)};"
+            return f"CREATE SEQUENCE {self.dialect.table_qname(entity)};", deferred
         else:
             table_parts.append(f"CREATE TABLE {self.dialect.table_qname(entity)} (\n")
 
@@ -40,11 +41,6 @@ cdef class DDLCompiler:
             pk_names = [self.dialect.quote_ident(pk._name_) for pk in primary_keys]
             elements.append(f"PRIMARY KEY({', '.join(pk_names)})")
 
-        cdef tuple fks = tuple(filter(lambda v: v.type is ForeignKey, entity.__extgroups__))
-        if fks:
-            if is_type:
-                raise ValueError("Foreign keys is not supported on Composite Types")
-            elements.extend(self.compile_foreign_keys(fks))
 
         if elements:
             table_parts.append("  ")
@@ -57,19 +53,22 @@ cdef class DDLCompiler:
             requirements.append("")
             table_parts.insert(0, "\n".join(requirements))
 
-        indexes = []
         for x in filter(lambda v: v.type is Index, entity.__extgroups__):
-            indexes.append(self.compile_create_index(x))
+            deferred.append(self.compile_create_index(x))
 
-        if indexes:
-            table_parts.append("\n")
-            table_parts.append("\n".join(indexes))
+        cdef tuple fks = tuple(filter(lambda v: v.type is ForeignKey, entity.__extgroups__))
+        if fks:
+            if is_type:
+                raise ValueError("Foreign keys is not supported on Composite Types")
+
+            compiled_fks = [f"ADD {cfk}" for cfk in self.compile_foreign_keys(fks)]
+            alter = ',\n  '.join(compiled_fks)
+            deferred.append(f"ALTER TABLE {self.dialect.table_qname(entity)}\n  {alter};")
 
         for trigger in entity.__triggers__:
-            table_parts.append('\n')
-            table_parts.append(self.create_trigger(entity, trigger))
+            deferred.append(self.create_trigger(entity, trigger))
 
-        return "".join(table_parts)
+        return "".join(table_parts), deferred
 
     def compile_field(self, Field field, list requirements):
         cdef StorageType type = self.dialect.get_field_type(field)
@@ -154,6 +153,7 @@ cdef class DDLCompiler:
 
     def compile_registry_diff(self, RegistryDiff diff):
         lines = []
+        deferred = []
         schemas_created = {ent.__meta__.get("schema", "public") for ent in diff.a.values()}
         schemas_created.add("public")
 
@@ -166,7 +166,9 @@ cdef class DDLCompiler:
                     schemas_created.add(schema)
                     lines.append(f"CREATE SCHEMA IF NOT EXISTS {self.dialect.quote_ident(schema)};")
 
-                lines.append(self.compile_entity(param))
+                _tbl, _deferred = self.compile_entity(param)
+                lines.append(_tbl)
+                deferred.extend(_deferred)
             elif kind is RegistryDiffKind.CHANGED:
                 if param.b.__meta__.get("is_type", False) is True:
                     lines.append(self.compile_type_diff(param))
@@ -188,7 +190,10 @@ cdef class DDLCompiler:
                 if q:
                     lines.append(q + ";")
 
-        return "\n".join(lines)
+        res = "\n".join(lines)
+        if deferred:
+            res += "\n" + "\n".join(deferred)
+        return res
 
     def compile_entity_diff(self, EntityDiff diff):
         cdef EntityAttributeExtGroup group

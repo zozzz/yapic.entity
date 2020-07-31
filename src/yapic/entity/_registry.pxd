@@ -6,6 +6,7 @@ from ._entity cimport EntityType, EntityAttribute
 @cython.final
 cdef class Registry:
     cdef readonly object entities
+    cdef readonly object locals
     cdef list deferred
 
     cpdef object register(self, str name, EntityType entity)

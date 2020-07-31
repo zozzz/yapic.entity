@@ -28,6 +28,7 @@ cdef extern from "yapic/typing.hpp" namespace "Yapic":
         bint IsGeneric()
         object Value()
         object Resolve()
+        object Resolve(object o)
 
 
 cdef bint is_forward_decl(object o)
@@ -50,6 +51,6 @@ cdef class Factory:
     cdef object invoke(self)
 
 
-cdef object new_instance(object type, tuple hints, bint resolve_forward)
+cdef object new_instance(object type, tuple hints, bint resolve_forward, dict locals)
 
-cdef object new_instance_from_forward(object fwd)
+cdef object new_instance_from_forward(object fwd, dict locals)

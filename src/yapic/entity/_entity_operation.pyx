@@ -115,6 +115,7 @@ cdef set_poly_id(EntityBase main):
 
 
 cdef set_related_attrs(Relation attr, EntityBase main, EntityBase related, DependencyList order, list ops):
+    attr.update_join_expr()
     if isinstance(attr._impl_, ManyToMany):
         across_entity = attr._impl_._across()
 

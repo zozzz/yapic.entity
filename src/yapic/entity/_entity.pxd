@@ -125,7 +125,14 @@ cdef class EntityState:
 
 @cython.final
 cdef class DependencyList(list):
+    cdef dict circular
+
     cpdef add(self, EntityType item)
+    cdef _add(self, EntityType entity, EntityType dep, set cd)
+    cdef _resolve_circular(self, EntityType entity, EntityType dep, set cd)
+
+    # cdef add_circular(self, EntityType entity, EntityType dep)
+    # cdef _add(self, EntityType entity, set cd)
 
 
 @cython.final
