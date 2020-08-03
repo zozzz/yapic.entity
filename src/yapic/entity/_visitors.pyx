@@ -97,6 +97,7 @@ cdef class EntityReplacer(ReplacerBase):
             clone.init(self.to)
             if not clone.bind():
                 raise RuntimeError("...")
+            clone.update_join_expr()
             return clone
         else:
             return relation

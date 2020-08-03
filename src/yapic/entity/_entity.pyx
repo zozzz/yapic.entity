@@ -24,7 +24,6 @@ from ._trigger cimport PolymorphParentDeleteTrigger
 cdef class NOTSET:
     pass
 
-
 REGISTRY = Registry()
 
 
@@ -1051,8 +1050,9 @@ class Entity(EntityBase, metaclass=EntityType, registry=REGISTRY, _root=True):
 
 
 @cython.final
-cdef class DependencyList(list):
+cdef class DependencyList:
     def __cinit__(self):
+        self.items = []
         self.circular = {}
 
     cpdef add(self, EntityType item):
@@ -1060,56 +1060,88 @@ cdef class DependencyList(list):
         cd.add(item)
 
         if item not in self:
-            self.append(item)
+            self.items.append(item)
 
         for dep in sorted(item.__deps__, key=attrgetter("__name__")):
             self._add(item, dep, cd)
+
+    cpdef index(self, EntityType item):
+        return (<list>self.items).index(item)
 
     cdef _add(self, EntityType entity, EntityType dep, set cd):
         cdef int index
         cdef int dindex
 
         if dep in cd:
-            self._resolve_circular(entity, dep, cd)
-            return
+            if entity not in self.circular:
+                self._resolve_circular(entity, dep, cd)
+                self._add(entity, dep, set())
+                return
+
+        try:
+            index = self.items.index(entity)
+        except ValueError:
+            index = len(self)
+            self.items.append(entity)
 
         cd.add(dep)
 
-        try:
-            index = self.index(entity)
-        except ValueError:
-            index = len(self)
-            self.append(entity)
+        all_deps_in_list = False
 
         try:
-            dindex = self.index(dep)
+            dindex = self.items.index(dep)
         except ValueError:
-            self.insert(index, dep)
+            self.items.insert(index, dep)
         else:
-            if dindex > index:
-                self.pop(dindex)
-                self.insert(dindex, dep)
+            all_deps_in_list = True
+            if entity not in self.circular or dep in self.circular[entity]:
+                if dindex > index:
+                    self.items.pop(dindex)
+                    self.items.insert(index, dep)
+                    all_deps_in_list = False
 
-        for dd in sorted(dep.__deps__, key=attrgetter("__name__")):
-            self._add(dep, dd, cd)
+        if not all_deps_in_list:
+            for dd in sorted(dep.__deps__, key=attrgetter("__name__")):
+                self._add(dep, dd, cd)
+
+        cd.discard(dep)
 
     cdef _resolve_circular(self, EntityType entity, EntityType dep, set cd):
         # print("_resolve_circular", entity, dep, cd)
+
+        entity_dep = _is_dependency(entity, dep)
+        dep_entity = _is_dependency(dep, entity)
+
+        if entity_dep and dep_entity:
+            raise ValueError("Can't resolve circular reference")
+
         try:
             cdeps = self.circular[entity]
         except KeyError:
             cdeps = self.circular[entity] = set()
-        cdeps.add(dep)
+
+        if entity_dep:
+            cdeps.add(dep)
 
         try:
             cdeps = self.circular[dep]
         except KeyError:
             cdeps = self.circular[dep] = set()
-        cdeps.add(entity)
 
-        # TODO: foreign key alapján esetleg megállapítható, hogy melyik legyen előbb
+        if dep_entity:
+            cdeps.add(entity)
 
-        cd.remove(dep)
+
+cdef bint _is_dependency(EntityType a, EntityType b):
+    cdef EntityAttribute attr
+    cdef ForeignKey fk
+
+    for attr in a.__attrs__:
+        fk = attr.get_ext(ForeignKey)
+        if fk and fk.ref._entity_ is b:
+            if isinstance(attr, Field) and not (<Field>attr).nullable:
+                return True
+    return False
 
 
 @cython.final

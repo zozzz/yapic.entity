@@ -292,7 +292,7 @@ async def test_load_only_relation_field(conn):
     q = Query(Something2).where(Something2.id == something2.id).load(Something2.id, Something2.something)
     s = await conn.select(q).first()
     data = json.dumps(s)
-    assert data == """{"id":1,"something":{"id":2,"article_id":42,"article":{"id":42,"creator_id":5,"updater_id":6}}}"""
+    assert data == """{"id":1,"something":{"id":2,"article_id":42}}"""
 
     # TODO: ...
     # q = Query(Article).where(Article.id == 42).load(Article.creator.tags.value)

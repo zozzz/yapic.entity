@@ -30,7 +30,7 @@ cpdef list save_operations(EntityBase entity):
     # print(order)
 
     ops.sort(key=cmp_to_key(_comparator(order)))
-    # print("\n".join(map(repr, ops)))
+    # import pprint; pprint.pprint(ops)
     return ops
 
 
