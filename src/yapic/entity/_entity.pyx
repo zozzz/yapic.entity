@@ -98,7 +98,7 @@ cdef class EntityType(type):
             if poly_meta and base_entity and base_entity.__pk__:
                 found = None
                 for i, t in enumerate(__triggers__):
-                    if isinstance(t, PolymorphParentDeleteTrigger):
+                    if isinstance(t, PolymorphParentDeleteTrigger) and (<PolymorphParentDeleteTrigger>t).parent_entity is base_entity:
                         found = i
                         break
 
@@ -269,7 +269,8 @@ cdef class EntityType(type):
         if aliased is self:
             return "<Entity %s>" % self.__qname__
         else:
-            return "<Alias of %r>" % aliased
+            return "<Alias(%s) of %r>" % (id(self), aliased)
+            # return "<Alias of %r>" % aliased
 
     def alias(self, str alias = None):
         if alias is None:

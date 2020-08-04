@@ -547,6 +547,9 @@ cdef class QueryFinalizer(Visitor):
             before_create = []
 
         aliased = get_alias_target(entity)
+
+        for ent_id in poly.id_fields:
+            self.q.load(getattr(entity, ent_id))
         rco.extend(self._rco_for_entity(entity, fields, before_create))
 
         rco_len = len(rco)
@@ -573,6 +576,7 @@ cdef class QueryFinalizer(Visitor):
         cdef int idx = idx_start
 
         for relation in poly.children(entity):
+            relation.update_join_expr()
             child = relation._entity_
             self.q.join(child, relation._default_, "LEFT")
 
@@ -703,12 +707,13 @@ cdef class QueryFinalizer(Visitor):
         return []
 
     def _rco_for_lazy_relation(self, Relation relation, dict existing=None):
+        relation.update_join_expr()
+
         cdef EntityType load = relation._impl_.joined
         cdef EntityType load_aliased = get_alias_target(load)
         cdef RCO op
         cdef Query q
 
-        relation.update_join_expr()
         if isinstance(relation._impl_, ManyToMany):
             expr = relation._impl_.across_join_expr
             op = RCO.LOAD_MULTI_ENTITY

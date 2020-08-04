@@ -19,7 +19,10 @@ cdef class Relation(EntityAttribute):
 
     def __get__(self, instance, owner):
         if instance is None:
-            self.update_join_expr()
+            try:
+                self.update_join_expr()
+            except JoinError as e:
+                pass
             return self
         else:
             return super().__get__(instance, owner)
@@ -70,9 +73,10 @@ cdef class Relation(EntityAttribute):
     cdef object update_join_expr(self):
         cdef RelationImpl impl = self._impl_
         if not impl.join_expr:
-            return impl.determine_join_expr(self._entity_, self)
-        else:
-            return True
+            if not impl.determine_join_expr(self._entity_, self):
+                raise JoinError("Can't initialize relation %s" % self)
+
+        return True
 
 
 
