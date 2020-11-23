@@ -14,7 +14,8 @@ from yapic.entity._field_impl cimport (
     UUIDImpl,
     ChoiceImpl,
     JsonImpl,
-    CompositeImpl
+    CompositeImpl,
+    ArrayImpl
 )
 from yapic.entity._geom_impl cimport (
     PointImpl,
@@ -31,6 +32,7 @@ from ._dialect cimport PostgreDialect
 cdef class PostgreTypeFactory(StorageTypeFactory):
     cdef PostgreDialect dialect
 
+    cpdef StorageType _create(self, Field field, object impl)
     cdef StorageType __int_type(self, Field field, IntImpl impl)
     cdef StorageType __string_type(self, Field field, StringImpl impl)
     cdef StorageType __bytes_type(self, Field field, BytesImpl impl)
@@ -46,6 +48,7 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
     cdef StorageType __choice_type(self, Field field, ChoiceImpl impl)
     cdef StorageType __json_type(self, Field field, JsonImpl impl)
     cdef StorageType __composite_type(self, Field field, CompositeImpl impl)
+    cdef StorageType __array_type(self, Field field, ArrayImpl impl)
     cdef StorageType __point_type(self, Field field, PointImpl impl)
     cdef StorageType __postgis_point_type(self, Field field, PostGISPointImpl impl)
     cdef StorageType __postgis_longlat_type(self, Field field, PostGISLatLngImpl impl)

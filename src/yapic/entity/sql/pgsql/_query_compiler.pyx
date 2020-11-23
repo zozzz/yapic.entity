@@ -16,7 +16,7 @@ from yapic.entity._expression cimport (
     PathExpression)
 from yapic.entity._expression import and_
 from yapic.entity._field cimport Field, PrimaryKey
-from yapic.entity._field_impl cimport JsonImpl, CompositeImpl
+from yapic.entity._field_impl cimport JsonImpl, CompositeImpl, ArrayImpl
 from yapic.entity._relation cimport Relation
 from yapic.entity._virtual_attr cimport VirtualAttribute
 
@@ -215,6 +215,14 @@ cdef class PostgreQueryCompiler(QueryCompiler):
     def visit_binary_contains(self, BinaryExpression expr):
         left = expr.left
         right = expr.right
+
+        if isinstance(left, Field) and isinstance((<Field>left)._impl_, ArrayImpl):
+            result = f"{self.visit(right)}=ANY({self.visit(left)})"
+            if expr.negated:
+                return f"NOT({result})"
+            else:
+                return result
+
         op = " NOT ILIKE " if expr.negated else " ILIKE "
         return f"{self.visit(left)}{op}('%' || {self.visit(right)} || '%')"
 
@@ -297,6 +305,11 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                     attrs.append(f"[{item}]")
                 else:
                     raise ValueError("Invalid composite path entry: %r" % item)
+            elif state == "array":
+                if isinstance(item, int):
+                    attrs.append(f"[{item}]")
+                else:
+                    raise ValueError("Invalid path entry: %r" % item)
 
             if isinstance(item, Relation):
                 if compiled:
@@ -309,6 +322,8 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                 elif isinstance((<Field>item)._impl_, CompositeImpl):
                     if state != "json":
                         new_state = "composite"
+                elif isinstance((<Field>item)._impl_, ArrayImpl):
+                    new_state = "array"
 
                 if not new_state:
                     raise ValueError("Unexpected field impl: %r", (<Field>item)._impl_)
@@ -535,6 +550,8 @@ cdef str path_expr(object d, str type, str base, list path):
         if type == "json":
             return f"jsonb_extract_path({base}, {', '.join(path)})"
         elif type == "composite":
+            return f"({base}){''.join(path)}"
+        elif type == "array":
             return f"({base}){''.join(path)}"
     return base
 

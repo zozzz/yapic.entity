@@ -77,3 +77,7 @@ cdef class NamedTupleImpl(CompositeImpl):
 
 cdef class AutoImpl(FieldImpl):
     pass
+
+
+cdef class ArrayImpl(FieldImpl):
+    cdef object _item_impl_

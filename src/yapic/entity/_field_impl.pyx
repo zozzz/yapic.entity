@@ -224,6 +224,51 @@ cdef class AutoImpl(FieldImpl):
         return "Auto"
 
 
+cdef class ArrayImpl(FieldImpl):
+    def __init__(self, item_impl):
+        self._item_impl_ = item_impl
+        super().__init__()
+
+    cdef object state_init(self, object initial):
+        if initial is NOTSET:
+            return []
+        else:
+            return list(initial)
+
+    cpdef getitem(self, EntityAttribute attr, object index):
+        if not isinstance(index, int):
+            raise ValueError("Currently only int index is supported")
+        return PathExpression([attr, index + 1])
+
+    cdef object state_set(self, object initial, object current, object value):
+        if value is NOTSET:
+            return NOTSET
+        elif value is None:
+            return None
+        else:
+            return list(value)
+
+    cdef object state_get_dirty(self, object initial, object current):
+        if current is NOTSET:
+            if initial is NOTSET:
+                return NOTSET
+            else:
+                return initial
+        elif initial != current:
+            return current
+
+        return NOTSET
+
+    def __eq__(self, other):
+        return isinstance(other, ArrayImpl) and (<ArrayImpl>other)._item_impl_ == self._item_impl_
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __repr__(self):
+        return f"Array({self._item_impl_})"
+
+
 cdef str entity_qname(EntityType ent):
     try:
         schema = ent.__meta__["schema"]

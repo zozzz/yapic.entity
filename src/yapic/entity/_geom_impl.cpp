@@ -913,6 +913,7 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_JsonArrayImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_CompositeImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_NamedTupleImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_AutoImpl;
+struct __pyx_obj_5yapic_6entity_11_field_impl_ArrayImpl;
 struct __pyx_obj_5yapic_6entity_10_geom_impl_PointImpl;
 struct __pyx_opt_args_5yapic_6entity_7_entity_11EntityState_update;
 
@@ -1683,9 +1684,22 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_NamedTupleImpl {
  * 
  * cdef class AutoImpl(FieldImpl):             # <<<<<<<<<<<<<<
  *     pass
+ * 
  */
 struct __pyx_obj_5yapic_6entity_11_field_impl_AutoImpl {
   struct __pyx_obj_5yapic_6entity_6_field_FieldImpl __pyx_base;
+};
+
+
+/* "_field_impl.pxd":82
+ * 
+ * 
+ * cdef class ArrayImpl(FieldImpl):             # <<<<<<<<<<<<<<
+ *     cdef object _item_impl_
+ */
+struct __pyx_obj_5yapic_6entity_11_field_impl_ArrayImpl {
+  struct __pyx_obj_5yapic_6entity_6_field_FieldImpl __pyx_base;
+  PyObject *_item_impl_;
 };
 
 
@@ -2470,12 +2484,26 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_NamedTupleImpl *__py
  * 
  * cdef class AutoImpl(FieldImpl):             # <<<<<<<<<<<<<<
  *     pass
+ * 
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_AutoImpl {
   struct __pyx_vtabstruct_5yapic_6entity_6_field_FieldImpl __pyx_base;
 };
 static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_AutoImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_AutoImpl;
+
+
+/* "_field_impl.pxd":82
+ * 
+ * 
+ * cdef class ArrayImpl(FieldImpl):             # <<<<<<<<<<<<<<
+ *     cdef object _item_impl_
+ */
+
+struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_ArrayImpl {
+  struct __pyx_vtabstruct_5yapic_6entity_6_field_FieldImpl __pyx_base;
+};
+static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_ArrayImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_ArrayImpl;
 
 
 /* "yapic/entity/_geom_impl.pyx":30
@@ -3026,6 +3054,7 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_JsonArrayImpl = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_CompositeImpl = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_NamedTupleImpl = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_ArrayImpl = 0;
 
 /* Module declarations from 'yapic.entity._geom_impl' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_10_geom_impl_PointImpl = 0;
@@ -4376,6 +4405,9 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "AutoImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_AutoImpl), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl) __PYX_ERR(6, 78, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_11_field_impl_AutoImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_AutoImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_AutoImpl)) __PYX_ERR(6, 78, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_11_field_impl_ArrayImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "ArrayImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_ArrayImpl), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_ArrayImpl) __PYX_ERR(6, 82, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_ArrayImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_ArrayImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_ArrayImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_ArrayImpl)) __PYX_ERR(6, 82, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

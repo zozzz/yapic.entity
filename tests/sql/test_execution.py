@@ -6,7 +6,7 @@ from decimal import Decimal
 from yapic.entity.sql import wrap_connection, Entity, sync, PostgreDialect
 from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool, ForeignKey,
                           PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite, Auto, Numeric,
-                          Float, Point, UUID, virtual)
+                          Float, Point, UUID, virtual, StringArray, IntArray)
 
 pytestmark = pytest.mark.asyncio
 REGISTRY = Registry()
@@ -864,3 +864,60 @@ async def test_virtual_load(conn):
 
     obj = await conn.select(query).first()
     assert obj.data_concat == "NotLoaded"
+
+
+async def test_array(conn, pgclean):
+    registry = Registry()
+
+    class ArrayTest(Entity, registry=registry, schema="execution"):
+        strings: StringArray
+        ints: IntArray
+
+    result = await sync(conn, registry)
+    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE TABLE "execution"."ArrayTest" (
+  "strings" TEXT[],
+  "ints" INT[]
+);"""
+
+    await conn.conn.execute(result)
+
+    result = await sync(conn, registry)
+    assert result is None
+
+    registry2 = Registry()
+
+    class ArrayTest(Entity, registry=registry2, schema="execution"):
+        id: Serial
+        strings: StringArray
+        ints: StringArray
+
+    result = await sync(conn, registry2)
+    assert result == """CREATE SEQUENCE "execution"."ArrayTest_id_seq";
+ALTER TABLE "execution"."ArrayTest"
+  ADD COLUMN "id" INT4 NOT NULL DEFAULT nextval('"execution"."ArrayTest_id_seq"'::regclass),
+  ALTER COLUMN "ints" TYPE TEXT[] USING "ints"::TEXT[],
+  ADD PRIMARY KEY("id");"""
+
+    await conn.conn.execute(result)
+
+    result = await sync(conn, registry2)
+    assert result is None
+
+    inst = ArrayTest(strings=["Hello", "World"])
+    await conn.save(inst)
+    inst = await conn.select(Query(ArrayTest).where(ArrayTest.strings.contains("Hello"))).first()
+    assert inst is not None
+    assert inst.strings == ["Hello", "World"]
+
+    inst.strings.append("Some Value")
+    await conn.save(inst)
+    inst = await conn.select(Query(ArrayTest).where(ArrayTest.strings.contains("Hello"))).first()
+    assert inst.strings == ["Hello", "World", "Some Value"]
+
+    inst.strings.append("42")
+    await conn.save(inst)
+    inst.strings.append("43")
+    await conn.save(inst)
+    inst = await conn.select(Query(ArrayTest).where(ArrayTest.strings.contains("43"))).first()
+    assert inst.strings == ["Hello", "World", "Some Value", "42", "43"]

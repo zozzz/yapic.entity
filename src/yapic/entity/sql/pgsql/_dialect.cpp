@@ -936,6 +936,7 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_JsonArrayImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_CompositeImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_NamedTupleImpl;
 struct __pyx_obj_5yapic_6entity_11_field_impl_AutoImpl;
+struct __pyx_obj_5yapic_6entity_11_field_impl_ArrayImpl;
 struct __pyx_obj_5yapic_6entity_10_geom_impl_PointImpl;
 struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISImpl;
 struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISPointImpl;
@@ -1979,9 +1980,22 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_NamedTupleImpl {
  * 
  * cdef class AutoImpl(FieldImpl):             # <<<<<<<<<<<<<<
  *     pass
+ * 
  */
 struct __pyx_obj_5yapic_6entity_11_field_impl_AutoImpl {
   struct __pyx_obj_5yapic_6entity_6_field_FieldImpl __pyx_base;
+};
+
+
+/* "yapic/entity/_field_impl.pxd":82
+ * 
+ * 
+ * cdef class ArrayImpl(FieldImpl):             # <<<<<<<<<<<<<<
+ *     cdef object _item_impl_
+ */
+struct __pyx_obj_5yapic_6entity_11_field_impl_ArrayImpl {
+  struct __pyx_obj_5yapic_6entity_6_field_FieldImpl __pyx_base;
+  PyObject *_item_impl_;
 };
 
 
@@ -2032,7 +2046,7 @@ struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl {
 };
 
 
-/* "_type_factory.pxd":31
+/* "_type_factory.pxd":32
  * 
  * 
  * cdef class PostgreTypeFactory(StorageTypeFactory):             # <<<<<<<<<<<<<<
@@ -2045,7 +2059,7 @@ struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory {
 };
 
 
-/* "_type_factory.pxd":54
+/* "_type_factory.pxd":57
  * 
  * 
  * cdef class PostgreType(StorageType):             # <<<<<<<<<<<<<<
@@ -2927,12 +2941,26 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_NamedTupleImpl *__py
  * 
  * cdef class AutoImpl(FieldImpl):             # <<<<<<<<<<<<<<
  *     pass
+ * 
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_AutoImpl {
   struct __pyx_vtabstruct_5yapic_6entity_6_field_FieldImpl __pyx_base;
 };
 static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_AutoImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_AutoImpl;
+
+
+/* "yapic/entity/_field_impl.pxd":82
+ * 
+ * 
+ * cdef class ArrayImpl(FieldImpl):             # <<<<<<<<<<<<<<
+ *     cdef object _item_impl_
+ */
+
+struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_ArrayImpl {
+  struct __pyx_vtabstruct_5yapic_6entity_6_field_FieldImpl __pyx_base;
+};
+static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_ArrayImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_ArrayImpl;
 
 
 /* "yapic/entity/_geom_impl.pxd":4
@@ -2989,7 +3017,7 @@ struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLng
 static struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl;
 
 
-/* "_type_factory.pxd":31
+/* "_type_factory.pxd":32
  * 
  * 
  * cdef class PostgreTypeFactory(StorageTypeFactory):             # <<<<<<<<<<<<<<
@@ -2999,6 +3027,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGI
 
 struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory {
   struct __pyx_vtabstruct_5yapic_6entity_6_field_StorageTypeFactory __pyx_base;
+  struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*_create)(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, PyObject *, int __pyx_skip_dispatch);
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___int_type)(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_11_field_impl_IntImpl *);
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___string_type)(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_11_field_impl_StringImpl *);
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___bytes_type)(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_11_field_impl_BytesImpl *);
@@ -3014,6 +3043,7 @@ struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFa
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___choice_type)(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_11_field_impl_ChoiceImpl *);
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___json_type)(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_11_field_impl_JsonImpl *);
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___composite_type)(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_11_field_impl_CompositeImpl *);
+  struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___array_type)(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_11_field_impl_ArrayImpl *);
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___point_type)(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_10_geom_impl_PointImpl *);
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___postgis_point_type)(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISPointImpl *);
   struct __pyx_obj_5yapic_6entity_6_field_StorageType *(*__pyx___postgis_longlat_type)(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory *, struct __pyx_obj_5yapic_6entity_6_field_Field *, struct __pyx_obj_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl *);
@@ -3021,7 +3051,7 @@ struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFa
 static struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory *__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory;
 
 
-/* "_type_factory.pxd":54
+/* "_type_factory.pxd":57
  * 
  * 
  * cdef class PostgreType(StorageType):             # <<<<<<<<<<<<<<
@@ -3531,6 +3561,7 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_JsonArrayImpl = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_CompositeImpl = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_NamedTupleImpl = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_11_field_impl_ArrayImpl = 0;
 
 /* Module declarations from 'yapic.entity._geom_impl' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_10_geom_impl_PointImpl = 0;
@@ -5610,6 +5641,9 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "AutoImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_AutoImpl), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl) __PYX_ERR(13, 78, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_11_field_impl_AutoImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_AutoImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_AutoImpl)) __PYX_ERR(13, 78, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_11_field_impl_ArrayImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._field_impl", "ArrayImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_ArrayImpl), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_11_field_impl_ArrayImpl) __PYX_ERR(13, 82, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_ArrayImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_ArrayImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_ArrayImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_ArrayImpl)) __PYX_ERR(13, 82, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("yapic.entity._geom_impl"); if (unlikely(!__pyx_t_1)) __PYX_ERR(14, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -5629,14 +5663,14 @@ static int __Pyx_modinit_type_import_code(void) {
    if (!__pyx_ptype_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl) __PYX_ERR(15, 10, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl = (struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_7postgis_5_impl_PostGISLatLngImpl)) __PYX_ERR(15, 10, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyImport_ImportModule("yapic.entity.sql.pgsql._type_factory"); if (unlikely(!__pyx_t_1)) __PYX_ERR(16, 31, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("yapic.entity.sql.pgsql._type_factory"); if (unlikely(!__pyx_t_1)) __PYX_ERR(16, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory = __Pyx_ImportType(__pyx_t_1, "yapic.entity.sql.pgsql._type_factory", "PostgreTypeFactory", sizeof(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory) __PYX_ERR(16, 31, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory = (struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory)) __PYX_ERR(16, 31, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory) __PYX_ERR(16, 32, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory = (struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreTypeFactory)) __PYX_ERR(16, 32, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType = __Pyx_ImportType(__pyx_t_1, "yapic.entity.sql.pgsql._type_factory", "PostgreType", sizeof(struct __pyx_obj_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType) __PYX_ERR(16, 54, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType = (struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType)) __PYX_ERR(16, 54, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType) __PYX_ERR(16, 57, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType = (struct __pyx_vtabstruct_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_5pgsql_13_type_factory_PostgreType)) __PYX_ERR(16, 57, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

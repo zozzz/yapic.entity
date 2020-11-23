@@ -26,6 +26,7 @@ from ._field_impl import (
     JsonArrayImpl as _JsonArrayImpl,
     CompositeImpl as _CompositeImpl,
     AutoImpl,
+    ArrayImpl as _ArrayImpl,
 )
 from ._geom_impl import (
     PointType,
@@ -144,6 +145,21 @@ class Composite(Generic[EntityT], Field[CompositeImpl[EntityT], EntityT, str]):
 
 
 Point = Field[PointImpl, PointType, Any]
+
+
+class ArrayImpl(Generic[Impl], _ArrayImpl):
+    _item_impl_: Impl
+
+    def __init__(self, item_impl: Impl):
+        super().__init__(item_impl)
+
+
+class Array(Generic[Impl, PyType, RawType], Field[ArrayImpl[Impl], PyType, RawType]):
+    pass
+
+
+StringArray = Array[StringImpl, List[str], List[str]]
+IntArray = Array[IntImpl, List[int], List[int]]
 
 
 def virtual(fn) -> VirtualAttribute:

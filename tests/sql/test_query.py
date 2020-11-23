@@ -4,7 +4,8 @@ from typing import Any
 
 from yapic.entity.sql import PostgreDialect
 from yapic.entity import (Query, Entity, Serial, String, DateTimeTz, Json, Composite, and_, or_, Int, ForeignKey, One,
-                          ManyAcross, Field, func, Registry, Auto, startswith, endswith, contains, find, virtual, in_)
+                          ManyAcross, Field, func, Registry, Auto, startswith, endswith, contains, find, virtual, in_,
+                          IntArray)
 
 dialect = PostgreDialect()
 
@@ -568,3 +569,25 @@ def test_join_type_in_or():
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == """SELECT "t0"."id", "t0"."a_id" FROM "B" "t0" LEFT JOIN "A" "t1" ON "t0"."a_id" = "t1"."id" WHERE "t1"."id" = $1 OR "t0"."id" = $2"""
     assert params == (2, 3)
+
+
+def test_array():
+    R = Registry()
+
+    class A(Entity, registry=R):
+        id: Serial
+        ints: IntArray
+
+    q = Query(A).where(A.ints[0] == 1)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."ints" FROM "A" "t0" WHERE ("t0"."ints")[1] = $1"""
+    assert params == (1, )
+
+    q = Query(A).where(A.ints.contains(1))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."ints" FROM "A" "t0" WHERE $1=ANY("t0"."ints")"""
+    assert params == (1, )
+
+    q = Query(A).where(~A.ints.contains(1))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."ints" FROM "A" "t0" WHERE NOT($1=ANY("t0"."ints"))"""

@@ -19,7 +19,8 @@ from yapic.entity._field_impl cimport (
     JsonImpl,
     JsonArrayImpl,
     CompositeImpl,
-    UUIDImpl
+    UUIDImpl,
+    ArrayImpl,
 )
 from yapic.entity._geom_impl cimport (
     PointImpl,
@@ -38,8 +39,9 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
         self.dialect = dialect
 
     cpdef StorageType create(self, Field field):
-        impl = field._impl_
+        return self._create(field, field._impl_)
 
+    cpdef StorageType _create(self, Field field, object impl):
         if isinstance(impl, IntImpl):
             return self.__int_type(field, <IntImpl>impl)
         elif isinstance(impl, StringImpl):
@@ -76,6 +78,8 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
             return self.__postgis_longlat_type(field, <PostGISLatLngImpl>impl)
         elif isinstance(impl, CompositeImpl):
             return self.__composite_type(field, <CompositeImpl>impl)
+        elif isinstance(impl, ArrayImpl):
+            return self.__array_type(field, <ArrayImpl>impl)
 
     cdef StorageType __int_type(self, Field field, IntImpl impl):
         # pk = field.get_ext(PrimaryKey)
@@ -171,6 +175,12 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
     cdef StorageType __composite_type(self, Field field, CompositeImpl impl):
         cdef CompositeType t = CompositeType(self.dialect.table_qname(impl._entity_))
         t.entity = impl._entity_
+        return t
+
+    cdef StorageType __array_type(self, Field field, ArrayImpl impl):
+        cdef StorageType item_type = self._create(field, impl._item_impl_)
+        cdef ArrayType t = ArrayType(f"{item_type.name}[]")
+        t.item_type = item_type
         return t
 
     cdef StorageType __point_type(self, Field field, PointImpl impl):
@@ -433,6 +443,22 @@ cdef class CompositeType(PostgreType):
         return value
 
 
+cdef class ArrayType(PostgreType):
+    cdef PostgreType item_type
+
+    cpdef object encode(self, object value):
+        if value is None:
+            return None
+
+        return [self.item_type.encode(item) for item in value]
+
+    cpdef object decode(self, object value):
+        if value is None:
+            return None
+
+        return [self.item_type.decode(item) for item in value]
+
+
 cdef class PointType(PostgreType):
     cpdef object encode(self, object value):
         return value
@@ -467,3 +493,4 @@ cdef class PostGISLatLngType(PostGISGeographyType):
 
     cpdef object decode(self, object value):
         return value
+
