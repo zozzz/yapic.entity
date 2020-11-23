@@ -6,7 +6,7 @@ from decimal import Decimal
 from yapic.entity.sql import wrap_connection, Entity, sync, PostgreDialect
 from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool, ForeignKey,
                           PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite, Auto, Numeric,
-                          Float, Point, UUID, virtual, StringArray, IntArray)
+                          Float, Point, UUID, virtual, StringArray, IntArray, CreatedTime, UpdatedTime)
 
 pytestmark = pytest.mark.asyncio
 REGISTRY = Registry()
@@ -921,3 +921,57 @@ ALTER TABLE "execution"."ArrayTest"
     await conn.save(inst)
     inst = await conn.select(Query(ArrayTest).where(ArrayTest.strings.contains("43"))).first()
     assert inst.strings == ["Hello", "World", "Some Value", "42", "43"]
+
+
+async def test_updated_time(conn, pgclean):
+    R = Registry()
+
+    class UT(Entity, registry=R, schema="execution"):
+        id: Serial
+        value: String
+        created_time: CreatedTime
+        updated_time: UpdatedTime
+
+    result = await sync(conn, R)
+    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE SEQUENCE "execution"."UT_id_seq";
+CREATE TABLE "execution"."UT" (
+  "id" INT4 NOT NULL DEFAULT nextval('"execution"."UT_id_seq"'::regclass),
+  "value" TEXT,
+  "created_time" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updated_time" TIMESTAMPTZ,
+  PRIMARY KEY("id")
+);
+CREATE OR REPLACE FUNCTION "execution"."YT-UT-update-updated_time-8085b1-c1c14d"() RETURNS TRIGGER AS $$ BEGIN
+  NEW."updated_time" = CURRENT_TIMESTAMP;
+  RETURN NEW;
+END; $$ language 'plpgsql' ;
+CREATE TRIGGER "update-updated_time"
+  BEFORE UPDATE ON "execution"."UT"
+  FOR EACH ROW
+  WHEN (OLD.* IS DISTINCT FROM NEW.*)
+  EXECUTE FUNCTION "execution"."YT-UT-update-updated_time-8085b1-c1c14d"();"""
+
+    await conn.conn.execute(result)
+    result = await sync(conn, R)
+    assert result is None
+
+    inst = UT(id=1)
+    await conn.save(inst)
+    inst = await conn.select(Query(UT).where(UT.id == 1)).first()
+    assert inst.updated_time is None
+
+    inst.value = "Something"
+    await conn.save(inst)
+    inst = await conn.select(Query(UT).where(UT.id == 1)).first()
+    assert inst.updated_time is not None
+    ut1 = inst.updated_time
+
+    await conn.save(inst)
+    inst = await conn.select(Query(UT).where(UT.id == 1)).first()
+    assert inst.updated_time == ut1
+
+    inst.value = "Hello World"
+    await conn.save(inst)
+    inst = await conn.select(Query(UT).where(UT.id == 1)).first()
+    assert inst.updated_time > ut1

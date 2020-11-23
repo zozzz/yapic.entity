@@ -149,7 +149,7 @@ cdef class EntityType(type):
                     try:
                         value = attrs[name]
                     except KeyError:
-                        value = getattr(self, name, None)
+                        value = getattr(self, name, NOTSET)
                         if isinstance(value, EntityAttribute):
                             value = value.clone()
 
@@ -377,7 +377,8 @@ cdef EntityAttribute init_attribute(EntityAttribute by_type, object value):
 
         return by_type
     else:
-        by_type._default_ = value
+        if value is not NOTSET:
+            by_type._default_ = value
         return by_type
 
 

@@ -1,12 +1,12 @@
 # flake8: noqa
 
-from typing import Generic, TypeVar, Union, Optional, List, Tuple, Type, Any
+from typing import Generic, MutableMapping, TypeVar, TypedDict, Union, Optional, List, Tuple, Type, Any
 from datetime import date, datetime, time
 from decimal import Decimal
 from enum import Enum
 import uuid
 
-from ._entity import Entity, EntityAttributeImpl
+from ._entity import EntityAttribute, EntityAttributeExt
 from ._field import Field as _Field, Index, ForeignKey, PrimaryKey, AutoIncrement
 from ._field_impl import (
     StringImpl,
@@ -33,6 +33,7 @@ from ._geom_impl import (
     PointImpl,
 )
 from ._virtual_attr import VirtualAttribute, VirtualAttributeImpl
+from ._expression import func, const
 
 Impl = TypeVar("Impl")
 PyType = TypeVar("PyType")
@@ -55,6 +56,9 @@ class Field(Generic[Impl, PyType, RawType], _Field):
                  default: Optional[Union[PyType, RawType]] = None,
                  size: Union[int, Tuple[int, int], None] = None,
                  nullable: Optional[bool] = None):
+        self.__get__ = _Field.__get__  # type: ignore
+
+    def __get__(self, instance, owner) -> PyType:
         pass
 
 
@@ -160,6 +164,37 @@ class Array(Generic[Impl, PyType, RawType], Field[ArrayImpl[Impl], PyType, RawTy
 
 StringArray = Array[StringImpl, List[str], List[str]]
 IntArray = Array[IntImpl, List[int], List[int]]
+
+
+class CreatedTime(Field[DateTimeTzImpl, datetime, datetime]):
+    def __new__(cls, *args, **kwargs):
+        kwargs.setdefault("default", const.CURRENT_TIMESTAMP)
+        return Field.__new__(cls, *args, **kwargs)
+
+
+class _UpdatedTimeExt(EntityAttributeExt):
+    def init(self, attr: EntityAttribute):
+        from .sql.pgsql._trigger import PostgreTrigger
+
+        entity = attr._entity_
+        trigger = PostgreTrigger(
+            name=f"update-{attr._name_}",
+            before="UPDATE",
+            for_each="ROW",
+            when=f"""OLD.* IS DISTINCT FROM NEW.*""",
+            body=f"""
+                NEW."{attr._name_}" = CURRENT_TIMESTAMP;
+                RETURN NEW;
+            """,
+        )
+
+        entity.__triggers__.append(trigger)
+
+
+class UpdatedTime(Field[DateTimeTzImpl, datetime, datetime]):
+    def __new__(cls, *args, **kwargs):
+        field = Field.__new__(cls, *args, **kwargs)
+        return field // _UpdatedTimeExt()
 
 
 def virtual(fn) -> VirtualAttribute:
