@@ -8,7 +8,7 @@ from yapic.entity._query cimport Query
 from yapic.entity._entity cimport EntityType, EntityBase, EntityState
 from yapic.entity._entity import Entity
 from yapic.entity._registry cimport Registry, RegistryDiff
-from yapic.entity._field cimport Field, StorageType
+from yapic.entity._field cimport Field, StorageType, PrimaryKey
 from yapic.entity._field_impl cimport CompositeImpl, NamedTupleImpl
 from yapic.entity._expression cimport Expression, PathExpression, RawExpression
 
@@ -111,8 +111,10 @@ cdef class Connection:
         cdef EntityType entity_type = type(entity)
         cdef EntityState state = entity.__state__
         cdef EntityAttribute attr
+        cdef Field field
         cdef list data = state.data_for_insert() if for_insert else state.data_for_update()
         cdef StorageType field_type
+        cdef bint has_nonpk_attr = False
 
         for i in range(len(data)):
             attr, value = <tuple>data[i]
@@ -136,6 +138,8 @@ cdef class Connection:
                         continue
 
                 attrs.append(attr)
+                if has_nonpk_attr is False and not attr.get_ext(PrimaryKey):
+                    has_nonpk_attr = True
 
                 if path is None:
                     names.append(self.dialect.quote_ident(attr._name_))
@@ -152,6 +156,26 @@ cdef class Connection:
                         values.append(field_type.encode(value))
 
         if not for_insert and not path:
+            if has_nonpk_attr is True:
+                for field in entity_type.__fields__:
+                    if field.on_update is not None:
+                        field_name = self.dialect.quote_ident(field._name_)
+                        if field_name not in names:
+                            value = field.on_update(entity)
+                            if iscoroutine(value):
+                                value = await value
+
+                            attrs.append(field)
+                            names.append(self.dialect.quote_ident(field._name_))
+
+                            if value is None:
+                                values.append(None)
+                            elif isinstance(value, Expression):
+                                values.append(value)
+                            else:
+                                field_type = self.dialect.get_field_type(field)
+                                values.append(field_type.encode(value))
+
             for attr in entity_type.__pk__:
                 field_name = self.dialect.quote_ident(attr._name_)
                 if field_name not in names:

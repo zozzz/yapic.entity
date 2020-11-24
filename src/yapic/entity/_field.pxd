@@ -9,6 +9,7 @@ cdef class Field(EntityAttribute):
     cdef readonly int min_size
     cdef readonly int max_size
     cdef readonly object nullable
+    cdef readonly object on_update
 
     # cdef bint values_is_eq(self, object a, object b)
     cpdef StorageType get_type(self, StorageTypeFactory factory)

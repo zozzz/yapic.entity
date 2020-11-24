@@ -1000,3 +1000,31 @@ CREATE TRIGGER "update-updated_time"
     await conn.save(inst)
     inst = await conn.select(Query(UT).where(UT.id == 1)).first()
     assert inst.updated_time > ut1
+
+
+async def test_on_update(conn, pgclean):
+    R = Registry()
+
+    async def get_user_id(entity):
+        return 2
+
+    class OnUpdate(Entity, registry=R, schema="execution"):
+        id: Serial
+        value: String
+        updater_id: Int = Field(on_update=lambda entity: 1)
+        updater_id2: Int = Field(on_update=get_user_id)
+
+    result = await sync(conn, R)
+    await conn.conn.execute(result)
+
+    inst = OnUpdate(id=1)
+    await conn.save(inst)
+    inst = await conn.select(Query(OnUpdate).where(OnUpdate.id == 1)).first()
+    assert inst.updater_id is None
+    assert inst.updater_id2 is None
+
+    inst.value = "X"
+    await conn.save(inst)
+    inst = await conn.select(Query(OnUpdate).where(OnUpdate.id == 1)).first()
+    assert inst.updater_id == 1
+    assert inst.updater_id2 == 2

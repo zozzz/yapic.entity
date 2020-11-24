@@ -10,11 +10,12 @@ from ._field_impl cimport AutoImpl
 
 
 cdef class Field(EntityAttribute):
-    def __cinit__(self, impl = None, *, name = None, default = None, size = None, nullable = None):
+    def __cinit__(self, impl = None, *, name = None, default = None, size = None, nullable = None, on_update = None):
         self._default_ = default
         self._name_ = name
         self.type_cache = {}
         self.nullable = nullable
+        self.on_update = on_update
 
         if size is not None:
             if isinstance(size, list) or isinstance(size, tuple):
@@ -90,6 +91,7 @@ cdef class Field(EntityAttribute):
             other_field.max_size = self.max_size
 
         other_field.nullable = self.nullable
+        other_field.on_update = self.on_update
 
 
 # field_proxy_attrs = ("__proxied__", "__repr__", "clone")

@@ -1,12 +1,12 @@
 # flake8: noqa
 
-from typing import Generic, MutableMapping, TypeVar, TypedDict, Union, Optional, List, Tuple, Type, Any
+from typing import Callable, Generic, MutableMapping, TypeVar, TypedDict, Union, Optional, List, Tuple, Type, Any
 from datetime import date, datetime, time
 from decimal import Decimal
 from enum import Enum
 import uuid
 
-from ._entity import EntityAttribute, EntityAttributeExt
+from ._entity import EntityAttribute, EntityAttributeExt, Entity
 from ._field import Field as _Field, Index, ForeignKey, PrimaryKey, AutoIncrement
 from ._field_impl import (
     StringImpl,
@@ -54,7 +54,8 @@ class Field(Generic[Impl, PyType, RawType], _Field):
                  name: Optional[str] = None,
                  default: Optional[Union[PyType, RawType]] = None,
                  size: Union[int, Tuple[int, int], None] = None,
-                 nullable: Optional[bool] = None):
+                 nullable: Optional[bool] = None,
+                 on_update: Callable[[Entity], Any] = None):
         self.__get__ = _Field.__get__  # type: ignore
 
     def __get__(self, instance, owner) -> PyType:
