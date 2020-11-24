@@ -23,7 +23,6 @@ from ._field_impl import (
     FloatImpl,
     UUIDImpl,
     JsonImpl as _JsonImpl,
-    JsonArrayImpl as _JsonArrayImpl,
     CompositeImpl as _CompositeImpl,
     AutoImpl,
     ArrayImpl as _ArrayImpl,
@@ -112,7 +111,7 @@ class Choice(Generic[EnumT], Field[ChoiceImpl[EnumT], EnumT, Any]):
     pass
 
 
-EntityT = TypeVar("EntityT", bound=Enum)
+EntityT = TypeVar("EntityT")
 
 
 class JsonImpl(Generic[EntityT], _JsonImpl):
@@ -126,14 +125,7 @@ class Json(Generic[EntityT], Field[JsonImpl[EntityT], EntityT, str]):
     pass
 
 
-class JsonArrayImpl(Generic[EntityT], _JsonArrayImpl):
-    _entity_: Type[EntityT]
-
-    def __init__(self, entity: Type[EntityT]):
-        super().__init__(entity)
-
-
-class JsonArray(Generic[EntityT], Field[JsonArrayImpl[EntityT], List[EntityT], str]):
+class JsonArray(Generic[EntityT], Field[JsonImpl[List[EntityT]], List[EntityT], str]):
     pass
 
 

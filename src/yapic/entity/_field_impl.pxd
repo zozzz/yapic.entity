@@ -59,12 +59,17 @@ cdef class EntityTypeImpl(FieldImpl):
     cdef readonly EntityType _entity_
 
 
-cdef class JsonImpl(EntityTypeImpl):
-    pass
+cdef class JsonImpl(FieldImpl):
+    cdef EntityType _object_
+    cdef EntityType _list_
+    cdef bint _any_
+
+    cdef bint __check_dirty(self, object value)
+    cdef object __list_item(self, object value)
 
 
-cdef class JsonArrayImpl(JsonImpl):
-    cdef bint __check_dirty(self, list value)
+# cdef class JsonArrayImpl(JsonImpl):
+#     cdef bint __check_dirty(self, list value)
 
 
 cdef class CompositeImpl(EntityTypeImpl):

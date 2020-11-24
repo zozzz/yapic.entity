@@ -1,5 +1,7 @@
 # from hashids import Hashids
 
+from typing import Any
+
 from yapic.entity._entity import Entity
 from yapic.entity._entity cimport EntityType, EntityAttribute, EntityAttributeExtGroup
 from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, Index, AutoIncrement, StorageType
@@ -380,11 +382,7 @@ cdef class PostgreDDLReflect(DDLReflect):
         elif typename == "uuid":
             field = Field(UUIDImpl(), nullable=is_nullable)
         elif typename == "jsonb":
-            JSON_ENTITY_UID += 1
-
-            class JsonEntity(self.entity_base, name=f"JsonEntity{JSON_ENTITY_UID}"):
-                pass
-            field = Field(JsonImpl(JsonEntity), nullable=is_nullable)
+            field = Field(JsonImpl(Any), nullable=is_nullable)
         elif typename == "point":
             field = Field(PointImpl(), nullable=is_nullable)
         elif typename == "geometry":

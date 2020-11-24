@@ -17,7 +17,6 @@ from yapic.entity._field_impl cimport (
     TimeTzImpl,
     ChoiceImpl,
     JsonImpl,
-    JsonArrayImpl,
     CompositeImpl,
     UUIDImpl,
     ArrayImpl,
@@ -68,7 +67,7 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
             return self.__uuid_type(field, <UUIDImpl>impl)
         elif isinstance(impl, ChoiceImpl):
             return self.__choice_type(field, <ChoiceImpl>impl)
-        elif isinstance(impl, (JsonImpl, JsonArrayImpl)):
+        elif isinstance(impl, JsonImpl):
             return self.__json_type(field, <JsonImpl>impl)
         elif isinstance(impl, PointImpl):
             return self.__point_type(field, <PointImpl>impl)
@@ -168,8 +167,9 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
 
     cdef StorageType __json_type(self, Field field, JsonImpl impl):
         cdef JsonType t = JsonType("JSONB")
-        t.entity = impl._entity_
-        t.is_list = isinstance(impl, JsonArrayImpl)
+        t._object = impl._object_
+        t._list = impl._list_
+        t._any = impl._any_
         return t
 
     cdef StorageType __composite_type(self, Field field, CompositeImpl impl):
@@ -403,34 +403,34 @@ cdef class ChoiceType(PostgreType):
 
 
 cdef class JsonType(PostgreType):
-    cdef EntityType entity
-    cdef bint is_list
+    cdef EntityType _object
+    cdef EntityType _list
+    cdef bint _any
 
     cpdef object encode(self, object value):
         if value is None:
             return None
-        elif self.is_list:
-            if isinstance(value, list):
-                return json.dumps(list(map(self.__as_dict, value)))
-        else:
+        elif self._object:
             if isinstance(value, EntityBase):
-                if type(value) is not self.entity:
-                    raise ValueError("Missmatch entity type: %r expected %r" % (type(value), self.entity))
+                if type(value) is not self._object:
+                    raise ValueError("Missmatch entity type: %r expected %r" % (type(value), self._object))
                 return json.dumps(value.as_dict())
+        elif self._list:
+            if isinstance(value, list):
+                return json.dumps([v.as_dict() for v in value])
+        elif self._any:
+            return json.dumps(value)
 
         raise TypeError("Can't convert value to json: %r" % value)
 
     cpdef object decode(self, object value):
-        if self.is_list:
-            return list(map(self.__make_entity, json.loads(value)))
+        value = json.loads(value)
+        if self._object:
+            return self._object(value)
+        elif self._list:
+            return [self._list(v) for v in value]
         else:
-            return self.entity(json.loads(value))
-
-    def __as_dict(self, EntityBase value):
-        return value.as_dict()
-
-    def __make_entity(self, value):
-        return self.entity(value)
+            return value
 
 
 cdef class CompositeType(PostgreType):

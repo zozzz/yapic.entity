@@ -1,6 +1,7 @@
 from enum import Enum, Flag
 from datetime import date, datetime
 from inspect import iscoroutine
+from typing import List
 
 from ._entity cimport EntityType, EntityBase, EntityAttributeImpl, EntityAttribute, NOTSET
 from ._expression cimport PathExpression, VirtualExpressionVal, CallExpression, RawExpression
@@ -136,53 +137,163 @@ cdef class EntityTypeImpl(FieldImpl):
         return NOTSET
 
 
-cdef class JsonImpl(EntityTypeImpl):
-    def __init__(self, entity):
-        entity.__meta__["is_virtual"] = True
-        super().__init__(entity)
+cdef class JsonImpl(FieldImpl):
+    def __init__(self, type = None):
+        super().__init__()
 
-    def __repr__(self):
-        return "Json(%r)" % self._entity_
+        if isinstance(type, EntityType):
+            self._object_ = type
+            type.__meta__["is_virtual"] = True
+        elif hasattr(type, "__origin__") and type.__origin__ is list:
+            args = type.__args__
+            if len(args) == 1:
+                item_type = args[0]
+                if isinstance(item_type, EntityType):
+                    self._list_ = item_type
+                    item_type.__meta__["is_virtual"] = True
+                else:
+                    self._any_ = True
+            else:
+                self._any_ = True
+        else:
+            self._any_ = True
 
 
-cdef class JsonArrayImpl(JsonImpl):
+    cpdef object init(self, EntityAttribute attr):
+        if self._object_:
+            attr._deps_.add(self._object_)
+        if self._list_:
+            attr._deps_.add(self._list_)
+        return True
+
+    cpdef getattr(self, EntityAttribute attr, object key):
+        if self._object_:
+            obj = getattr(self._object_, key)
+            if isinstance(obj, VirtualExpressionVal):
+                return VirtualExpressionVal((<VirtualExpressionVal>obj)._virtual_, PathExpression([attr]))
+            else:
+                return PathExpression([attr, obj])
+        else:
+            return PathExpression([attr, key])
+
+    cpdef getitem(self, EntityAttribute attr, object key):
+        return PathExpression([attr, key])
+
     cdef object state_init(self, object initial):
         if initial is NOTSET:
-            return []
+            if self._object_:
+                return self._object_()
+            elif self._list_:
+                return []
+            else:
+                return NOTSET
         else:
             return initial
 
     cdef object state_set(self, object initial, object current, object value):
         if value is None:
             return None
-        elif isinstance(value, list):
-            return list(map(self.__make_entity, value))
+        elif self._object_:
+            if isinstance(value, EntityBase):
+                return value
+            else:
+                return self._object_(value)
+        elif self._list_:
+            return [self.__list_item(v) for v in value]
         else:
-            raise TypeError("JsonArray value must be list of entities")
+            return value
 
     cdef object state_get_dirty(self, object initial, object current):
         if current is NOTSET:
             if initial is NOTSET:
                 return NOTSET
-            elif self.__check_dirty(initial):
-                return initial
+            elif self._object_ or self._list_:
+                if self.__check_dirty(initial):
+                    return initial
         elif initial is not current:
-            return current
-        elif current is not None and self.__check_dirty(current):
-            return current
+            if self._object_:
+                if initial.__state__ == current.__state__:
+                    return NOTSET
+                else:
+                    return current
+            elif self._list_:
+                if initial != current:
+                    return current
+                elif self.__check_dirty(current):
+                    return current
+            else:
+                if initial != current:
+                    return current
+
         return NOTSET
 
-    def __make_entity(self, value):
+
+    def __repr__(self):
+        return "Json"
+
+    cdef bint __check_dirty(self, object value):
+        if isinstance(value, EntityBase):
+            return (<EntityBase>value).__state__.is_dirty
+        elif isinstance(value, list):
+            for v in value:
+                if self.__check_dirty(v):
+                    return True
+        else:
+            return False
+
+    cdef object __list_item(self, object value):
         if isinstance(value, EntityBase):
             return value
         else:
-            return self._entity_(value)
+            return self._list_(value)
 
-    cdef bint __check_dirty(self, list value):
-        for item in value:
-            if item.__state__.is_dirty:
-                return True
-        return False
+# cdef class __JsonImpl(EntityTypeImpl):
+#     def __init__(self, entity):
+#         entity.__meta__["is_virtual"] = True
+#         super().__init__(entity)
+
+#     def __repr__(self):
+#         return "Json(%r)" % self._entity_
+
+
+# cdef class JsonArrayImpl(JsonImpl):
+#     cdef object state_init(self, object initial):
+#         if initial is NOTSET:
+#             return []
+#         else:
+#             return initial
+
+#     cdef object state_set(self, object initial, object current, object value):
+#         if value is None:
+#             return None
+#         elif isinstance(value, list):
+#             return list(map(self.__make_entity, value))
+#         else:
+#             raise TypeError("JsonArray value must be list of entities")
+
+#     cdef object state_get_dirty(self, object initial, object current):
+#         if current is NOTSET:
+#             if initial is NOTSET:
+#                 return NOTSET
+#             elif self.__check_dirty(initial):
+#                 return initial
+#         elif initial is not current:
+#             return current
+#         elif current is not None and self.__check_dirty(current):
+#             return current
+#         return NOTSET
+
+#     def __make_entity(self, value):
+#         if isinstance(value, EntityBase):
+#             return value
+#         else:
+#             return self._entity_(value)
+
+#     cdef bint __check_dirty(self, list value):
+#         for item in value:
+#             if item.__state__.is_dirty:
+#                 return True
+#         return False
 
 
 cdef class CompositeImpl(EntityTypeImpl):

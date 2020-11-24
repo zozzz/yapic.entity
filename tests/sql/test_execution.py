@@ -1,5 +1,6 @@
 # flake8: noqa: E501
 
+from typing import List, TypedDict
 import pytest
 from datetime import datetime, date, time, tzinfo, timedelta
 from decimal import Decimal
@@ -342,6 +343,10 @@ async def test_json(conn, pgclean):
     reg_a = Registry()
     reg_b = Registry()
 
+    class JsonTyped(TypedDict):
+        field1: str
+        field2: int
+
     class JsonXY(Entity, registry=reg_a, schema="execution"):
         x: Int
         y: Int
@@ -354,7 +359,8 @@ async def test_json(conn, pgclean):
     class JsonUser(Entity, registry=reg_a, schema="execution"):
         id: Serial
         name: Json[JsonName]
-        points: JsonArray[JsonXY]
+        points: Json[List[JsonXY]]
+        typed: Json[JsonTyped]
 
     result = await sync(conn, reg_a)
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
@@ -363,6 +369,7 @@ CREATE TABLE "execution"."JsonUser" (
   "id" INT4 NOT NULL DEFAULT nextval('"execution"."JsonUser_id_seq"'::regclass),
   "name" JSONB,
   "points" JSONB,
+  "typed" JSONB,
   PRIMARY KEY("id")
 );"""
 
@@ -383,7 +390,21 @@ CREATE TABLE "execution"."JsonUser" (
         },
     ]
 
-    user = JsonUser(name={"given": "Given", "family": "Family", "xy": {"x": 1, "y": 2}}, points=points)
+    user = JsonUser(
+        name={
+            "given": "Given",
+            "family": "Family",
+            "xy": {
+                "x": 1,
+                "y": 2
+            }
+        },
+        points=points,
+        typed={
+            "field1": "str",
+            "field2": 42
+        },
+    )
     await conn.insert(user)
     assert user.name.given == "Given"
     assert user.name.family == "Family"
@@ -401,6 +422,10 @@ CREATE TABLE "execution"."JsonUser" (
     assert isinstance(user.points[2], JsonXY)
     assert user.points[2].x == 30
     assert user.points[2].y == 42
+
+    assert isinstance(user.typed, dict)
+    assert user.typed["field1"] == "str"
+    assert user.typed["field2"] == 42
 
     result = await sync(conn, reg_a)
     assert bool(result) is False
