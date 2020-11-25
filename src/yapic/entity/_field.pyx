@@ -56,7 +56,8 @@ cdef class Field(EntityAttribute):
             name=self._name_,
             default=self._default_,
             size=(self.min_size, self.max_size),
-            nullable=self.nullable)
+            nullable=self.nullable,
+            on_update=self.on_update)
         res._exts_ = self.clone_exts(res)
         res._deps_ = set(self._deps_)
         res.type_cache = self.type_cache
