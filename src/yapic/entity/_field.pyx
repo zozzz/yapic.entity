@@ -274,7 +274,7 @@ cdef class ForeignKey(FieldExtension):
             self.name = compute_fk_name(field, self.ref)
 
         if isinstance(field._impl_, AutoImpl):
-            field._impl_ = self.ref._impl_
+            (<AutoImpl>field._impl_)._ref_impl = self.ref._impl_
             field.min_size = self.ref.min_size
             field.max_size = self.ref.max_size
 

@@ -11,3 +11,4 @@ from ._registry import *  # noqa
 from ._entity_serializer import EntitySerializer, SerializerCtx, DontSerialize  # noqa
 from ._entity_operation import save_operations, load_operations  # noqa
 from ._virtual_attr import VirtualAttribute
+from .enum import Enum  # noqa

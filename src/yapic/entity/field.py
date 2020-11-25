@@ -102,14 +102,15 @@ EnumT = TypeVar("EnumT", bound=Enum)
 
 class ChoiceImpl(Generic[EnumT], _ChoiceImpl):
     enum: Type[EnumT]
-    is_multi: bool
 
     def __init__(self, enum: Type[EnumT]):
         super().__init__(enum)
 
 
 class Choice(Generic[EnumT], Field[ChoiceImpl[EnumT], EnumT, Any]):
-    pass
+    def __new__(cls, impl, *args, **kwargs):
+        field = Field.__new__(cls, impl, *args, **kwargs)
+        return field // ForeignKey(impl.enum._entity_.value)
 
 
 EntityT = TypeVar("EntityT")

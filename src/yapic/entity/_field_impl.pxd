@@ -50,11 +50,6 @@ cdef class UUIDImpl(FieldImpl):
     pass
 
 
-cdef class ChoiceImpl(FieldImpl):
-    cdef object _enum
-    cdef readonly bint is_multi
-
-
 cdef class EntityTypeImpl(FieldImpl):
     cdef readonly EntityType _entity_
 
@@ -81,7 +76,11 @@ cdef class NamedTupleImpl(CompositeImpl):
 
 
 cdef class AutoImpl(FieldImpl):
-    pass
+    cdef object _ref_impl
+
+
+cdef class ChoiceImpl(AutoImpl):
+    cdef object _enum
 
 
 cdef class ArrayImpl(FieldImpl):

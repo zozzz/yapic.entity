@@ -15,7 +15,8 @@ from yapic.entity._field_impl cimport (
     ChoiceImpl,
     JsonImpl,
     CompositeImpl,
-    ArrayImpl
+    ArrayImpl,
+    AutoImpl
 )
 from yapic.entity._geom_impl cimport (
     PointImpl,
@@ -46,6 +47,7 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
     cdef StorageType __float_type(self, Field field, FloatImpl impl)
     cdef StorageType __uuid_type(self, Field field, UUIDImpl impl)
     cdef StorageType __choice_type(self, Field field, ChoiceImpl impl)
+    cdef StorageType __auto_type(self, Field field, AutoImpl impl)
     cdef StorageType __json_type(self, Field field, JsonImpl impl)
     cdef StorageType __composite_type(self, Field field, CompositeImpl impl)
     cdef StorageType __array_type(self, Field field, ArrayImpl impl)

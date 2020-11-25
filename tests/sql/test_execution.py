@@ -4,10 +4,12 @@ from typing import List, TypedDict
 import pytest
 from datetime import datetime, date, time, tzinfo, timedelta
 from decimal import Decimal
+from yapic.entity.field import Choice
 from yapic.entity.sql import wrap_connection, Entity, sync, PostgreDialect
 from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool, ForeignKey,
                           PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite, Auto, Numeric,
-                          Float, Point, UUID, virtual, StringArray, IntArray, CreatedTime, UpdatedTime)
+                          Float, Point, UUID, virtual, StringArray, IntArray, CreatedTime, UpdatedTime, Enum)
+from yapic import json
 
 pytestmark = pytest.mark.asyncio
 REGISTRY = Registry()
@@ -1040,3 +1042,74 @@ async def test_on_update(conn, pgclean):
     inst = await conn.select(Query(OnUpdate).where(OnUpdate.id == 1)).first()
     assert inst.updater_id == 1
     assert inst.updater_id2 == 2
+
+
+async def test_enum(conn, pgclean):
+    R = Registry()
+
+    class StringEnum(Enum, registry=R, schema="execution"):
+        PAUSED = "Paused"
+        RUNNING = "Running"
+
+    class IntEnum(Enum, registry=R, schema="execution"):
+        value: Int = PrimaryKey()
+
+        PAUSED = dict(value=1, label="Paused")
+        RUNNING = dict(value=2, label="Running")
+
+    class EnumTest(Entity, registry=R, schema="execution"):
+        id: Serial
+        str_enum: Choice[StringEnum]
+        int_enum: Choice[IntEnum]
+
+    result = await sync(conn, R)
+    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE SEQUENCE "execution"."EnumTest_id_seq";
+CREATE TABLE "execution"."IntEnum" (
+  "value" INT4 NOT NULL,
+  "label" TEXT,
+  "index" INT4,
+  PRIMARY KEY("value")
+);
+INSERT INTO "execution"."IntEnum" ("value", "label", "index") VALUES (1, 'Paused', 0) ON CONFLICT ("value") DO UPDATE SET "label"='Paused', "index"=0;
+INSERT INTO "execution"."IntEnum" ("value", "label", "index") VALUES (2, 'Running', 1) ON CONFLICT ("value") DO UPDATE SET "label"='Running', "index"=1;
+CREATE TABLE "execution"."StringEnum" (
+  "value" TEXT NOT NULL,
+  "label" TEXT,
+  "index" INT4,
+  PRIMARY KEY("value")
+);
+INSERT INTO "execution"."StringEnum" ("value", "label", "index") VALUES ('PAUSED', 'Paused', 0) ON CONFLICT ("value") DO UPDATE SET "label"='Paused', "index"=0;
+INSERT INTO "execution"."StringEnum" ("value", "label", "index") VALUES ('RUNNING', 'Running', 1) ON CONFLICT ("value") DO UPDATE SET "label"='Running', "index"=1;
+CREATE TABLE "execution"."EnumTest" (
+  "id" INT4 NOT NULL DEFAULT nextval('"execution"."EnumTest_id_seq"'::regclass),
+  "str_enum" TEXT,
+  "int_enum" INT4,
+  PRIMARY KEY("id")
+);
+CREATE INDEX "idx_EnumTest__str_enum" ON "execution"."EnumTest" USING btree ("str_enum");
+CREATE INDEX "idx_EnumTest__int_enum" ON "execution"."EnumTest" USING btree ("int_enum");
+ALTER TABLE "execution"."EnumTest"
+  ADD CONSTRAINT "fk_EnumTest__str_enum-StringEnum__value" FOREIGN KEY ("str_enum") REFERENCES "execution"."StringEnum" ("value") ON UPDATE RESTRICT ON DELETE RESTRICT,
+  ADD CONSTRAINT "fk_EnumTest__int_enum-IntEnum__value" FOREIGN KEY ("int_enum") REFERENCES "execution"."IntEnum" ("value") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
+
+    await conn.conn.execute(result)
+
+    inst = EnumTest(id=1, str_enum=StringEnum.PAUSED, int_enum=IntEnum.RUNNING)
+    await conn.save(inst)
+    assert inst.str_enum is StringEnum.PAUSED
+    assert inst.int_enum == IntEnum.RUNNING
+
+    inst = await conn.select(Query(EnumTest).where(EnumTest.id == 1)).first()
+    assert inst.str_enum is StringEnum.PAUSED
+    assert inst.int_enum == IntEnum.RUNNING
+
+    json_str = json.dumps(inst)
+    assert json_str == """{"id":1,"str_enum":{"value":"PAUSED","label":"Paused","index":0},"int_enum":{"value":2,"label":"Running","index":1}}"""
+
+    inst = EnumTest(id=2, str_enum="PAUSED", int_enum=2)
+    assert inst.str_enum is StringEnum.PAUSED
+    assert inst.int_enum == IntEnum.RUNNING
+    await conn.save(inst)
+    assert inst.str_enum is StringEnum.PAUSED
+    assert inst.int_enum == IntEnum.RUNNING

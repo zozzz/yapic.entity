@@ -19,22 +19,6 @@ cdef class BytesImpl(FieldImpl):
         return "Bytes"
 
 
-cdef class ChoiceImpl(FieldImpl):
-    def __cinit__(self, enum):
-        if not issubclass(enum, Enum):
-            raise TypeError("Choice type argument must be a subclass of Enum type")
-
-        self._enum = enum
-        self.is_multi = issubclass(enum, Flag)
-
-    @property
-    def enum(self):
-        return self._enum
-
-    def __repr__(self):
-        return "Choice(%r)" % [item.value for item in self._enum]
-
-
 cdef class IntImpl(FieldImpl):
     def __repr__(self):
         return "Int"
@@ -353,6 +337,31 @@ cdef class NamedTupleImpl(CompositeImpl):
 cdef class AutoImpl(FieldImpl):
     def __repr__(self):
         return "Auto"
+
+
+cdef class ChoiceImpl(AutoImpl):
+    def __init__(self, enum):
+        if not issubclass(enum, Enum):
+            raise TypeError("Choice type argument must be a subclass of Enum type")
+
+        self._enum = enum
+
+    @property
+    def enum(self):
+        return self._enum
+
+    cdef object state_set(self, object initial, object current, object value):
+        if isinstance(value, self._enum):
+            return value
+        else:
+            for entry in self._enum:
+                if entry.value == value:
+                    return entry
+
+        raise ValueError(f"Invalid choice value: {value}")
+
+    def __repr__(self):
+        return "Choice(%r)" % [item.value for item in self._enum]
 
 
 cdef class ArrayImpl(FieldImpl):

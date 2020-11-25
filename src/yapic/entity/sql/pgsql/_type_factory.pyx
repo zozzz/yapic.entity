@@ -20,6 +20,7 @@ from yapic.entity._field_impl cimport (
     CompositeImpl,
     UUIDImpl,
     ArrayImpl,
+    AutoImpl,
 )
 from yapic.entity._geom_impl cimport (
     PointImpl,
@@ -79,6 +80,8 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
             return self.__composite_type(field, <CompositeImpl>impl)
         elif isinstance(impl, ArrayImpl):
             return self.__array_type(field, <ArrayImpl>impl)
+        elif isinstance(impl, AutoImpl):
+            return self.__auto_type(field, <AutoImpl>impl)
 
     cdef StorageType __int_type(self, Field field, IntImpl impl):
         # pk = field.get_ext(PrimaryKey)
@@ -130,40 +133,49 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
         return UUIDType(f"UUID")
 
     cdef StorageType __choice_type(self, Field field, ChoiceImpl impl):
+        cdef StorageType value_type = self._create(field, impl._ref_impl)
+        cdef ChoiceType t = ChoiceType(value_type.name, value_type.pre_sql, value_type.post_sql)
+        t.value_type = value_type
+        t.enum = impl._enum
+        return t
+
         # hashid = Hashids(min_length=5, salt=impl.enum.__qualname__)
         # uid = f"{impl.enum.__name__}_{hashid.encode(1)}"
 
         # return PostgreType(uid, f"/* ENUM {uid} SQL WORK IN PROGRESS */")
 
-        type = int
-        str_max_len = 0
-        int_max_size = 0
+        # type = int
+        # str_max_len = 0
+        # int_max_size = 0
 
-        for entry in impl._enum:
-            value = entry.value
-            if isinstance(value, int):
-                int_max_size = max(int_max_size, value)
-            elif isinstance(value, str) :
-                type = str
-                str_max_len = max(str_max_len, len(value))
+        # for entry in impl._enum:
+        #     value = entry.value
+        #     if isinstance(value, int):
+        #         int_max_size = max(int_max_size, value)
+        #     elif isinstance(value, str) :
+        #         type = str
+        #         str_max_len = max(str_max_len, len(value))
 
-        if impl.is_multi:
-            if type is not int:
-                raise TypeError("Choice of Flags must be only contains int values")
+        # if impl.is_multi:
+        #     if type is not int:
+        #         raise TypeError("Choice of Flags must be only contains int values")
 
-            return PostgreType(f"BIT({len(impl._enum)})")
-        else:
-            if type is int:
-                if int_max_size < 32767:
-                    return PostgreType("INT2")
-                elif int_max_size < 2147483647:
-                    return PostgreType("INT4")
-                else:
-                    return PostgreType("INT8")
-            elif type is str:
-                values = [self.dialect.quote_value(entry.value) for entry in impl._enum]
+        #     return PostgreType(f"BIT({len(impl._enum)})")
+        # else:
+        #     if type is int:
+        #         if int_max_size < 32767:
+        #             return PostgreType("INT2")
+        #         elif int_max_size < 2147483647:
+        #             return PostgreType("INT4")
+        #         else:
+        #             return PostgreType("INT8")
+        #     elif type is str:
+        #         values = [self.dialect.quote_value(entry.value) for entry in impl._enum]
 
-                return PostgreType(f"VARCHAR({str_max_len}) CHECK(\"{field._name_}\" IN ({', '.join(values)}))")
+        #         return PostgreType(f"VARCHAR({str_max_len}) CHECK(\"{field._name_}\" IN ({', '.join(values)}))")
+
+    cdef StorageType __auto_type(self, Field field, AutoImpl impl):
+        return self._create(field, impl._ref_impl)
 
     cdef StorageType __json_type(self, Field field, JsonImpl impl):
         cdef JsonType t = JsonType("JSONB")
@@ -395,11 +407,24 @@ cdef class UUIDType(PostgreType):
 
 
 cdef class ChoiceType(PostgreType):
+    cdef StorageType value_type
+    cdef object enum
+
     cpdef object encode(self, object value):
-        pass
+        if isinstance(value, self.enum):
+            return self.value_type.encode(value.value)
+        else:
+            return self.value_type.encode(value)
 
     cpdef object decode(self, object value):
-        pass
+        if isinstance(value, self.enum):
+            return value
+        else:
+            value = self.value_type.decode(value)
+            for entry in self.enum:
+                if entry.value == value:
+                    return entry
+        return value
 
 
 cdef class JsonType(PostgreType):
