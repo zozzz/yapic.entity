@@ -211,19 +211,10 @@ cdef class JsonImpl(FieldImpl):
                 if self.__check_dirty(initial):
                     return initial
         elif initial is not current:
-            if self._object_:
-                if initial.__state__ == current.__state__:
-                    return NOTSET
-                else:
-                    return current
-            elif self._list_:
-                if initial != current:
-                    return current
-                elif self.__check_dirty(current):
-                    return current
-            else:
-                if initial != current:
-                    return current
+            if not json_eq(initial, current):
+                return current
+        elif self.__check_dirty(current):
+            return current
 
         return NOTSET
 
@@ -246,6 +237,35 @@ cdef class JsonImpl(FieldImpl):
             return value
         else:
             return self._list_(value)
+
+cdef bint json_eq(object a, object b):
+    if isinstance(a, list) and isinstance(b, list):
+        a_len = len((<list>a))
+        b_len = len((<list>b))
+        if a_len != b_len:
+            return False
+        else:
+            for i in range(0, a_len):
+                if not json_eq((<list>a)[i], (<list>b)[i]):
+                    return False
+            return True
+    elif isinstance(a, dict) and isinstance(b, dict):
+        return a == b
+    elif isinstance(a, EntityBase) and isinstance(b, EntityBase):
+        return a.__state__ == b.__state__
+    elif isinstance(a, dict):
+        if isinstance(b, EntityBase):
+            return json_eq(a, b.as_dict())
+        else:
+            return False
+    elif isinstance(b, dict):
+        if isinstance(a, EntityBase):
+            return json_eq(a.as_dict(), b)
+        else:
+            return False
+    else:
+        return a == b
+
 
 # cdef class __JsonImpl(EntityTypeImpl):
 #     def __init__(self, entity):

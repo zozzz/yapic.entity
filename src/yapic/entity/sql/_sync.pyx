@@ -26,7 +26,11 @@ async def sync(Connection connection, Registry registry, EntityType entity_base=
             changes.append(await convert_data_to_raw(connection, c))
         diff.changes = changes
 
-        return connection.dialect.create_ddl_compiler().compile_registry_diff(diff)
+        res = connection.dialect.create_ddl_compiler().compile_registry_diff(diff)
+        if not res:
+            return None
+        else:
+            return res
     else:
         return None
 
