@@ -8,6 +8,12 @@ from ._expression cimport PathExpression, VirtualExpressionVal, CallExpression, 
 from ._field cimport StorageType
 
 
+cdef class FieldImpl(EntityAttributeImpl):
+    def __eq__(self, other):
+        if isinstance(other, AutoImpl):
+            other = (<AutoImpl>other)._ref_impl
+        return super().__eq__(other)
+
 
 cdef class StringImpl(FieldImpl):
     def __repr__(self):
@@ -301,16 +307,13 @@ cdef bint json_eq(object a, object b):
 
 
 cdef class CompositeImpl(EntityTypeImpl):
-    def __eq__(self, other):
+    cdef bint _is_eq(self, object other):
         if isinstance(other, CompositeImpl):
             self_ent = entity_qname(self._entity_)
             other_ent = entity_qname((<CompositeImpl>other)._entity_)
             return self_ent == other_ent
         else:
             return False
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     cpdef object data_for_write(self, EntityBase value, bint for_insert):
         return value
@@ -399,11 +402,8 @@ cdef class ArrayImpl(FieldImpl):
 
         return NOTSET
 
-    def __eq__(self, other):
+    cdef bint _is_eq(self, object other):
         return isinstance(other, ArrayImpl) and (<ArrayImpl>other)._item_impl_ == self._item_impl_
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     def __repr__(self):
         return f"Array({self._item_impl_})"

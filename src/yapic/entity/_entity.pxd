@@ -91,6 +91,7 @@ cdef class EntityAttributeImpl:
     cdef object state_init(self, object initial)
     cdef object state_set(self, object initial, object current, object value)
     cdef object state_get_dirty(self, object initial, object current)
+    cdef bint _is_eq(self, object other)
 
 
 @cython.final

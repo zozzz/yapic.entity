@@ -1095,6 +1095,9 @@ ALTER TABLE "execution"."EnumTest"
 
     await conn.conn.execute(result)
 
+    result = await sync(conn, R)
+    assert result is None
+
     inst = EnumTest(id=1, str_enum=StringEnum.PAUSED, int_enum=IntEnum.RUNNING)
     await conn.save(inst)
     assert inst.str_enum is StringEnum.PAUSED

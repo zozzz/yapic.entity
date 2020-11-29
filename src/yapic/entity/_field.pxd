@@ -29,10 +29,6 @@ cdef class FieldExtension(EntityAttributeExt):
     pass
 
 
-cdef class FieldImpl(EntityAttributeImpl):
-    pass
-
-
 cdef class StorageType:
     cdef readonly name
     cpdef object encode(self, object value)

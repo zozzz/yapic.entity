@@ -1,5 +1,9 @@
 from ._entity cimport EntityType, EntityBase, EntityAttributeImpl
-from ._field cimport Field, FieldImpl
+from ._field cimport Field
+
+
+cdef class FieldImpl(EntityAttributeImpl):
+    pass
 
 
 cdef class StringImpl(FieldImpl):

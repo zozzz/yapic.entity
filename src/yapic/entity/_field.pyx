@@ -121,10 +121,6 @@ cdef class FieldExtension(EntityAttributeExt):
     pass
 
 
-cdef class FieldImpl(EntityAttributeImpl):
-    pass
-
-
 cdef class StorageType:
     cpdef object encode(self, object value):
         raise NotImplementedError()

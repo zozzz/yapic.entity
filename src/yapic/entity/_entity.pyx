@@ -589,10 +589,13 @@ cdef class EntityAttributeImpl:
             return NOTSET
 
     def __eq__(self, other):
-        return isinstance(self, type(other)) or isinstance(other, type(self))
+        return self._is_eq(other)
 
     def __ne__(self, other):
-        return not isinstance(self, type(other)) and not isinstance(other, type(self))
+        return not self.__eq__(other)
+
+    cdef bint _is_eq(self, object other):
+        return isinstance(self, type(other)) or isinstance(other, type(self))
 
 
 cdef inline state_set_value(PyObject* initial, PyObject* current, EntityAttribute attr, object value):
