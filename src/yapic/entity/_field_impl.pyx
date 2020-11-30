@@ -341,6 +341,9 @@ cdef class AutoImpl(FieldImpl):
     def __repr__(self):
         return "Auto"
 
+    cdef bint _is_eq(self, object other):
+        return self._ref_impl == other
+
 
 cdef class ChoiceImpl(AutoImpl):
     def __init__(self, enum):
