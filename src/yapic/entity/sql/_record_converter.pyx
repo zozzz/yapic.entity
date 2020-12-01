@@ -86,7 +86,8 @@ async def convert_record(object record, list rcos_list, RCState state):
                     entity_state.set_initial_value(field, None)
                 else:
                     stype = field.get_type(tf)
-                    entity_state.set_initial_value(field, stype.decode(tmp))
+                    tmp = stype.decode(tmp)
+                    entity_state.set_initial_value(field, tmp)
             elif rco.op == RCO.GET_RECORD:
                 result = record[rco.param1]
 

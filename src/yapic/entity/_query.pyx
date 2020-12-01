@@ -519,6 +519,7 @@ cdef class QueryFinalizer(Visitor):
         cdef dict fields = {}
         cdef dict create_poly = {}
 
+        # TODO: Szerintem ez nem kell ide
         for relation in parents:
             self.q.join(relation, None, "INNER")
 
@@ -548,6 +549,7 @@ cdef class QueryFinalizer(Visitor):
 
         aliased = get_alias_target(entity)
 
+        # TODO: ne töltse be a többi kapcsolódó entity id mezőit
         for ent_id in poly.id_fields:
             self.q.load(getattr(entity, ent_id))
         rco.extend(self._rco_for_entity(entity, fields, before_create))

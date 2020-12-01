@@ -230,6 +230,7 @@ cdef object entity_data_is_eq(EntityBase a, EntityBase b):
         iv = a.__state__.get_value(attr2)
         cv = b.__state__.get_value(attr)
         nv = (<EntityAttributeImpl>attr._impl_).state_get_dirty(iv, cv)
+
         if nv is NOTSET:
             continue
         else:

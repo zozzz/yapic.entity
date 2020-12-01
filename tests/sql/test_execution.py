@@ -93,10 +93,8 @@ CREATE TABLE "execution"."User" (
   "updated_time" TIMESTAMPTZ,
   "time" TIME,
   "time_tz" TIMETZ,
-  PRIMARY KEY("id"),
-  CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
+  PRIMARY KEY("id")
 );
-CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_id");
 CREATE SCHEMA IF NOT EXISTS "execution_private";
 CREATE SEQUENCE "execution_private"."User_id_seq";
 CREATE TABLE "execution_private"."User" (
@@ -104,10 +102,14 @@ CREATE TABLE "execution_private"."User" (
   "name" TEXT,
   "email" TEXT,
   "address_id" INT4,
-  PRIMARY KEY("id"),
-  CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
+  PRIMARY KEY("id")
 );
-CREATE INDEX "idx_User__address_id" ON "execution_private"."User" USING btree ("address_id");"""
+CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_id");
+ALTER TABLE "execution"."User"
+  ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+CREATE INDEX "idx_User__address_id" ON "execution_private"."User" USING btree ("address_id");
+ALTER TABLE "execution_private"."User"
+  ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
     await conn.conn.execute(result)
 
     result = await sync(conn, Address.__registry__)
@@ -495,7 +497,7 @@ async def test_composite(conn):
 
     result = await sync(conn, reg_a)
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
-CREATE SEQUENCE "execution"."CompUser_id_seq";
+CREATE SEQUENCE "execution"."Article_id_seq";
 CREATE TYPE "execution"."CompXY" AS (
   "x" TEXT,
   "y" TEXT
@@ -505,19 +507,20 @@ CREATE TYPE "execution"."CompName" AS (
   "family" TEXT,
   "xy" "execution"."CompXY"
 );
+CREATE SEQUENCE "execution"."CompUser_id_seq";
 CREATE TABLE "execution"."CompUser" (
   "id" INT4 NOT NULL DEFAULT nextval('"execution"."CompUser_id_seq"'::regclass),
   "name" "execution"."CompName",
   PRIMARY KEY("id")
 );
-CREATE SEQUENCE "execution"."Article_id_seq";
 CREATE TABLE "execution"."Article" (
   "id" INT4 NOT NULL DEFAULT nextval('"execution"."Article_id_seq"'::regclass),
   "author_id" INT4,
-  PRIMARY KEY("id"),
-  CONSTRAINT "fk_Article__author_id-CompUser__id" FOREIGN KEY ("author_id") REFERENCES "execution"."CompUser" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
+  PRIMARY KEY("id")
 );
-CREATE INDEX "idx_Article__author_id" ON "execution"."Article" USING btree ("author_id");"""
+CREATE INDEX "idx_Article__author_id" ON "execution"."Article" USING btree ("author_id");
+ALTER TABLE "execution"."Article"
+  ADD CONSTRAINT "fk_Article__author_id-CompUser__id" FOREIGN KEY ("author_id") REFERENCES "execution"."CompUser" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
     await conn.conn.execute(result)
 
     # TODO: kitalálni, hogyan lehet módosítani a composite typeot
@@ -756,10 +759,11 @@ CREATE SEQUENCE "execution"."User_id_seq";
 CREATE TABLE "execution"."User" (
   "id" INT4 NOT NULL DEFAULT nextval('"execution"."User_id_seq"'::regclass),
   "address_id" INT4,
-  PRIMARY KEY("id"),
-  CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
+  PRIMARY KEY("id")
 );
-CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_id");"""
+CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_id");
+ALTER TABLE "execution"."User"
+  ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
     await conn.conn.execute(result)
 
     # DROP FK
@@ -1047,6 +1051,10 @@ async def test_on_update(conn, pgclean):
 async def test_enum(conn, pgclean):
     R = Registry()
 
+    class Point(Entity, registry=R, schema="execution"):
+        x: Int
+        y: Int
+
     class StringEnum(Enum, registry=R, schema="execution"):
         PAUSED = "Paused"
         RUNNING = "Running"
@@ -1057,13 +1065,31 @@ async def test_enum(conn, pgclean):
         PAUSED = dict(value=1, label="Paused")
         RUNNING = dict(value=2, label="Running")
 
+    class CompositeEnum(Enum, registry=R, schema="execution"):
+        point: Composite[Point]
+
+        ORIGO = dict(point=Point(x=0, y=0))
+
     class EnumTest(Entity, registry=R, schema="execution"):
         id: Serial
         str_enum: Choice[StringEnum]
         int_enum: Choice[IntEnum]
+        point: Choice[CompositeEnum]
 
     result = await sync(conn, R)
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE TYPE "execution"."Point" AS (
+  "x" INT4,
+  "y" INT4
+);
+CREATE TABLE "execution"."CompositeEnum" (
+  "point" "execution"."Point",
+  "value" TEXT NOT NULL,
+  "label" TEXT,
+  "index" INT4,
+  PRIMARY KEY("value")
+);
+INSERT INTO "execution"."CompositeEnum" ("point"."x", "point"."y", "value", "index") VALUES (0, 0, 'ORIGO', 0) ON CONFLICT ("value") DO UPDATE SET "point"."x"=0, "point"."y"=0, "index"=0;
 CREATE SEQUENCE "execution"."EnumTest_id_seq";
 CREATE TABLE "execution"."IntEnum" (
   "value" INT4 NOT NULL,
@@ -1085,13 +1111,16 @@ CREATE TABLE "execution"."EnumTest" (
   "id" INT4 NOT NULL DEFAULT nextval('"execution"."EnumTest_id_seq"'::regclass),
   "str_enum" TEXT,
   "int_enum" INT4,
+  "point" TEXT,
   PRIMARY KEY("id")
 );
 CREATE INDEX "idx_EnumTest__str_enum" ON "execution"."EnumTest" USING btree ("str_enum");
 CREATE INDEX "idx_EnumTest__int_enum" ON "execution"."EnumTest" USING btree ("int_enum");
+CREATE INDEX "idx_EnumTest__point" ON "execution"."EnumTest" USING btree ("point");
 ALTER TABLE "execution"."EnumTest"
   ADD CONSTRAINT "fk_EnumTest__str_enum-StringEnum__value" FOREIGN KEY ("str_enum") REFERENCES "execution"."StringEnum" ("value") ON UPDATE RESTRICT ON DELETE RESTRICT,
-  ADD CONSTRAINT "fk_EnumTest__int_enum-IntEnum__value" FOREIGN KEY ("int_enum") REFERENCES "execution"."IntEnum" ("value") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
+  ADD CONSTRAINT "fk_EnumTest__int_enum-IntEnum__value" FOREIGN KEY ("int_enum") REFERENCES "execution"."IntEnum" ("value") ON UPDATE RESTRICT ON DELETE RESTRICT,
+  ADD CONSTRAINT "fk_EnumTest__point-CompositeEnum__value" FOREIGN KEY ("point") REFERENCES "execution"."CompositeEnum" ("value") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
 
     await conn.conn.execute(result)
 

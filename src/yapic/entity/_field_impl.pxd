@@ -86,6 +86,8 @@ cdef class AutoImpl(FieldImpl):
 cdef class ChoiceImpl(AutoImpl):
     cdef object _enum
 
+    cdef object _coerce(self, object value)
+
 
 cdef class ArrayImpl(FieldImpl):
     cdef object _item_impl_

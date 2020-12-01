@@ -10,7 +10,7 @@ from ._field cimport StorageType
 
 cdef class FieldImpl(EntityAttributeImpl):
     def __eq__(self, other):
-        if isinstance(other, AutoImpl):
+        while isinstance(other, AutoImpl):
             other = (<AutoImpl>other)._ref_impl
         return super().__eq__(other)
 
@@ -114,17 +114,32 @@ cdef class EntityTypeImpl(FieldImpl):
                 return NOTSET
             elif initial.__state__.is_dirty:
                 return initial
-        elif initial is not current:
-            if type(initial) is type(current):
-                if initial.__state__ == current.__state__:
-                    return NOTSET
-                else:
-                    return current
-            else:
+        elif current is initial:
+            if isinstance(current, EntityBase) and current.__state__.is_dirty:
                 return current
-        elif current is not None and current.__state__.is_dirty:
+            else:
+                return NOTSET
+        elif json_eq(initial, current):
             return current
+
         return NOTSET
+
+        # if current is NOTSET:
+        #     if initial is NOTSET:
+        #         return NOTSET
+        #     elif initial.__state__.is_dirty:
+        #         return initial
+        # elif initial is not current:
+        #     if type(initial) is type(current):
+        #         if initial.__state__ == current.__state__:
+        #             return NOTSET
+        #         else:
+        #             return current
+        #     else:
+        #         return current
+        # elif current is not None and current.__state__.is_dirty:
+        #     return current
+        # return NOTSET
 
 
 cdef class JsonImpl(FieldImpl):
@@ -339,7 +354,7 @@ cdef class NamedTupleImpl(CompositeImpl):
 
 cdef class AutoImpl(FieldImpl):
     def __repr__(self):
-        return "Auto"
+        return repr(self._ref_impl)
 
     cdef bint _is_eq(self, object other):
         return self._ref_impl == other
@@ -357,17 +372,33 @@ cdef class ChoiceImpl(AutoImpl):
         return self._enum
 
     cdef object state_set(self, object initial, object current, object value):
-        if isinstance(value, self._enum):
+        return self._coerce(value)
+
+    cdef object state_get_dirty(self, object initial, object current):
+        if current is NOTSET:
+            if initial is NOTSET:
+                return NOTSET
+            else:
+                return initial
+        else:
+            if self._coerce(initial) is self._coerce(current):
+                return NOTSET
+            else:
+                return current
+
+    def __repr__(self):
+        return "Choice(%r)" % [item.value for item in self._enum]
+
+    cdef object _coerce(self, object value):
+        if value is None:
+            return None
+        elif isinstance(value, self._enum):
             return value
         else:
             for entry in self._enum:
                 if entry.value == value:
                     return entry
-
         raise ValueError(f"Invalid choice value: {value}")
-
-    def __repr__(self):
-        return "Choice(%r)" % [item.value for item in self._enum]
 
 
 cdef class ArrayImpl(FieldImpl):

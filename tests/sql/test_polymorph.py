@@ -56,9 +56,31 @@ CREATE TABLE "poly"."Employee" (
 CREATE TABLE "poly"."Manager" (
   "id" INT4 NOT NULL,
   "manager_field" TEXT,
-  PRIMARY KEY("id"),
-  CONSTRAINT "fk_Manager__id-Employee__id" FOREIGN KEY ("id") REFERENCES "poly"."Employee" ("id") ON UPDATE CASCADE ON DELETE CASCADE
+  PRIMARY KEY("id")
 );
+CREATE SEQUENCE "poly"."Organization_id_seq";
+CREATE TABLE "poly"."Organization" (
+  "id" INT4 NOT NULL DEFAULT nextval('"poly"."Organization_id_seq"'::regclass),
+  "employee_id" INT4,
+  PRIMARY KEY("id")
+);
+CREATE TABLE "poly"."Worker" (
+  "id" INT4 NOT NULL,
+  "worker_field" TEXT,
+  PRIMARY KEY("id")
+);
+CREATE TABLE "poly"."WorkerX" (
+  "id" INT4 NOT NULL,
+  "workerx_field" TEXT,
+  PRIMARY KEY("id")
+);
+CREATE TABLE "poly"."WorkerY" (
+  "id" INT4 NOT NULL,
+  "workery_field" TEXT,
+  PRIMARY KEY("id")
+);
+ALTER TABLE "poly"."Manager"
+  ADD CONSTRAINT "fk_Manager__id-Employee__id" FOREIGN KEY ("id") REFERENCES "poly"."Employee" ("id") ON UPDATE CASCADE ON DELETE CASCADE;
 CREATE OR REPLACE FUNCTION "poly"."YT-Manager-polyd_Employee"() RETURNS TRIGGER AS $$ BEGIN
   DELETE FROM "poly"."Employee" "parent" WHERE "parent"."id"=OLD."id";
   RETURN OLD;
@@ -67,20 +89,11 @@ CREATE TRIGGER "polyd_Employee"
   AFTER DELETE ON "poly"."Manager"
   FOR EACH ROW
   EXECUTE FUNCTION "poly"."YT-Manager-polyd_Employee"();
-CREATE SEQUENCE "poly"."Organization_id_seq";
-CREATE TABLE "poly"."Organization" (
-  "id" INT4 NOT NULL DEFAULT nextval('"poly"."Organization_id_seq"'::regclass),
-  "employee_id" INT4,
-  PRIMARY KEY("id"),
-  CONSTRAINT "fk_Organization__employee_id-Employee__id" FOREIGN KEY ("employee_id") REFERENCES "poly"."Employee" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
-);
 CREATE INDEX "idx_Organization__employee_id" ON "poly"."Organization" USING btree ("employee_id");
-CREATE TABLE "poly"."Worker" (
-  "id" INT4 NOT NULL,
-  "worker_field" TEXT,
-  PRIMARY KEY("id"),
-  CONSTRAINT "fk_Worker__id-Employee__id" FOREIGN KEY ("id") REFERENCES "poly"."Employee" ("id") ON UPDATE CASCADE ON DELETE CASCADE
-);
+ALTER TABLE "poly"."Organization"
+  ADD CONSTRAINT "fk_Organization__employee_id-Employee__id" FOREIGN KEY ("employee_id") REFERENCES "poly"."Employee" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+ALTER TABLE "poly"."Worker"
+  ADD CONSTRAINT "fk_Worker__id-Employee__id" FOREIGN KEY ("id") REFERENCES "poly"."Employee" ("id") ON UPDATE CASCADE ON DELETE CASCADE;
 CREATE OR REPLACE FUNCTION "poly"."YT-Worker-polyd_Employee"() RETURNS TRIGGER AS $$ BEGIN
   DELETE FROM "poly"."Employee" "parent" WHERE "parent"."id"=OLD."id";
   RETURN OLD;
@@ -89,12 +102,16 @@ CREATE TRIGGER "polyd_Employee"
   AFTER DELETE ON "poly"."Worker"
   FOR EACH ROW
   EXECUTE FUNCTION "poly"."YT-Worker-polyd_Employee"();
-CREATE TABLE "poly"."WorkerX" (
-  "id" INT4 NOT NULL,
-  "workerx_field" TEXT,
-  PRIMARY KEY("id"),
-  CONSTRAINT "fk_WorkerX__id-Worker__id" FOREIGN KEY ("id") REFERENCES "poly"."Worker" ("id") ON UPDATE CASCADE ON DELETE CASCADE
-);
+ALTER TABLE "poly"."WorkerX"
+  ADD CONSTRAINT "fk_WorkerX__id-Worker__id" FOREIGN KEY ("id") REFERENCES "poly"."Worker" ("id") ON UPDATE CASCADE ON DELETE CASCADE;
+CREATE OR REPLACE FUNCTION "poly"."YT-WorkerX-polyd_Employee"() RETURNS TRIGGER AS $$ BEGIN
+  DELETE FROM "poly"."Employee" "parent" WHERE "parent"."id"=OLD."id";
+  RETURN OLD;
+END; $$ language 'plpgsql' ;
+CREATE TRIGGER "polyd_Employee"
+  AFTER DELETE ON "poly"."WorkerX"
+  FOR EACH ROW
+  EXECUTE FUNCTION "poly"."YT-WorkerX-polyd_Employee"();
 CREATE OR REPLACE FUNCTION "poly"."YT-WorkerX-polyd_Worker"() RETURNS TRIGGER AS $$ BEGIN
   DELETE FROM "poly"."Worker" "parent" WHERE "parent"."id"=OLD."id";
   RETURN OLD;
@@ -103,12 +120,16 @@ CREATE TRIGGER "polyd_Worker"
   AFTER DELETE ON "poly"."WorkerX"
   FOR EACH ROW
   EXECUTE FUNCTION "poly"."YT-WorkerX-polyd_Worker"();
-CREATE TABLE "poly"."WorkerY" (
-  "id" INT4 NOT NULL,
-  "workery_field" TEXT,
-  PRIMARY KEY("id"),
-  CONSTRAINT "fk_WorkerY__id-Worker__id" FOREIGN KEY ("id") REFERENCES "poly"."Worker" ("id") ON UPDATE CASCADE ON DELETE CASCADE
-);
+ALTER TABLE "poly"."WorkerY"
+  ADD CONSTRAINT "fk_WorkerY__id-Worker__id" FOREIGN KEY ("id") REFERENCES "poly"."Worker" ("id") ON UPDATE CASCADE ON DELETE CASCADE;
+CREATE OR REPLACE FUNCTION "poly"."YT-WorkerY-polyd_Employee"() RETURNS TRIGGER AS $$ BEGIN
+  DELETE FROM "poly"."Employee" "parent" WHERE "parent"."id"=OLD."id";
+  RETURN OLD;
+END; $$ language 'plpgsql' ;
+CREATE TRIGGER "polyd_Employee"
+  AFTER DELETE ON "poly"."WorkerY"
+  FOR EACH ROW
+  EXECUTE FUNCTION "poly"."YT-WorkerY-polyd_Employee"();
 CREATE OR REPLACE FUNCTION "poly"."YT-WorkerY-polyd_Worker"() RETURNS TRIGGER AS $$ BEGIN
   DELETE FROM "poly"."Worker" "parent" WHERE "parent"."id"=OLD."id";
   RETURN OLD;

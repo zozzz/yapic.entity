@@ -372,10 +372,7 @@ cdef class NumericType(PostgreType):
         if value is None:
             return None
 
-        if isinstance(value, str):
-            return Decimal(value)
-        else:
-            return value
+        return Decimal(value)
 
 
 cdef class FloatType(PostgreType):
