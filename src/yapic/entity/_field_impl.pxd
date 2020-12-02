@@ -59,8 +59,8 @@ cdef class EntityTypeImpl(FieldImpl):
 
 
 cdef class JsonImpl(FieldImpl):
-    cdef EntityType _object_
-    cdef EntityType _list_
+    cdef readonly EntityType _object_
+    cdef readonly EntityType _list_
     cdef bint _any_
 
     cdef bint __check_dirty(self, object value)
@@ -80,14 +80,14 @@ cdef class NamedTupleImpl(CompositeImpl):
 
 
 cdef class AutoImpl(FieldImpl):
-    cdef object _ref_impl
+    cdef readonly object _ref_impl
 
 
 cdef class ChoiceImpl(AutoImpl):
-    cdef object _enum
+    cdef readonly object _enum
 
     cdef object _coerce(self, object value)
 
 
 cdef class ArrayImpl(FieldImpl):
-    cdef object _item_impl_
+    cdef readonly object _item_impl_
