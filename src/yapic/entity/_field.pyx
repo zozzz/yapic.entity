@@ -1,4 +1,5 @@
 import cython
+import hashlib
 from cpython.object cimport PyObject
 from cpython.weakref cimport PyWeakref_NewRef, PyWeakref_GetObject
 from cpython.module cimport PyImport_Import, PyModule_GetDict
@@ -288,12 +289,17 @@ cdef class ForeignKey(FieldExtension):
 
 
 cdef compute_fk_name(Field field_from, Field field_to):
-    return "fk_%s__%s-%s__%s" % (
+    name = "fk_%s__%s-%s__%s" % (
         field_from._entity_.__name__,
         field_from._name_,
         field_to._entity_.__name__,
         field_to._name_
     )
+
+    if len(name) >= 63:
+        return f"fk_{hashlib.md5(name.encode()).hexdigest()}"
+    else:
+        return name
 
 
 cdef dict collect_foreign_keys(EntityType entity):

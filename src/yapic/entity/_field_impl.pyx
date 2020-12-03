@@ -386,8 +386,8 @@ cdef class ChoiceImpl(AutoImpl):
             else:
                 return current
 
-    def __repr__(self):
-        return "Choice(%r)" % [item.value for item in self._enum]
+    # def __repr__(self):
+    #     return "Choice(%r)" % [item.value for item in self._enum]
 
     cdef object _coerce(self, object value):
         if value is None:
