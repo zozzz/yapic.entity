@@ -82,6 +82,8 @@ class Enum(_Enum, _root=True, metaclass=EntityEnumMeta):
         self._entity_.__fix_entries__.append(inst)
         self._inst_ = inst
 
+        type(self)._value2member_map_[inst.value] = self
+
     def __update_seq__(self, value_dict: dict):
         last_index = self._entity_.__fix_entries__[-1].index if self._entity_.__fix_entries__ else -1
         value_dict["index"] = last_index + 1
