@@ -52,10 +52,11 @@ cdef class EntityType(type):
                 else:
                     raise ValueError("More than one Entity base is not allowed")
 
-            if hasattr(base, "__triggers__"):
-                for t in base.__triggers__:
-                    if t not in __triggers__:
-                        __triggers__.append(t)
+            # TODO: trigger inheritance kezelése, jelenleg nem szabad csak úgy lemásolni a parent-et mert így rossz
+            # if hasattr(base, "__triggers__"):
+            #     for t in base.__triggers__:
+            #         if t not in __triggers__:
+            #             __triggers__.append(t)
 
         try:
             is_alias = self.__meta__["is_alias"] is True
