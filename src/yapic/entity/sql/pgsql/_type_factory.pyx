@@ -446,7 +446,7 @@ cdef class JsonType(PostgreType):
         raise TypeError("Can't convert value to json: %r" % value)
 
     cpdef object decode(self, object value):
-        value = json.loads(value)
+        value = json.loads(value, parse_float=Decimal)
         if self._object:
             return self._object(value)
         elif self._list:

@@ -100,26 +100,22 @@ cdef class EntityTypeImpl(FieldImpl):
     cdef object state_set(self, object initial, object current, object value):
         if value is None:
             return None
-        elif current is NOTSET:
-            if isinstance(value, EntityBase):
-                return value
         elif isinstance(value, EntityBase):
             return value
-
-        return self._entity_(value)
+        else:
+            return self._entity_(value)
 
     cdef object state_get_dirty(self, object initial, object current):
         if current is NOTSET:
-            if initial is NOTSET:
-                return NOTSET
-            elif initial.__state__.is_dirty:
-                return initial
-        elif current is initial:
-            if isinstance(current, EntityBase) and current.__state__.is_dirty:
+            return NOTSET
+        elif initial is NOTSET:
+            return current
+        elif isinstance(current, self._entity_) and current is initial:
+            if current.__state__.is_dirty:
                 return current
             else:
                 return NOTSET
-        elif json_eq(initial, current):
+        elif not json_eq(initial, current):
             return current
 
         return NOTSET
@@ -210,16 +206,28 @@ cdef class JsonImpl(FieldImpl):
 
     cdef object state_get_dirty(self, object initial, object current):
         if current is NOTSET:
-            if initial is NOTSET:
-                return NOTSET
-            elif self._object_ or self._list_:
-                if self.__check_dirty(initial):
-                    return initial
-        elif initial is not current:
-            if not json_eq(initial, current):
-                return current
-        elif self.__check_dirty(current):
+            return NOTSET
+        elif initial is NOTSET:
             return current
+        elif initial is current:
+            if self.__check_dirty(current):
+                return current
+            else:
+                return NOTSET
+        elif not json_eq(initial, current):
+            return current
+
+        # if current is NOTSET:
+        #     if initial is NOTSET:
+        #         return NOTSET
+        #     elif self._object_ or self._list_:
+        #         if self.__check_dirty(initial):
+        #             return initial
+        # elif initial is not current:
+        #     if not json_eq(initial, current):
+        #         return current
+        # elif self.__check_dirty(current):
+        #     return current
 
         return NOTSET
 
@@ -376,12 +384,11 @@ cdef class ChoiceImpl(AutoImpl):
 
     cdef object state_get_dirty(self, object initial, object current):
         if current is NOTSET:
-            if initial is NOTSET:
-                return NOTSET
-            else:
-                return initial
+            return NOTSET
+        elif initial is NOTSET:
+            return current
         else:
-            if self._coerce(initial) is self._coerce(current):
+            if self._coerce(initial) == self._coerce(current):
                 return NOTSET
             else:
                 return current
@@ -395,10 +402,7 @@ cdef class ChoiceImpl(AutoImpl):
         elif isinstance(value, self._enum):
             return value
         else:
-            for entry in self._enum:
-                if entry.value == value:
-                    return entry
-        raise ValueError(f"Invalid choice value: {value}")
+            return self._enum(value)
 
 
 cdef class ArrayImpl(FieldImpl):
@@ -407,7 +411,7 @@ cdef class ArrayImpl(FieldImpl):
         super().__init__()
 
     cdef object state_init(self, object initial):
-        if initial is NOTSET:
+        if initial is NOTSET or initial is None:
             return []
         else:
             return list(initial)

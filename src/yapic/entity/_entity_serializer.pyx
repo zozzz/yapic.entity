@@ -63,7 +63,7 @@ cdef class EntitySerializer:
 cdef inline object create_serializable(object value, SerializerCtx ctx):
     if isinstance(value, dict):
         return MappingGenerator(value, ctx)
-    elif isinstance(value, (list, tuple)):
+    elif isinstance(value, (list, tuple, set)):
         return SequenceGenerator(value, ctx)
     else:
         return value
@@ -81,7 +81,11 @@ cdef class MappingGenerator:
         self.ctx = ctx
 
     def __iter__(self):
-        self.iterator = self.iterable.items()
+        items = self.iterable.items()
+        if hasattr(items, "__next__"):
+            self.iterator = items
+        else:
+            self.iterator = iter(items)
         return self
 
     def __next__(self):
