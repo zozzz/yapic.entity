@@ -1,5 +1,5 @@
 import pytest
-from yapic.entity.sql import wrap_connection, Entity, sync, raw
+from yapic.entity.sql import wrap_connection, Entity, sync, raw, PostgreDialect
 from yapic.entity import (Serial, Int, String, ForeignKey, PrimaryKey, One, Many, ManyAcross, Registry, DependencyList,
                           Json, Composite, save_operations, Auto, Query, Loading, Relation)
 from yapic import json
@@ -173,7 +173,13 @@ async def test_load(conn):
     user.children.append(UserChild(name="Child2"))
     await conn.save(user)
 
-    user = await conn.select(Query(User).where(User.id == 1).load(User, User.address, User.children, User.tags)).first()
+    q = Query(User).where(User.id == 1).load(User, User.address, User.children, User.tags)
+    dialect = PostgreDialect()
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", ("t0"."name")."title", ("t0"."name")."family", ("t0"."name")."given", "t0"."address_id", "t1"."id", "t1"."addr" FROM "ent_load"."User" "t0" LEFT JOIN "ent_load"."Address" "t1" ON "t0"."address_id" = "t1"."id" WHERE "t0"."id" = $1"""
+    assert params == (1, )
+
+    user = await conn.select(q).first()
     assert user.id == 1
     assert user.address.id == user.address_id
     assert user.address.addr == "Address1"
@@ -292,7 +298,8 @@ async def test_load_only_relation_field(conn):
     q = Query(Something2).where(Something2.id == something2.id).load(Something2.id, Something2.something)
     s = await conn.select(q).first()
     data = json.dumps(s)
-    assert data == """{"id":1,"something":{"id":2,"article_id":42}}"""
+    # TODO: itt lehet nem kéne betöltenie az something.article értékét
+    assert data == """{"id":1,"something":{"id":2,"article_id":42,"article":{"id":42,"creator_id":5,"updater_id":6}}}"""
 
     # TODO: ...
     # q = Query(Article).where(Article.id == 42).load(Article.creator.tags.value)

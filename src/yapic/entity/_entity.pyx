@@ -842,25 +842,55 @@ cdef class EntityState:
         if not isinstance(other, EntityState):
             return False
 
-        if self.entity is not (<EntityState>other).entity:
-            return False
+        cdef EntityState other_state = (<EntityState>other)
+
+        if self.entity is not other_state.entity:
+            if self.entity.__qname__ == other_state.entity.__qname__:
+                return self.is_eq_reflected(other_state)
+            else:
+                return False
 
         cdef int idx
         cdef EntityAttribute attr
 
         for attr in self.entity.__attrs__:
             sv = self.get_value(attr)
-            ov = (<EntityState>other).get_value(attr)
+            ov = other_state.get_value(attr)
             nv = (<EntityAttributeImpl>attr._impl_).state_get_dirty(sv, ov)
 
-            if nv is NOTSET:
-                continue
+            if nv is not NOTSET:
+                return False
 
-            return False
         return True
 
     def __ne__(EntityState self, other):
         return not self.__eq__(other)
+
+    cdef bint is_eq_reflected(self, EntityState other):
+        if len(self.entity.__attrs__) != len(other.entity.__attrs__):
+            return False
+
+        cdef EntityAttribute attr
+        cdef EntityAttribute other_attr
+        cdef EntityType other_entity = other.entity
+
+        for attr in self.entity.__attrs__:
+            try:
+                other_attr = getattr(other_entity, attr._name_)
+            except AttributeError:
+                try:
+                    other_attr = getattr(other_entity, attr._key_)
+                except AttributeError:
+                    return False
+
+            sv = self.get_value(attr)
+            ov = other.get_value(other_attr)
+            nv = (<EntityAttributeImpl>attr._impl_).state_get_dirty(sv, ov)
+
+            if nv is not NOTSET:
+                return False
+
+        return True
 
 
 cdef class EntityBase:

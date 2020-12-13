@@ -346,6 +346,10 @@ cdef class RowConvertOp:
         return "<RCO:%s %r %r>" % (name, self.param1, self.param2)
 
 
+_RCO_PUSH = RowConvertOp(RCO.PUSH)
+_RCO_POP = RowConvertOp(RCO.POP)
+
+
 cdef class QueryFinalizer(Visitor):
     def __cinit__(self, Query q):
         self.q = q
@@ -528,7 +532,7 @@ cdef class QueryFinalizer(Visitor):
 
             if parent_relation:
                 before_create = [
-                    RowConvertOp(RCO.POP),
+                    _RCO_POP,
                     RowConvertOp(RCO.SET_ATTR, parent_relation),
                 ]
             else:
@@ -537,11 +541,11 @@ cdef class QueryFinalizer(Visitor):
 
             self.q.load(relation._impl_.joined)
             rco.extend(self._rco_for_entity(relation._impl_.joined, fields, before_create))
-            rco.append(RowConvertOp(RCO.PUSH))
+            rco.append(_RCO_PUSH)
 
         if parent_relation:
             before_create = [
-                RowConvertOp(RCO.POP),
+                _RCO_POP,
                 RowConvertOp(RCO.SET_ATTR, parent_relation),
             ]
         else:
@@ -557,7 +561,7 @@ cdef class QueryFinalizer(Visitor):
         rco_len = len(rco)
         pc = self._add_poly_child(create_poly, rco_len + 3, rco_len + 2, aliased, poly, fields)
         if pc:
-            rco.append(RowConvertOp(RCO.PUSH))
+            rco.append(_RCO_PUSH)
 
             id_fields = []
             for ent_id in poly.id_fields:
@@ -585,7 +589,7 @@ cdef class QueryFinalizer(Visitor):
             create_poly[poly.entities[child][0]] = idx
             self.q.load(child)
             rco = self._rco_for_entity(child, fields, [
-                RowConvertOp(RCO.POP),
+                _RCO_POP,
                 RowConvertOp(RCO.SET_ATTR, relation),
             ])
 
@@ -596,7 +600,7 @@ cdef class QueryFinalizer(Visitor):
             pc = self._add_poly_child(create_poly, idx, idx_break, child, poly, fields)
             if pc:
                 rcos.extend(rco)
-                rcos.append(RowConvertOp(RCO.PUSH))
+                rcos.append(_RCO_PUSH)
                 rcos.extend(pc)
 
             idx = idx_start + len(rcos)
@@ -627,7 +631,7 @@ cdef class QueryFinalizer(Visitor):
 
                     if isinstance(field._impl_, CompositeImpl):
                         rco[0:0] = self._rco_for_composite(field, (<CompositeImpl>field._impl_)._entity_)
-                        rco.append(RowConvertOp(RCO.POP))
+                        rco.append(_RCO_POP)
                         rco.append(RowConvertOp(RCO.SET_ATTR, aliased.__fields__[field._index_]))
                     else:
                         try:
@@ -649,10 +653,16 @@ cdef class QueryFinalizer(Visitor):
                     if loading is not None and loading.always:
                         self.q.load(attr)
 
-                    if loading is not None and loading.eager:
-                        relation_rco.append((relation, self._rco_for_eager_relation()))
+                    if isinstance(relation._impl_, ManyToOne):
+                        # TODO: maybe handle another cases, when `loading.eager == True`
+                        relation_rco.append((relation, self._rco_for_eager_relation(relation, existing)))
                     else:
                         relation_rco.append((relation, self._rco_for_lazy_relation(relation)))
+
+                    # if loading is not None and loading.eager:
+
+                    # else:
+                    #     relation_rco.append((relation, self._rco_for_lazy_relation(relation)))
             elif isinstance(attr, VirtualAttribute) and attr._uid_ in self.q._load:
                 try:
                     idx = existing[attr._uid_]
@@ -666,14 +676,14 @@ cdef class QueryFinalizer(Visitor):
 
                 # not optimal, but working
                 rco.append(RowConvertOp(RCO.GET_RECORD, idx))
-                rco.append(RowConvertOp(RCO.PUSH))
-                rco.append(RowConvertOp(RCO.POP))
+                rco.append(_RCO_PUSH)
+                rco.append(_RCO_POP)
                 rco.append(RowConvertOp(RCO.SET_ATTR, aliased.__attrs__[attr._index_]))
 
         for rel, relco in relation_rco:
             if relco is not None:
                 rco[0:0] = relco
-                rco.append(RowConvertOp(RCO.POP))
+                rco.append(_RCO_POP)
                 rco.append(RowConvertOp(RCO.SET_ATTR, rel))
 
         rco.extend(before_create)
@@ -694,7 +704,7 @@ cdef class QueryFinalizer(Visitor):
         for f in entity.__fields__:
             if isinstance(f._impl_, CompositeImpl):
                 rco[0:0] = self._rco_for_composite(field, (<CompositeImpl>f._impl_)._entity_, path + [f._key_])
-                rco.append(RowConvertOp(RCO.POP))
+                rco.append(_RCO_POP)
                 rco.append(RowConvertOp(RCO.SET_ATTR, f))
             else:
                 idx = len(self.q._columns)
@@ -702,17 +712,23 @@ cdef class QueryFinalizer(Visitor):
                 rco.append(RowConvertOp(RCO.SET_ATTR_RECORD, f, idx))
 
         rco.append(RowConvertOp(RCO.CREATE_ENTITY, entity))
-        rco.append(RowConvertOp(RCO.PUSH))
+        rco.append(_RCO_PUSH)
         return rco
 
-    def _rco_for_eager_relation(self):
-        return []
+    def _rco_for_eager_relation(self, Relation relation, dict existing=None):
+        relation.update_join_expr()
+        self.q.join(relation, None, "LEFT")
+
+        cdef EntityType load = relation._impl_.joined
+        cdef list rco = self._rco_for_entity(load, existing)
+
+        rco.append(_RCO_PUSH)
+        return rco
 
     def _rco_for_lazy_relation(self, Relation relation, dict existing=None):
         relation.update_join_expr()
 
         cdef EntityType load = relation._impl_.joined
-        cdef EntityType load_aliased = get_alias_target(load)
         cdef RCO op
         cdef Query q
 
