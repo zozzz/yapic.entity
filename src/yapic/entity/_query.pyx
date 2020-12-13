@@ -658,11 +658,6 @@ cdef class QueryFinalizer(Visitor):
                         relation_rco.append((relation, self._rco_for_eager_relation(relation, existing)))
                     else:
                         relation_rco.append((relation, self._rco_for_lazy_relation(relation)))
-
-                    # if loading is not None and loading.eager:
-
-                    # else:
-                    #     relation_rco.append((relation, self._rco_for_lazy_relation(relation)))
             elif isinstance(attr, VirtualAttribute) and attr._uid_ in self.q._load:
                 try:
                     idx = existing[attr._uid_]
@@ -763,34 +758,6 @@ cdef class QueryFinalizer(Visitor):
 
         return [RowConvertOp(op, tuple(indexes), QueryFactory(q, fields, expr))]
 
-    # TODO: optimalizálni a tuple létrehozást
-    # def _new_query_factory(self, EntityType loaded_entity, EntityType load, Relation r, Expression expr):
-    #     aliased = get_alias_target(load)
-    #     if load is not aliased:
-    #         expr = replace_entity(expr, load, get_alias_target(load))
-
-    #     fields = extract_fields(loaded_entity, expr)
-    #     indexes = []
-
-    #     for field in fields:
-    #         try:
-    #             idx = self._find_column_index(field)
-    #         except ValueError:
-    #             idx = len(self.q._columns)
-    #             self.q._columns.append(field)
-
-    #         indexes.append(idx)
-
-    #     if len(indexes) != 0:
-    #         if isinstance(r._impl_, ManyToMany):
-    #             qf = QueryFactory(Query(), fields, expr)
-    #         else:
-    #             qf = QueryFactory(Query(), fields, expr)
-    #         return tuple(indexes), qf
-    #     else:
-    #         return None, None
-
-
     def _find_column_index(self, EntityAttribute field):
         for i, c in enumerate(self.q._columns):
             if isinstance(c, EntityAttribute) and (<EntityAttribute>c)._uid_ is field._uid_:
@@ -815,6 +782,18 @@ cdef inline determine_join(Query q, EntityType joined):
 
 @cython.final
 cdef class QueryFactory:
+    """
+    TODO: refactor plan
+    1. replace fileds with special ConstExpression
+    2. finalize query
+    3. compile query
+    4. create mapping between special ConstExpression and record index
+    5. rco...
+    6. REMOVE QueryFactory
+    7. REMOVE RCO.LOAD_ONE_ENTITY
+    8. REMOVE RCO.LOAD_MULTI_ENTITY
+    """
+
     def __init__(self, Query query, tuple fields, Expression join_expr):
         self.query = query
         self.fields = fields
@@ -825,17 +804,3 @@ cdef class QueryFactory:
 
     def __repr__(self):
         return "<QueryFactory %r %r>" % (self.query._select_from, self.join_expr)
-
-
-# cdef class FinalizeVirtualAttr(ReplacerBase):
-#     cdef Query query
-
-#     def __cinit__(self, Query query):
-#         self.query = query
-
-#     def visit_virtual_attr(self, VirtualAttribute attr):
-#         if attr._expr:
-#             return attr._expr(attr._entity_, self.query, )
-#         else:
-#             raise ValueError("Expression not defined for: %r" % attr)
-#         return

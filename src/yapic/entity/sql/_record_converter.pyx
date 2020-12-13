@@ -58,11 +58,12 @@ async def convert_record(object record, list rcos_list, RCState state):
             elif rco.op == RCO.CREATE_ENTITY:
                 result = rco.param1(entity_state)
             elif rco.op == RCO.CREATE_POLYMORPH_ENTITY:
-                if not isinstance(rco.param1, tuple):
-                    raise RuntimeError("Invalid param1 for RCO: %r" % rco)
+                # XXX: Debug Only! All this error is internal error only
+                # if not isinstance(rco.param1, tuple):
+                #     raise RuntimeError("Invalid param1 for RCO: %r" % rco)
 
-                if not isinstance(rco.param2, dict):
-                    raise RuntimeError("Invalid param1 for RCO: %r" % rco)
+                # if not isinstance(rco.param2, dict):
+                #     raise RuntimeError("Invalid param1 for RCO: %r" % rco)
 
                 poly_id = _record_idexes_to_tuple(<tuple>(rco.param1), record)
                 poly_jump = (<dict>rco.param2).get(poly_id, None)
