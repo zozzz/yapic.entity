@@ -3,10 +3,10 @@ from cpython.ref cimport Py_INCREF
 from cpython.tuple cimport PyTuple_New, PyTuple_GET_ITEM, PyTuple_SET_ITEM, PyTuple_GET_SIZE
 
 from yapic.entity._entity cimport EntityState
-from yapic.entity._query cimport RCO, RowConvertOp
 from yapic.entity._entity cimport EntityBase, EntityAttribute
 from yapic.entity._field cimport StorageTypeFactory, StorageType, Field
 
+from ._query cimport RCO, RowConvertOp
 
 
 
@@ -16,7 +16,7 @@ cdef class RCState:
         self.cache = {}
 
 
-async def convert_record(object record, list rcos_list, RCState state):
+def convert_record(object record, list rcos_list, RCState state):
     cdef int rcos_list_len = len(rcos_list)
     cdef tuple converted = PyTuple_New(rcos_list_len)
     cdef list rcos
@@ -70,14 +70,13 @@ async def convert_record(object record, list rcos_list, RCState state):
                 if poly_jump is not None:
                     j = poly_jump
                     continue
-            elif rco.op == RCO.LOAD_ONE_ENTITY:
-                related_id = _record_idexes_to_tuple(<tuple>(rco.param1), record)
-                query = rco.param2(related_id)
-                push(await state.conn.select(query).first())
-            elif rco.op == RCO.LOAD_MULTI_ENTITY:
-                related_id = _record_idexes_to_tuple(<tuple>(rco.param1), record)
-                query = rco.param2(related_id)
-                push(await state.conn.select(query))
+            elif rco.op == RCO.CONVERT_SUB_ENTITIES:
+                tmp = record[<int>rco.param1]
+                result = []
+                if tmp:
+                    for entry in tmp:
+                        result.append(convert_record(entry, rco.param2, state))
+                push(result)
             elif rco.op == RCO.SET_ATTR:
                 entity_state.set_initial_value(<EntityAttribute>rco.param1, tmp)
             elif rco.op == RCO.SET_ATTR_RECORD:
@@ -116,3 +115,24 @@ cdef tuple _record_idexes_to_tuple(tuple idx_list, object record):
             Py_INCREF(<object>val)
             PyTuple_SET_ITEM(<object>result, i, <object>val)
         return result
+
+
+cdef tuple _construct_params(object record, tuple params, tuple record_indexes, tuple param_indexes):
+    cdef int length = len(params)
+    cdef tuple result = PyTuple_New(length)
+    cdef int pindex
+    cdef int rindex
+
+    for i in range(0, length):
+        try:
+            pindex = param_indexes.index(i)
+        except ValueError:
+            val = params[i]
+        else:
+            rindex = record_indexes[pindex]
+            val = record[rindex]
+
+        Py_INCREF(<object>val)
+        PyTuple_SET_ITEM(<object>result, i, <object>val)
+
+    return result

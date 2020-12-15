@@ -4,7 +4,7 @@ from .field import (  # noqa
     Json, JsonArray, Composite, Auto, Point, PrimaryKey, Index, ForeignKey, AutoIncrement, virtual, StringArray,
     IntArray, CreatedTime, UpdatedTime)
 from .relation import *  # noqa
-from ._query import *  # noqa
+from .sql._query import *  # noqa
 from ._expression import *  # noqa
 from ._entity_diff import *  # noqa
 from ._registry import *  # noqa

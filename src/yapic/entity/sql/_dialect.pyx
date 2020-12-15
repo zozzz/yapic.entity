@@ -2,7 +2,7 @@ from yapic.entity._entity cimport EntityType
 from yapic.entity._field cimport Field, StorageType
 
 from ._ddl cimport DDLCompiler, DDLReflect
-from ._query_compiler cimport QueryCompiler
+from ._query cimport QueryCompiler
 
 
 cdef class Dialect:

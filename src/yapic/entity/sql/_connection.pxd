@@ -1,6 +1,6 @@
-from yapic.entity._query cimport Query
-from yapic.entity._entity cimport EntityBase
 
+from .._entity cimport EntityBase
+from ._query cimport Query
 from ._dialect cimport Dialect
 
 

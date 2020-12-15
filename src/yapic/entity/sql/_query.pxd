@@ -1,6 +1,7 @@
 import cython
-from ._expression cimport Expression, Visitor
-from ._entity cimport EntityType
+from .._expression cimport Expression, Visitor
+from .._entity cimport EntityType
+from ._dialect cimport Dialect
 
 
 @cython.final
@@ -20,9 +21,17 @@ cdef class Query(Expression):
     cdef readonly list _entities
     cdef readonly dict _load
     cdef readonly dict _exclude
+    cdef readonly Query _parent
+    cdef dict __expr_alias
+    cdef int __alias_c
+    cdef bint _allow_clone
+    cdef list _rcos
 
     cpdef Query clone(self)
-    cdef tuple finalize(self)
+    cdef tuple finalize(self, QueryCompiler compiler)
+    cdef str get_expr_alias(self, object expr)
+    cdef bint _entity_reachable(self, EntityType entity, bint allow_parent)
+    cdef str _get_next_alias(self)
     # cdef _add_entity(self, EntityType ent)
 
 
@@ -30,6 +39,19 @@ cdef class QueryFinalizer(Visitor):
     cdef readonly Query q
     cdef readonly list rcos
     cdef readonly int in_or
+    cdef readonly QueryCompiler compiler
+
+
+cdef class QueryCompiler(Visitor):
+    cdef readonly Dialect dialect
+    cdef readonly Query query
+    cdef readonly list rcos_list
+
+    cpdef compile_select(self, Query query)
+    cpdef compile_insert(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)
+    cpdef compile_insert_or_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)
+    cpdef compile_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)
+    cpdef compile_delete(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)
 
 
 """
@@ -114,27 +136,23 @@ ctypedef enum RCO:
     # (CREATE_POLYMORPH_ENTITY, (record_index_for_pks,), {polyid: jump_index})
     CREATE_POLYMORPH_ENTITY = 6
 
-    # Load one entity from storage, and push into stack
-    # (LOAD_ENTITY, EntityType, (record indexes for query_factory params), query_factory)
-    LOAD_ONE_ENTITY = 7
-
-    # Load multiple entity from storage, and push into stack
-    # (LOAD_ENTITY, EntityType, (record indexes for query_factory params), query_factory)
-    LOAD_MULTI_ENTITY = 8
+    # Convert multiple entity from array of records, and push into stack
+    # (CONVERT_SUB_ENTITIES, sub_entities_row_idx, sub_entity_rcos)
+    CONVERT_SUB_ENTITIES = 7
 
     # Set attribute on current entity instance from previous command result
     # returns entity
     # (SET_ATTR, EntityAttribute)
-    SET_ATTR = 9
+    SET_ATTR = 8
 
     # Set attribute on current entity instance, from record
     # returns entity
     # (SET_ATTR_RECORD, EntityAttribute, record_index)
-    SET_ATTR_RECORD = 10
+    SET_ATTR_RECORD = 9
 
     # Get value from record
     # (GET_RECORD, record_index)
-    GET_RECORD = 11
+    GET_RECORD = 10
 
 
 @cython.final

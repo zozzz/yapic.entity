@@ -1,6 +1,5 @@
 import cython
 
-from yapic.entity._query cimport RCO, RowConvertOp
 from yapic.entity._field cimport StorageTypeFactory
 
 

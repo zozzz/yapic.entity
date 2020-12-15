@@ -1,7 +1,7 @@
 import pytest
-from yapic.entity.sql import wrap_connection, Entity, sync, raw, PostgreDialect
-from yapic.entity import (Serial, Int, String, ForeignKey, PrimaryKey, One, Many, ManyAcross, Registry, DependencyList,
-                          Json, Composite, save_operations, Auto, Query, Loading, Relation)
+from yapic.entity.sql import wrap_connection, sync, PostgreDialect
+from yapic.entity import (Entity, Serial, Int, String, ForeignKey, PrimaryKey, One, Many, ManyAcross, Registry,
+                          DependencyList, Json, Composite, save_operations, Auto, Query, Loading, Relation, raw)
 from yapic import json
 
 pytestmark = pytest.mark.asyncio  # type: ignore
@@ -176,7 +176,7 @@ async def test_load(conn):
     q = Query(User).where(User.id == 1).load(User, User.address, User.children, User.tags)
     dialect = PostgreDialect()
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == """SELECT "t0"."id", ("t0"."name")."title", ("t0"."name")."family", ("t0"."name")."given", "t0"."address_id", "t1"."id", "t1"."addr" FROM "ent_load"."User" "t0" LEFT JOIN "ent_load"."Address" "t1" ON "t0"."address_id" = "t1"."id" WHERE "t0"."id" = $1"""
+    assert sql == """SELECT "t4"."id", ("t4"."name")."title", ("t4"."name")."family", ("t4"."name")."given", "t4"."address_id", "t5"."id", "t5"."addr", (SELECT array_agg("t1") FROM (SELECT "t6"."id", "t6"."parent_id", "t6"."name" FROM "ent_load"."UserChild" "t6" WHERE "t6"."parent_id" = "t4"."id") as "t1") as "t0", (SELECT array_agg("t3") FROM (SELECT "t8"."id", "t8"."value" FROM "ent_load"."UserTags" "t7" INNER JOIN "ent_load"."Tag" "t8" ON "t7"."tag_id" = "t8"."id" WHERE "t7"."user_id" = "t4"."id") as "t3") as "t2" FROM "ent_load"."User" "t4" LEFT JOIN "ent_load"."Address" "t5" ON "t4"."address_id" = "t5"."id" WHERE "t4"."id" = $1"""
     assert params == (1, )
 
     user = await conn.select(q).first()
@@ -228,6 +228,32 @@ async def test_load_empty_across(conn):
     user = await conn.select(Query(User).load(User, User.tags).where(User.id == user.id)).first()
     assert user.name.family == "User"
     assert user.tags == []
+
+
+async def test_load_many_across(conn):
+    user = User(
+        name={"family": "User"},
+        tags=[
+            Tag(value="ctag1"),
+            Tag(value="ctag2"),
+            Tag(value="ctag3"),
+        ],
+    )
+    await conn.save(user)
+
+    q = Query(User).load(User, User.tags).where(User.id == user.id)
+    dialect = PostgreDialect()
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t2"."id", ("t2"."name")."title", ("t2"."name")."family", ("t2"."name")."given", "t2"."address_id", (SELECT array_agg("t1") FROM (SELECT "t4"."id", "t4"."value" FROM "ent_load"."UserTags" "t3" INNER JOIN "ent_load"."Tag" "t4" ON "t3"."tag_id" = "t4"."id" WHERE "t3"."user_id" = "t2"."id") as "t1") as "t0" FROM "ent_load"."User" "t2" WHERE "t2"."id" = $1"""
+    assert params == (user.id, )
+
+    user = await conn.select(q).first()
+    assert user.name.family == "User"
+    assert len(user.tags) == 3
+
+    assert user.tags[0].value == "ctag1"
+    assert user.tags[1].value == "ctag2"
+    assert user.tags[2].value == "ctag3"
 
 
 async def test_mixin(conn):
@@ -299,7 +325,7 @@ async def test_load_only_relation_field(conn):
     s = await conn.select(q).first()
     data = json.dumps(s)
     # TODO: itt lehet nem kéne betöltenie az something.article értékét
-    assert data == """{"id":1,"something":{"id":2,"article_id":42,"article":{"id":42,"creator_id":5,"updater_id":6}}}"""
+    assert data == """{"id":1,"something":{"id":2,"article_id":42,"article":{"id":42,"creator_id":6,"updater_id":7}}}"""
 
     # TODO: ...
     # q = Query(Article).where(Article.id == 42).load(Article.creator.tags.value)
@@ -314,6 +340,26 @@ async def test_deep_relation_where(conn):
 
     assert bool(something2) is True
     assert something2.id == 1
+
+
+# TODO: polymorph load
+async def test_deep_load_one(conn):
+    q = Query(Something2).where(Something2.id == 1).load(
+        Something2,
+        Something2.something,
+        Something2.something.article,
+        Something2.something.article.creator,
+    )
+    dialect = PostgreDialect()
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."something_id", "t1"."id", "t1"."article_id", "t2"."id", "t2"."creator_id", "t2"."updater_id", "t3"."id", ("t3"."name")."title", ("t3"."name")."family", ("t3"."name")."given", "t3"."address_id" FROM "ent_load"."Something2" "t0" LEFT JOIN "ent_load"."Something" "t1" ON "t0"."something_id" = "t1"."id" LEFT JOIN "ent_load"."Article" "t2" ON "t2"."id" = "t1"."article_id" LEFT JOIN "ent_load"."User" "t3" ON "t3"."id" = "t2"."creator_id" WHERE "t0"."id" = $1"""
+    assert params == (1, )
+
+    s = await conn.select(q).first()
+    assert s.id == 1
+    assert s.something.id == 2
+    assert s.something.article.id == 42
+    assert s.something.article.creator.name.family == "Article"
 
 
 async def test_load_multi_entity(conn):
@@ -333,4 +379,4 @@ async def test_load_multi_entity(conn):
     user = await conn.select(q).first()
     data = json.dumps(user)
     # TODO: üres nem kívánt értékek törlése
-    assert data == """[{"id":7,"name":{},"address":{"addr":"XYZ Addr"},"children":[],"tags":[]},1]"""
+    assert data == """[{"id":8,"name":{},"address":{"addr":"XYZ Addr"},"children":[],"tags":[]},1]"""

@@ -4,7 +4,6 @@ from yapic.entity._entity cimport EntityType, EntityAttribute, NOTSET
 from yapic.entity._entity_diff cimport EntityDiff
 from yapic.entity._entity_operation cimport save_operations
 from yapic.entity._entity_operation import EntityOperation
-from yapic.entity._query cimport Query
 from yapic.entity._entity cimport EntityType, EntityBase, EntityState
 from yapic.entity._entity import Entity
 from yapic.entity._registry cimport Registry, RegistryDiff
@@ -12,8 +11,8 @@ from yapic.entity._field cimport Field, StorageType, PrimaryKey
 from yapic.entity._field_impl cimport CompositeImpl, NamedTupleImpl
 from yapic.entity._expression cimport Expression, PathExpression, RawExpression
 
+from ._query cimport Query, QueryCompiler
 from ._query_context cimport QueryContext
-from ._query_compiler cimport QueryCompiler
 from ._dialect cimport Dialect
 
 
@@ -35,7 +34,7 @@ cdef class Connection:
 
         # print("\n" + "=" * 50)
         # print(sql, params)
-        # print(q._load)
+        # # print(q._load)
         # print("." * 50)
         # from pprint import pprint
         # pprint(qc.rcos_list)

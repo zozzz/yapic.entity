@@ -104,14 +104,6 @@ CREATE TRIGGER "polyd_Employee"
   EXECUTE FUNCTION "poly"."YT-Worker-polyd_Employee"();
 ALTER TABLE "poly"."WorkerX"
   ADD CONSTRAINT "fk_WorkerX__id-Worker__id" FOREIGN KEY ("id") REFERENCES "poly"."Worker" ("id") ON UPDATE CASCADE ON DELETE CASCADE;
-CREATE OR REPLACE FUNCTION "poly"."YT-WorkerX-polyd_Employee"() RETURNS TRIGGER AS $$ BEGIN
-  DELETE FROM "poly"."Employee" "parent" WHERE "parent"."id"=OLD."id";
-  RETURN OLD;
-END; $$ language 'plpgsql' ;
-CREATE TRIGGER "polyd_Employee"
-  AFTER DELETE ON "poly"."WorkerX"
-  FOR EACH ROW
-  EXECUTE FUNCTION "poly"."YT-WorkerX-polyd_Employee"();
 CREATE OR REPLACE FUNCTION "poly"."YT-WorkerX-polyd_Worker"() RETURNS TRIGGER AS $$ BEGIN
   DELETE FROM "poly"."Worker" "parent" WHERE "parent"."id"=OLD."id";
   RETURN OLD;
@@ -122,14 +114,6 @@ CREATE TRIGGER "polyd_Worker"
   EXECUTE FUNCTION "poly"."YT-WorkerX-polyd_Worker"();
 ALTER TABLE "poly"."WorkerY"
   ADD CONSTRAINT "fk_WorkerY__id-Worker__id" FOREIGN KEY ("id") REFERENCES "poly"."Worker" ("id") ON UPDATE CASCADE ON DELETE CASCADE;
-CREATE OR REPLACE FUNCTION "poly"."YT-WorkerY-polyd_Employee"() RETURNS TRIGGER AS $$ BEGIN
-  DELETE FROM "poly"."Employee" "parent" WHERE "parent"."id"=OLD."id";
-  RETURN OLD;
-END; $$ language 'plpgsql' ;
-CREATE TRIGGER "polyd_Employee"
-  AFTER DELETE ON "poly"."WorkerY"
-  FOR EACH ROW
-  EXECUTE FUNCTION "poly"."YT-WorkerY-polyd_Employee"();
 CREATE OR REPLACE FUNCTION "poly"."YT-WorkerY-polyd_Worker"() RETURNS TRIGGER AS $$ BEGIN
   DELETE FROM "poly"."Worker" "parent" WHERE "parent"."id"=OLD."id";
   RETURN OLD;
@@ -145,10 +129,11 @@ CREATE TRIGGER "polyd_Worker"
     assert bool(result) is False
 
 
+# TODO: az elsődleges kulcsot csak egyszer töltse be
 async def test_query_from_worker(conn):
     q = Query().select_from(Worker).where(Worker.employee_field == "Nice")
     sql, params = conn.dialect.create_query_compiler().compile_select(q)
-    assert sql == """SELECT "t1"."id", "t1"."variant", "t1"."employee_field", "t0"."worker_field", "t3"."workerx_field", "t4"."workery_field" FROM "poly"."Worker" "t0" INNER JOIN "poly"."Employee" "t1" ON "t0"."id" = "t1"."id" LEFT JOIN "poly"."WorkerX" "t3" ON "t3"."id" = "t0"."id" LEFT JOIN "poly"."WorkerY" "t4" ON "t4"."id" = "t0"."id" WHERE "t1"."employee_field" = $1"""
+    assert sql == """SELECT "t1"."id", "t1"."variant", "t1"."employee_field", "t0"."id", "t0"."worker_field", "t3"."id", "t3"."workerx_field", "t4"."id", "t4"."workery_field" FROM "poly"."Worker" "t0" INNER JOIN "poly"."Employee" "t1" ON "t0"."id" = "t1"."id" LEFT JOIN "poly"."WorkerX" "t3" ON "t3"."id" = "t0"."id" LEFT JOIN "poly"."WorkerY" "t4" ON "t4"."id" = "t0"."id" WHERE "t1"."employee_field" = $1"""
     assert params == ("Nice", )
 
 
@@ -175,6 +160,13 @@ async def test_query_from_workerx(conn):
     sql, params = conn.dialect.create_query_compiler().compile_select(q)
     assert sql == """SELECT "t3"."id", "t3"."variant", "t3"."employee_field", "t1"."worker_field", "t0"."workerx_field" FROM "poly"."WorkerX" "t0" INNER JOIN "poly"."Worker" "t1" ON "t0"."id" = "t1"."id" INNER JOIN "poly"."Employee" "t3" ON "t1"."id" = "t3"."id" WHERE "t3"."employee_field" = $1"""
     assert params == ("OK", )
+
+
+async def test_load_one(conn):
+    q = Query().select_from(Organization).load(Organization.employee).where(Organization.id == 1)
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t1"."id", "t1"."variant", "t1"."employee_field", "t3"."id", "t3"."manager_field", "t4"."id", "t4"."worker_field", "t5"."id", "t5"."workerx_field", "t6"."id", "t6"."workery_field" FROM "poly"."Organization" "t0" LEFT JOIN "poly"."Employee" "t1" ON "t0"."employee_id" = "t1"."id" LEFT JOIN "poly"."Manager" "t3" ON "t3"."id" = "t1"."id" LEFT JOIN "poly"."Worker" "t4" ON "t4"."id" = "t1"."id" LEFT JOIN "poly"."WorkerX" "t5" ON "t5"."id" = "t4"."id" LEFT JOIN "poly"."WorkerY" "t6" ON "t6"."id" = "t4"."id" WHERE "t0"."id" = $1"""
+    assert params == (1, )
 
 
 async def test_insert_worker(conn):

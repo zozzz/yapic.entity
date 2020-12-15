@@ -1,7 +1,6 @@
 import operator
 
 from yapic.entity._entity cimport EntityType, EntityAttribute, get_alias_target
-from yapic.entity._query cimport Query
 from yapic.entity._expression cimport (
     Expression,
     Visitor,
@@ -20,7 +19,7 @@ from yapic.entity._field_impl cimport JsonImpl, CompositeImpl, ArrayImpl
 from yapic.entity._relation cimport Relation
 from yapic.entity._virtual_attr cimport VirtualAttribute
 
-from .._query_compiler cimport QueryCompiler
+from .._query cimport Query, QueryCompiler
 from ._dialect cimport PostgreDialect
 
 
@@ -29,9 +28,10 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         self.parent = parent
 
     cpdef compile_select(self, Query query):
-        query, self.rcos_list = query.finalize()
+        query, self.rcos_list = query.finalize(self)
+        self.query = query
         self.parts = ["SELECT"]
-        self.table_alias = self.parent.table_alias if self.parent else {}
+        self.table_alias = {}
         self.params = self.parent.params if self.parent else []
         self.inline_values = False
 
@@ -85,7 +85,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
         for i, expr in enumerate(select_from):
             if isinstance(expr, EntityType):
-                qname, alias = self._add_entity_alias(<EntityType>expr)
+                qname, alias = self._get_entity_alias(<EntityType>expr)
                 result.append(f"{qname} {alias}")
             else:
                 result.append(self.visit(expr))
@@ -96,7 +96,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         result = []
 
         for joined, condition, type in joins.values():
-            qname, alias = self._add_entity_alias(joined)
+            qname, alias = self._get_entity_alias(joined)
             result.append(f"{type + ' ' if type else ''}JOIN {qname} {alias} ON {self.visit(condition)}")
 
         return " ".join(result)
@@ -106,7 +106,6 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
         for col in columns:
             if isinstance(col, EntityType):
-                tbl = self.table_alias[col][1]
                 for field in (<EntityType>col).__fields__:
                     result.append(self.visit(field))
             else:
@@ -116,7 +115,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
     def visit_field(self, field):
         try:
-            tbl = self.table_alias[field._entity_][1]
+            tbl = self._get_entity_alias(field._entity_)[1]
         except KeyError:
             # print("MISSING", field, field._entity_, get_alias_target(field._entity_), hash(field._entity_))
             raise RuntimeError("Field entity is not found in query: %r" % field)
@@ -347,20 +346,28 @@ cdef class PostgreQueryCompiler(QueryCompiler):
     def visit_raw(self, RawExpression expr):
         return expr.expr
 
-    def _add_entity_alias(self, EntityType ent):
+    def _get_entity_alias(self, EntityType ent):
         try:
             return self.table_alias[ent]
         except KeyError:
-            aliased = get_alias_target(ent)
-            if aliased is ent:
-                alias = (self.dialect.table_qname(ent), self.dialect.quote_ident(f"t{len(self.table_alias)}"))
-            else:
-                aname = ent.__name__ if ent.__name__ else f"t{len(self.table_alias)}"
-                alias = (self.dialect.table_qname(aliased), self.dialect.quote_ident(aname))
-            self.table_alias[ent] = alias
-            if aliased not in self.table_alias:
-                self.table_alias[aliased] = alias
-            return alias
+            alias = self.query.get_expr_alias(ent)
+            original = get_alias_target(ent)
+            self.table_alias[ent] = (self.dialect.table_qname(original), self.dialect.quote_ident(alias))
+            return self.table_alias[ent]
+
+        # try:
+        #     return self.table_alias[ent]
+        # except KeyError:
+        #     aliased = get_alias_target(ent)
+        #     if aliased is ent:
+        #         alias = (self.dialect.table_qname(ent), self.dialect.quote_ident(f"t{len(self.table_alias)}"))
+        #     else:
+        #         aname = ent.__name__ if ent.__name__ else f"t{len(self.table_alias)}"
+        #         alias = (self.dialect.table_qname(aliased), self.dialect.quote_ident(aname))
+        #     self.table_alias[ent] = alias
+        #     if aliased not in self.table_alias:
+        #         self.table_alias[aliased] = alias
+        #     return alias
 
     cpdef compile_insert(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
         if not values:

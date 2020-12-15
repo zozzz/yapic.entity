@@ -4,7 +4,7 @@ from yapic.entity._field cimport StorageTypeFactory
 
 from .._dialect cimport Dialect
 from .._ddl cimport DDLCompiler, DDLReflect
-from .._query_compiler cimport QueryCompiler
+from .._query cimport QueryCompiler
 
 from ._ddl cimport PostgreDDLCompiler, PostgreDDLReflect
 from ._query_compiler cimport PostgreQueryCompiler
