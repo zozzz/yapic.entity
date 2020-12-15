@@ -794,8 +794,12 @@ cdef class QueryFinalizer(Visitor):
         relation.update_join_expr()
         self.q.join(relation, None, "LEFT")
 
+
         cdef EntityType load = relation._impl_.joined
         cdef list rco = self._rco_for_entity(load, existing)
+
+        if self.q._group:
+            self.q.group(*load.__pk__)
 
         rco.append(_RCO_PUSH)
         return rco
