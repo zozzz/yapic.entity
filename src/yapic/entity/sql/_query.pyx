@@ -190,9 +190,11 @@ cdef class Query(Expression):
                 condition = determine_join(self, entity)
 
         self._entities.append(entity)
-        # aliased = get_alias_target(entity)
-        # if aliased not in self._entities:
-        #     self._entities.append(aliased)
+
+        # TODO: Nem biztos, hogy ezt így kéne...
+        aliased = get_alias_target(entity)
+        if aliased not in self._entities:
+            self._entities.append(aliased)
 
         try:
             existing = self._joins[entity]
@@ -306,12 +308,15 @@ cdef class Query(Expression):
                 return self.__expr_alias[expr]
             except KeyError:
                 if self._entity_reachable(expr, False):
-                    if is_entity_alias(expr) and expr.__name__:
+                    original = get_alias_target(expr)
+                    if original is not expr and expr.__name__:
                         alias = expr.__name__
                     else:
                         alias = self._get_next_alias()
 
                     self.__expr_alias[expr] = alias
+                    # TODO: Nem biztos, hogy ezt így kéne...
+                    self.__expr_alias[original] = alias
                     return alias
                 elif self._parent:
                     return self._parent.get_expr_alias(expr)
