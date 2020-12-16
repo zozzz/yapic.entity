@@ -124,7 +124,7 @@ ctypedef enum RCO:
 
     # Create new entity instance from previously created state
     # returns entity
-    # (CREATE_ENTITY, EntityType)
+    # (CREATE_ENTITY, EntityType, none_if_empty=False)
     CREATE_ENTITY = 5
 
     # Create new entity instance or get from cache if exists, and change context to it

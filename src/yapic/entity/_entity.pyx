@@ -778,6 +778,30 @@ cdef class EntityState:
                 return True
         return False
 
+    @property
+    def is_empty(self):
+        return self._is_empty()
+
+    cdef bint _is_empty(self):
+        cdef PyObject* initial = <PyObject*>self.initial
+        cdef PyObject* current = <PyObject*>self.current
+        # cdef PyObject* cv = PyTuple_GET_ITEM(<object>current, attr._index_)
+
+        # if cv is <PyObject*>NOTSET:
+        #     cv = PyTuple_GET_ITEM(<object>initial, attr._index_)
+
+
+        cdef PyObject* val
+        for attr in self.entity.__attrs__:
+            val = PyTuple_GET_ITEM(<object>current, attr._index_)
+
+            if val is NULL or val is <PyObject*>NOTSET:
+                val = PyTuple_GET_ITEM(<object>initial, attr._index_)
+
+            if val is not NULL and val is not <PyObject*>NOTSET and val is not <PyObject*>None:
+                return False
+        return True
+
     def reset(self, EntityAttribute attr=None):
         if attr is None:
             return self.reset_all()

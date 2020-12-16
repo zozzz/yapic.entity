@@ -6,6 +6,7 @@ from yapic.entity._field cimport StorageTypeFactory
 cdef class RCState:
     cdef readonly dict cache
     cdef readonly object conn
+    cdef StorageTypeFactory tf
 
 
 # cdef class RecordConverter:

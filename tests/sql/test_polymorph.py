@@ -1,7 +1,7 @@
 import pytest
-from yapic.entity.sql import wrap_connection, Entity, sync
-from yapic.entity import (Serial, Int, String, ForeignKey, PrimaryKey, One, Many, ManyAcross, Registry, DependencyList,
-                          Json, Composite, save_operations, Auto, Query)
+from yapic.entity.sql import wrap_connection, sync
+from yapic.entity import (Entity, Serial, Int, String, ForeignKey, PrimaryKey, One, Many, ManyAcross, Registry,
+                          DependencyList, Json, Composite, save_operations, Auto, Query)
 
 pytestmark = pytest.mark.asyncio  # type: ignore
 REGISTRY = Registry()
@@ -189,6 +189,10 @@ async def test_insert_workerx(conn):
     worker.workerx_field = "workerx_field: set from workerx"
     await conn.save(worker)
 
+    org = Organization()
+    org.employee_id = worker.id
+    await conn.save(org)
+
     def test_worker_x_fields(w):
         assert isinstance(w, WorkerX)
         assert w.id == worker.id
@@ -202,6 +206,10 @@ async def test_insert_workerx(conn):
 
     w = await conn.select(Query().select_from(Employee).where(WorkerX.id == worker.id)).first()
     test_worker_x_fields(w)
+
+    o = await conn.select(Query().select_from(Organization).load(
+        Organization.employee).where(Organization.id == org.id)).first()
+    test_worker_x_fields(o.employee)
 
 
 async def test_insert_with_specified_id(conn):
