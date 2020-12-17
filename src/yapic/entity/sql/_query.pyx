@@ -804,7 +804,7 @@ cdef class QueryFinalizer(Visitor):
                 self.q._columns.append(getattr(src, f._name_))
                 rco.append(RowConvertOp(RCO.SET_ATTR_RECORD, f, idx))
 
-        rco.append(RowConvertOp(RCO.CREATE_ENTITY, entity))
+        rco.append(RowConvertOp(RCO.CREATE_ENTITY, entity, True))
         rco.append(_RCO_PUSH)
         return rco
 
