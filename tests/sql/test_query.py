@@ -545,7 +545,7 @@ def test_deep_raltion():
 
     q = Query(Deep).where(Deep.user.tags.value == "OK")
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == """SELECT "t0"."id", "t0"."user_id" FROM "Deep" "t0" INNER JOIN "User" "t1" ON "t0"."user_id" = "t1"."id" INNER JOIN "UserTags" "t3" ON "t3"."user_id" = "t1"."id" INNER JOIN "Tag" "t5" ON "t3"."tag_id" = "t5"."id" WHERE "t5"."value" = $1"""
+    assert sql == """SELECT "t0"."id", "t0"."user_id" FROM "Deep" "t0" INNER JOIN "User" "t1" ON "t0"."user_id" = "t1"."id" INNER JOIN "UserTags" "t2" ON "t2"."user_id" = "t1"."id" INNER JOIN "Tag" "t3" ON "t2"."tag_id" = "t3"."id" WHERE "t3"."value" = $1"""
     assert params == ("OK", )
 
 
