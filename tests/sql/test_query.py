@@ -245,7 +245,7 @@ def test_query_alias():
     q = Query()
     q.select_from(User).columns(User.id, User.id.alias("id2"), sq.alias("xyz_email")).where(User.id == 24)
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == 'SELECT "t0"."id", "t0"."id" as "id2", (SELECT "t0"."email" FROM "User" "t0" WHERE "t0"."id" = $1) as "xyz_email" FROM "User" "t0" WHERE "t0"."id" = $2'
+    assert sql == 'SELECT "t0"."id", "t0"."id" as "id2", (SELECT "t1"."email" FROM "User" "t1" WHERE "t1"."id" = $1) as "xyz_email" FROM "User" "t0" WHERE "t0"."id" = $2'
     assert params == (42, 24)
 
 
