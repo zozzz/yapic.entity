@@ -14,21 +14,22 @@ cdef class RCState:
     def __cinit__(self, object conn):
         self.conn = conn
         self.cache = {}
+        self.tf = conn.dialect.create_type_factory()
 
 
 def convert_record(object record, list rcos_list, RCState state):
+    return _convert_record([], record, rcos_list, state)
+
+
+cdef object _convert_record(list stack, object record, list rcos_list, RCState state):
     cdef int rcos_list_len = len(rcos_list)
     cdef tuple converted = PyTuple_New(rcos_list_len)
     cdef list rcos
     cdef RowConvertOp rco
-    cdef list stack = []
-    cdef object result
+    cdef object result = None
     cdef object tmp
-    cdef EntityState entity_state
-    cdef EntityAttribute attr
-    cdef Field field
-    cdef StorageType stype
-    cdef StorageTypeFactory tf = state.conn.dialect.create_type_factory()
+    cdef EntityState entity_state = None
+    cdef Field field = None
     cdef int j
     cdef int rcos_len
 
@@ -43,7 +44,7 @@ def convert_record(object record, list rcos_list, RCState state):
         # for j in range(0, len(rcos)):
         while j < rcos_len:
             rco = <RowConvertOp>(<list>(rcos)[j])
-            # print(rco)
+            # print(">", rco)
 
             if rco.op == RCO.PUSH:
                 push(result)
@@ -56,7 +57,10 @@ def convert_record(object record, list rcos_list, RCState state):
                 entity_state = EntityState(rco.param1)
                 entity_state.exists = True
             elif rco.op == RCO.CREATE_ENTITY:
-                result = rco.param1(entity_state)
+                if rco.param2 is True and entity_state._is_empty() is True:
+                    result = None
+                else:
+                    result = rco.param1(entity_state)
             elif rco.op == RCO.CREATE_POLYMORPH_ENTITY:
                 # XXX: Debug Only! All this error is internal error only
                 # if not isinstance(rco.param1, tuple):
@@ -66,17 +70,23 @@ def convert_record(object record, list rcos_list, RCState state):
                 #     raise RuntimeError("Invalid param1 for RCO: %r" % rco)
 
                 poly_id = _record_idexes_to_tuple(<tuple>(rco.param1), record)
-                poly_jump = (<dict>rco.param2).get(poly_id, None)
-                if poly_jump is not None:
-                    j = poly_jump
-                    continue
+                try:
+                    poly_rco = (<dict>rco.param2)[poly_id]
+                except KeyError:
+                    pop()
+                    result = None
+                else:
+                    result = _convert_record(stack, record, poly_rco, state)
+                # poly_jump = (<dict>rco.param2).get(poly_id, None)
+                # if poly_jump is not None:
+                #     j = poly_jump
+                #     continue
             elif rco.op == RCO.CONVERT_SUB_ENTITIES:
                 tmp = record[<int>rco.param1]
                 result = []
                 if tmp:
                     for entry in tmp:
-                        result.append(convert_record(entry, rco.param2, state))
-                push(result)
+                        result.append(_convert_record(stack, entry, rco.param2, state))
             elif rco.op == RCO.SET_ATTR:
                 entity_state.set_initial_value(<EntityAttribute>rco.param1, tmp)
             elif rco.op == RCO.SET_ATTR_RECORD:
@@ -85,8 +95,7 @@ def convert_record(object record, list rcos_list, RCState state):
                 if tmp is None:
                     entity_state.set_initial_value(field, None)
                 else:
-                    stype = field.get_type(tf)
-                    tmp = stype.decode(tmp)
+                    tmp = field.get_type(state.tf).decode(tmp)
                     entity_state.set_initial_value(field, tmp)
             elif rco.op == RCO.GET_RECORD:
                 result = record[rco.param1]
@@ -115,24 +124,3 @@ cdef tuple _record_idexes_to_tuple(tuple idx_list, object record):
             Py_INCREF(<object>val)
             PyTuple_SET_ITEM(<object>result, i, <object>val)
         return result
-
-
-cdef tuple _construct_params(object record, tuple params, tuple record_indexes, tuple param_indexes):
-    cdef int length = len(params)
-    cdef tuple result = PyTuple_New(length)
-    cdef int pindex
-    cdef int rindex
-
-    for i in range(0, length):
-        try:
-            pindex = param_indexes.index(i)
-        except ValueError:
-            val = params[i]
-        else:
-            rindex = record_indexes[pindex]
-            val = record[rindex]
-
-        Py_INCREF(<object>val)
-        PyTuple_SET_ITEM(<object>result, i, <object>val)
-
-    return result

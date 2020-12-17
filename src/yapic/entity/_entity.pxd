@@ -122,6 +122,7 @@ cdef class EntityState:
     cdef reset_all(self)
     cdef reset_attr(self, EntityAttribute attr)
     cdef bint is_eq_reflected(self, EntityState other)
+    cdef bint _is_empty(self)
 
 
 
