@@ -21,6 +21,8 @@ cdef class Query(Expression):
     cdef readonly list _entities
     cdef readonly dict _load
     cdef readonly dict _exclude
+    cdef readonly bint _as_row
+    cdef readonly bint _as_json
     cdef readonly Query _parent
     cdef dict __expr_alias
     cdef int __alias_c
@@ -114,18 +116,14 @@ ctypedef enum RCO:
     # (POP,)
     POP = 2
 
-    # Jump to given position
-    # (JUMP, position)
-    JUMP = 3
-
     # Create entity state, and set state variable
     # (CREATE_STATE, EntityType)
-    CREATE_STATE = 4
+    CREATE_STATE = 3
 
     # Create new entity instance from previously created state
     # returns entity
     # (CREATE_ENTITY, EntityType, none_if_empty=False)
-    CREATE_ENTITY = 5
+    CREATE_ENTITY = 4
 
     # Create new entity instance or get from cache if exists, and change context to it
     # returns entity
@@ -134,7 +132,11 @@ ctypedef enum RCO:
 
     # Create polymorph entity, and change context to it
     # (CREATE_POLYMORPH_ENTITY, (record_index_for_pks,), {polyid: jump_index})
-    CREATE_POLYMORPH_ENTITY = 6
+    CREATE_POLYMORPH_ENTITY = 5
+
+    # Convert first entity from array of records, and push into stack
+    # (CONVERT_SUB_ENTITIES, sub_entities_row_idx, sub_entity_rcos)
+    CONVERT_SUB_ENTITY = 6
 
     # Convert multiple entity from array of records, and push into stack
     # (CONVERT_SUB_ENTITIES, sub_entities_row_idx, sub_entity_rcos)

@@ -40,7 +40,6 @@ cdef class EntitySerializer:
     cdef object _next(self):
         cdef PyObject* attr
         cdef PyObject* attrs = <PyObject*>self.entity.__attrs__
-        cdef EntityState state = <EntityState>self.instance.__state__
 
         if self.idx < self.length:
             attr = PyTuple_GET_ITEM(<object>attrs, self.idx)

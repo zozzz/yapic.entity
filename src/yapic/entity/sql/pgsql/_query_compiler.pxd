@@ -8,5 +8,6 @@ cdef class PostgreQueryCompiler(QueryCompiler):
     cdef list params
     cdef PostgreQueryCompiler parent
     cdef bint inline_values
+    cdef int skip_alias
 
     cpdef init_subquery(self, PostgreQueryCompiler parent)

@@ -1730,12 +1730,12 @@ struct __pyx_obj_5yapic_6entity_9_relation_RelatedDict {
  * 
  * cdef class Loading(EntityAttributeExt):             # <<<<<<<<<<<<<<
  *     cdef readonly bint always
- *     cdef readonly str eager
+ *     cdef readonly list fields
  */
 struct __pyx_obj_5yapic_6entity_9_relation_Loading {
   struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt __pyx_base;
   int always;
-  PyObject *eager;
+  PyObject *fields;
 };
 
 
@@ -2502,7 +2502,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedDict *__pyx_vtab
  * 
  * 
  * cdef class Loading(EntityAttributeExt):             # <<<<<<<<<<<<<<
- *     def __cinit__(self, *, bint always=False, str eager=None):
+ *     def __cinit__(self, *, bint always=False, list fields=None):
  *         self.always = always
  */
 
@@ -3010,9 +3010,6 @@ static CYTHON_INLINE int __Pyx_PyList_Append(PyObject* list, PyObject* x) {
 #define __Pyx_PyUnicode_FromBInt_int(value)\
     ((value) ? __Pyx_NewRef(__pyx_n_u_True) : __Pyx_NewRef(__pyx_n_u_False))
 
-/* PyUnicode_Unicode.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyUnicode_Unicode(PyObject *obj);
-
 /* WriteUnraisableException.proto */
 static void __Pyx_WriteUnraisable(const char *name, int clineno,
                                   int lineno, const char *filename,
@@ -3280,7 +3277,6 @@ static const char __pyx_k_get[] = "__get__";
 static const char __pyx_k_pop[] = "pop";
 static const char __pyx_k_rel[] = "rel";
 static const char __pyx_k_sys[] = "sys";
-static const char __pyx_k_None[] = "None";
 static const char __pyx_k_True[] = "True";
 static const char __pyx_k_bind[] = "bind";
 static const char __pyx_k_eval[] = "eval";
@@ -3293,7 +3289,6 @@ static const char __pyx_k_type[] = "type";
 static const char __pyx_k_False[] = "False";
 static const char __pyx_k_alias[] = "alias";
 static const char __pyx_k_clone[] = "clone";
-static const char __pyx_k_eager[] = "eager";
 static const char __pyx_k_items[] = "items";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_split[] = "split";
@@ -3303,6 +3298,7 @@ static const char __pyx_k_value[] = "value";
 static const char __pyx_k_visit[] = "visit";
 static const char __pyx_k_across[] = "across";
 static const char __pyx_k_always[] = "always";
+static const char __pyx_k_fields[] = "fields";
 static const char __pyx_k_filter[] = "filter";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_joined[] = "joined";
@@ -3313,10 +3309,10 @@ static const char __pyx_k_object[] = "object";
 static const char __pyx_k_update[] = "update";
 static const char __pyx_k_Loading[] = "Loading";
 static const char __pyx_k_current[] = "current";
-static const char __pyx_k_eager_2[] = ", eager=";
 static const char __pyx_k_initial[] = "initial";
 static const char __pyx_k_virtual[] = "_virtual_";
 static const char __pyx_k_Relation[] = "<Relation ";
+static const char __pyx_k_fields_2[] = ", fields=";
 static const char __pyx_k_is_dirty[] = "is_dirty";
 static const char __pyx_k_joined_2[] = "_joined";
 static const char __pyx_k_qualname[] = "__qualname__";
@@ -3373,7 +3369,6 @@ static PyObject *__pyx_n_s_ManyToOne;
 static PyObject *__pyx_kp_u_ManyToOne_r;
 static PyObject *__pyx_kp_u_Multiple_join_conditions_between;
 static PyObject *__pyx_n_s_NameError;
-static PyObject *__pyx_kp_u_None;
 static PyObject *__pyx_n_s_NotImplementedError;
 static PyObject *__pyx_n_s_OneToMany;
 static PyObject *__pyx_kp_u_OneToMany_r;
@@ -3408,9 +3403,9 @@ static PyObject *__pyx_n_s_clone;
 static PyObject *__pyx_n_u_clone;
 static PyObject *__pyx_n_s_current;
 static PyObject *__pyx_n_s_determine_join_expr_locals_lambd;
-static PyObject *__pyx_n_s_eager;
-static PyObject *__pyx_kp_u_eager_2;
 static PyObject *__pyx_n_s_eval;
+static PyObject *__pyx_n_s_fields;
+static PyObject *__pyx_kp_u_fields_2;
 static PyObject *__pyx_n_s_filter;
 static PyObject *__pyx_n_s_get;
 static PyObject *__pyx_n_s_getattribute;
@@ -3494,11 +3489,11 @@ static PyObject *__pyx_pf_5yapic_6entity_9_relation_11RelatedItem_4state_get_dir
 static PyObject *__pyx_pf_5yapic_6entity_9_relation_11RelatedList_state_init(struct __pyx_obj_5yapic_6entity_9_relation_RelatedList *__pyx_v_self, PyObject *__pyx_v_initial); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_9_relation_11RelatedList_2state_set(struct __pyx_obj_5yapic_6entity_9_relation_RelatedList *__pyx_v_self, PyObject *__pyx_v_initial, PyObject *__pyx_v_current, PyObject *__pyx_v_value); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_9_relation_11RelatedList_4state_get_dirty(struct __pyx_obj_5yapic_6entity_9_relation_RelatedList *__pyx_v_self, PyObject *__pyx_v_initial, PyObject *__pyx_v_current); /* proto */
-static int __pyx_pf_5yapic_6entity_9_relation_7Loading___cinit__(struct __pyx_obj_5yapic_6entity_9_relation_Loading *__pyx_v_self, int __pyx_v_always, PyObject *__pyx_v_eager); /* proto */
+static int __pyx_pf_5yapic_6entity_9_relation_7Loading___cinit__(struct __pyx_obj_5yapic_6entity_9_relation_Loading *__pyx_v_self, int __pyx_v_always, PyObject *__pyx_v_fields); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_9_relation_7Loading_2clone(struct __pyx_obj_5yapic_6entity_9_relation_Loading *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_9_relation_7Loading_4__repr__(struct __pyx_obj_5yapic_6entity_9_relation_Loading *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_9_relation_7Loading_6always___get__(struct __pyx_obj_5yapic_6entity_9_relation_Loading *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5yapic_6entity_9_relation_7Loading_5eager___get__(struct __pyx_obj_5yapic_6entity_9_relation_Loading *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_9_relation_7Loading_6fields___get__(struct __pyx_obj_5yapic_6entity_9_relation_Loading *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_5yapic_6entity_9_relation_Relation(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5yapic_6entity_9_relation_RelatedAttribute(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5yapic_6entity_9_relation_RelatedAttributeImpl(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -13460,16 +13455,16 @@ static PyObject *__pyx_pf_5yapic_6entity_9_relation_11RelatedList_4state_get_dir
 /* "yapic/entity/_relation.pyx":470
  * 
  * cdef class Loading(EntityAttributeExt):
- *     def __cinit__(self, *, bint always=False, str eager=None):             # <<<<<<<<<<<<<<
+ *     def __cinit__(self, *, bint always=False, list fields=None):             # <<<<<<<<<<<<<<
  *         self.always = always
- *         self.eager = eager
+ *         self.fields = fields
  */
 
 /* Python wrapper */
 static int __pyx_pw_5yapic_6entity_9_relation_7Loading_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static int __pyx_pw_5yapic_6entity_9_relation_7Loading_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   int __pyx_v_always;
-  PyObject *__pyx_v_eager = 0;
+  PyObject *__pyx_v_fields = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -13477,7 +13472,7 @@ static int __pyx_pw_5yapic_6entity_9_relation_7Loading_1__cinit__(PyObject *__py
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_always,&__pyx_n_s_eager,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_always,&__pyx_n_s_fields,0};
     PyObject* values[2] = {0,0};
     values[1] = ((PyObject*)Py_None);
     if (unlikely(__pyx_kwds)) {
@@ -13507,7 +13502,7 @@ static int __pyx_pw_5yapic_6entity_9_relation_7Loading_1__cinit__(PyObject *__py
     } else {
       __pyx_v_always = ((int)0);
     }
-    __pyx_v_eager = ((PyObject*)values[1]);
+    __pyx_v_fields = ((PyObject*)values[1]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
@@ -13517,8 +13512,8 @@ static int __pyx_pw_5yapic_6entity_9_relation_7Loading_1__cinit__(PyObject *__py
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_eager), (&PyUnicode_Type), 1, "eager", 1))) __PYX_ERR(0, 470, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5yapic_6entity_9_relation_7Loading___cinit__(((struct __pyx_obj_5yapic_6entity_9_relation_Loading *)__pyx_v_self), __pyx_v_always, __pyx_v_eager);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_fields), (&PyList_Type), 1, "fields", 1))) __PYX_ERR(0, 470, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5yapic_6entity_9_relation_7Loading___cinit__(((struct __pyx_obj_5yapic_6entity_9_relation_Loading *)__pyx_v_self), __pyx_v_always, __pyx_v_fields);
 
   /* function exit code */
   goto __pyx_L0;
@@ -13529,39 +13524,39 @@ static int __pyx_pw_5yapic_6entity_9_relation_7Loading_1__cinit__(PyObject *__py
   return __pyx_r;
 }
 
-static int __pyx_pf_5yapic_6entity_9_relation_7Loading___cinit__(struct __pyx_obj_5yapic_6entity_9_relation_Loading *__pyx_v_self, int __pyx_v_always, PyObject *__pyx_v_eager) {
+static int __pyx_pf_5yapic_6entity_9_relation_7Loading___cinit__(struct __pyx_obj_5yapic_6entity_9_relation_Loading *__pyx_v_self, int __pyx_v_always, PyObject *__pyx_v_fields) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
   /* "yapic/entity/_relation.pyx":471
  * cdef class Loading(EntityAttributeExt):
- *     def __cinit__(self, *, bint always=False, str eager=None):
+ *     def __cinit__(self, *, bint always=False, list fields=None):
  *         self.always = always             # <<<<<<<<<<<<<<
- *         self.eager = eager
+ *         self.fields = fields
  * 
  */
   __pyx_v_self->always = __pyx_v_always;
 
   /* "yapic/entity/_relation.pyx":472
- *     def __cinit__(self, *, bint always=False, str eager=None):
+ *     def __cinit__(self, *, bint always=False, list fields=None):
  *         self.always = always
- *         self.eager = eager             # <<<<<<<<<<<<<<
+ *         self.fields = fields             # <<<<<<<<<<<<<<
  * 
  *     cpdef clone(self):
  */
-  __Pyx_INCREF(__pyx_v_eager);
-  __Pyx_GIVEREF(__pyx_v_eager);
-  __Pyx_GOTREF(__pyx_v_self->eager);
-  __Pyx_DECREF(__pyx_v_self->eager);
-  __pyx_v_self->eager = __pyx_v_eager;
+  __Pyx_INCREF(__pyx_v_fields);
+  __Pyx_GIVEREF(__pyx_v_fields);
+  __Pyx_GOTREF(__pyx_v_self->fields);
+  __Pyx_DECREF(__pyx_v_self->fields);
+  __pyx_v_self->fields = __pyx_v_fields;
 
   /* "yapic/entity/_relation.pyx":470
  * 
  * cdef class Loading(EntityAttributeExt):
- *     def __cinit__(self, *, bint always=False, str eager=None):             # <<<<<<<<<<<<<<
+ *     def __cinit__(self, *, bint always=False, list fields=None):             # <<<<<<<<<<<<<<
  *         self.always = always
- *         self.eager = eager
+ *         self.fields = fields
  */
 
   /* function exit code */
@@ -13571,10 +13566,10 @@ static int __pyx_pf_5yapic_6entity_9_relation_7Loading___cinit__(struct __pyx_ob
 }
 
 /* "yapic/entity/_relation.pyx":474
- *         self.eager = eager
+ *         self.fields = fields
  * 
  *     cpdef clone(self):             # <<<<<<<<<<<<<<
- *         return Loading(always=self.always, eager=self.eager)
+ *         return Loading(always=self.always, fields=self.fields)
  * 
  */
 
@@ -13640,7 +13635,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_7Loading_clone(struct __pyx_o
   /* "yapic/entity/_relation.pyx":475
  * 
  *     cpdef clone(self):
- *         return Loading(always=self.always, eager=self.eager)             # <<<<<<<<<<<<<<
+ *         return Loading(always=self.always, fields=self.fields)             # <<<<<<<<<<<<<<
  * 
  *     def __repr__(self):
  */
@@ -13651,7 +13646,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_7Loading_clone(struct __pyx_o
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_always, __pyx_t_2) < 0) __PYX_ERR(0, 475, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_eager, __pyx_v_self->eager) < 0) __PYX_ERR(0, 475, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_fields, __pyx_v_self->fields) < 0) __PYX_ERR(0, 475, __pyx_L1_error)
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5yapic_6entity_9_relation_Loading), __pyx_empty_tuple, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 475, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -13660,10 +13655,10 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_7Loading_clone(struct __pyx_o
   goto __pyx_L0;
 
   /* "yapic/entity/_relation.pyx":474
- *         self.eager = eager
+ *         self.fields = fields
  * 
  *     cpdef clone(self):             # <<<<<<<<<<<<<<
- *         return Loading(always=self.always, eager=self.eager)
+ *         return Loading(always=self.always, fields=self.fields)
  * 
  */
 
@@ -13721,10 +13716,10 @@ static PyObject *__pyx_pf_5yapic_6entity_9_relation_7Loading_2clone(struct __pyx
 }
 
 /* "yapic/entity/_relation.pyx":477
- *         return Loading(always=self.always, eager=self.eager)
+ *         return Loading(always=self.always, fields=self.fields)
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
- *         return "@Loading(always=%s, eager=%s)" % (self.always, self.eager)
+ *         return "@Loading(always=%s, fields=%s)" % (self.always, self.fields)
  * 
  */
 
@@ -13756,7 +13751,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_relation_7Loading_4__repr__(struct __
   /* "yapic/entity/_relation.pyx":478
  * 
  *     def __repr__(self):
- *         return "@Loading(always=%s, eager=%s)" % (self.always, self.eager)             # <<<<<<<<<<<<<<
+ *         return "@Loading(always=%s, fields=%s)" % (self.always, self.fields)             # <<<<<<<<<<<<<<
  * 
  * 
  */
@@ -13775,11 +13770,11 @@ static PyObject *__pyx_pf_5yapic_6entity_9_relation_7Loading_4__repr__(struct __
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_4);
   __pyx_t_4 = 0;
-  __Pyx_INCREF(__pyx_kp_u_eager_2);
-  __pyx_t_2 += 8;
-  __Pyx_GIVEREF(__pyx_kp_u_eager_2);
-  PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_eager_2);
-  __pyx_t_4 = __Pyx_PyUnicode_Unicode(__pyx_v_self->eager); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 478, __pyx_L1_error)
+  __Pyx_INCREF(__pyx_kp_u_fields_2);
+  __pyx_t_2 += 9;
+  __Pyx_GIVEREF(__pyx_kp_u_fields_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_fields_2);
+  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Unicode(__pyx_v_self->fields), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 478, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
   __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
@@ -13798,10 +13793,10 @@ static PyObject *__pyx_pf_5yapic_6entity_9_relation_7Loading_4__repr__(struct __
   goto __pyx_L0;
 
   /* "yapic/entity/_relation.pyx":477
- *         return Loading(always=self.always, eager=self.eager)
+ *         return Loading(always=self.always, fields=self.fields)
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
- *         return "@Loading(always=%s, eager=%s)" % (self.always, self.eager)
+ *         return "@Loading(always=%s, fields=%s)" % (self.always, self.fields)
  * 
  */
 
@@ -13821,7 +13816,7 @@ static PyObject *__pyx_pf_5yapic_6entity_9_relation_7Loading_4__repr__(struct __
  * 
  * cdef class Loading(EntityAttributeExt):
  *     cdef readonly bint always             # <<<<<<<<<<<<<<
- *     cdef readonly str eager
+ *     cdef readonly list fields
  * 
  */
 
@@ -13867,31 +13862,31 @@ static PyObject *__pyx_pf_5yapic_6entity_9_relation_7Loading_6always___get__(str
 /* "yapic/entity/_relation.pxd":89
  * cdef class Loading(EntityAttributeExt):
  *     cdef readonly bint always
- *     cdef readonly str eager             # <<<<<<<<<<<<<<
+ *     cdef readonly list fields             # <<<<<<<<<<<<<<
  * 
  * 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5yapic_6entity_9_relation_7Loading_5eager_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_5yapic_6entity_9_relation_7Loading_5eager_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_5yapic_6entity_9_relation_7Loading_6fields_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5yapic_6entity_9_relation_7Loading_6fields_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5yapic_6entity_9_relation_7Loading_5eager___get__(((struct __pyx_obj_5yapic_6entity_9_relation_Loading *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5yapic_6entity_9_relation_7Loading_6fields___get__(((struct __pyx_obj_5yapic_6entity_9_relation_Loading *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5yapic_6entity_9_relation_7Loading_5eager___get__(struct __pyx_obj_5yapic_6entity_9_relation_Loading *__pyx_v_self) {
+static PyObject *__pyx_pf_5yapic_6entity_9_relation_7Loading_6fields___get__(struct __pyx_obj_5yapic_6entity_9_relation_Loading *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_v_self->eager);
-  __pyx_r = __pyx_v_self->eager;
+  __Pyx_INCREF(__pyx_v_self->fields);
+  __pyx_r = __pyx_v_self->fields;
   goto __pyx_L0;
 
   /* function exit code */
@@ -15666,7 +15661,7 @@ static PyObject *__pyx_tp_new_5yapic_6entity_9_relation_Loading(PyTypeObject *t,
   if (unlikely(!o)) return 0;
   p = ((struct __pyx_obj_5yapic_6entity_9_relation_Loading *)o);
   p->__pyx_base.__pyx_vtab = (struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt*)__pyx_vtabptr_5yapic_6entity_9_relation_Loading;
-  p->eager = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  p->fields = ((PyObject*)Py_None); Py_INCREF(Py_None);
   if (unlikely(__pyx_pw_5yapic_6entity_9_relation_7Loading_1__cinit__(o, a, k) < 0)) goto bad;
   return o;
   bad:
@@ -15682,19 +15677,28 @@ static void __pyx_tp_dealloc_5yapic_6entity_9_relation_Loading(PyObject *o) {
   }
   #endif
   PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->eager);
+  Py_CLEAR(p->fields);
   PyObject_GC_Track(o);
   if (likely(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt)) __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_dealloc(o); else __Pyx_call_next_tp_dealloc(o, __pyx_tp_dealloc_5yapic_6entity_9_relation_Loading);
 }
 
 static int __pyx_tp_traverse_5yapic_6entity_9_relation_Loading(PyObject *o, visitproc v, void *a) {
   int e;
+  struct __pyx_obj_5yapic_6entity_9_relation_Loading *p = (struct __pyx_obj_5yapic_6entity_9_relation_Loading *)o;
   e = ((likely(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt)) ? ((__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_traverse) ? __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_traverse(o, v, a) : 0) : __Pyx_call_next_tp_traverse(o, v, a, __pyx_tp_traverse_5yapic_6entity_9_relation_Loading)); if (e) return e;
+  if (p->fields) {
+    e = (*v)(p->fields, a); if (e) return e;
+  }
   return 0;
 }
 
 static int __pyx_tp_clear_5yapic_6entity_9_relation_Loading(PyObject *o) {
+  PyObject* tmp;
+  struct __pyx_obj_5yapic_6entity_9_relation_Loading *p = (struct __pyx_obj_5yapic_6entity_9_relation_Loading *)o;
   if (likely(__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt)) { if (__pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_clear) __pyx_ptype_5yapic_6entity_7_entity_EntityAttributeExt->tp_clear(o); } else __Pyx_call_next_tp_clear(o, __pyx_tp_clear_5yapic_6entity_9_relation_Loading);
+  tmp = ((PyObject*)p->fields);
+  p->fields = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  Py_XDECREF(tmp);
   return 0;
 }
 
@@ -15702,8 +15706,8 @@ static PyObject *__pyx_getprop_5yapic_6entity_9_relation_7Loading_always(PyObjec
   return __pyx_pw_5yapic_6entity_9_relation_7Loading_6always_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_5yapic_6entity_9_relation_7Loading_eager(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_5yapic_6entity_9_relation_7Loading_5eager_1__get__(o);
+static PyObject *__pyx_getprop_5yapic_6entity_9_relation_7Loading_fields(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_5yapic_6entity_9_relation_7Loading_6fields_1__get__(o);
 }
 
 static PyMethodDef __pyx_methods_5yapic_6entity_9_relation_Loading[] = {
@@ -15713,7 +15717,7 @@ static PyMethodDef __pyx_methods_5yapic_6entity_9_relation_Loading[] = {
 
 static struct PyGetSetDef __pyx_getsets_5yapic_6entity_9_relation_Loading[] = {
   {(char *)"always", __pyx_getprop_5yapic_6entity_9_relation_7Loading_always, 0, (char *)0, 0},
-  {(char *)"eager", __pyx_getprop_5yapic_6entity_9_relation_7Loading_eager, 0, (char *)0, 0},
+  {(char *)"fields", __pyx_getprop_5yapic_6entity_9_relation_7Loading_fields, 0, (char *)0, 0},
   {0, 0, 0, 0, 0}
 };
 
@@ -15846,7 +15850,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_ManyToOne_r, __pyx_k_ManyToOne_r, sizeof(__pyx_k_ManyToOne_r), 0, 1, 0, 0},
   {&__pyx_kp_u_Multiple_join_conditions_between, __pyx_k_Multiple_join_conditions_between, sizeof(__pyx_k_Multiple_join_conditions_between), 0, 1, 0, 0},
   {&__pyx_n_s_NameError, __pyx_k_NameError, sizeof(__pyx_k_NameError), 0, 0, 1, 1},
-  {&__pyx_kp_u_None, __pyx_k_None, sizeof(__pyx_k_None), 0, 1, 0, 0},
   {&__pyx_n_s_NotImplementedError, __pyx_k_NotImplementedError, sizeof(__pyx_k_NotImplementedError), 0, 0, 1, 1},
   {&__pyx_n_s_OneToMany, __pyx_k_OneToMany, sizeof(__pyx_k_OneToMany), 0, 0, 1, 1},
   {&__pyx_kp_u_OneToMany_r, __pyx_k_OneToMany_r, sizeof(__pyx_k_OneToMany_r), 0, 1, 0, 0},
@@ -15881,9 +15884,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_u_clone, __pyx_k_clone, sizeof(__pyx_k_clone), 0, 1, 0, 1},
   {&__pyx_n_s_current, __pyx_k_current, sizeof(__pyx_k_current), 0, 0, 1, 1},
   {&__pyx_n_s_determine_join_expr_locals_lambd, __pyx_k_determine_join_expr_locals_lambd, sizeof(__pyx_k_determine_join_expr_locals_lambd), 0, 0, 1, 1},
-  {&__pyx_n_s_eager, __pyx_k_eager, sizeof(__pyx_k_eager), 0, 0, 1, 1},
-  {&__pyx_kp_u_eager_2, __pyx_k_eager_2, sizeof(__pyx_k_eager_2), 0, 1, 0, 0},
   {&__pyx_n_s_eval, __pyx_k_eval, sizeof(__pyx_k_eval), 0, 0, 1, 1},
+  {&__pyx_n_s_fields, __pyx_k_fields, sizeof(__pyx_k_fields), 0, 0, 1, 1},
+  {&__pyx_kp_u_fields_2, __pyx_k_fields_2, sizeof(__pyx_k_fields_2), 0, 1, 0, 0},
   {&__pyx_n_s_filter, __pyx_k_filter, sizeof(__pyx_k_filter), 0, 0, 1, 1},
   {&__pyx_n_s_get, __pyx_k_get, sizeof(__pyx_k_get), 0, 0, 1, 1},
   {&__pyx_n_s_getattribute, __pyx_k_getattribute, sizeof(__pyx_k_getattribute), 0, 0, 1, 1},
@@ -19041,13 +19044,6 @@ static PyObject *__Pyx_CyFunction_New(PyMethodDef *ml, int flags, PyObject* qual
         PyObject_GC_Track(op);
     }
     return op;
-}
-
-/* PyUnicode_Unicode */
-static CYTHON_INLINE PyObject* __Pyx_PyUnicode_Unicode(PyObject *obj) {
-    if (unlikely(obj == Py_None))
-        obj = __pyx_kp_u_None;
-    return __Pyx_NewRef(obj);
 }
 
 /* WriteUnraisableException */

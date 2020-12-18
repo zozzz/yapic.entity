@@ -890,6 +890,9 @@ cdef class EntityState:
     def __ne__(EntityState self, other):
         return not self.__eq__(other)
 
+    def __bool__(EntityState self):
+        return self._is_empty() is False
+
     cdef bint is_eq_reflected(self, EntityState other):
         if len(self.entity.__attrs__) != len(other.entity.__attrs__):
             return False
@@ -1032,6 +1035,9 @@ cdef class EntityBase:
 
     def __ne__(self, other):
         return not isinstance(other, EntityBase) or self.__pk__ != other.__pk__
+
+    def __bool__(EntityBase self):
+        return self.__state__._is_empty() is False
 
     def __iter__(self):
         self.iter_index = 0
@@ -1264,7 +1270,7 @@ cdef class PolymorphMeta:
 
         for x in self.entities.values():
             relation = <Relation>((<tuple>x)[1])
-            if relation._impl_._joined is entity:
+            if get_alias_target(relation._impl_._joined) is entity:
                 result.append(relation)
 
         return result

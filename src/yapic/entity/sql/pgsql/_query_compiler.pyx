@@ -44,7 +44,15 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         if query._prefix:
             self.parts.append(" ".join(query._prefix))
 
-        self.parts.append(", ".join(self.visit_columns(query._columns)))
+        if query._as_row:
+            self.skip_alias += 1
+            columns = ", ".join(self.visit_columns(query._columns))
+            self.parts.append(f"ROW({columns})")
+            self.skip_alias -= 1
+        elif query._as_json:
+            raise NotImplementedError()
+        else:
+            self.parts.append(", ".join(self.visit_columns(query._columns)))
 
         self.parts.append("FROM")
         self.parts.append(from_)
@@ -267,7 +275,10 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         return f"{self.visit(e)} {'ASC' if (<DirectionExpression>expr).is_asc else 'DESC'}"
 
     def visit_alias(self, expr):
-        return f"{self.visit((<AliasExpression>expr).expr)} as {self.dialect.quote_ident((<AliasExpression>expr).value)}"
+        if self.skip_alias > 0:
+            return self.visit((<AliasExpression>expr).expr)
+        else:
+            return f"{self.visit((<AliasExpression>expr).expr)} as {self.dialect.quote_ident((<AliasExpression>expr).value)}"
 
     def visit_query(self, expr):
         cdef PostgreQueryCompiler qc = self.dialect.create_query_compiler()
@@ -371,7 +382,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
     cpdef compile_insert(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
         if not values:
-            return (f"INSERT INTO {self.dialect.table_qname(entity)} DEFAULT VALUES", [])
+            return (f"INSERT INTO {self.dialect.table_qname(get_alias_target(entity))} DEFAULT VALUES", [])
 
         self.params = []
         self.inline_values = inline_values
@@ -393,7 +404,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                     self.params.append(v)
                     inserts.append(f"${len(self.params)}")
 
-        return "".join(("INSERT INTO ", self.dialect.table_qname(entity),
+        return "".join(("INSERT INTO ", self.dialect.table_qname(get_alias_target(entity)),
             " (", ", ".join(names), ") VALUES (", ", ".join(inserts), ")")), self.params
 
     cpdef compile_insert_or_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
@@ -439,7 +450,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                         updates.append(f"{name}=${idx}")
 
 
-        q = ["INSERT INTO ", self.dialect.table_qname(entity),
+        q = ["INSERT INTO ", self.dialect.table_qname(get_alias_target(entity)),
             " (", ", ".join(names), ") VALUES (", ", ".join(inserts), ")",
             " ON CONFLICT "]
 
@@ -501,7 +512,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         if not where:
             raise RuntimeError("TODO: ...")
 
-        return "".join(("UPDATE ", self.dialect.table_qname(entity), " SET ",
+        return "".join(("UPDATE ", self.dialect.table_qname(get_alias_target(entity)), " SET ",
             ", ".join(updates), " WHERE ", " AND ".join(where))), self.params
 
     cpdef compile_delete(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
@@ -537,7 +548,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                     where.append(f"{names[i]}=${i+1}")
                     params.append(values[i])
 
-        return "".join(("DELETE FROM ", self.dialect.table_qname(entity),
+        return "".join(("DELETE FROM ", self.dialect.table_qname(get_alias_target(entity)),
              " WHERE ", " AND ".join(where))), params
 
 

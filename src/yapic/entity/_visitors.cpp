@@ -1622,12 +1622,12 @@ struct __pyx_obj_5yapic_6entity_9_relation_RelatedDict {
  * 
  * cdef class Loading(EntityAttributeExt):             # <<<<<<<<<<<<<<
  *     cdef readonly bint always
- *     cdef readonly str eager
+ *     cdef readonly list fields
  */
 struct __pyx_obj_5yapic_6entity_9_relation_Loading {
   struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt __pyx_base;
   int always;
-  PyObject *eager;
+  PyObject *fields;
 };
 
 
@@ -2392,7 +2392,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedDict *__pyx_vtab
  * 
  * cdef class Loading(EntityAttributeExt):             # <<<<<<<<<<<<<<
  *     cdef readonly bint always
- *     cdef readonly str eager
+ *     cdef readonly list fields
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_9_relation_Loading {

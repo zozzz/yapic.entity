@@ -927,7 +927,7 @@ struct __pyx_opt_args_5yapic_6entity_3sql_6_query_13QueryCompiler_compile_insert
 struct __pyx_opt_args_5yapic_6entity_3sql_6_query_13QueryCompiler_compile_update;
 struct __pyx_opt_args_5yapic_6entity_3sql_6_query_13QueryCompiler_compile_delete;
 
-/* "_query.pxd":105
+/* "_query.pxd":107
  * """
  * 
  * ctypedef enum RCO:             # <<<<<<<<<<<<<<
@@ -937,10 +937,10 @@ struct __pyx_opt_args_5yapic_6entity_3sql_6_query_13QueryCompiler_compile_delete
 enum __pyx_t_5yapic_6entity_3sql_6_query_RCO {
   __pyx_e_5yapic_6entity_3sql_6_query_PUSH = 1,
   __pyx_e_5yapic_6entity_3sql_6_query_POP = 2,
-  __pyx_e_5yapic_6entity_3sql_6_query_JUMP = 3,
-  __pyx_e_5yapic_6entity_3sql_6_query_CREATE_STATE = 4,
-  __pyx_e_5yapic_6entity_3sql_6_query_CREATE_ENTITY = 5,
-  __pyx_e_5yapic_6entity_3sql_6_query_CREATE_POLYMORPH_ENTITY = 6,
+  __pyx_e_5yapic_6entity_3sql_6_query_CREATE_STATE = 3,
+  __pyx_e_5yapic_6entity_3sql_6_query_CREATE_ENTITY = 4,
+  __pyx_e_5yapic_6entity_3sql_6_query_CREATE_POLYMORPH_ENTITY = 5,
+  __pyx_e_5yapic_6entity_3sql_6_query_CONVERT_SUB_ENTITY = 6,
   __pyx_e_5yapic_6entity_3sql_6_query_CONVERT_SUB_ENTITIES = 7,
   __pyx_e_5yapic_6entity_3sql_6_query_SET_ATTR = 8,
   __pyx_e_5yapic_6entity_3sql_6_query_SET_ATTR_RECORD = 9,
@@ -948,7 +948,7 @@ enum __pyx_t_5yapic_6entity_3sql_6_query_RCO {
 };
 typedef enum __pyx_t_5yapic_6entity_3sql_6_query_RCO __pyx_t_5yapic_6entity_3sql_6_query_RCO;
 
-/* "_query.pxd":51
+/* "_query.pxd":53
  * 
  *     cpdef compile_select(self, Query query)
  *     cpdef compile_insert(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)             # <<<<<<<<<<<<<<
@@ -960,7 +960,7 @@ struct __pyx_opt_args_5yapic_6entity_3sql_6_query_13QueryCompiler_compile_insert
   int inline_values;
 };
 
-/* "_query.pxd":52
+/* "_query.pxd":54
  *     cpdef compile_select(self, Query query)
  *     cpdef compile_insert(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)
  *     cpdef compile_insert_or_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)             # <<<<<<<<<<<<<<
@@ -972,7 +972,7 @@ struct __pyx_opt_args_5yapic_6entity_3sql_6_query_13QueryCompiler_compile_insert
   int inline_values;
 };
 
-/* "_query.pxd":53
+/* "_query.pxd":55
  *     cpdef compile_insert(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)
  *     cpdef compile_insert_or_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)
  *     cpdef compile_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)             # <<<<<<<<<<<<<<
@@ -984,7 +984,7 @@ struct __pyx_opt_args_5yapic_6entity_3sql_6_query_13QueryCompiler_compile_update
   int inline_values;
 };
 
-/* "_query.pxd":54
+/* "_query.pxd":56
  *     cpdef compile_insert_or_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)
  *     cpdef compile_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)
  *     cpdef compile_delete(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)             # <<<<<<<<<<<<<<
@@ -1609,6 +1609,8 @@ struct __pyx_obj_5yapic_6entity_3sql_6_query_Query {
   PyObject *_entities;
   PyObject *_load;
   PyObject *_exclude;
+  int _as_row;
+  int _as_json;
   struct __pyx_obj_5yapic_6entity_3sql_6_query_Query *_parent;
   PyObject *__pyx___expr_alias;
   int __pyx___alias_c;
@@ -1617,7 +1619,7 @@ struct __pyx_obj_5yapic_6entity_3sql_6_query_Query {
 };
 
 
-/* "_query.pxd":38
+/* "_query.pxd":40
  * 
  * 
  * cdef class QueryFinalizer(Visitor):             # <<<<<<<<<<<<<<
@@ -1633,7 +1635,7 @@ struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryFinalizer {
 };
 
 
-/* "_query.pxd":45
+/* "_query.pxd":47
  * 
  * 
  * cdef class QueryCompiler(Visitor):             # <<<<<<<<<<<<<<
@@ -1648,7 +1650,7 @@ struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryCompiler {
 };
 
 
-/* "_query.pxd":160
+/* "_query.pxd":162
  * @cython.final
  * @cython.freelist(1000)
  * cdef class RowConvertOp:             # <<<<<<<<<<<<<<
@@ -1663,7 +1665,7 @@ struct __pyx_obj_5yapic_6entity_3sql_6_query_RowConvertOp {
 };
 
 
-/* "_query.pxd":167
+/* "_query.pxd":169
  * 
  * @cython.final
  * cdef class QueryFactory:             # <<<<<<<<<<<<<<
@@ -2235,7 +2237,7 @@ struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_Query {
 static struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_Query *__pyx_vtabptr_5yapic_6entity_3sql_6_query_Query;
 
 
-/* "_query.pxd":38
+/* "_query.pxd":40
  * 
  * 
  * cdef class QueryFinalizer(Visitor):             # <<<<<<<<<<<<<<
@@ -2249,7 +2251,7 @@ struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_QueryFinalizer {
 static struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_QueryFinalizer *__pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryFinalizer;
 
 
-/* "_query.pxd":45
+/* "_query.pxd":47
  * 
  * 
  * cdef class QueryCompiler(Visitor):             # <<<<<<<<<<<<<<
@@ -3246,6 +3248,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
   PyObject *__pyx_v_poly_id = NULL;
   PyObject *__pyx_v_poly_rco = NULL;
   PyObject *__pyx_v_entry = NULL;
+  PyObject *__pyx_v_entity = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   Py_ssize_t __pyx_t_1;
@@ -3257,12 +3260,12 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
   int __pyx_t_7;
   int __pyx_t_8;
   int __pyx_t_9;
-  int __pyx_t_10;
+  PyObject *__pyx_t_10 = NULL;
   PyObject *__pyx_t_11 = NULL;
   PyObject *__pyx_t_12 = NULL;
   PyObject *__pyx_t_13 = NULL;
   PyObject *__pyx_t_14 = NULL;
-  PyObject *__pyx_t_15 = NULL;
+  int __pyx_t_15;
   PyObject *__pyx_t_16 = NULL;
   PyObject *(*__pyx_t_17)(PyObject *);
   int __pyx_lineno = 0;
@@ -3433,7 +3436,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
  * 
  *             if rco.op == RCO.PUSH:             # <<<<<<<<<<<<<<
  *                 push(result)
- *             elif rco.op == RCO.POP:
+ *                 # print("push", stack)
  */
       switch (__pyx_v_rco->op) {
         case __pyx_e_5yapic_6entity_3sql_6_query_PUSH:
@@ -3454,8 +3457,8 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
  * 
  *             if rco.op == RCO.PUSH:
  *                 push(result)             # <<<<<<<<<<<<<<
+ *                 # print("push", stack)
  *             elif rco.op == RCO.POP:
- *                 tmp = pop()
  */
         __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_stack, __pyx_v_result); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 50, __pyx_L1_error)
 
@@ -3464,7 +3467,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
  * 
  *             if rco.op == RCO.PUSH:             # <<<<<<<<<<<<<<
  *                 push(result)
- *             elif rco.op == RCO.POP:
+ *                 # print("push", stack)
  */
         break;
         case __pyx_e_5yapic_6entity_3sql_6_query_POP:
@@ -3481,81 +3484,52 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
           __PYX_ERR(0, 37, __pyx_L1_error)
         }
 
-        /* "yapic/entity/sql/_record_converter.pyx":52
- *                 push(result)
+        /* "yapic/entity/sql/_record_converter.pyx":53
+ *                 # print("push", stack)
  *             elif rco.op == RCO.POP:
  *                 tmp = pop()             # <<<<<<<<<<<<<<
- *             elif rco.op == RCO.JUMP:
- *                 j = rco.param1
+ *                 # print("pop", tmp, stack)
+ *             elif rco.op == RCO.CREATE_STATE:
  */
-        __pyx_t_2 = __Pyx_PyList_Pop(__pyx_v_stack); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyList_Pop(__pyx_v_stack); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_XDECREF_SET(__pyx_v_tmp, __pyx_t_2);
         __pyx_t_2 = 0;
 
-        /* "yapic/entity/sql/_record_converter.pyx":51
- *             if rco.op == RCO.PUSH:
+        /* "yapic/entity/sql/_record_converter.pyx":52
  *                 push(result)
+ *                 # print("push", stack)
  *             elif rco.op == RCO.POP:             # <<<<<<<<<<<<<<
  *                 tmp = pop()
- *             elif rco.op == RCO.JUMP:
- */
-        break;
-        case __pyx_e_5yapic_6entity_3sql_6_query_JUMP:
-
-        /* "yapic/entity/sql/_record_converter.pyx":54
- *                 tmp = pop()
- *             elif rco.op == RCO.JUMP:
- *                 j = rco.param1             # <<<<<<<<<<<<<<
- *                 continue
- *             elif rco.op == RCO.CREATE_STATE:
- */
-        __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_v_rco->param1); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 54, __pyx_L1_error)
-        __pyx_v_j = __pyx_t_8;
-
-        /* "yapic/entity/sql/_record_converter.pyx":55
- *             elif rco.op == RCO.JUMP:
- *                 j = rco.param1
- *                 continue             # <<<<<<<<<<<<<<
- *             elif rco.op == RCO.CREATE_STATE:
- *                 entity_state = EntityState(rco.param1)
- */
-        goto __pyx_L5_continue;
-
-        /* "yapic/entity/sql/_record_converter.pyx":53
- *             elif rco.op == RCO.POP:
- *                 tmp = pop()
- *             elif rco.op == RCO.JUMP:             # <<<<<<<<<<<<<<
- *                 j = rco.param1
- *                 continue
+ *                 # print("pop", tmp, stack)
  */
         break;
         case __pyx_e_5yapic_6entity_3sql_6_query_CREATE_STATE:
 
-        /* "yapic/entity/sql/_record_converter.pyx":57
- *                 continue
+        /* "yapic/entity/sql/_record_converter.pyx":56
+ *                 # print("pop", tmp, stack)
  *             elif rco.op == RCO.CREATE_STATE:
  *                 entity_state = EntityState(rco.param1)             # <<<<<<<<<<<<<<
  *                 entity_state.exists = True
  *             elif rco.op == RCO.CREATE_ENTITY:
  */
-        __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_5yapic_6entity_7_entity_EntityState), __pyx_v_rco->param1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_5yapic_6entity_7_entity_EntityState), __pyx_v_rco->param1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF_SET(__pyx_v_entity_state, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityState *)__pyx_t_2));
         __pyx_t_2 = 0;
 
-        /* "yapic/entity/sql/_record_converter.pyx":58
+        /* "yapic/entity/sql/_record_converter.pyx":57
  *             elif rco.op == RCO.CREATE_STATE:
  *                 entity_state = EntityState(rco.param1)
  *                 entity_state.exists = True             # <<<<<<<<<<<<<<
  *             elif rco.op == RCO.CREATE_ENTITY:
- *                 if rco.param2 is True and entity_state._is_empty() is True:
+ *                 # print("CREATE_ENTITY", rco.param1, entity_state._is_empty())
  */
         __pyx_v_entity_state->exists = 1;
 
-        /* "yapic/entity/sql/_record_converter.pyx":56
- *                 j = rco.param1
- *                 continue
+        /* "yapic/entity/sql/_record_converter.pyx":55
+ *                 tmp = pop()
+ *                 # print("pop", tmp, stack)
  *             elif rco.op == RCO.CREATE_STATE:             # <<<<<<<<<<<<<<
  *                 entity_state = EntityState(rco.param1)
  *                 entity_state.exists = True
@@ -3564,26 +3538,26 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
         case __pyx_e_5yapic_6entity_3sql_6_query_CREATE_ENTITY:
 
         /* "yapic/entity/sql/_record_converter.pyx":60
- *                 entity_state.exists = True
  *             elif rco.op == RCO.CREATE_ENTITY:
+ *                 # print("CREATE_ENTITY", rco.param1, entity_state._is_empty())
  *                 if rco.param2 is True and entity_state._is_empty() is True:             # <<<<<<<<<<<<<<
  *                     result = None
  *                 else:
  */
-        __pyx_t_9 = (__pyx_v_rco->param2 == Py_True);
-        __pyx_t_10 = (__pyx_t_9 != 0);
-        if (__pyx_t_10) {
+        __pyx_t_8 = (__pyx_v_rco->param2 == Py_True);
+        __pyx_t_9 = (__pyx_t_8 != 0);
+        if (__pyx_t_9) {
         } else {
-          __pyx_t_6 = __pyx_t_10;
+          __pyx_t_6 = __pyx_t_9;
           goto __pyx_L8_bool_binop_done;
         }
-        __pyx_t_10 = ((((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *)__pyx_v_entity_state->__pyx_vtab)->_is_empty(__pyx_v_entity_state) == 1) != 0);
-        __pyx_t_6 = __pyx_t_10;
+        __pyx_t_9 = ((((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *)__pyx_v_entity_state->__pyx_vtab)->_is_empty(__pyx_v_entity_state) == 1) != 0);
+        __pyx_t_6 = __pyx_t_9;
         __pyx_L8_bool_binop_done:;
         if (__pyx_t_6) {
 
           /* "yapic/entity/sql/_record_converter.pyx":61
- *             elif rco.op == RCO.CREATE_ENTITY:
+ *                 # print("CREATE_ENTITY", rco.param1, entity_state._is_empty())
  *                 if rco.param2 is True and entity_state._is_empty() is True:
  *                     result = None             # <<<<<<<<<<<<<<
  *                 else:
@@ -3593,8 +3567,8 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
           __Pyx_DECREF_SET(__pyx_v_result, Py_None);
 
           /* "yapic/entity/sql/_record_converter.pyx":60
- *                 entity_state.exists = True
  *             elif rco.op == RCO.CREATE_ENTITY:
+ *                 # print("CREATE_ENTITY", rco.param1, entity_state._is_empty())
  *                 if rco.param2 is True and entity_state._is_empty() is True:             # <<<<<<<<<<<<<<
  *                     result = None
  *                 else:
@@ -3611,32 +3585,32 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
  */
         /*else*/ {
           __Pyx_INCREF(__pyx_v_rco->param1);
-          __pyx_t_11 = __pyx_v_rco->param1; __pyx_t_12 = NULL;
-          if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_11))) {
-            __pyx_t_12 = PyMethod_GET_SELF(__pyx_t_11);
-            if (likely(__pyx_t_12)) {
-              PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_11);
-              __Pyx_INCREF(__pyx_t_12);
+          __pyx_t_10 = __pyx_v_rco->param1; __pyx_t_11 = NULL;
+          if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_10))) {
+            __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_10);
+            if (likely(__pyx_t_11)) {
+              PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_10);
+              __Pyx_INCREF(__pyx_t_11);
               __Pyx_INCREF(function);
-              __Pyx_DECREF_SET(__pyx_t_11, function);
+              __Pyx_DECREF_SET(__pyx_t_10, function);
             }
           }
-          __pyx_t_2 = (__pyx_t_12) ? __Pyx_PyObject_Call2Args(__pyx_t_11, __pyx_t_12, ((PyObject *)__pyx_v_entity_state)) : __Pyx_PyObject_CallOneArg(__pyx_t_11, ((PyObject *)__pyx_v_entity_state));
-          __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
+          __pyx_t_2 = (__pyx_t_11) ? __Pyx_PyObject_Call2Args(__pyx_t_10, __pyx_t_11, ((PyObject *)__pyx_v_entity_state)) : __Pyx_PyObject_CallOneArg(__pyx_t_10, ((PyObject *)__pyx_v_entity_state));
+          __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
           if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
-          __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+          __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
           __Pyx_DECREF_SET(__pyx_v_result, __pyx_t_2);
           __pyx_t_2 = 0;
         }
         __pyx_L7:;
 
-        /* "yapic/entity/sql/_record_converter.pyx":59
+        /* "yapic/entity/sql/_record_converter.pyx":58
  *                 entity_state = EntityState(rco.param1)
  *                 entity_state.exists = True
  *             elif rco.op == RCO.CREATE_ENTITY:             # <<<<<<<<<<<<<<
+ *                 # print("CREATE_ENTITY", rco.param1, entity_state._is_empty())
  *                 if rco.param2 is True and entity_state._is_empty() is True:
- *                     result = None
  */
         break;
         case __pyx_e_5yapic_6entity_3sql_6_query_CREATE_POLYMORPH_ENTITY:
@@ -3650,11 +3624,11 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
  */
         __pyx_t_2 = __pyx_v_rco->param1;
         __Pyx_INCREF(__pyx_t_2);
-        __pyx_t_11 = __pyx_f_5yapic_6entity_3sql_17_record_converter__record_idexes_to_tuple(((PyObject*)__pyx_t_2), __pyx_v_record); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 72, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_11);
+        __pyx_t_10 = __pyx_f_5yapic_6entity_3sql_17_record_converter__record_idexes_to_tuple(((PyObject*)__pyx_t_2), __pyx_v_record); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 72, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_10);
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-        __Pyx_XDECREF_SET(__pyx_v_poly_id, ((PyObject*)__pyx_t_11));
-        __pyx_t_11 = 0;
+        __Pyx_XDECREF_SET(__pyx_v_poly_id, ((PyObject*)__pyx_t_10));
+        __pyx_t_10 = 0;
 
         /* "yapic/entity/sql/_record_converter.pyx":73
  * 
@@ -3666,10 +3640,10 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
         {
           __Pyx_PyThreadState_declare
           __Pyx_PyThreadState_assign
-          __Pyx_ExceptionSave(&__pyx_t_13, &__pyx_t_14, &__pyx_t_15);
+          __Pyx_ExceptionSave(&__pyx_t_12, &__pyx_t_13, &__pyx_t_14);
+          __Pyx_XGOTREF(__pyx_t_12);
           __Pyx_XGOTREF(__pyx_t_13);
           __Pyx_XGOTREF(__pyx_t_14);
-          __Pyx_XGOTREF(__pyx_t_15);
           /*try:*/ {
 
             /* "yapic/entity/sql/_record_converter.pyx":74
@@ -3677,16 +3651,16 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
  *                 try:
  *                     poly_rco = (<dict>rco.param2)[poly_id]             # <<<<<<<<<<<<<<
  *                 except KeyError:
- *                     pop()
+ *                     result = pop()
  */
             if (unlikely(__pyx_v_rco->param2 == Py_None)) {
               PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
               __PYX_ERR(0, 74, __pyx_L10_error)
             }
-            __pyx_t_11 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_rco->param2), __pyx_v_poly_id); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 74, __pyx_L10_error)
-            __Pyx_GOTREF(__pyx_t_11);
-            __Pyx_XDECREF_SET(__pyx_v_poly_rco, __pyx_t_11);
-            __pyx_t_11 = 0;
+            __pyx_t_10 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_rco->param2), __pyx_v_poly_id); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 74, __pyx_L10_error)
+            __Pyx_GOTREF(__pyx_t_10);
+            __Pyx_XDECREF_SET(__pyx_v_poly_rco, __pyx_t_10);
+            __pyx_t_10 = 0;
 
             /* "yapic/entity/sql/_record_converter.pyx":73
  * 
@@ -3697,43 +3671,43 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
  */
           }
 
-          /* "yapic/entity/sql/_record_converter.pyx":79
- *                     result = None
+          /* "yapic/entity/sql/_record_converter.pyx":78
+ *                     result = pop()
  *                 else:
  *                     result = _convert_record(stack, record, poly_rco, state)             # <<<<<<<<<<<<<<
- *                 # poly_jump = (<dict>rco.param2).get(poly_id, None)
- *                 # if poly_jump is not None:
+ *             elif rco.op == RCO.CONVERT_SUB_ENTITY:
+ *                 tmp = record[<int>rco.param1]
  */
           /*else:*/ {
-            if (!(likely(PyList_CheckExact(__pyx_v_poly_rco))||((__pyx_v_poly_rco) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_poly_rco)->tp_name), 0))) __PYX_ERR(0, 79, __pyx_L12_except_error)
-            __pyx_t_11 = __pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record(__pyx_v_stack, __pyx_v_record, ((PyObject*)__pyx_v_poly_rco), __pyx_v_state); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 79, __pyx_L12_except_error)
-            __Pyx_GOTREF(__pyx_t_11);
-            __Pyx_DECREF_SET(__pyx_v_result, __pyx_t_11);
-            __pyx_t_11 = 0;
+            if (!(likely(PyList_CheckExact(__pyx_v_poly_rco))||((__pyx_v_poly_rco) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_poly_rco)->tp_name), 0))) __PYX_ERR(0, 78, __pyx_L12_except_error)
+            __pyx_t_10 = __pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record(__pyx_v_stack, __pyx_v_record, ((PyObject*)__pyx_v_poly_rco), __pyx_v_state); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 78, __pyx_L12_except_error)
+            __Pyx_GOTREF(__pyx_t_10);
+            __Pyx_DECREF_SET(__pyx_v_result, __pyx_t_10);
+            __pyx_t_10 = 0;
           }
+          __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
           __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
           __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
-          __Pyx_XDECREF(__pyx_t_15); __pyx_t_15 = 0;
           goto __pyx_L17_try_end;
           __pyx_L10_error:;
+          __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
           __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-          __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
           __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
 
           /* "yapic/entity/sql/_record_converter.pyx":75
  *                 try:
  *                     poly_rco = (<dict>rco.param2)[poly_id]
  *                 except KeyError:             # <<<<<<<<<<<<<<
- *                     pop()
- *                     result = None
+ *                     result = pop()
+ *                 else:
  */
-          __pyx_t_8 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_KeyError);
-          if (__pyx_t_8) {
+          __pyx_t_15 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_KeyError);
+          if (__pyx_t_15) {
             __Pyx_AddTraceback("yapic.entity.sql._record_converter._convert_record", __pyx_clineno, __pyx_lineno, __pyx_filename);
-            if (__Pyx_GetException(&__pyx_t_11, &__pyx_t_2, &__pyx_t_12) < 0) __PYX_ERR(0, 75, __pyx_L12_except_error)
-            __Pyx_GOTREF(__pyx_t_11);
+            if (__Pyx_GetException(&__pyx_t_10, &__pyx_t_2, &__pyx_t_11) < 0) __PYX_ERR(0, 75, __pyx_L12_except_error)
+            __Pyx_GOTREF(__pyx_t_10);
             __Pyx_GOTREF(__pyx_t_2);
-            __Pyx_GOTREF(__pyx_t_12);
+            __Pyx_GOTREF(__pyx_t_11);
 
             /* "yapic/entity/sql/_record_converter.pyx":37
  * 
@@ -3750,26 +3724,17 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
             /* "yapic/entity/sql/_record_converter.pyx":76
  *                     poly_rco = (<dict>rco.param2)[poly_id]
  *                 except KeyError:
- *                     pop()             # <<<<<<<<<<<<<<
- *                     result = None
- *                 else:
- */
-            __pyx_t_16 = __Pyx_PyList_Pop(__pyx_v_stack); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 76, __pyx_L12_except_error)
-            __Pyx_GOTREF(__pyx_t_16);
-            __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-
-            /* "yapic/entity/sql/_record_converter.pyx":77
- *                 except KeyError:
- *                     pop()
- *                     result = None             # <<<<<<<<<<<<<<
+ *                     result = pop()             # <<<<<<<<<<<<<<
  *                 else:
  *                     result = _convert_record(stack, record, poly_rco, state)
  */
-            __Pyx_INCREF(Py_None);
-            __Pyx_DECREF_SET(__pyx_v_result, Py_None);
-            __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+            __pyx_t_16 = __Pyx_PyList_Pop(__pyx_v_stack); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 76, __pyx_L12_except_error)
+            __Pyx_GOTREF(__pyx_t_16);
+            __Pyx_DECREF_SET(__pyx_v_result, __pyx_t_16);
+            __pyx_t_16 = 0;
+            __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
             __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-            __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
+            __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
             goto __pyx_L11_exception_handled;
           }
           goto __pyx_L12_except_error;
@@ -3782,16 +3747,16 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
  *                     poly_rco = (<dict>rco.param2)[poly_id]
  *                 except KeyError:
  */
+          __Pyx_XGIVEREF(__pyx_t_12);
           __Pyx_XGIVEREF(__pyx_t_13);
           __Pyx_XGIVEREF(__pyx_t_14);
-          __Pyx_XGIVEREF(__pyx_t_15);
-          __Pyx_ExceptionReset(__pyx_t_13, __pyx_t_14, __pyx_t_15);
+          __Pyx_ExceptionReset(__pyx_t_12, __pyx_t_13, __pyx_t_14);
           goto __pyx_L1_error;
           __pyx_L11_exception_handled:;
+          __Pyx_XGIVEREF(__pyx_t_12);
           __Pyx_XGIVEREF(__pyx_t_13);
           __Pyx_XGIVEREF(__pyx_t_14);
-          __Pyx_XGIVEREF(__pyx_t_15);
-          __Pyx_ExceptionReset(__pyx_t_13, __pyx_t_14, __pyx_t_15);
+          __Pyx_ExceptionReset(__pyx_t_12, __pyx_t_13, __pyx_t_14);
           __pyx_L17_try_end:;
         }
 
@@ -3803,130 +3768,232 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
  *                 # if not isinstance(rco.param1, tuple):
  */
         break;
+        case __pyx_e_5yapic_6entity_3sql_6_query_CONVERT_SUB_ENTITY:
+
+        /* "yapic/entity/sql/_record_converter.pyx":80
+ *                     result = _convert_record(stack, record, poly_rco, state)
+ *             elif rco.op == RCO.CONVERT_SUB_ENTITY:
+ *                 tmp = record[<int>rco.param1]             # <<<<<<<<<<<<<<
+ *                 if tmp is not None:
+ *                     result = _convert_record(stack, tmp, rco.param2, state)
+ */
+        __pyx_t_15 = __Pyx_PyInt_As_int(__pyx_v_rco->param1); if (unlikely((__pyx_t_15 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 80, __pyx_L1_error)
+        __pyx_t_11 = __Pyx_GetItemInt(__pyx_v_record, ((int)__pyx_t_15), int, 1, __Pyx_PyInt_From_int, 0, 0, 0); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 80, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_11);
+        __Pyx_XDECREF_SET(__pyx_v_tmp, __pyx_t_11);
+        __pyx_t_11 = 0;
+
+        /* "yapic/entity/sql/_record_converter.pyx":81
+ *             elif rco.op == RCO.CONVERT_SUB_ENTITY:
+ *                 tmp = record[<int>rco.param1]
+ *                 if tmp is not None:             # <<<<<<<<<<<<<<
+ *                     result = _convert_record(stack, tmp, rco.param2, state)
+ *                 else:
+ */
+        __pyx_t_6 = (__pyx_v_tmp != Py_None);
+        __pyx_t_9 = (__pyx_t_6 != 0);
+        if (__pyx_t_9) {
+
+          /* "yapic/entity/sql/_record_converter.pyx":82
+ *                 tmp = record[<int>rco.param1]
+ *                 if tmp is not None:
+ *                     result = _convert_record(stack, tmp, rco.param2, state)             # <<<<<<<<<<<<<<
+ *                 else:
+ *                     result = None
+ */
+          if (!(likely(PyList_CheckExact(__pyx_v_rco->param2))||((__pyx_v_rco->param2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_rco->param2)->tp_name), 0))) __PYX_ERR(0, 82, __pyx_L1_error)
+          __pyx_t_11 = __pyx_v_rco->param2;
+          __Pyx_INCREF(__pyx_t_11);
+          __pyx_t_2 = __pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record(__pyx_v_stack, __pyx_v_tmp, ((PyObject*)__pyx_t_11), __pyx_v_state); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+          __Pyx_DECREF_SET(__pyx_v_result, __pyx_t_2);
+          __pyx_t_2 = 0;
+
+          /* "yapic/entity/sql/_record_converter.pyx":81
+ *             elif rco.op == RCO.CONVERT_SUB_ENTITY:
+ *                 tmp = record[<int>rco.param1]
+ *                 if tmp is not None:             # <<<<<<<<<<<<<<
+ *                     result = _convert_record(stack, tmp, rco.param2, state)
+ *                 else:
+ */
+          goto __pyx_L20;
+        }
+
+        /* "yapic/entity/sql/_record_converter.pyx":84
+ *                     result = _convert_record(stack, tmp, rco.param2, state)
+ *                 else:
+ *                     result = None             # <<<<<<<<<<<<<<
+ *             elif rco.op == RCO.CONVERT_SUB_ENTITIES:
+ *                 tmp = record[<int>rco.param1]
+ */
+        /*else*/ {
+          __Pyx_INCREF(Py_None);
+          __Pyx_DECREF_SET(__pyx_v_result, Py_None);
+        }
+        __pyx_L20:;
+
+        /* "yapic/entity/sql/_record_converter.pyx":79
+ *                 else:
+ *                     result = _convert_record(stack, record, poly_rco, state)
+ *             elif rco.op == RCO.CONVERT_SUB_ENTITY:             # <<<<<<<<<<<<<<
+ *                 tmp = record[<int>rco.param1]
+ *                 if tmp is not None:
+ */
+        break;
         case __pyx_e_5yapic_6entity_3sql_6_query_CONVERT_SUB_ENTITIES:
 
-        /* "yapic/entity/sql/_record_converter.pyx":85
- *                 #     continue
+        /* "yapic/entity/sql/_record_converter.pyx":86
+ *                     result = None
  *             elif rco.op == RCO.CONVERT_SUB_ENTITIES:
  *                 tmp = record[<int>rco.param1]             # <<<<<<<<<<<<<<
  *                 result = []
  *                 if tmp:
  */
-        __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_v_rco->param1); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 85, __pyx_L1_error)
-        __pyx_t_12 = __Pyx_GetItemInt(__pyx_v_record, ((int)__pyx_t_8), int, 1, __Pyx_PyInt_From_int, 0, 0, 0); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 85, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_12);
-        __Pyx_XDECREF_SET(__pyx_v_tmp, __pyx_t_12);
-        __pyx_t_12 = 0;
+        __pyx_t_15 = __Pyx_PyInt_As_int(__pyx_v_rco->param1); if (unlikely((__pyx_t_15 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 86, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_record, ((int)__pyx_t_15), int, 1, __Pyx_PyInt_From_int, 0, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 86, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        __Pyx_XDECREF_SET(__pyx_v_tmp, __pyx_t_2);
+        __pyx_t_2 = 0;
 
-        /* "yapic/entity/sql/_record_converter.pyx":86
+        /* "yapic/entity/sql/_record_converter.pyx":87
  *             elif rco.op == RCO.CONVERT_SUB_ENTITIES:
  *                 tmp = record[<int>rco.param1]
  *                 result = []             # <<<<<<<<<<<<<<
  *                 if tmp:
  *                     for entry in tmp:
  */
-        __pyx_t_12 = PyList_New(0); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 86, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_12);
-        __Pyx_DECREF_SET(__pyx_v_result, __pyx_t_12);
-        __pyx_t_12 = 0;
+        __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 87, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        __Pyx_DECREF_SET(__pyx_v_result, __pyx_t_2);
+        __pyx_t_2 = 0;
 
-        /* "yapic/entity/sql/_record_converter.pyx":87
+        /* "yapic/entity/sql/_record_converter.pyx":88
  *                 tmp = record[<int>rco.param1]
  *                 result = []
  *                 if tmp:             # <<<<<<<<<<<<<<
  *                     for entry in tmp:
- *                         result.append(_convert_record(stack, entry, rco.param2, state))
+ *                         entity = _convert_record(stack, entry, rco.param2, state)
  */
-        __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_tmp); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 87, __pyx_L1_error)
-        if (__pyx_t_6) {
+        __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_v_tmp); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
+        if (__pyx_t_9) {
 
-          /* "yapic/entity/sql/_record_converter.pyx":88
+          /* "yapic/entity/sql/_record_converter.pyx":89
  *                 result = []
  *                 if tmp:
  *                     for entry in tmp:             # <<<<<<<<<<<<<<
- *                         result.append(_convert_record(stack, entry, rco.param2, state))
- *             elif rco.op == RCO.SET_ATTR:
+ *                         entity = _convert_record(stack, entry, rco.param2, state)
+ *                         if entity is not None:
  */
           if (likely(PyList_CheckExact(__pyx_v_tmp)) || PyTuple_CheckExact(__pyx_v_tmp)) {
-            __pyx_t_12 = __pyx_v_tmp; __Pyx_INCREF(__pyx_t_12); __pyx_t_1 = 0;
+            __pyx_t_2 = __pyx_v_tmp; __Pyx_INCREF(__pyx_t_2); __pyx_t_1 = 0;
             __pyx_t_17 = NULL;
           } else {
-            __pyx_t_1 = -1; __pyx_t_12 = PyObject_GetIter(__pyx_v_tmp); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 88, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_12);
-            __pyx_t_17 = Py_TYPE(__pyx_t_12)->tp_iternext; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 88, __pyx_L1_error)
+            __pyx_t_1 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_tmp); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 89, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_2);
+            __pyx_t_17 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 89, __pyx_L1_error)
           }
           for (;;) {
             if (likely(!__pyx_t_17)) {
-              if (likely(PyList_CheckExact(__pyx_t_12))) {
-                if (__pyx_t_1 >= PyList_GET_SIZE(__pyx_t_12)) break;
+              if (likely(PyList_CheckExact(__pyx_t_2))) {
+                if (__pyx_t_1 >= PyList_GET_SIZE(__pyx_t_2)) break;
                 #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-                __pyx_t_2 = PyList_GET_ITEM(__pyx_t_12, __pyx_t_1); __Pyx_INCREF(__pyx_t_2); __pyx_t_1++; if (unlikely(0 < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
+                __pyx_t_11 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_1); __Pyx_INCREF(__pyx_t_11); __pyx_t_1++; if (unlikely(0 < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
                 #else
-                __pyx_t_2 = PySequence_ITEM(__pyx_t_12, __pyx_t_1); __pyx_t_1++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 88, __pyx_L1_error)
-                __Pyx_GOTREF(__pyx_t_2);
+                __pyx_t_11 = PySequence_ITEM(__pyx_t_2, __pyx_t_1); __pyx_t_1++; if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 89, __pyx_L1_error)
+                __Pyx_GOTREF(__pyx_t_11);
                 #endif
               } else {
-                if (__pyx_t_1 >= PyTuple_GET_SIZE(__pyx_t_12)) break;
+                if (__pyx_t_1 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
                 #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-                __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_12, __pyx_t_1); __Pyx_INCREF(__pyx_t_2); __pyx_t_1++; if (unlikely(0 < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
+                __pyx_t_11 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_1); __Pyx_INCREF(__pyx_t_11); __pyx_t_1++; if (unlikely(0 < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
                 #else
-                __pyx_t_2 = PySequence_ITEM(__pyx_t_12, __pyx_t_1); __pyx_t_1++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 88, __pyx_L1_error)
-                __Pyx_GOTREF(__pyx_t_2);
+                __pyx_t_11 = PySequence_ITEM(__pyx_t_2, __pyx_t_1); __pyx_t_1++; if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 89, __pyx_L1_error)
+                __Pyx_GOTREF(__pyx_t_11);
                 #endif
               }
             } else {
-              __pyx_t_2 = __pyx_t_17(__pyx_t_12);
-              if (unlikely(!__pyx_t_2)) {
+              __pyx_t_11 = __pyx_t_17(__pyx_t_2);
+              if (unlikely(!__pyx_t_11)) {
                 PyObject* exc_type = PyErr_Occurred();
                 if (exc_type) {
                   if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-                  else __PYX_ERR(0, 88, __pyx_L1_error)
+                  else __PYX_ERR(0, 89, __pyx_L1_error)
                 }
                 break;
               }
-              __Pyx_GOTREF(__pyx_t_2);
+              __Pyx_GOTREF(__pyx_t_11);
             }
-            __Pyx_XDECREF_SET(__pyx_v_entry, __pyx_t_2);
-            __pyx_t_2 = 0;
+            __Pyx_XDECREF_SET(__pyx_v_entry, __pyx_t_11);
+            __pyx_t_11 = 0;
 
-            /* "yapic/entity/sql/_record_converter.pyx":89
+            /* "yapic/entity/sql/_record_converter.pyx":90
  *                 if tmp:
  *                     for entry in tmp:
- *                         result.append(_convert_record(stack, entry, rco.param2, state))             # <<<<<<<<<<<<<<
+ *                         entity = _convert_record(stack, entry, rco.param2, state)             # <<<<<<<<<<<<<<
+ *                         if entity is not None:
+ *                             result.append(entity)
+ */
+            if (!(likely(PyList_CheckExact(__pyx_v_rco->param2))||((__pyx_v_rco->param2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_rco->param2)->tp_name), 0))) __PYX_ERR(0, 90, __pyx_L1_error)
+            __pyx_t_11 = __pyx_v_rco->param2;
+            __Pyx_INCREF(__pyx_t_11);
+            __pyx_t_10 = __pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record(__pyx_v_stack, __pyx_v_entry, ((PyObject*)__pyx_t_11), __pyx_v_state); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 90, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_10);
+            __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+            __Pyx_XDECREF_SET(__pyx_v_entity, __pyx_t_10);
+            __pyx_t_10 = 0;
+
+            /* "yapic/entity/sql/_record_converter.pyx":91
+ *                     for entry in tmp:
+ *                         entity = _convert_record(stack, entry, rco.param2, state)
+ *                         if entity is not None:             # <<<<<<<<<<<<<<
+ *                             result.append(entity)
+ *             elif rco.op == RCO.SET_ATTR:
+ */
+            __pyx_t_9 = (__pyx_v_entity != Py_None);
+            __pyx_t_6 = (__pyx_t_9 != 0);
+            if (__pyx_t_6) {
+
+              /* "yapic/entity/sql/_record_converter.pyx":92
+ *                         entity = _convert_record(stack, entry, rco.param2, state)
+ *                         if entity is not None:
+ *                             result.append(entity)             # <<<<<<<<<<<<<<
  *             elif rco.op == RCO.SET_ATTR:
  *                 entity_state.set_initial_value(<EntityAttribute>rco.param1, tmp)
  */
-            if (!(likely(PyList_CheckExact(__pyx_v_rco->param2))||((__pyx_v_rco->param2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_rco->param2)->tp_name), 0))) __PYX_ERR(0, 89, __pyx_L1_error)
-            __pyx_t_2 = __pyx_v_rco->param2;
-            __Pyx_INCREF(__pyx_t_2);
-            __pyx_t_11 = __pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record(__pyx_v_stack, __pyx_v_entry, ((PyObject*)__pyx_t_2), __pyx_v_state); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 89, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_11);
-            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-            __pyx_t_7 = __Pyx_PyObject_Append(__pyx_v_result, __pyx_t_11); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 89, __pyx_L1_error)
-            __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+              __pyx_t_7 = __Pyx_PyObject_Append(__pyx_v_result, __pyx_v_entity); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 92, __pyx_L1_error)
 
-            /* "yapic/entity/sql/_record_converter.pyx":88
+              /* "yapic/entity/sql/_record_converter.pyx":91
+ *                     for entry in tmp:
+ *                         entity = _convert_record(stack, entry, rco.param2, state)
+ *                         if entity is not None:             # <<<<<<<<<<<<<<
+ *                             result.append(entity)
+ *             elif rco.op == RCO.SET_ATTR:
+ */
+            }
+
+            /* "yapic/entity/sql/_record_converter.pyx":89
  *                 result = []
  *                 if tmp:
  *                     for entry in tmp:             # <<<<<<<<<<<<<<
- *                         result.append(_convert_record(stack, entry, rco.param2, state))
- *             elif rco.op == RCO.SET_ATTR:
+ *                         entity = _convert_record(stack, entry, rco.param2, state)
+ *                         if entity is not None:
  */
           }
-          __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-          /* "yapic/entity/sql/_record_converter.pyx":87
+          /* "yapic/entity/sql/_record_converter.pyx":88
  *                 tmp = record[<int>rco.param1]
  *                 result = []
  *                 if tmp:             # <<<<<<<<<<<<<<
  *                     for entry in tmp:
- *                         result.append(_convert_record(stack, entry, rco.param2, state))
+ *                         entity = _convert_record(stack, entry, rco.param2, state)
  */
         }
 
-        /* "yapic/entity/sql/_record_converter.pyx":84
- *                 #     j = poly_jump
- *                 #     continue
+        /* "yapic/entity/sql/_record_converter.pyx":85
+ *                 else:
+ *                     result = None
  *             elif rco.op == RCO.CONVERT_SUB_ENTITIES:             # <<<<<<<<<<<<<<
  *                 tmp = record[<int>rco.param1]
  *                 result = []
@@ -3934,24 +4001,24 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
         break;
         case __pyx_e_5yapic_6entity_3sql_6_query_SET_ATTR:
 
-        /* "yapic/entity/sql/_record_converter.pyx":91
- *                         result.append(_convert_record(stack, entry, rco.param2, state))
+        /* "yapic/entity/sql/_record_converter.pyx":94
+ *                             result.append(entity)
  *             elif rco.op == RCO.SET_ATTR:
  *                 entity_state.set_initial_value(<EntityAttribute>rco.param1, tmp)             # <<<<<<<<<<<<<<
  *             elif rco.op == RCO.SET_ATTR_RECORD:
  *                 field = rco.param1
  */
-        __pyx_t_12 = __pyx_v_rco->param1;
-        __Pyx_INCREF(__pyx_t_12);
-        if (unlikely(!__pyx_v_tmp)) { __Pyx_RaiseUnboundLocalError("tmp"); __PYX_ERR(0, 91, __pyx_L1_error) }
-        __pyx_t_11 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *)__pyx_v_entity_state->__pyx_vtab)->set_initial_value(__pyx_v_entity_state, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *)__pyx_t_12), __pyx_v_tmp); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 91, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_11);
-        __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+        __pyx_t_2 = __pyx_v_rco->param1;
+        __Pyx_INCREF(__pyx_t_2);
+        if (unlikely(!__pyx_v_tmp)) { __Pyx_RaiseUnboundLocalError("tmp"); __PYX_ERR(0, 94, __pyx_L1_error) }
+        __pyx_t_10 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *)__pyx_v_entity_state->__pyx_vtab)->set_initial_value(__pyx_v_entity_state, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *)__pyx_t_2), __pyx_v_tmp); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 94, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_10);
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
-        /* "yapic/entity/sql/_record_converter.pyx":90
- *                     for entry in tmp:
- *                         result.append(_convert_record(stack, entry, rco.param2, state))
+        /* "yapic/entity/sql/_record_converter.pyx":93
+ *                         if entity is not None:
+ *                             result.append(entity)
  *             elif rco.op == RCO.SET_ATTR:             # <<<<<<<<<<<<<<
  *                 entity_state.set_initial_value(<EntityAttribute>rco.param1, tmp)
  *             elif rco.op == RCO.SET_ATTR_RECORD:
@@ -3959,32 +4026,32 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
         break;
         case __pyx_e_5yapic_6entity_3sql_6_query_SET_ATTR_RECORD:
 
-        /* "yapic/entity/sql/_record_converter.pyx":93
+        /* "yapic/entity/sql/_record_converter.pyx":96
  *                 entity_state.set_initial_value(<EntityAttribute>rco.param1, tmp)
  *             elif rco.op == RCO.SET_ATTR_RECORD:
  *                 field = rco.param1             # <<<<<<<<<<<<<<
  *                 tmp = record[rco.param2]
  *                 if tmp is None:
  */
-        if (!(likely(((__pyx_v_rco->param1) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_rco->param1, __pyx_ptype_5yapic_6entity_6_field_Field))))) __PYX_ERR(0, 93, __pyx_L1_error)
-        __pyx_t_11 = __pyx_v_rco->param1;
-        __Pyx_INCREF(__pyx_t_11);
-        __Pyx_DECREF_SET(__pyx_v_field, ((struct __pyx_obj_5yapic_6entity_6_field_Field *)__pyx_t_11));
-        __pyx_t_11 = 0;
+        if (!(likely(((__pyx_v_rco->param1) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_rco->param1, __pyx_ptype_5yapic_6entity_6_field_Field))))) __PYX_ERR(0, 96, __pyx_L1_error)
+        __pyx_t_10 = __pyx_v_rco->param1;
+        __Pyx_INCREF(__pyx_t_10);
+        __Pyx_DECREF_SET(__pyx_v_field, ((struct __pyx_obj_5yapic_6entity_6_field_Field *)__pyx_t_10));
+        __pyx_t_10 = 0;
 
-        /* "yapic/entity/sql/_record_converter.pyx":94
+        /* "yapic/entity/sql/_record_converter.pyx":97
  *             elif rco.op == RCO.SET_ATTR_RECORD:
  *                 field = rco.param1
  *                 tmp = record[rco.param2]             # <<<<<<<<<<<<<<
  *                 if tmp is None:
  *                     entity_state.set_initial_value(field, None)
  */
-        __pyx_t_11 = __Pyx_PyObject_GetItem(__pyx_v_record, __pyx_v_rco->param2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 94, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_11);
-        __Pyx_XDECREF_SET(__pyx_v_tmp, __pyx_t_11);
-        __pyx_t_11 = 0;
+        __pyx_t_10 = __Pyx_PyObject_GetItem(__pyx_v_record, __pyx_v_rco->param2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 97, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_10);
+        __Pyx_XDECREF_SET(__pyx_v_tmp, __pyx_t_10);
+        __pyx_t_10 = 0;
 
-        /* "yapic/entity/sql/_record_converter.pyx":95
+        /* "yapic/entity/sql/_record_converter.pyx":98
  *                 field = rco.param1
  *                 tmp = record[rco.param2]
  *                 if tmp is None:             # <<<<<<<<<<<<<<
@@ -3992,31 +4059,31 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
  *                 else:
  */
         __pyx_t_6 = (__pyx_v_tmp == Py_None);
-        __pyx_t_10 = (__pyx_t_6 != 0);
-        if (__pyx_t_10) {
+        __pyx_t_9 = (__pyx_t_6 != 0);
+        if (__pyx_t_9) {
 
-          /* "yapic/entity/sql/_record_converter.pyx":96
+          /* "yapic/entity/sql/_record_converter.pyx":99
  *                 tmp = record[rco.param2]
  *                 if tmp is None:
  *                     entity_state.set_initial_value(field, None)             # <<<<<<<<<<<<<<
  *                 else:
  *                     tmp = field.get_type(state.tf).decode(tmp)
  */
-          __pyx_t_11 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *)__pyx_v_entity_state->__pyx_vtab)->set_initial_value(__pyx_v_entity_state, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *)__pyx_v_field), Py_None); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 96, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_11);
-          __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+          __pyx_t_10 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *)__pyx_v_entity_state->__pyx_vtab)->set_initial_value(__pyx_v_entity_state, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *)__pyx_v_field), Py_None); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 99, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_10);
+          __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
-          /* "yapic/entity/sql/_record_converter.pyx":95
+          /* "yapic/entity/sql/_record_converter.pyx":98
  *                 field = rco.param1
  *                 tmp = record[rco.param2]
  *                 if tmp is None:             # <<<<<<<<<<<<<<
  *                     entity_state.set_initial_value(field, None)
  *                 else:
  */
-          goto __pyx_L23;
+          goto __pyx_L25;
         }
 
-        /* "yapic/entity/sql/_record_converter.pyx":98
+        /* "yapic/entity/sql/_record_converter.pyx":101
  *                     entity_state.set_initial_value(field, None)
  *                 else:
  *                     tmp = field.get_type(state.tf).decode(tmp)             # <<<<<<<<<<<<<<
@@ -4024,31 +4091,31 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
  *             elif rco.op == RCO.GET_RECORD:
  */
         /*else*/ {
-          __pyx_t_11 = ((PyObject *)__pyx_v_state->tf);
-          __Pyx_INCREF(__pyx_t_11);
-          __pyx_t_12 = ((PyObject *)((struct __pyx_vtabstruct_5yapic_6entity_6_field_Field *)__pyx_v_field->__pyx_base.__pyx_base.__pyx_vtab)->get_type(__pyx_v_field, ((struct __pyx_obj_5yapic_6entity_6_field_StorageTypeFactory *)__pyx_t_11), 0)); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 98, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_12);
-          __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-          __pyx_t_11 = ((struct __pyx_vtabstruct_5yapic_6entity_6_field_StorageType *)((struct __pyx_obj_5yapic_6entity_6_field_StorageType *)__pyx_t_12)->__pyx_vtab)->decode(((struct __pyx_obj_5yapic_6entity_6_field_StorageType *)__pyx_t_12), __pyx_v_tmp, 0); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 98, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_11);
-          __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-          __Pyx_DECREF_SET(__pyx_v_tmp, __pyx_t_11);
-          __pyx_t_11 = 0;
+          __pyx_t_10 = ((PyObject *)__pyx_v_state->tf);
+          __Pyx_INCREF(__pyx_t_10);
+          __pyx_t_2 = ((PyObject *)((struct __pyx_vtabstruct_5yapic_6entity_6_field_Field *)__pyx_v_field->__pyx_base.__pyx_base.__pyx_vtab)->get_type(__pyx_v_field, ((struct __pyx_obj_5yapic_6entity_6_field_StorageTypeFactory *)__pyx_t_10), 0)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 101, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+          __pyx_t_10 = ((struct __pyx_vtabstruct_5yapic_6entity_6_field_StorageType *)((struct __pyx_obj_5yapic_6entity_6_field_StorageType *)__pyx_t_2)->__pyx_vtab)->decode(((struct __pyx_obj_5yapic_6entity_6_field_StorageType *)__pyx_t_2), __pyx_v_tmp, 0); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 101, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_10);
+          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+          __Pyx_DECREF_SET(__pyx_v_tmp, __pyx_t_10);
+          __pyx_t_10 = 0;
 
-          /* "yapic/entity/sql/_record_converter.pyx":99
+          /* "yapic/entity/sql/_record_converter.pyx":102
  *                 else:
  *                     tmp = field.get_type(state.tf).decode(tmp)
  *                     entity_state.set_initial_value(field, tmp)             # <<<<<<<<<<<<<<
  *             elif rco.op == RCO.GET_RECORD:
  *                 result = record[rco.param1]
  */
-          __pyx_t_11 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *)__pyx_v_entity_state->__pyx_vtab)->set_initial_value(__pyx_v_entity_state, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *)__pyx_v_field), __pyx_v_tmp); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 99, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_11);
-          __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+          __pyx_t_10 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *)__pyx_v_entity_state->__pyx_vtab)->set_initial_value(__pyx_v_entity_state, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *)__pyx_v_field), __pyx_v_tmp); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 102, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_10);
+          __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
         }
-        __pyx_L23:;
+        __pyx_L25:;
 
-        /* "yapic/entity/sql/_record_converter.pyx":92
+        /* "yapic/entity/sql/_record_converter.pyx":95
  *             elif rco.op == RCO.SET_ATTR:
  *                 entity_state.set_initial_value(<EntityAttribute>rco.param1, tmp)
  *             elif rco.op == RCO.SET_ATTR_RECORD:             # <<<<<<<<<<<<<<
@@ -4058,19 +4125,19 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
         break;
         case __pyx_e_5yapic_6entity_3sql_6_query_GET_RECORD:
 
-        /* "yapic/entity/sql/_record_converter.pyx":101
+        /* "yapic/entity/sql/_record_converter.pyx":104
  *                     entity_state.set_initial_value(field, tmp)
  *             elif rco.op == RCO.GET_RECORD:
  *                 result = record[rco.param1]             # <<<<<<<<<<<<<<
  * 
  *             j += 1
  */
-        __pyx_t_11 = __Pyx_PyObject_GetItem(__pyx_v_record, __pyx_v_rco->param1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 101, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_11);
-        __Pyx_DECREF_SET(__pyx_v_result, __pyx_t_11);
-        __pyx_t_11 = 0;
+        __pyx_t_10 = __Pyx_PyObject_GetItem(__pyx_v_record, __pyx_v_rco->param1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 104, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_10);
+        __Pyx_DECREF_SET(__pyx_v_result, __pyx_t_10);
+        __pyx_t_10 = 0;
 
-        /* "yapic/entity/sql/_record_converter.pyx":100
+        /* "yapic/entity/sql/_record_converter.pyx":103
  *                     tmp = field.get_type(state.tf).decode(tmp)
  *                     entity_state.set_initial_value(field, tmp)
  *             elif rco.op == RCO.GET_RECORD:             # <<<<<<<<<<<<<<
@@ -4081,7 +4148,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
         default: break;
       }
 
-      /* "yapic/entity/sql/_record_converter.pyx":103
+      /* "yapic/entity/sql/_record_converter.pyx":106
  *                 result = record[rco.param1]
  * 
  *             j += 1             # <<<<<<<<<<<<<<
@@ -4089,10 +4156,9 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
  *         Py_INCREF(<object>result)
  */
       __pyx_v_j = (__pyx_v_j + 1);
-      __pyx_L5_continue:;
     }
 
-    /* "yapic/entity/sql/_record_converter.pyx":105
+    /* "yapic/entity/sql/_record_converter.pyx":108
  *             j += 1
  * 
  *         Py_INCREF(<object>result)             # <<<<<<<<<<<<<<
@@ -4101,7 +4167,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
  */
     Py_INCREF(__pyx_v_result);
 
-    /* "yapic/entity/sql/_record_converter.pyx":106
+    /* "yapic/entity/sql/_record_converter.pyx":109
  * 
  *         Py_INCREF(<object>result)
  *         PyTuple_SET_ITEM(<object>converted, i, <object>result)             # <<<<<<<<<<<<<<
@@ -4111,17 +4177,17 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
     PyTuple_SET_ITEM(__pyx_v_converted, __pyx_v_i, __pyx_v_result);
   }
 
-  /* "yapic/entity/sql/_record_converter.pyx":108
+  /* "yapic/entity/sql/_record_converter.pyx":111
  *         PyTuple_SET_ITEM(<object>converted, i, <object>result)
  * 
  *     if rcos_list_len == 1:             # <<<<<<<<<<<<<<
  *         return converted[0]
  *     else:
  */
-  __pyx_t_10 = ((__pyx_v_rcos_list_len == 1) != 0);
-  if (__pyx_t_10) {
+  __pyx_t_9 = ((__pyx_v_rcos_list_len == 1) != 0);
+  if (__pyx_t_9) {
 
-    /* "yapic/entity/sql/_record_converter.pyx":109
+    /* "yapic/entity/sql/_record_converter.pyx":112
  * 
  *     if rcos_list_len == 1:
  *         return converted[0]             # <<<<<<<<<<<<<<
@@ -4131,13 +4197,13 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
     __Pyx_XDECREF(__pyx_r);
     if (unlikely(__pyx_v_converted == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 109, __pyx_L1_error)
+      __PYX_ERR(0, 112, __pyx_L1_error)
     }
     __Pyx_INCREF(PyTuple_GET_ITEM(__pyx_v_converted, 0));
     __pyx_r = PyTuple_GET_ITEM(__pyx_v_converted, 0);
     goto __pyx_L0;
 
-    /* "yapic/entity/sql/_record_converter.pyx":108
+    /* "yapic/entity/sql/_record_converter.pyx":111
  *         PyTuple_SET_ITEM(<object>converted, i, <object>result)
  * 
  *     if rcos_list_len == 1:             # <<<<<<<<<<<<<<
@@ -4146,7 +4212,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
  */
   }
 
-  /* "yapic/entity/sql/_record_converter.pyx":111
+  /* "yapic/entity/sql/_record_converter.pyx":114
  *         return converted[0]
  *     else:
  *         return converted             # <<<<<<<<<<<<<<
@@ -4171,8 +4237,8 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_10);
   __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_XDECREF(__pyx_t_12);
   __Pyx_XDECREF(__pyx_t_16);
   __Pyx_AddTraceback("yapic.entity.sql._record_converter._convert_record", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
@@ -4189,12 +4255,13 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
   __Pyx_XDECREF(__pyx_v_poly_id);
   __Pyx_XDECREF(__pyx_v_poly_rco);
   __Pyx_XDECREF(__pyx_v_entry);
+  __Pyx_XDECREF(__pyx_v_entity);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "yapic/entity/sql/_record_converter.pyx":114
+/* "yapic/entity/sql/_record_converter.pyx":117
  * 
  * 
  * cdef tuple _record_idexes_to_tuple(tuple idx_list, object record):             # <<<<<<<<<<<<<<
@@ -4221,7 +4288,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__record_idexes_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_record_idexes_to_tuple", 0);
 
-  /* "yapic/entity/sql/_record_converter.pyx":116
+  /* "yapic/entity/sql/_record_converter.pyx":119
  * cdef tuple _record_idexes_to_tuple(tuple idx_list, object record):
  *     cdef tuple result
  *     cdef int length = len(idx_list)             # <<<<<<<<<<<<<<
@@ -4230,12 +4297,12 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__record_idexes_
  */
   if (unlikely(__pyx_v_idx_list == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 116, __pyx_L1_error)
+    __PYX_ERR(0, 119, __pyx_L1_error)
   }
-  __pyx_t_1 = PyTuple_GET_SIZE(__pyx_v_idx_list); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 116, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_GET_SIZE(__pyx_v_idx_list); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 119, __pyx_L1_error)
   __pyx_v_length = __pyx_t_1;
 
-  /* "yapic/entity/sql/_record_converter.pyx":118
+  /* "yapic/entity/sql/_record_converter.pyx":121
  *     cdef int length = len(idx_list)
  * 
  *     if length == 1:             # <<<<<<<<<<<<<<
@@ -4245,7 +4312,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__record_idexes_
   __pyx_t_2 = ((__pyx_v_length == 1) != 0);
   if (__pyx_t_2) {
 
-    /* "yapic/entity/sql/_record_converter.pyx":119
+    /* "yapic/entity/sql/_record_converter.pyx":122
  * 
  *     if length == 1:
  *         return (record[idx_list[0]],)             # <<<<<<<<<<<<<<
@@ -4255,11 +4322,11 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__record_idexes_
     __Pyx_XDECREF(__pyx_r);
     if (unlikely(__pyx_v_idx_list == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 119, __pyx_L1_error)
+      __PYX_ERR(0, 122, __pyx_L1_error)
     }
-    __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_v_record, PyTuple_GET_ITEM(__pyx_v_idx_list, 0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 119, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_v_record, PyTuple_GET_ITEM(__pyx_v_idx_list, 0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 122, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 119, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 122, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3);
@@ -4268,7 +4335,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__record_idexes_
     __pyx_t_4 = 0;
     goto __pyx_L0;
 
-    /* "yapic/entity/sql/_record_converter.pyx":118
+    /* "yapic/entity/sql/_record_converter.pyx":121
  *     cdef int length = len(idx_list)
  * 
  *     if length == 1:             # <<<<<<<<<<<<<<
@@ -4277,7 +4344,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__record_idexes_
  */
   }
 
-  /* "yapic/entity/sql/_record_converter.pyx":121
+  /* "yapic/entity/sql/_record_converter.pyx":124
  *         return (record[idx_list[0]],)
  *     else:
  *         result = PyTuple_New(length)             # <<<<<<<<<<<<<<
@@ -4285,12 +4352,12 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__record_idexes_
  *             val = record[idx_list[i]]
  */
   /*else*/ {
-    __pyx_t_4 = PyTuple_New(__pyx_v_length); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 121, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(__pyx_v_length); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 124, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_v_result = ((PyObject*)__pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "yapic/entity/sql/_record_converter.pyx":122
+    /* "yapic/entity/sql/_record_converter.pyx":125
  *     else:
  *         result = PyTuple_New(length)
  *         for i in range(0, length):             # <<<<<<<<<<<<<<
@@ -4302,7 +4369,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__record_idexes_
     for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
       __pyx_v_i = __pyx_t_7;
 
-      /* "yapic/entity/sql/_record_converter.pyx":123
+      /* "yapic/entity/sql/_record_converter.pyx":126
  *         result = PyTuple_New(length)
  *         for i in range(0, length):
  *             val = record[idx_list[i]]             # <<<<<<<<<<<<<<
@@ -4311,14 +4378,14 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__record_idexes_
  */
       if (unlikely(__pyx_v_idx_list == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 123, __pyx_L1_error)
+        __PYX_ERR(0, 126, __pyx_L1_error)
       }
-      __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_v_record, PyTuple_GET_ITEM(__pyx_v_idx_list, __pyx_v_i)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 123, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_v_record, PyTuple_GET_ITEM(__pyx_v_idx_list, __pyx_v_i)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 126, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_XDECREF_SET(__pyx_v_val, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "yapic/entity/sql/_record_converter.pyx":124
+      /* "yapic/entity/sql/_record_converter.pyx":127
  *         for i in range(0, length):
  *             val = record[idx_list[i]]
  *             Py_INCREF(<object>val)             # <<<<<<<<<<<<<<
@@ -4327,7 +4394,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__record_idexes_
  */
       Py_INCREF(__pyx_v_val);
 
-      /* "yapic/entity/sql/_record_converter.pyx":125
+      /* "yapic/entity/sql/_record_converter.pyx":128
  *             val = record[idx_list[i]]
  *             Py_INCREF(<object>val)
  *             PyTuple_SET_ITEM(<object>result, i, <object>val)             # <<<<<<<<<<<<<<
@@ -4336,7 +4403,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__record_idexes_
       PyTuple_SET_ITEM(__pyx_v_result, __pyx_v_i, __pyx_v_val);
     }
 
-    /* "yapic/entity/sql/_record_converter.pyx":126
+    /* "yapic/entity/sql/_record_converter.pyx":129
  *             Py_INCREF(<object>val)
  *             PyTuple_SET_ITEM(<object>result, i, <object>val)
  *         return result             # <<<<<<<<<<<<<<
@@ -4347,7 +4414,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__record_idexes_
     goto __pyx_L0;
   }
 
-  /* "yapic/entity/sql/_record_converter.pyx":114
+  /* "yapic/entity/sql/_record_converter.pyx":117
  * 
  * 
  * cdef tuple _record_idexes_to_tuple(tuple idx_list, object record):             # <<<<<<<<<<<<<<
@@ -4879,15 +4946,15 @@ static int __Pyx_modinit_type_import_code(void) {
    if (!__pyx_ptype_5yapic_6entity_3sql_6_query_Query) __PYX_ERR(10, 8, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_3sql_6_query_Query = (struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_Query*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_6_query_Query->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_6_query_Query)) __PYX_ERR(10, 8, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_3sql_6_query_QueryFinalizer = __Pyx_ImportType(__pyx_t_1, "yapic.entity.sql._query", "QueryFinalizer", sizeof(struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryFinalizer), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_3sql_6_query_QueryFinalizer) __PYX_ERR(10, 38, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryFinalizer = (struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_QueryFinalizer*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_6_query_QueryFinalizer->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryFinalizer)) __PYX_ERR(10, 38, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_3sql_6_query_QueryFinalizer) __PYX_ERR(10, 40, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryFinalizer = (struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_QueryFinalizer*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_6_query_QueryFinalizer->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryFinalizer)) __PYX_ERR(10, 40, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_3sql_6_query_QueryCompiler = __Pyx_ImportType(__pyx_t_1, "yapic.entity.sql._query", "QueryCompiler", sizeof(struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryCompiler), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_3sql_6_query_QueryCompiler) __PYX_ERR(10, 45, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryCompiler = (struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_QueryCompiler*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_6_query_QueryCompiler->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryCompiler)) __PYX_ERR(10, 45, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_3sql_6_query_QueryCompiler) __PYX_ERR(10, 47, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryCompiler = (struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_QueryCompiler*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_6_query_QueryCompiler->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryCompiler)) __PYX_ERR(10, 47, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_3sql_6_query_RowConvertOp = __Pyx_ImportType(__pyx_t_1, "yapic.entity.sql._query", "RowConvertOp", sizeof(struct __pyx_obj_5yapic_6entity_3sql_6_query_RowConvertOp), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_3sql_6_query_RowConvertOp) __PYX_ERR(10, 160, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_3sql_6_query_RowConvertOp) __PYX_ERR(10, 162, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_3sql_6_query_QueryFactory = __Pyx_ImportType(__pyx_t_1, "yapic.entity.sql._query", "QueryFactory", sizeof(struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryFactory), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_3sql_6_query_QueryFactory) __PYX_ERR(10, 167, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_3sql_6_query_QueryFactory) __PYX_ERR(10, 169, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

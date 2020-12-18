@@ -48,15 +48,15 @@ cdef object _convert_record(list stack, object record, list rcos_list, RCState s
 
             if rco.op == RCO.PUSH:
                 push(result)
+                # print("push", stack)
             elif rco.op == RCO.POP:
                 tmp = pop()
-            elif rco.op == RCO.JUMP:
-                j = rco.param1
-                continue
+                # print("pop", tmp, stack)
             elif rco.op == RCO.CREATE_STATE:
                 entity_state = EntityState(rco.param1)
                 entity_state.exists = True
             elif rco.op == RCO.CREATE_ENTITY:
+                # print("CREATE_ENTITY", rco.param1, entity_state._is_empty())
                 if rco.param2 is True and entity_state._is_empty() is True:
                     result = None
                 else:
@@ -73,20 +73,23 @@ cdef object _convert_record(list stack, object record, list rcos_list, RCState s
                 try:
                     poly_rco = (<dict>rco.param2)[poly_id]
                 except KeyError:
-                    pop()
-                    result = None
+                    result = pop()
                 else:
                     result = _convert_record(stack, record, poly_rco, state)
-                # poly_jump = (<dict>rco.param2).get(poly_id, None)
-                # if poly_jump is not None:
-                #     j = poly_jump
-                #     continue
+            elif rco.op == RCO.CONVERT_SUB_ENTITY:
+                tmp = record[<int>rco.param1]
+                if tmp is not None:
+                    result = _convert_record(stack, tmp, rco.param2, state)
+                else:
+                    result = None
             elif rco.op == RCO.CONVERT_SUB_ENTITIES:
                 tmp = record[<int>rco.param1]
                 result = []
                 if tmp:
                     for entry in tmp:
-                        result.append(_convert_record(stack, entry, rco.param2, state))
+                        entity = _convert_record(stack, entry, rco.param2, state)
+                        if entity is not None:
+                            result.append(entity)
             elif rco.op == RCO.SET_ATTR:
                 entity_state.set_initial_value(<EntityAttribute>rco.param1, tmp)
             elif rco.op == RCO.SET_ATTR_RECORD:
