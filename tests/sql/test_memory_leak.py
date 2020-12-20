@@ -23,3 +23,4 @@ async def test_init(conn, pgclean):
 
 async def test_insert(conn):
     user = User(id=1, name="Test")
+    await conn.save(user)
