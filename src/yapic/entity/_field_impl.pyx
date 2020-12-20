@@ -120,23 +120,6 @@ cdef class EntityTypeImpl(FieldImpl):
 
         return NOTSET
 
-        # if current is NOTSET:
-        #     if initial is NOTSET:
-        #         return NOTSET
-        #     elif initial.__state__.is_dirty:
-        #         return initial
-        # elif initial is not current:
-        #     if type(initial) is type(current):
-        #         if initial.__state__ == current.__state__:
-        #             return NOTSET
-        #         else:
-        #             return current
-        #     else:
-        #         return current
-        # elif current is not None and current.__state__.is_dirty:
-        #     return current
-        # return NOTSET
-
 
 cdef class JsonImpl(FieldImpl):
     def __init__(self, type = None):
@@ -276,57 +259,18 @@ cdef bint json_eq(object a, object b):
             return json_eq(a.as_dict(), b)
         else:
             return False
+    elif a is None or a is NOTSET:
+        if isinstance(b, EntityBase):
+            return (<EntityBase>b).__state__._is_empty() is True
+        else:
+            return a == b
+    elif b is None or b is NOTSET:
+        if isinstance(a, EntityBase):
+            return (<EntityBase>a).__state__._is_empty() is True
+        else:
+            return a == b
     else:
         return a == b
-
-
-# cdef class __JsonImpl(EntityTypeImpl):
-#     def __init__(self, entity):
-#         entity.__meta__["is_virtual"] = True
-#         super().__init__(entity)
-
-#     def __repr__(self):
-#         return "Json(%r)" % self._entity_
-
-
-# cdef class JsonArrayImpl(JsonImpl):
-#     cdef object state_init(self, object initial):
-#         if initial is NOTSET:
-#             return []
-#         else:
-#             return initial
-
-#     cdef object state_set(self, object initial, object current, object value):
-#         if value is None:
-#             return None
-#         elif isinstance(value, list):
-#             return list(map(self.__make_entity, value))
-#         else:
-#             raise TypeError("JsonArray value must be list of entities")
-
-#     cdef object state_get_dirty(self, object initial, object current):
-#         if current is NOTSET:
-#             if initial is NOTSET:
-#                 return NOTSET
-#             elif self.__check_dirty(initial):
-#                 return initial
-#         elif initial is not current:
-#             return current
-#         elif current is not None and self.__check_dirty(current):
-#             return current
-#         return NOTSET
-
-#     def __make_entity(self, value):
-#         if isinstance(value, EntityBase):
-#             return value
-#         else:
-#             return self._entity_(value)
-
-#     cdef bint __check_dirty(self, list value):
-#         for item in value:
-#             if item.__state__.is_dirty:
-#                 return True
-#         return False
 
 
 cdef class CompositeImpl(EntityTypeImpl):
