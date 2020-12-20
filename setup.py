@@ -106,16 +106,15 @@ almafa = setup(
     packages=["yapic.entity", "yapic.entity.sql", "yapic.entity.sql.pgsql", "yapic.entity.sql.pgsql.postgis"],
     package_dir={"yapic.entity": "src/yapic/entity"},
     python_requires=">=3.7",
-    ext_modules=cythonize(
-        extensions,
-        force=True,
-        compiler_directives={
-            "language_level": 3,
-            "iterable_coroutine": False,
-            "boundscheck": False,
-            "wraparound": False,
-            "auto_pickle": False
-        }),
+    ext_modules=cythonize(extensions,
+                          force=True,
+                          compiler_directives={
+                              "language_level": 3,
+                              "iterable_coroutine": False,
+                              "boundscheck": False,
+                              "wraparound": False,
+                              "auto_pickle": False
+                          }),
     install_requires=Path(__file__).parent.joinpath("requirements.txt").read_text().splitlines(),
-    tests_require=["pytest", "docker", "pytest-asyncio", "yapic.json"],
+    tests_require=["pytest", "docker", "pytest-asyncio", "pytest-leaks", "yapic.json"],
     cmdclass={"test": PyTest})

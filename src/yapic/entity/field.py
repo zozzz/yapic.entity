@@ -1,6 +1,7 @@
 # flake8: noqa
 
-from typing import Generic, TypeVar, Union, Optional, List, Tuple, Type, Any
+from _typeshed import NoneType
+from typing import Generic, NoReturn, TypeVar, Union, Optional, List, Tuple, Type, Any
 from datetime import date, datetime, time
 from decimal import Decimal
 from enum import Enum
@@ -54,6 +55,13 @@ class Field(Generic[Impl, PyType, RawType], _Field):
                  default: Optional[Union[PyType, RawType]] = None,
                  size: Union[int, Tuple[int, int], None] = None,
                  nullable: Optional[bool] = None):
+        self.__get__ = _Field.__get__
+        self.__set__ = _Field.__set__
+
+    def __get__(self, instance, owner) -> PyType:
+        pass
+
+    def __set__(self, instance, value: Union[PyType, RawType, NoneType]) -> NoReturn:
         pass
 
 
