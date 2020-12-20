@@ -4,10 +4,10 @@ from yapic.entity._entity cimport EntityType, EntityState, EntityAttribute
 from yapic.entity._entity import Entity
 from yapic.entity._registry cimport Registry, RegistryDiff
 from yapic.entity._registry import RegistryDiffKind
-from yapic.entity._query cimport Query
 from yapic.entity._field cimport StorageType
 
 from ._connection cimport Connection
+from ._query cimport Query
 
 
 async def sync(Connection connection, Registry registry, EntityType entity_base=Entity):
@@ -26,7 +26,11 @@ async def sync(Connection connection, Registry registry, EntityType entity_base=
             changes.append(await convert_data_to_raw(connection, c))
         diff.changes = changes
 
-        return connection.dialect.create_ddl_compiler().compile_registry_diff(diff)
+        res = connection.dialect.create_ddl_compiler().compile_registry_diff(diff)
+        if not res:
+            return None
+        else:
+            return res
     else:
         return None
 

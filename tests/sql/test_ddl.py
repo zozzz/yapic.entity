@@ -2,7 +2,7 @@ from enum import Enum, Flag
 import pytest
 
 from yapic.entity import (Int, Serial, String, Choice, Field, PrimaryKey, ForeignKey, Date, DateTime, DateTimeTz, Bool,
-                          func, const, Registry, Json, Composite, Auto, One, Index)
+                          func, const, Registry, Json, Composite, Auto, One, Index, StringArray, IntArray)
 from yapic.entity.sql import PostgreDialect, Entity
 
 dialect = PostgreDialect()
@@ -27,19 +27,19 @@ def test_basic():
         pass
 
     result = ddl.compile_entity(User)
-    assert result == """CREATE TABLE "User" (
+    assert result[0] == """CREATE TABLE "User" (
 );"""
 
     result = ddl.compile_entity(User2)
-    assert result == """CREATE TABLE "__user__" (
+    assert result[0] == """CREATE TABLE "__user__" (
 );"""
 
     result = ddl.compile_entity(User3)
-    assert result == """CREATE TABLE "auth"."User3" (
+    assert result[0] == """CREATE TABLE "auth"."User3" (
 );"""
 
     result = ddl.compile_entity(User4)
-    assert result == """CREATE TABLE "auth"."userX" (
+    assert result[0] == """CREATE TABLE "auth"."userX" (
 );"""
 
 
@@ -50,7 +50,7 @@ def test_int():
         int_large: Int = Field(size=8)
 
     result = ddl.compile_entity(Ints)
-    assert result == """CREATE TABLE "Ints" (
+    assert result[0] == """CREATE TABLE "Ints" (
   "int_small" INT2,
   "int_medium" INT4,
   "int_large" INT8
@@ -69,21 +69,21 @@ def test_int():
         id2: Serial = Field(size=8)
 
     result = ddl.compile_entity(Pk_small)
-    assert result == """CREATE TABLE "Pk_small" (
+    assert result[0] == """CREATE TABLE "Pk_small" (
   "id" INT2 NOT NULL,
   "id2" INT2 NOT NULL DEFAULT nextval('"Pk_small_id2_seq"'::regclass),
   PRIMARY KEY("id", "id2")
 );"""
 
     result = ddl.compile_entity(Pk_medium)
-    assert result == """CREATE TABLE "Pk_medium" (
+    assert result[0] == """CREATE TABLE "Pk_medium" (
   "id" INT4 NOT NULL,
   "id2" INT4 NOT NULL DEFAULT nextval('"Pk_medium_id2_seq"'::regclass),
   PRIMARY KEY("id", "id2")
 );"""
 
     result = ddl.compile_entity(Pk_large)
-    assert result == """CREATE TABLE "Pk_large" (
+    assert result[0] == """CREATE TABLE "Pk_large" (
   "id" INT8 NOT NULL,
   "id2" INT8 NOT NULL DEFAULT nextval('"Pk_large_id2_seq"'::regclass),
   PRIMARY KEY("id", "id2")
@@ -95,7 +95,7 @@ def test_int_with_defaults():
         int_small: Int = 0
 
     result = ddl.compile_entity(IntWithDef)
-    assert result == """CREATE TABLE "IntWithDef" (
+    assert result[0] == """CREATE TABLE "IntWithDef" (
   "int_small" INT4 NOT NULL DEFAULT 0
 );"""
 
@@ -108,7 +108,7 @@ def test_string():
         description: String
 
     result = ddl.compile_entity(A)
-    assert result == """CREATE TABLE "A" (
+    assert result[0] == """CREATE TABLE "A" (
   "id" CHAR(10) NOT NULL,
   "name" VARCHAR(50),
   "email" VARCHAR(50),
@@ -134,7 +134,7 @@ def test_enum():
         colors: Choice[Color]
 
     result = ddl.compile_entity(A2)
-    assert result == """CREATE TABLE "A2" (
+    assert result[0] == """CREATE TABLE "A2" (
   "mood" VARCHAR(5) CHECK("mood" IN ('sad', 'ok', 'happy')),
   "colors" BIT(3)
 );"""
@@ -149,7 +149,7 @@ def test_index():
         idx_5: Int = Index(collate="hu_HU")
 
     result = ddl.compile_entity(IndexedTable)
-    assert result == """CREATE TABLE "IndexedTable" (
+    assert result[0] == """CREATE TABLE "IndexedTable" (
   "idx_1" INT4,
   "idx_2" INT4,
   "idx_3" INT4,
@@ -180,14 +180,14 @@ def test_fk():
         id_x: Int = ForeignKey(X.id)
 
     result = ddl.compile_entity(Z)
-    assert result == """CREATE TABLE "Z" (
+    assert result[0] == """CREATE TABLE "Z" (
   "id1" INT4 NOT NULL DEFAULT nextval('"Z_id1_seq"'::regclass),
   "id2" INT4 NOT NULL DEFAULT nextval('"Z_id2_seq"'::regclass),
   PRIMARY KEY("id1", "id2")
 );"""
 
     result = ddl.compile_entity(B)
-    assert result == """CREATE TABLE "B" (
+    assert result[0] == """CREATE TABLE "B" (
   "id" INT4 NOT NULL DEFAULT nextval('"B_id_seq"'::regclass),
   "id_a" INT4,
   "id_x" INT4,
@@ -208,7 +208,7 @@ def test_date():
         date_time_tz2: DateTimeTz = const.CURRENT_TIMESTAMP
 
     result = ddl.compile_entity(A4)
-    assert result == """CREATE TABLE "A4" (
+    assert result[0] == """CREATE TABLE "A4" (
   "date" DATE,
   "date_time" TIMESTAMP,
   "date_time_tz" TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -221,7 +221,7 @@ def test_bool():
         is_active: Bool = 1
 
     result = ddl.compile_entity(A5)
-    assert result == """CREATE TABLE "A5" (
+    assert result[0] == """CREATE TABLE "A5" (
   "is_active" BOOLEAN NOT NULL DEFAULT TRUE
 );"""
 
@@ -236,7 +236,7 @@ def test_json():
         pos: Json[Position]
 
     result = ddl.compile_entity(JsonTable)
-    assert result == """CREATE TABLE "JsonTable" (
+    assert result[0] == """CREATE TABLE "JsonTable" (
   "id" INT4 NOT NULL DEFAULT nextval('"JsonTable_id_seq"'::regclass),
   "pos" JSONB,
   PRIMARY KEY("id")
@@ -254,7 +254,7 @@ def test_composite():
         name: Composite[FullName]
 
     result = ddl.compile_entity(FNUser)
-    assert result == """CREATE TABLE "FNUser" (
+    assert result[0] == """CREATE TABLE "FNUser" (
   "id" INT4 NOT NULL DEFAULT nextval('"FNUser_id_seq"'::regclass),
   "name" "FullName",
   PRIMARY KEY("id")
@@ -269,7 +269,7 @@ def test_self_ref():
         parent: One["Node"]
 
     result = ddl.compile_entity(Node)
-    assert result == """CREATE TABLE "Node" (
+    assert result[0] == """CREATE TABLE "Node" (
   "id" INT4 NOT NULL DEFAULT nextval('"Node_id_seq"'::regclass),
   "parent_id" INT4,
   PRIMARY KEY("id"),
@@ -291,7 +291,7 @@ def test_mixin():
         name: String = "Default Name"
 
     result = ddl.compile_entity(MEntity)
-    assert result == """CREATE TABLE "MEntity" (
+    assert result[0] == """CREATE TABLE "MEntity" (
   "id" INT4 NOT NULL DEFAULT nextval('"MEntity_id_seq"'::regclass),
   "name" TEXT NOT NULL DEFAULT 'Default Name',
   "created_time" TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -300,3 +300,18 @@ def test_mixin():
   CONSTRAINT "fk_MEntity__user_id-FKUser__id" FOREIGN KEY ("user_id") REFERENCES "FKUser" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 CREATE INDEX "idx_MEntity__user_id" ON "MEntity" USING btree ("user_id");"""
+
+
+def test_array():
+    class ArrayTest(Entity):
+        id: Serial
+        strings: StringArray
+        ints: IntArray
+
+    result = ddl.compile_entity(ArrayTest)
+    assert result[0] == """CREATE TABLE "ArrayTest" (
+  "id" INT4 NOT NULL DEFAULT nextval('"ArrayTest_id_seq"'::regclass),
+  "strings" TEXT[],
+  "ints" INT[],
+  PRIMARY KEY("id")
+);"""

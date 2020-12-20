@@ -3,10 +3,10 @@ from cpython.ref cimport Py_INCREF
 from cpython.tuple cimport PyTuple_New, PyTuple_GET_ITEM, PyTuple_SET_ITEM, PyTuple_GET_SIZE
 
 from yapic.entity._entity cimport EntityState
-from yapic.entity._query cimport RCO, RowConvertOp
 from yapic.entity._entity cimport EntityBase, EntityAttribute
 from yapic.entity._field cimport StorageTypeFactory, StorageType, Field
 
+from ._query cimport RCO, RowConvertOp
 
 
 
@@ -14,21 +14,22 @@ cdef class RCState:
     def __cinit__(self, object conn):
         self.conn = conn
         self.cache = {}
+        self.tf = conn.dialect.create_type_factory()
 
 
-async def convert_record(object record, list rcos_list, RCState state):
+def convert_record(object record, list rcos_list, RCState state):
+    return _convert_record([], record, rcos_list, state)
+
+
+cdef object _convert_record(list stack, object record, list rcos_list, RCState state):
     cdef int rcos_list_len = len(rcos_list)
     cdef tuple converted = PyTuple_New(rcos_list_len)
     cdef list rcos
     cdef RowConvertOp rco
-    cdef list stack = []
-    cdef object result
+    cdef object result = None
     cdef object tmp
-    cdef EntityState entity_state
-    cdef EntityAttribute attr
-    cdef Field field
-    cdef StorageType stype
-    cdef StorageTypeFactory tf = state.conn.dialect.create_type_factory()
+    cdef EntityState entity_state = None
+    cdef Field field = None
     cdef int j
     cdef int rcos_len
 
@@ -43,40 +44,52 @@ async def convert_record(object record, list rcos_list, RCState state):
         # for j in range(0, len(rcos)):
         while j < rcos_len:
             rco = <RowConvertOp>(<list>(rcos)[j])
-            # print(rco)
+            # print(">", rco)
 
             if rco.op == RCO.PUSH:
                 push(result)
+                # print("push", stack)
             elif rco.op == RCO.POP:
                 tmp = pop()
-            elif rco.op == RCO.JUMP:
-                j = rco.param1
-                continue
+                # print("pop", tmp, stack)
             elif rco.op == RCO.CREATE_STATE:
                 entity_state = EntityState(rco.param1)
                 entity_state.exists = True
             elif rco.op == RCO.CREATE_ENTITY:
-                result = rco.param1(entity_state)
+                # print("CREATE_ENTITY", rco.param1, entity_state._is_empty())
+                if rco.param2 is True and entity_state._is_empty() is True:
+                    result = None
+                else:
+                    result = rco.param1(entity_state)
             elif rco.op == RCO.CREATE_POLYMORPH_ENTITY:
-                if not isinstance(rco.param1, tuple):
-                    raise RuntimeError("Invalid param1 for RCO: %r" % rco)
+                # XXX: Debug Only! All this error is internal error only
+                # if not isinstance(rco.param1, tuple):
+                #     raise RuntimeError("Invalid param1 for RCO: %r" % rco)
 
-                if not isinstance(rco.param2, dict):
-                    raise RuntimeError("Invalid param1 for RCO: %r" % rco)
+                # if not isinstance(rco.param2, dict):
+                #     raise RuntimeError("Invalid param1 for RCO: %r" % rco)
 
                 poly_id = _record_idexes_to_tuple(<tuple>(rco.param1), record)
-                poly_jump = (<dict>rco.param2).get(poly_id, None)
-                if poly_jump is not None:
-                    j = poly_jump
-                    continue
-            elif rco.op == RCO.LOAD_ONE_ENTITY:
-                related_id = _record_idexes_to_tuple(<tuple>(rco.param1), record)
-                query = rco.param2(related_id)
-                push(await state.conn.select(query).first())
-            elif rco.op == RCO.LOAD_MULTI_ENTITY:
-                related_id = _record_idexes_to_tuple(<tuple>(rco.param1), record)
-                query = rco.param2(related_id)
-                push(await state.conn.select(query))
+                try:
+                    poly_rco = (<dict>rco.param2)[poly_id]
+                except KeyError:
+                    result = pop()
+                else:
+                    result = _convert_record(stack, record, poly_rco, state)
+            elif rco.op == RCO.CONVERT_SUB_ENTITY:
+                tmp = record[<int>rco.param1]
+                if tmp is not None:
+                    result = _convert_record(stack, tmp, rco.param2, state)
+                else:
+                    result = None
+            elif rco.op == RCO.CONVERT_SUB_ENTITIES:
+                tmp = record[<int>rco.param1]
+                result = []
+                if tmp:
+                    for entry in tmp:
+                        entity = _convert_record(stack, entry, rco.param2, state)
+                        if entity is not None:
+                            result.append(entity)
             elif rco.op == RCO.SET_ATTR:
                 entity_state.set_initial_value(<EntityAttribute>rco.param1, tmp)
             elif rco.op == RCO.SET_ATTR_RECORD:
@@ -85,8 +98,8 @@ async def convert_record(object record, list rcos_list, RCState state):
                 if tmp is None:
                     entity_state.set_initial_value(field, None)
                 else:
-                    stype = field.get_type(tf)
-                    entity_state.set_initial_value(field, stype.decode(tmp))
+                    tmp = field.get_type(state.tf).decode(tmp)
+                    entity_state.set_initial_value(field, tmp)
             elif rco.op == RCO.GET_RECORD:
                 result = record[rco.param1]
 

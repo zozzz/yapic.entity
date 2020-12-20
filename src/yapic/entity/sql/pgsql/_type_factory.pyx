@@ -17,9 +17,10 @@ from yapic.entity._field_impl cimport (
     TimeTzImpl,
     ChoiceImpl,
     JsonImpl,
-    JsonArrayImpl,
     CompositeImpl,
-    UUIDImpl
+    UUIDImpl,
+    ArrayImpl,
+    AutoImpl,
 )
 from yapic.entity._geom_impl cimport (
     PointImpl,
@@ -38,8 +39,9 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
         self.dialect = dialect
 
     cpdef StorageType create(self, Field field):
-        impl = field._impl_
+        return self._create(field, field._impl_)
 
+    cpdef StorageType _create(self, Field field, object impl):
         if isinstance(impl, IntImpl):
             return self.__int_type(field, <IntImpl>impl)
         elif isinstance(impl, StringImpl):
@@ -66,7 +68,7 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
             return self.__uuid_type(field, <UUIDImpl>impl)
         elif isinstance(impl, ChoiceImpl):
             return self.__choice_type(field, <ChoiceImpl>impl)
-        elif isinstance(impl, (JsonImpl, JsonArrayImpl)):
+        elif isinstance(impl, JsonImpl):
             return self.__json_type(field, <JsonImpl>impl)
         elif isinstance(impl, PointImpl):
             return self.__point_type(field, <PointImpl>impl)
@@ -76,6 +78,10 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
             return self.__postgis_longlat_type(field, <PostGISLatLngImpl>impl)
         elif isinstance(impl, CompositeImpl):
             return self.__composite_type(field, <CompositeImpl>impl)
+        elif isinstance(impl, ArrayImpl):
+            return self.__array_type(field, <ArrayImpl>impl)
+        elif isinstance(impl, AutoImpl):
+            return self.__auto_type(field, <AutoImpl>impl)
 
     cdef StorageType __int_type(self, Field field, IntImpl impl):
         # pk = field.get_ext(PrimaryKey)
@@ -127,50 +133,66 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
         return UUIDType(f"UUID")
 
     cdef StorageType __choice_type(self, Field field, ChoiceImpl impl):
+        cdef StorageType value_type = self._create(field, impl._ref_impl)
+        cdef ChoiceType t = ChoiceType(value_type.name, value_type.pre_sql, value_type.post_sql)
+        t.value_type = value_type
+        t.enum = impl._enum
+        return t
+
         # hashid = Hashids(min_length=5, salt=impl.enum.__qualname__)
         # uid = f"{impl.enum.__name__}_{hashid.encode(1)}"
 
         # return PostgreType(uid, f"/* ENUM {uid} SQL WORK IN PROGRESS */")
 
-        type = int
-        str_max_len = 0
-        int_max_size = 0
+        # type = int
+        # str_max_len = 0
+        # int_max_size = 0
 
-        for entry in impl._enum:
-            value = entry.value
-            if isinstance(value, int):
-                int_max_size = max(int_max_size, value)
-            elif isinstance(value, str) :
-                type = str
-                str_max_len = max(str_max_len, len(value))
+        # for entry in impl._enum:
+        #     value = entry.value
+        #     if isinstance(value, int):
+        #         int_max_size = max(int_max_size, value)
+        #     elif isinstance(value, str) :
+        #         type = str
+        #         str_max_len = max(str_max_len, len(value))
 
-        if impl.is_multi:
-            if type is not int:
-                raise TypeError("Choice of Flags must be only contains int values")
+        # if impl.is_multi:
+        #     if type is not int:
+        #         raise TypeError("Choice of Flags must be only contains int values")
 
-            return PostgreType(f"BIT({len(impl._enum)})")
-        else:
-            if type is int:
-                if int_max_size < 32767:
-                    return PostgreType("INT2")
-                elif int_max_size < 2147483647:
-                    return PostgreType("INT4")
-                else:
-                    return PostgreType("INT8")
-            elif type is str:
-                values = [self.dialect.quote_value(entry.value) for entry in impl._enum]
+        #     return PostgreType(f"BIT({len(impl._enum)})")
+        # else:
+        #     if type is int:
+        #         if int_max_size < 32767:
+        #             return PostgreType("INT2")
+        #         elif int_max_size < 2147483647:
+        #             return PostgreType("INT4")
+        #         else:
+        #             return PostgreType("INT8")
+        #     elif type is str:
+        #         values = [self.dialect.quote_value(entry.value) for entry in impl._enum]
 
-                return PostgreType(f"VARCHAR({str_max_len}) CHECK(\"{field._name_}\" IN ({', '.join(values)}))")
+        #         return PostgreType(f"VARCHAR({str_max_len}) CHECK(\"{field._name_}\" IN ({', '.join(values)}))")
+
+    cdef StorageType __auto_type(self, Field field, AutoImpl impl):
+        return self._create(field, impl._ref_impl)
 
     cdef StorageType __json_type(self, Field field, JsonImpl impl):
         cdef JsonType t = JsonType("JSONB")
-        t.entity = impl._entity_
-        t.is_list = isinstance(impl, JsonArrayImpl)
+        t._object = impl._object_
+        t._list = impl._list_
+        t._any = impl._any_
         return t
 
     cdef StorageType __composite_type(self, Field field, CompositeImpl impl):
         cdef CompositeType t = CompositeType(self.dialect.table_qname(impl._entity_))
         t.entity = impl._entity_
+        return t
+
+    cdef StorageType __array_type(self, Field field, ArrayImpl impl):
+        cdef StorageType item_type = self._create(field, impl._item_impl_)
+        cdef ArrayType t = ArrayType(f"{item_type.name}[]")
+        t.item_type = item_type
         return t
 
     cdef StorageType __point_type(self, Field field, PointImpl impl):
@@ -350,10 +372,7 @@ cdef class NumericType(PostgreType):
         if value is None:
             return None
 
-        if isinstance(value, str):
-            return Decimal(value)
-        else:
-            return value
+        return Decimal(value)
 
 
 cdef class FloatType(PostgreType):
@@ -385,42 +404,55 @@ cdef class UUIDType(PostgreType):
 
 
 cdef class ChoiceType(PostgreType):
+    cdef StorageType value_type
+    cdef object enum
+
     cpdef object encode(self, object value):
-        pass
+        if isinstance(value, self.enum):
+            return self.value_type.encode(value.value)
+        else:
+            return self.value_type.encode(value)
 
     cpdef object decode(self, object value):
-        pass
+        if isinstance(value, self.enum):
+            return value
+        else:
+            value = self.value_type.decode(value)
+            for entry in self.enum:
+                if entry.value == value:
+                    return entry
+        return value
 
 
 cdef class JsonType(PostgreType):
-    cdef EntityType entity
-    cdef bint is_list
+    cdef EntityType _object
+    cdef EntityType _list
+    cdef bint _any
 
     cpdef object encode(self, object value):
         if value is None:
             return None
-        elif self.is_list:
-            if isinstance(value, list):
-                return json.dumps(list(map(self.__as_dict, value)))
-        else:
+        elif self._object:
             if isinstance(value, EntityBase):
-                if type(value) is not self.entity:
-                    raise ValueError("Missmatch entity type: %r expected %r" % (type(value), self.entity))
+                if type(value) is not self._object:
+                    raise ValueError("Missmatch entity type: %r expected %r" % (type(value), self._object))
                 return json.dumps(value.as_dict())
+        elif self._list:
+            if isinstance(value, list):
+                return json.dumps([v.as_dict() for v in value])
+        elif self._any:
+            return json.dumps(value)
 
         raise TypeError("Can't convert value to json: %r" % value)
 
     cpdef object decode(self, object value):
-        if self.is_list:
-            return list(map(self.__make_entity, json.loads(value)))
+        value = json.loads(value, parse_float=Decimal)
+        if self._object:
+            return self._object(value)
+        elif self._list:
+            return [self._list(v) for v in value]
         else:
-            return self.entity(json.loads(value))
-
-    def __as_dict(self, EntityBase value):
-        return value.as_dict()
-
-    def __make_entity(self, value):
-        return self.entity(value)
+            return value
 
 
 cdef class CompositeType(PostgreType):
@@ -431,6 +463,22 @@ cdef class CompositeType(PostgreType):
 
     cpdef object decode(self, object value):
         return value
+
+
+cdef class ArrayType(PostgreType):
+    cdef PostgreType item_type
+
+    cpdef object encode(self, object value):
+        if value is None:
+            return None
+
+        return [self.item_type.encode(item) for item in value]
+
+    cpdef object decode(self, object value):
+        if value is None:
+            return None
+
+        return [self.item_type.decode(item) for item in value]
 
 
 cdef class PointType(PostgreType):
@@ -467,3 +515,4 @@ cdef class PostGISLatLngType(PostGISGeographyType):
 
     cpdef object decode(self, object value):
         return value
+

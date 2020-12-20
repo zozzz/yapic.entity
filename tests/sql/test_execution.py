@@ -1,12 +1,15 @@
 # flake8: noqa: E501
 
+from typing import List, TypedDict
 import pytest
 from datetime import datetime, date, time, tzinfo, timedelta
 from decimal import Decimal
+from yapic.entity.field import Choice
 from yapic.entity.sql import wrap_connection, Entity, sync, PostgreDialect
 from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool, ForeignKey,
                           PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite, Auto, Numeric,
-                          Float, Point, UUID, virtual)
+                          Float, Point, UUID, virtual, StringArray, IntArray, CreatedTime, UpdatedTime, Enum)
+from yapic import json
 
 pytestmark = pytest.mark.asyncio
 REGISTRY = Registry()
@@ -90,10 +93,8 @@ CREATE TABLE "execution"."User" (
   "updated_time" TIMESTAMPTZ,
   "time" TIME,
   "time_tz" TIMETZ,
-  PRIMARY KEY("id"),
-  CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
+  PRIMARY KEY("id")
 );
-CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_id");
 CREATE SCHEMA IF NOT EXISTS "execution_private";
 CREATE SEQUENCE "execution_private"."User_id_seq";
 CREATE TABLE "execution_private"."User" (
@@ -101,10 +102,14 @@ CREATE TABLE "execution_private"."User" (
   "name" TEXT,
   "email" TEXT,
   "address_id" INT4,
-  PRIMARY KEY("id"),
-  CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
+  PRIMARY KEY("id")
 );
-CREATE INDEX "idx_User__address_id" ON "execution_private"."User" USING btree ("address_id");"""
+CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_id");
+ALTER TABLE "execution"."User"
+  ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+CREATE INDEX "idx_User__address_id" ON "execution_private"."User" USING btree ("address_id");
+ALTER TABLE "execution_private"."User"
+  ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
     await conn.conn.execute(result)
 
     result = await sync(conn, Address.__registry__)
@@ -342,6 +347,10 @@ async def test_json(conn, pgclean):
     reg_a = Registry()
     reg_b = Registry()
 
+    class JsonTyped(TypedDict):
+        field1: str
+        field2: int
+
     class JsonXY(Entity, registry=reg_a, schema="execution"):
         x: Int
         y: Int
@@ -354,7 +363,8 @@ async def test_json(conn, pgclean):
     class JsonUser(Entity, registry=reg_a, schema="execution"):
         id: Serial
         name: Json[JsonName]
-        points: JsonArray[JsonXY]
+        points: Json[List[JsonXY]]
+        typed: Json[JsonTyped]
 
     result = await sync(conn, reg_a)
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
@@ -363,6 +373,7 @@ CREATE TABLE "execution"."JsonUser" (
   "id" INT4 NOT NULL DEFAULT nextval('"execution"."JsonUser_id_seq"'::regclass),
   "name" JSONB,
   "points" JSONB,
+  "typed" JSONB,
   PRIMARY KEY("id")
 );"""
 
@@ -383,7 +394,21 @@ CREATE TABLE "execution"."JsonUser" (
         },
     ]
 
-    user = JsonUser(name={"given": "Given", "family": "Family", "xy": {"x": 1, "y": 2}}, points=points)
+    user = JsonUser(
+        name={
+            "given": "Given",
+            "family": "Family",
+            "xy": {
+                "x": 1,
+                "y": 2
+            }
+        },
+        points=points,
+        typed={
+            "field1": "str",
+            "field2": 42
+        },
+    )
     await conn.insert(user)
     assert user.name.given == "Given"
     assert user.name.family == "Family"
@@ -402,6 +427,10 @@ CREATE TABLE "execution"."JsonUser" (
     assert user.points[2].x == 30
     assert user.points[2].y == 42
 
+    assert isinstance(user.typed, dict)
+    assert user.typed["field1"] == "str"
+    assert user.typed["field2"] == 42
+
     result = await sync(conn, reg_a)
     assert bool(result) is False
 
@@ -417,7 +446,13 @@ async def test_json_fix(conn, pgclean):
         id: Serial
         name: Json[JsonName]
 
-    JsonUser.__fix_entries__ = [JsonUser(id=1, name={"given": "Given", "family": "Family"})]
+    JsonUser.__fix_entries__ = [
+        JsonUser(id=1, name={
+            "given": "Given",
+            "family": "Family"
+        }),
+        JsonUser(id=2),
+    ]
     result = await sync(conn, reg_a)
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
 CREATE SEQUENCE "execution"."JsonUser_id_seq";
@@ -426,7 +461,13 @@ CREATE TABLE "execution"."JsonUser" (
   "name" JSONB,
   PRIMARY KEY("id")
 );
-INSERT INTO "execution"."JsonUser" ("id", "name") VALUES (1, '{"given":"Given","family":"Family"}') ON CONFLICT ("id") DO UPDATE SET "name"='{"given":"Given","family":"Family"}';"""
+INSERT INTO "execution"."JsonUser" ("id", "name") VALUES (1, '{"given":"Given","family":"Family"}') ON CONFLICT ("id") DO UPDATE SET "name"='{"given":"Given","family":"Family"}';
+INSERT INTO "execution"."JsonUser" ("id", "name") VALUES (2, '{"given":null,"family":null}') ON CONFLICT ("id") DO UPDATE SET "name"='{"given":null,"family":null}';"""
+
+    await conn.conn.execute(result)
+
+    result = await sync(conn, reg_a)
+    assert result is None
 
 
 async def test_composite(conn):
@@ -456,7 +497,7 @@ async def test_composite(conn):
 
     result = await sync(conn, reg_a)
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
-CREATE SEQUENCE "execution"."CompUser_id_seq";
+CREATE SEQUENCE "execution"."Article_id_seq";
 CREATE TYPE "execution"."CompXY" AS (
   "x" TEXT,
   "y" TEXT
@@ -466,19 +507,20 @@ CREATE TYPE "execution"."CompName" AS (
   "family" TEXT,
   "xy" "execution"."CompXY"
 );
+CREATE SEQUENCE "execution"."CompUser_id_seq";
 CREATE TABLE "execution"."CompUser" (
   "id" INT4 NOT NULL DEFAULT nextval('"execution"."CompUser_id_seq"'::regclass),
   "name" "execution"."CompName",
   PRIMARY KEY("id")
 );
-CREATE SEQUENCE "execution"."Article_id_seq";
 CREATE TABLE "execution"."Article" (
   "id" INT4 NOT NULL DEFAULT nextval('"execution"."Article_id_seq"'::regclass),
   "author_id" INT4,
-  PRIMARY KEY("id"),
-  CONSTRAINT "fk_Article__author_id-CompUser__id" FOREIGN KEY ("author_id") REFERENCES "execution"."CompUser" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
+  PRIMARY KEY("id")
 );
-CREATE INDEX "idx_Article__author_id" ON "execution"."Article" USING btree ("author_id");"""
+CREATE INDEX "idx_Article__author_id" ON "execution"."Article" USING btree ("author_id");
+ALTER TABLE "execution"."Article"
+  ADD CONSTRAINT "fk_Article__author_id-CompUser__id" FOREIGN KEY ("author_id") REFERENCES "execution"."CompUser" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
     await conn.conn.execute(result)
 
     # TODO: kitalálni, hogyan lehet módosítani a composite typeot
@@ -717,10 +759,11 @@ CREATE SEQUENCE "execution"."User_id_seq";
 CREATE TABLE "execution"."User" (
   "id" INT4 NOT NULL DEFAULT nextval('"execution"."User_id_seq"'::regclass),
   "address_id" INT4,
-  PRIMARY KEY("id"),
-  CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT
+  PRIMARY KEY("id")
 );
-CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_id");"""
+CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_id");
+ALTER TABLE "execution"."User"
+  ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
     await conn.conn.execute(result)
 
     # DROP FK
@@ -864,3 +907,241 @@ async def test_virtual_load(conn):
 
     obj = await conn.select(query).first()
     assert obj.data_concat == "NotLoaded"
+
+
+async def test_array(conn, pgclean):
+    registry = Registry()
+
+    class ArrayTest(Entity, registry=registry, schema="execution"):
+        strings: StringArray
+        ints: IntArray
+
+    result = await sync(conn, registry)
+    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE TABLE "execution"."ArrayTest" (
+  "strings" TEXT[],
+  "ints" INT[]
+);"""
+
+    await conn.conn.execute(result)
+
+    result = await sync(conn, registry)
+    assert result is None
+
+    registry2 = Registry()
+
+    class ArrayTest(Entity, registry=registry2, schema="execution"):
+        id: Serial
+        strings: StringArray
+        ints: StringArray
+
+    result = await sync(conn, registry2)
+    assert result == """CREATE SEQUENCE "execution"."ArrayTest_id_seq";
+ALTER TABLE "execution"."ArrayTest"
+  ADD COLUMN "id" INT4 NOT NULL DEFAULT nextval('"execution"."ArrayTest_id_seq"'::regclass),
+  ALTER COLUMN "ints" TYPE TEXT[] USING "ints"::TEXT[],
+  ADD PRIMARY KEY("id");"""
+
+    await conn.conn.execute(result)
+
+    result = await sync(conn, registry2)
+    assert result is None
+
+    inst = ArrayTest(strings=["Hello", "World"])
+    await conn.save(inst)
+    inst = await conn.select(Query(ArrayTest).where(ArrayTest.strings.contains("Hello"))).first()
+    assert inst is not None
+    assert inst.strings == ["Hello", "World"]
+
+    inst.strings.append("Some Value")
+    await conn.save(inst)
+    inst = await conn.select(Query(ArrayTest).where(ArrayTest.strings.contains("Hello"))).first()
+    assert inst.strings == ["Hello", "World", "Some Value"]
+
+    inst.strings.append("42")
+    await conn.save(inst)
+    inst.strings.append("43")
+    await conn.save(inst)
+    inst = await conn.select(Query(ArrayTest).where(ArrayTest.strings.contains("43"))).first()
+    assert inst.strings == ["Hello", "World", "Some Value", "42", "43"]
+
+
+async def test_updated_time(conn, pgclean):
+    R = Registry()
+
+    class UT(Entity, registry=R, schema="execution"):
+        id: Serial
+        value: String
+        created_time: CreatedTime
+        updated_time: UpdatedTime
+
+    result = await sync(conn, R)
+    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE SEQUENCE "execution"."UT_id_seq";
+CREATE TABLE "execution"."UT" (
+  "id" INT4 NOT NULL DEFAULT nextval('"execution"."UT_id_seq"'::regclass),
+  "value" TEXT,
+  "created_time" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updated_time" TIMESTAMPTZ,
+  PRIMARY KEY("id")
+);
+CREATE OR REPLACE FUNCTION "execution"."YT-UT-update-updated_time-8085b1-c1c14d"() RETURNS TRIGGER AS $$ BEGIN
+  NEW."updated_time" = CURRENT_TIMESTAMP;
+  RETURN NEW;
+END; $$ language 'plpgsql' ;
+CREATE TRIGGER "update-updated_time"
+  BEFORE UPDATE ON "execution"."UT"
+  FOR EACH ROW
+  WHEN (OLD.* IS DISTINCT FROM NEW.*)
+  EXECUTE FUNCTION "execution"."YT-UT-update-updated_time-8085b1-c1c14d"();"""
+
+    await conn.conn.execute(result)
+    result = await sync(conn, R)
+    assert result is None
+
+    inst = UT(id=1)
+    await conn.save(inst)
+    inst = await conn.select(Query(UT).where(UT.id == 1)).first()
+    assert inst.updated_time is None
+
+    inst.value = "Something"
+    await conn.save(inst)
+    inst = await conn.select(Query(UT).where(UT.id == 1)).first()
+    assert inst.updated_time is not None
+    ut1 = inst.updated_time
+
+    await conn.save(inst)
+    inst = await conn.select(Query(UT).where(UT.id == 1)).first()
+    assert inst.updated_time == ut1
+
+    inst.value = "Hello World"
+    await conn.save(inst)
+    inst = await conn.select(Query(UT).where(UT.id == 1)).first()
+    assert inst.updated_time > ut1
+
+
+async def test_on_update(conn, pgclean):
+    R = Registry()
+
+    async def get_user_id(entity):
+        return 2
+
+    class OnUpdate(Entity, registry=R, schema="execution"):
+        id: Serial
+        value: String
+        updater_id: Int = Field(on_update=lambda entity: 1)
+        updater_id2: Int = Field(on_update=get_user_id)
+
+    result = await sync(conn, R)
+    await conn.conn.execute(result)
+
+    inst = OnUpdate(id=1)
+    await conn.save(inst)
+    inst = await conn.select(Query(OnUpdate).where(OnUpdate.id == 1)).first()
+    assert inst.updater_id is None
+    assert inst.updater_id2 is None
+
+    inst.value = "X"
+    await conn.save(inst)
+    inst = await conn.select(Query(OnUpdate).where(OnUpdate.id == 1)).first()
+    assert inst.updater_id == 1
+    assert inst.updater_id2 == 2
+
+
+async def test_enum(conn, pgclean):
+    R = Registry()
+
+    class Point(Entity, registry=R, schema="execution"):
+        x: Int
+        y: Int
+
+    class StringEnum(Enum, registry=R, schema="execution"):
+        PAUSED = "Paused"
+        RUNNING = "Running"
+
+    class IntEnum(Enum, registry=R, schema="execution"):
+        value: Int = PrimaryKey()
+
+        PAUSED = dict(value=1, label="Paused")
+        RUNNING = dict(value=2, label="Running")
+
+    class CompositeEnum(Enum, registry=R, schema="execution"):
+        point: Composite[Point]
+
+        ORIGO = dict(point=Point(x=0, y=0))
+
+    class EnumTest(Entity, registry=R, schema="execution"):
+        id: Serial
+        str_enum: Choice[StringEnum]
+        int_enum: Choice[IntEnum]
+        point: Choice[CompositeEnum]
+
+    result = await sync(conn, R)
+    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE TYPE "execution"."Point" AS (
+  "x" INT4,
+  "y" INT4
+);
+CREATE TABLE "execution"."CompositeEnum" (
+  "point" "execution"."Point",
+  "value" TEXT NOT NULL,
+  "label" TEXT,
+  "index" INT4,
+  PRIMARY KEY("value")
+);
+INSERT INTO "execution"."CompositeEnum" ("point"."x", "point"."y", "value", "index") VALUES (0, 0, 'ORIGO', 0) ON CONFLICT ("value") DO UPDATE SET "point"."x"=0, "point"."y"=0, "index"=0;
+CREATE SEQUENCE "execution"."EnumTest_id_seq";
+CREATE TABLE "execution"."IntEnum" (
+  "value" INT4 NOT NULL,
+  "label" TEXT,
+  "index" INT4,
+  PRIMARY KEY("value")
+);
+INSERT INTO "execution"."IntEnum" ("value", "label", "index") VALUES (1, 'Paused', 0) ON CONFLICT ("value") DO UPDATE SET "label"='Paused', "index"=0;
+INSERT INTO "execution"."IntEnum" ("value", "label", "index") VALUES (2, 'Running', 1) ON CONFLICT ("value") DO UPDATE SET "label"='Running', "index"=1;
+CREATE TABLE "execution"."StringEnum" (
+  "value" TEXT NOT NULL,
+  "label" TEXT,
+  "index" INT4,
+  PRIMARY KEY("value")
+);
+INSERT INTO "execution"."StringEnum" ("value", "label", "index") VALUES ('PAUSED', 'Paused', 0) ON CONFLICT ("value") DO UPDATE SET "label"='Paused', "index"=0;
+INSERT INTO "execution"."StringEnum" ("value", "label", "index") VALUES ('RUNNING', 'Running', 1) ON CONFLICT ("value") DO UPDATE SET "label"='Running', "index"=1;
+CREATE TABLE "execution"."EnumTest" (
+  "id" INT4 NOT NULL DEFAULT nextval('"execution"."EnumTest_id_seq"'::regclass),
+  "str_enum" TEXT,
+  "int_enum" INT4,
+  "point" TEXT,
+  PRIMARY KEY("id")
+);
+CREATE INDEX "idx_EnumTest__str_enum" ON "execution"."EnumTest" USING btree ("str_enum");
+CREATE INDEX "idx_EnumTest__int_enum" ON "execution"."EnumTest" USING btree ("int_enum");
+CREATE INDEX "idx_EnumTest__point" ON "execution"."EnumTest" USING btree ("point");
+ALTER TABLE "execution"."EnumTest"
+  ADD CONSTRAINT "fk_EnumTest__str_enum-StringEnum__value" FOREIGN KEY ("str_enum") REFERENCES "execution"."StringEnum" ("value") ON UPDATE RESTRICT ON DELETE RESTRICT,
+  ADD CONSTRAINT "fk_EnumTest__int_enum-IntEnum__value" FOREIGN KEY ("int_enum") REFERENCES "execution"."IntEnum" ("value") ON UPDATE RESTRICT ON DELETE RESTRICT,
+  ADD CONSTRAINT "fk_EnumTest__point-CompositeEnum__value" FOREIGN KEY ("point") REFERENCES "execution"."CompositeEnum" ("value") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
+
+    await conn.conn.execute(result)
+
+    result = await sync(conn, R)
+    assert result is None
+
+    inst = EnumTest(id=1, str_enum=StringEnum.PAUSED, int_enum=IntEnum.RUNNING)
+    await conn.save(inst)
+    assert inst.str_enum is StringEnum.PAUSED
+    assert inst.int_enum == IntEnum.RUNNING
+
+    inst = await conn.select(Query(EnumTest).where(EnumTest.id == 1)).first()
+    assert inst.str_enum is StringEnum.PAUSED
+    assert inst.int_enum == IntEnum.RUNNING
+
+    json_str = json.dumps(inst)
+    assert json_str == """{"id":1,"str_enum":{"value":"PAUSED","label":"Paused","index":0},"int_enum":{"value":2,"label":"Running","index":1}}"""
+
+    inst = EnumTest(id=2, str_enum="PAUSED", int_enum=2)
+    assert inst.str_enum is StringEnum.PAUSED
+    assert inst.int_enum == IntEnum.RUNNING
+    await conn.save(inst)
+    assert inst.str_enum is StringEnum.PAUSED
+    assert inst.int_enum == IntEnum.RUNNING

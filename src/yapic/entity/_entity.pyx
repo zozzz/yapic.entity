@@ -52,10 +52,11 @@ cdef class EntityType(type):
                 else:
                     raise ValueError("More than one Entity base is not allowed")
 
-            if hasattr(base, "__triggers__"):
-                for t in base.__triggers__:
-                    if t not in __triggers__:
-                        __triggers__.append(t)
+            # TODO: trigger inheritance kezelése, jelenleg nem szabad csak úgy lemásolni a parent-et mert így rossz
+            # if hasattr(base, "__triggers__"):
+            #     for t in base.__triggers__:
+            #         if t not in __triggers__:
+            #             __triggers__.append(t)
 
         try:
             is_alias = self.__meta__["is_alias"] is True
@@ -149,7 +150,7 @@ cdef class EntityType(type):
                     try:
                         value = attrs[name]
                     except KeyError:
-                        value = getattr(self, name, None)
+                        value = getattr(self, name, NOTSET)
                         if isinstance(value, EntityAttribute):
                             value = value.clone()
 
@@ -377,7 +378,8 @@ cdef EntityAttribute init_attribute(EntityAttribute by_type, object value):
 
         return by_type
     else:
-        by_type._default_ = value
+        if value is not NOTSET:
+            by_type._default_ = value
         return by_type
 
 
@@ -588,10 +590,13 @@ cdef class EntityAttributeImpl:
             return NOTSET
 
     def __eq__(self, other):
-        return isinstance(self, type(other)) or isinstance(other, type(self))
+        return self._is_eq(other)
 
     def __ne__(self, other):
-        return not isinstance(self, type(other)) and not isinstance(other, type(self))
+        return not self.__eq__(other)
+
+    cdef bint _is_eq(self, object other):
+        return isinstance(self, type(other)) or isinstance(other, type(self))
 
 
 cdef inline state_set_value(PyObject* initial, PyObject* current, EntityAttribute attr, object value):
@@ -773,6 +778,30 @@ cdef class EntityState:
                 return True
         return False
 
+    @property
+    def is_empty(self):
+        return self._is_empty()
+
+    cdef bint _is_empty(self):
+        cdef PyObject* initial = <PyObject*>self.initial
+        cdef PyObject* current = <PyObject*>self.current
+        # cdef PyObject* cv = PyTuple_GET_ITEM(<object>current, attr._index_)
+
+        # if cv is <PyObject*>NOTSET:
+        #     cv = PyTuple_GET_ITEM(<object>initial, attr._index_)
+
+
+        cdef PyObject* val
+        for attr in self.entity.__attrs__:
+            val = PyTuple_GET_ITEM(<object>current, attr._index_)
+
+            if val is NULL or val is <PyObject*>NOTSET:
+                val = PyTuple_GET_ITEM(<object>initial, attr._index_)
+
+            if val is not NULL and val is not <PyObject*>NOTSET and val is not <PyObject*>None:
+                return False
+        return True
+
     def reset(self, EntityAttribute attr=None):
         if attr is None:
             return self.reset_all()
@@ -837,25 +866,58 @@ cdef class EntityState:
         if not isinstance(other, EntityState):
             return False
 
-        if self.entity is not (<EntityState>other).entity:
-            return False
+        cdef EntityState other_state = (<EntityState>other)
+
+        if self.entity is not other_state.entity:
+            if self.entity.__qname__ == other_state.entity.__qname__:
+                return self.is_eq_reflected(other_state)
+            else:
+                return False
 
         cdef int idx
         cdef EntityAttribute attr
 
         for attr in self.entity.__attrs__:
             sv = self.get_value(attr)
-            ov = (<EntityState>other).get_value(attr)
+            ov = other_state.get_value(attr)
             nv = (<EntityAttributeImpl>attr._impl_).state_get_dirty(sv, ov)
 
-            if nv is NOTSET:
-                continue
+            if nv is not NOTSET:
+                return False
 
-            return False
         return True
 
     def __ne__(EntityState self, other):
         return not self.__eq__(other)
+
+    def __bool__(EntityState self):
+        return self._is_empty() is False
+
+    cdef bint is_eq_reflected(self, EntityState other):
+        if len(self.entity.__attrs__) != len(other.entity.__attrs__):
+            return False
+
+        cdef EntityAttribute attr
+        cdef EntityAttribute other_attr
+        cdef EntityType other_entity = other.entity
+
+        for attr in self.entity.__attrs__:
+            try:
+                other_attr = getattr(other_entity, attr._name_)
+            except AttributeError:
+                try:
+                    other_attr = getattr(other_entity, attr._key_)
+                except AttributeError:
+                    return False
+
+            sv = self.get_value(attr)
+            ov = other.get_value(other_attr)
+            nv = (<EntityAttributeImpl>attr._impl_).state_get_dirty(sv, ov)
+
+            if nv is not NOTSET:
+                return False
+
+        return True
 
 
 cdef class EntityBase:
@@ -973,6 +1035,9 @@ cdef class EntityBase:
 
     def __ne__(self, other):
         return not isinstance(other, EntityBase) or self.__pk__ != other.__pk__
+
+    def __bool__(EntityBase self):
+        return self.__state__._is_empty() is False
 
     def __iter__(self):
         self.iter_index = 0
@@ -1205,7 +1270,7 @@ cdef class PolymorphMeta:
 
         for x in self.entities.values():
             relation = <Relation>((<tuple>x)[1])
-            if relation._impl_._joined is entity:
+            if get_alias_target(relation._impl_._joined) is entity:
                 result.append(relation)
 
         return result

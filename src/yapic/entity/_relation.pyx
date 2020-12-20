@@ -467,15 +467,15 @@ cdef class RelatedDict(ValueStore):
 
 
 cdef class Loading(EntityAttributeExt):
-    def __cinit__(self, *, bint always=False, str eager=None):
+    def __cinit__(self, *, bint always=False, list fields=None):
         self.always = always
-        self.eager = eager
+        self.fields = fields
 
     cpdef clone(self):
-        return Loading(always=self.always, eager=self.eager)
+        return Loading(always=self.always, fields=self.fields)
 
     def __repr__(self):
-        return "@Loading(always=%s, eager=%s)" % (self.always, self.eager)
+        return "@Loading(always=%s, fields=%s)" % (self.always, self.fields)
 
 
 cdef bint can_determine_join_cond(EntityType entity):

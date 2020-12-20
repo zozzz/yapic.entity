@@ -2,7 +2,7 @@ import cython
 from enum import Enum
 from weakref import WeakValueDictionary
 
-from ._entity cimport DependencyList, EntityBase, EntityType, EntityAttribute, EntityAttributeExt
+from ._entity cimport DependencyList, EntityBase, EntityType, EntityAttribute, EntityAttributeExt, EntityAttributeImpl, NOTSET
 from ._entity_diff cimport EntityDiff
 from ._field cimport ForeignKey
 
@@ -227,7 +227,13 @@ cdef object entity_data_is_eq(EntityBase a, EntityBase b):
         if attr2 is None:
             return False
 
-        if a.__state__.get_value(attr2) != b.__state__.get_value(attr):
+        iv = a.__state__.get_value(attr2)
+        cv = b.__state__.get_value(attr)
+        nv = (<EntityAttributeImpl>attr._impl_).state_get_dirty(iv, cv)
+
+        if nv is NOTSET:
+            continue
+        else:
             return False
 
     return True

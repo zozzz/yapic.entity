@@ -1,7 +1,6 @@
 import operator
 
 from yapic.entity._entity cimport EntityType, EntityAttribute, get_alias_target
-from yapic.entity._query cimport Query
 from yapic.entity._expression cimport (
     Expression,
     Visitor,
@@ -16,11 +15,11 @@ from yapic.entity._expression cimport (
     PathExpression)
 from yapic.entity._expression import and_
 from yapic.entity._field cimport Field, PrimaryKey
-from yapic.entity._field_impl cimport JsonImpl, CompositeImpl
+from yapic.entity._field_impl cimport JsonImpl, CompositeImpl, ArrayImpl
 from yapic.entity._relation cimport Relation
 from yapic.entity._virtual_attr cimport VirtualAttribute
 
-from .._query_compiler cimport QueryCompiler
+from .._query cimport Query, QueryCompiler
 from ._dialect cimport PostgreDialect
 
 
@@ -29,9 +28,10 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         self.parent = parent
 
     cpdef compile_select(self, Query query):
-        query, self.rcos_list = query.finalize()
+        query, self.rcos_list = query.finalize(self)
+        self.query = query
         self.parts = ["SELECT"]
-        self.table_alias = self.parent.table_alias if self.parent else {}
+        self.table_alias = {}
         self.params = self.parent.params if self.parent else []
         self.inline_values = False
 
@@ -44,7 +44,15 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         if query._prefix:
             self.parts.append(" ".join(query._prefix))
 
-        self.parts.append(", ".join(self.visit_columns(query._columns)))
+        if query._as_row:
+            self.skip_alias += 1
+            columns = ", ".join(self.visit_columns(query._columns))
+            self.parts.append(f"ROW({columns})")
+            self.skip_alias -= 1
+        elif query._as_json:
+            raise NotImplementedError()
+        else:
+            self.parts.append(", ".join(self.visit_columns(query._columns)))
 
         self.parts.append("FROM")
         self.parts.append(from_)
@@ -85,7 +93,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
         for i, expr in enumerate(select_from):
             if isinstance(expr, EntityType):
-                qname, alias = self._add_entity_alias(<EntityType>expr)
+                qname, alias = self._get_entity_alias(<EntityType>expr)
                 result.append(f"{qname} {alias}")
             else:
                 result.append(self.visit(expr))
@@ -96,7 +104,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         result = []
 
         for joined, condition, type in joins.values():
-            qname, alias = self._add_entity_alias(joined)
+            qname, alias = self._get_entity_alias(joined)
             result.append(f"{type + ' ' if type else ''}JOIN {qname} {alias} ON {self.visit(condition)}")
 
         return " ".join(result)
@@ -106,7 +114,6 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
         for col in columns:
             if isinstance(col, EntityType):
-                tbl = self.table_alias[col][1]
                 for field in (<EntityType>col).__fields__:
                     result.append(self.visit(field))
             else:
@@ -116,7 +123,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
     def visit_field(self, field):
         try:
-            tbl = self.table_alias[field._entity_][1]
+            tbl = self._get_entity_alias(field._entity_)[1]
         except KeyError:
             # print("MISSING", field, field._entity_, get_alias_target(field._entity_), hash(field._entity_))
             raise RuntimeError("Field entity is not found in query: %r" % field)
@@ -215,6 +222,14 @@ cdef class PostgreQueryCompiler(QueryCompiler):
     def visit_binary_contains(self, BinaryExpression expr):
         left = expr.left
         right = expr.right
+
+        if isinstance(left, Field) and isinstance((<Field>left)._impl_, ArrayImpl):
+            result = f"{self.visit(right)}=ANY({self.visit(left)})"
+            if expr.negated:
+                return f"NOT({result})"
+            else:
+                return result
+
         op = " NOT ILIKE " if expr.negated else " ILIKE "
         return f"{self.visit(left)}{op}('%' || {self.visit(right)} || '%')"
 
@@ -260,7 +275,10 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         return f"{self.visit(e)} {'ASC' if (<DirectionExpression>expr).is_asc else 'DESC'}"
 
     def visit_alias(self, expr):
-        return f"{self.visit((<AliasExpression>expr).expr)} as {self.dialect.quote_ident((<AliasExpression>expr).value)}"
+        if self.skip_alias > 0:
+            return self.visit((<AliasExpression>expr).expr)
+        else:
+            return f"{self.visit((<AliasExpression>expr).expr)} as {self.dialect.quote_ident((<AliasExpression>expr).value)}"
 
     def visit_query(self, expr):
         cdef PostgreQueryCompiler qc = self.dialect.create_query_compiler()
@@ -297,6 +315,11 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                     attrs.append(f"[{item}]")
                 else:
                     raise ValueError("Invalid composite path entry: %r" % item)
+            elif state == "array":
+                if isinstance(item, int):
+                    attrs.append(f"[{item}]")
+                else:
+                    raise ValueError("Invalid path entry: %r" % item)
 
             if isinstance(item, Relation):
                 if compiled:
@@ -309,6 +332,8 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                 elif isinstance((<Field>item)._impl_, CompositeImpl):
                     if state != "json":
                         new_state = "composite"
+                elif isinstance((<Field>item)._impl_, ArrayImpl):
+                    new_state = "array"
 
                 if not new_state:
                     raise ValueError("Unexpected field impl: %r", (<Field>item)._impl_)
@@ -332,24 +357,32 @@ cdef class PostgreQueryCompiler(QueryCompiler):
     def visit_raw(self, RawExpression expr):
         return expr.expr
 
-    def _add_entity_alias(self, EntityType ent):
+    def _get_entity_alias(self, EntityType ent):
         try:
             return self.table_alias[ent]
         except KeyError:
-            aliased = get_alias_target(ent)
-            if aliased is ent:
-                alias = (self.dialect.table_qname(ent), self.dialect.quote_ident(f"t{len(self.table_alias)}"))
-            else:
-                aname = ent.__name__ if ent.__name__ else f"t{len(self.table_alias)}"
-                alias = (self.dialect.table_qname(aliased), self.dialect.quote_ident(aname))
-            self.table_alias[ent] = alias
-            if aliased not in self.table_alias:
-                self.table_alias[aliased] = alias
-            return alias
+            alias = self.query.get_expr_alias(ent)
+            original = get_alias_target(ent)
+            self.table_alias[ent] = (self.dialect.table_qname(original), self.dialect.quote_ident(alias))
+            return self.table_alias[ent]
+
+        # try:
+        #     return self.table_alias[ent]
+        # except KeyError:
+        #     aliased = get_alias_target(ent)
+        #     if aliased is ent:
+        #         alias = (self.dialect.table_qname(ent), self.dialect.quote_ident(f"t{len(self.table_alias)}"))
+        #     else:
+        #         aname = ent.__name__ if ent.__name__ else f"t{len(self.table_alias)}"
+        #         alias = (self.dialect.table_qname(aliased), self.dialect.quote_ident(aname))
+        #     self.table_alias[ent] = alias
+        #     if aliased not in self.table_alias:
+        #         self.table_alias[aliased] = alias
+        #     return alias
 
     cpdef compile_insert(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
         if not values:
-            return (f"INSERT INTO {self.dialect.table_qname(entity)} DEFAULT VALUES", [])
+            return (f"INSERT INTO {self.dialect.table_qname(get_alias_target(entity))} DEFAULT VALUES", [])
 
         self.params = []
         self.inline_values = inline_values
@@ -371,7 +404,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                     self.params.append(v)
                     inserts.append(f"${len(self.params)}")
 
-        return "".join(("INSERT INTO ", self.dialect.table_qname(entity),
+        return "".join(("INSERT INTO ", self.dialect.table_qname(get_alias_target(entity)),
             " (", ", ".join(names), ") VALUES (", ", ".join(inserts), ")")), self.params
 
     cpdef compile_insert_or_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
@@ -417,7 +450,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                         updates.append(f"{name}=${idx}")
 
 
-        q = ["INSERT INTO ", self.dialect.table_qname(entity),
+        q = ["INSERT INTO ", self.dialect.table_qname(get_alias_target(entity)),
             " (", ", ".join(names), ") VALUES (", ", ".join(inserts), ")",
             " ON CONFLICT "]
 
@@ -479,7 +512,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         if not where:
             raise RuntimeError("TODO: ...")
 
-        return "".join(("UPDATE ", self.dialect.table_qname(entity), " SET ",
+        return "".join(("UPDATE ", self.dialect.table_qname(get_alias_target(entity)), " SET ",
             ", ".join(updates), " WHERE ", " AND ".join(where))), self.params
 
     cpdef compile_delete(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
@@ -515,7 +548,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                     where.append(f"{names[i]}=${i+1}")
                     params.append(values[i])
 
-        return "".join(("DELETE FROM ", self.dialect.table_qname(entity),
+        return "".join(("DELETE FROM ", self.dialect.table_qname(get_alias_target(entity)),
              " WHERE ", " AND ".join(where))), params
 
 
@@ -535,6 +568,8 @@ cdef str path_expr(object d, str type, str base, list path):
         if type == "json":
             return f"jsonb_extract_path({base}, {', '.join(path)})"
         elif type == "composite":
+            return f"({base}){''.join(path)}"
+        elif type == "array":
             return f"({base}){''.join(path)}"
     return base
 

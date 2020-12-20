@@ -31,7 +31,7 @@ cdef class QueryContext:
             cursor = await self.cursor_factory
             row = await cursor.fetchrow(timeout=timeout)
             if row:
-                return await self.convert_row(row)
+                return self.convert_row(row)
             else:
                 return None
 
@@ -51,7 +51,7 @@ cdef class QueryContext:
             cursor = await self.cursor_factory
             row = await cursor.fetchrow(timeout=timeout)
             if row is not None:
-                return await self.convert_row(row)
+                return self.convert_row(row)
             else:
                 return None
 
@@ -61,7 +61,7 @@ cdef class QueryContext:
     async def __aiter__(self):
         async with ensure_transaction(self.conn.conn):
             async for record in self.cursor_factory.__aiter__():
-                yield await self.convert_row(record)
+                yield self.convert_row(record)
 
     def __await__(self):
         return self.fetch().__await__()

@@ -35,10 +35,12 @@ def start_container(image, name, ports):
     try:
         return client.containers.get(name)
     except NotFound:
+        # docker run -d --name yapic_entity_pgsql_docker -p 5432:5432 --rm yapic_entity:pgsql_test
         return client.containers.run(
             image,
             name=name,
             detach=True,
+            stream=False,
             remove=True,
             ports={f"{port}/tcp": port
                    for port in ports},

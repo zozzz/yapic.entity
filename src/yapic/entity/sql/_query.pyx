@@ -1,17 +1,19 @@
 import operator
 import cython
 
-from yapic.entity._entity cimport EntityType, EntityAttribute, PolymorphMeta, get_alias_target
+from yapic.entity._entity cimport EntityType, EntityAttribute, PolymorphMeta, get_alias_target, is_entity_alias
 from yapic.entity._field cimport Field, field_eq
 from yapic.entity._field_impl cimport CompositeImpl
 from yapic.entity._expression cimport (Expression, AliasExpression, DirectionExpression, Visitor, BinaryExpression,
     UnaryExpression, CastExpression, CallExpression, RawExpression, PathExpression,
-    VirtualExpressionVal, VirtualExpressionBinary, VirtualExpressionDir)
+    VirtualExpressionVal, VirtualExpressionBinary, VirtualExpressionDir, ConstExpression, raw)
 from yapic.entity._expression import and_
 from yapic.entity._relation cimport Relation, RelationImpl, ManyToOne, ManyToMany, RelatedAttribute, determine_join_expr, Loading
 from yapic.entity._error cimport JoinError
 from yapic.entity._visitors cimport extract_fields, replace_fields, replace_entity, ReplacerBase
 from yapic.entity._virtual_attr cimport VirtualAttribute
+
+from ._dialect cimport Dialect
 
 
 cdef class Query(Expression):
@@ -19,6 +21,10 @@ cdef class Query(Expression):
         self._entities = []
         self._load = {}
         self._exclude = {}
+        self._parent = None
+        self._allow_clone = True
+        self.__expr_alias = {}
+        self.__alias_c = 0
 
     def __init__(self, from_ = None):
         if from_ is not None:
@@ -50,7 +56,8 @@ cdef class Query(Expression):
                     or isinstance(col, PathExpression) \
                     or isinstance(col, RawExpression) \
                     or isinstance(col, CallExpression) \
-                    or isinstance(col, VirtualExpressionVal):
+                    or isinstance(col, VirtualExpressionVal) \
+                    or isinstance(col, Query):
                 self._columns.append(col)
             else:
                 raise ValueError("Invalid value for column: %r" % col)
@@ -135,6 +142,18 @@ cdef class Query(Expression):
 
         return self
 
+    def as_row(self, bint val=True):
+        self._as_row = val
+        if self._as_json is True and val is True:
+            self._as_json = False
+        return self
+
+    def as_json(self, bint val=True):
+        self._as_json = val
+        if self._as_row is True and val is True:
+            self._as_row = False
+        return self
+
     def join(self, what, condition = None, type = "INNER"):
         cdef RelationImpl impl
         cdef EntityType joined
@@ -184,6 +203,8 @@ cdef class Query(Expression):
                 condition = determine_join(self, entity)
 
         self._entities.append(entity)
+
+        # TODO: Nem biztos, hogy ezt így kéne...
         aliased = get_alias_target(entity)
         if aliased not in self._entities:
             self._entities.append(aliased)
@@ -247,9 +268,9 @@ cdef class Query(Expression):
         return self
 
     def load(self, *load):
-        for entry in load:
-            if isinstance(entry, VirtualExpressionVal) and (<VirtualExpressionVal>entry)._virtual_._val:
-                self._load[(<VirtualExpressionVal>entry)._virtual_._uid_] = (<VirtualExpressionVal>entry)._create_expr_(self)
+        # for entry in load:
+        #     if isinstance(entry, VirtualExpressionVal) and (<VirtualExpressionVal>entry)._virtual_._val:
+        #         self._load[(<VirtualExpressionVal>entry)._virtual_._uid_] = (<VirtualExpressionVal>entry)._create_expr_(self)
 
         load_options(self._load, load)
         return self
@@ -259,6 +280,9 @@ cdef class Query(Expression):
         return self
 
     cpdef Query clone(self):
+        if not self._allow_clone:
+            raise RuntimeError("Query is not cloneable")
+
         cdef Query q = type(self)()
 
         if self._select_from: q._select_from = list(self._select_from)
@@ -275,16 +299,58 @@ cdef class Query(Expression):
         if self._entities:    q._entities = list(self._entities)
         if self._load:        q._load = dict(self._load)
         if self._exclude:     q._exclude = dict(self._exclude)
+        if self._parent:      q._parent = self._parent.clone()
+        q._as_row = self._as_row
+        q._as_json = self._as_json
 
         return q
 
-    cdef tuple finalize(self):
-        cdef Query res = self.clone()
-        cdef QueryFinalizer qf = QueryFinalizer(res)
+    cdef tuple finalize(self, QueryCompiler compiler):
+        if self._rcos:
+            return self, self._rcos
 
-        qf.finalize()
+        cdef Query res = self
+        if self._allow_clone:
+            res = self.clone()
+            res._allow_clone = False
 
-        return res, qf.rcos
+        QueryFinalizer(compiler, res).finalize()
+        return res, res._rcos
+
+    cdef str get_expr_alias(Query self, object expr):
+        if isinstance(expr, EntityType):
+            try:
+                return self.__expr_alias[expr]
+            except KeyError:
+                if self._entity_reachable(expr, False):
+                    original = get_alias_target(expr)
+                    if original is not expr and expr.__name__:
+                        alias = expr.__name__
+                    else:
+                        alias = self._get_next_alias()
+
+                    self.__expr_alias[expr] = alias
+                    # TODO: Nem biztos, hogy ezt így kéne...
+                    self.__expr_alias[original] = alias
+                    return alias
+                elif self._parent:
+                    return self._parent.get_expr_alias(expr)
+                else:
+                    raise ValueError(f"Can't find this entity in query: {expr}")
+        else:
+            raise NotImplementedError()
+
+    cdef bint _entity_reachable(self, EntityType entity, bint allow_parent):
+        return entity in self._entities \
+            or (allow_parent and self._parent is not None and self._parent._entity_reachable(entity, allow_parent))
+
+    cdef str _get_next_alias(self):
+        if self._parent is not None:
+            return self._parent._get_next_alias()
+        else:
+            alias = f"t{self.__alias_c}"
+            self.__alias_c += 1
+            return alias
 
 
 # TODO: beautify
@@ -296,8 +362,8 @@ cdef object load_options(dict target, tuple input):
         elif isinstance(inp, EntityAttribute):
             target[(<EntityAttribute>inp)._uid_] = inp
         elif isinstance(inp, VirtualExpressionVal):
-            # handled in Query class
-            pass
+            if (<VirtualExpressionVal>inp)._virtual_._val:
+                target[(<VirtualExpressionVal>inp)._virtual_._uid_] = inp
         elif isinstance(inp, PathExpression):
             pl = len((<PathExpression>inp)._path_)
             for i, entry in enumerate((<PathExpression>inp)._path_):
@@ -333,12 +399,11 @@ cdef class RowConvertOp:
 
         if self.op == RCO.PUSH: name = "PUSH"
         elif self.op == RCO.POP: name = "POP"
-        elif self.op == RCO.JUMP: name = "JUMP"
         elif self.op == RCO.CREATE_STATE: name = "CREATE_STATE"
         elif self.op == RCO.CREATE_ENTITY: name = "CREATE_ENTITY"
         elif self.op == RCO.CREATE_POLYMORPH_ENTITY: name = "CREATE_POLYMORPH_ENTITY"
-        elif self.op == RCO.LOAD_ONE_ENTITY: name = "LOAD_ONE_ENTITY"
-        elif self.op == RCO.LOAD_MULTI_ENTITY: name = "LOAD_MULTI_ENTITY"
+        elif self.op == RCO.CONVERT_SUB_ENTITY: name = "CONVERT_SUB_ENTITY"
+        elif self.op == RCO.CONVERT_SUB_ENTITIES: name = "CONVERT_SUB_ENTITIES"
         elif self.op == RCO.SET_ATTR: name = "SET_ATTR"
         elif self.op == RCO.SET_ATTR_RECORD: name = "SET_ATTR_RECORD"
         elif self.op == RCO.GET_RECORD: name = "GET_RECORD"
@@ -346,11 +411,16 @@ cdef class RowConvertOp:
         return "<RCO:%s %r %r>" % (name, self.param1, self.param2)
 
 
+_RCO_PUSH = RowConvertOp(RCO.PUSH)
+_RCO_POP = RowConvertOp(RCO.POP)
+
+
 cdef class QueryFinalizer(Visitor):
-    def __cinit__(self, Query q):
+    def __cinit__(self, QueryCompiler compiler, Query q):
         self.q = q
         self.rcos = []
         self.in_or = 0
+        self.compiler = compiler
 
     def visit_binary(self, BinaryExpression expr):
         if expr.op == operator.__or__:
@@ -379,26 +449,24 @@ cdef class QueryFinalizer(Visitor):
             return res.desc()
 
     def visit_call(self, CallExpression expr):
-        cdef list args = []
-
-        for a in expr.args:
-            args.append(self.visit(a))
-
-        return CallExpression(self.visit(expr.callable), args)
+        return CallExpression(self.visit(expr.callable), self._visit_list(expr.args))
 
     def visit_raw(self, expr):
         return expr
 
     def visit_field(self, expr):
-        self.q.join(expr._entity_, type="LEFT" if self.in_or > 0 else "INNER")
+        if not self.q._entity_reachable(expr._entity_, True):
+            self.q.join(expr._entity_, type="LEFT" if self.in_or > 0 else "INNER")
         return expr
 
     def visit_const(self, expr):
         return expr
 
     def visit_query(self, expr):
-        # TODO: ...
-        return expr
+        cdef Query result = expr.clone()
+        result._allow_clone = False
+        result._parent = self.q
+        return result.finalize(self.compiler)[0]
 
     def visit_alias(self, AliasExpression expr):
         return self.visit(expr.expr).alias(expr.value)
@@ -422,7 +490,28 @@ cdef class QueryFinalizer(Visitor):
     def visit_vexpr_dir(self, VirtualExpressionDir expr):
         return self.visit(expr._create_expr_(self.q))
 
+    def visit_relation(self, expr):
+        return expr
+
     def finalize(self, *expr_list):
+        if self.q._select_from:
+            new_from = []
+            for f in self.q._select_from:
+                if isinstance(f, EntityType):
+                    new_from.append(f)
+                else:
+                    new_from.append(self.visit(f))
+            self.q._select_from = new_from
+
+        # if self.q._load:
+        #     load = {}
+        #     for k, v in self.q._load.items():
+        #         if isinstance(v, (VirtualExpressionVal, VirtualExpressionBinary)):
+        #             load[k] = self.visit(v)
+        #         else:
+        #             load[k] = v
+        #     self.q._load = load
+
         if self.q._columns:
             if not self.q._load:
                 self.q.load(*self.q._columns)
@@ -447,6 +536,8 @@ cdef class QueryFinalizer(Visitor):
         if self.q._distinct:
             self.q._distinct = self._visit_list(self.q._distinct)
 
+        self.q._rcos = self.rcos
+
 
         # print("="*40)
         # from pprint import pprint
@@ -460,7 +551,7 @@ cdef class QueryFinalizer(Visitor):
 
         for expr in expr_list:
             if isinstance(expr, EntityType):
-                self._select_entity(<EntityType>expr)
+                self.rcos.append(self._rco_for_entity(<EntityType>expr))
             elif isinstance(expr, PathExpression):
                 path = <PathExpression>expr
                 last_entry = path._path_[len(path._path_) - 1]
@@ -500,112 +591,34 @@ cdef class QueryFinalizer(Visitor):
             res.append(self.visit(expr))
         return res
 
-    def _select_entity(self, EntityType entity):
-        cdef PolymorphMeta polymorph = entity.__meta__.get("polymorph", None)
+    # def _select_entity(self, EntityType entity, dict fields={}):
+    #     cdef PolymorphMeta polymorph = entity.__meta__.get("polymorph", None)
 
-        if polymorph:
-            self._select_polymorph(entity, polymorph)
-        else:
-            self.rcos.append(self._rco_for_entity(entity))
+    #     if fields is None:
+    #         fields = {}
 
-    def _select_polymorph(self, EntityType entity, PolymorphMeta poly):
-        cdef list parents = poly.parents(entity)
-        # cdef EntityType ent
-        cdef EntityType aliased
-        cdef Relation relation
-        cdef Relation parent_relation = None
-        cdef Field field
-        cdef list rco = []
-        cdef dict fields = {}
-        cdef dict create_poly = {}
+    #     if polymorph:
+    #         self.rcos.append(self._select_polymorph(entity, polymorph, fields))
+    #     else:
+    #         self.rcos.append(self._rco_for_entity(entity))
 
-        for relation in parents:
-            self.q.join(relation, None, "INNER")
+    # def _select_polymorph(self, EntityType entity, PolymorphMeta poly, dict fields):
 
-        for relation in reversed(parents):
-            self.q.join(relation, None, "INNER")
 
-            if parent_relation:
-                before_create = [
-                    RowConvertOp(RCO.POP),
-                    RowConvertOp(RCO.SET_ATTR, parent_relation),
-                ]
-            else:
-                before_create = []
-            parent_relation = relation
-
-            self.q.load(relation._impl_.joined)
-            rco.extend(self._rco_for_entity(relation._impl_.joined, fields, before_create))
-            rco.append(RowConvertOp(RCO.PUSH))
-
-        if parent_relation:
-            before_create = [
-                RowConvertOp(RCO.POP),
-                RowConvertOp(RCO.SET_ATTR, parent_relation),
-            ]
-        else:
-            before_create = []
-
-        aliased = get_alias_target(entity)
-
-        for ent_id in poly.id_fields:
-            self.q.load(getattr(entity, ent_id))
-        rco.extend(self._rco_for_entity(entity, fields, before_create))
-
-        rco_len = len(rco)
-        pc = self._add_poly_child(create_poly, rco_len + 3, rco_len + 2, aliased, poly, fields)
-        if pc:
-            rco.append(RowConvertOp(RCO.PUSH))
-
-            id_fields = []
-            for ent_id in poly.id_fields:
-                id_fields.append(fields[getattr(entity, ent_id)._uid_])
-
-            rco.append(RowConvertOp(RCO.CREATE_POLYMORPH_ENTITY, tuple(id_fields), create_poly))
-            end = RowConvertOp(RCO.JUMP, 0)
-            rco.append(end)
-            rco.extend(pc)
-            end.param1 = len(rco)
-
-        self.rcos.append(rco)
-
-    def _add_poly_child(self, dict create_poly, int idx_start, int idx_break, EntityType entity, PolymorphMeta poly, dict fields):
-        cdef Relation relation
-        cdef EntityType child
-        cdef list rcos = []
-        cdef int idx = idx_start
-
-        for relation in poly.children(entity):
-            relation.update_join_expr()
-            child = relation._entity_
-            self.q.join(child, relation._default_, "LEFT")
-
-            create_poly[poly.entities[child][0]] = idx
-            self.q.load(child)
-            rco = self._rco_for_entity(child, fields, [
-                RowConvertOp(RCO.POP),
-                RowConvertOp(RCO.SET_ATTR, relation),
-            ])
-
-            rcos.extend(rco)
-            rcos.append(RowConvertOp(RCO.JUMP, idx_break))
-
-            idx += len(rco) + 1
-            pc = self._add_poly_child(create_poly, idx, idx_break, child, poly, fields)
-            if pc:
-                rcos.extend(rco)
-                rcos.append(RowConvertOp(RCO.PUSH))
-                rcos.extend(pc)
-
-            idx = idx_start + len(rcos)
-
-        return rcos
 
 
     def _rco_for_entity(self, EntityType entity_type, dict existing=None, list before_create=[]):
+        cdef PolymorphMeta polymorph = entity_type.__meta__.get("polymorph", None)
+
         if existing is None:
             existing = {}
 
+        if polymorph:
+            return self._rco_for_poly_entity(entity_type, polymorph, existing, before_create)
+        else:
+            return self._rco_for_normal_entity(entity_type, existing, before_create)
+
+    def _rco_for_normal_entity(self, EntityType entity_type, dict existing=None, list before_create=[]):
         cdef EntityType aliased = get_alias_target(entity_type)
         cdef list rco = [RowConvertOp(RCO.CREATE_STATE, aliased)]
         cdef EntityAttribute attr
@@ -625,7 +638,7 @@ cdef class QueryFinalizer(Visitor):
 
                     if isinstance(field._impl_, CompositeImpl):
                         rco[0:0] = self._rco_for_composite(field, (<CompositeImpl>field._impl_)._entity_)
-                        rco.append(RowConvertOp(RCO.POP))
+                        rco.append(_RCO_POP)
                         rco.append(RowConvertOp(RCO.SET_ATTR, aliased.__fields__[field._index_]))
                     else:
                         try:
@@ -643,14 +656,20 @@ cdef class QueryFinalizer(Visitor):
                 loading = <Loading>attr.get_ext(Loading)
                 if attr._uid_ in self.q._load or (loading is not None and loading.always):
                     relation = <Relation>attr
+                    relation.update_join_expr()
 
                     if loading is not None and loading.always:
-                        self.q.load(attr)
+                        if loading.fields:
+                            joined_entity = relation._impl_.joined
+                            for fname in loading.fields:
+                                self.q.load(getattr(joined_entity, fname))
+                        else:
+                            self.q.load(relation._impl_.joined)
 
-                    if loading is not None and loading.eager:
-                        relation_rco.append((relation, self._rco_for_eager_relation()))
+                    if isinstance(relation._impl_, ManyToOne):
+                        relation_rco.append((relation, self._rco_for_one_relation(relation, existing)))
                     else:
-                        relation_rco.append((relation, self._rco_for_lazy_relation(relation)))
+                        relation_rco.append((relation, self._rco_for_many_relation(relation)))
             elif isinstance(attr, VirtualAttribute) and attr._uid_ in self.q._load:
                 try:
                     idx = existing[attr._uid_]
@@ -659,24 +678,157 @@ cdef class QueryFinalizer(Visitor):
                         idx = self._find_column_index(attr)
                     except ValueError:
                         idx = len(self.q._columns)
-                        self.q._columns.append(self.q._load[attr._uid_])
+                        self.q._columns.append(self.visit(self.q._load[attr._uid_]))
                         existing[attr._uid_] = idx
 
                 # not optimal, but working
                 rco.append(RowConvertOp(RCO.GET_RECORD, idx))
-                rco.append(RowConvertOp(RCO.PUSH))
-                rco.append(RowConvertOp(RCO.POP))
+                rco.append(_RCO_PUSH)
+                rco.append(_RCO_POP)
                 rco.append(RowConvertOp(RCO.SET_ATTR, aliased.__attrs__[attr._index_]))
 
         for rel, relco in relation_rco:
             if relco is not None:
                 rco[0:0] = relco
-                rco.append(RowConvertOp(RCO.POP))
+                rco.append(_RCO_POP)
                 rco.append(RowConvertOp(RCO.SET_ATTR, rel))
+
+        # TODO: ne hozzon létre üres entityt, nincs értelme
+        # if len(rco) == 1:
+        #     return []
 
         rco.extend(before_create)
         rco.append(RowConvertOp(RCO.CREATE_ENTITY, aliased))
         return rco
+
+    def _rco_for_poly_entity(self, EntityType entity, PolymorphMeta poly, dict fields, list before_create=None):
+        cdef list parents = poly.parents(entity)
+        # cdef EntityType ent
+        cdef EntityType entity_tmp
+        cdef Relation relation
+        cdef Relation parent_relation = None
+        cdef Field field
+        cdef list rco = []
+        cdef dict create_poly = {}
+        cdef tuple pk_fields
+        cdef list poly_id_fields = []
+
+        # cdef str parent_join_type = "INNER"
+        # if self.q._joins and entity in self.q._joins:
+        #     parent_join_type = self.q._joins[entity][2]
+
+        if len(parents) != 0:
+            # TODO: Szerintem ez nem kell ide
+            for relation in parents:
+                self.q.join(relation, None, "INNER")
+
+            relation = parents[len(parents) - 1]
+            entity_tmp = relation._impl_.joined
+        else:
+            entity_tmp = entity
+
+        pk_fields = entity_tmp.__pk__
+        for ent_id in poly.id_fields:
+            poly_id_fields.append(getattr(entity_tmp, ent_id))
+            self.q.load(*poly_id_fields)
+
+        for relation in reversed(parents):
+            self.q.join(relation, None, "INNER")
+
+            if parent_relation:
+                before_create = [
+                    _RCO_POP,
+                    RowConvertOp(RCO.SET_ATTR, parent_relation),
+                ]
+            else:
+                before_create = []
+            parent_relation = relation
+
+            entity_tmp = relation._impl_.joined
+
+            for i, field in enumerate(pk_fields):
+                try:
+                    pkidx = fields[field._uid_]
+                except KeyError:
+                    pass
+                else:
+                    fields[entity_tmp.__pk__[i]._uid_] = pkidx
+
+            self.q.load(entity_tmp)
+            rco.extend(self._rco_for_normal_entity(entity_tmp, fields, before_create))
+            rco.append(_RCO_PUSH)
+
+        if parent_relation:
+            before_create = [
+                _RCO_POP,
+                RowConvertOp(RCO.SET_ATTR, parent_relation),
+            ]
+
+            for i, field in enumerate(pk_fields):
+                fields[entity.__pk__[i]._uid_] = fields[field._uid_]
+        else:
+            before_create = []
+
+            for i, field in enumerate(pk_fields):
+                try:
+                    pkidx = fields[field._uid_]
+                except KeyError:
+                    pass
+                else:
+                    fields[entity.__pk__[i]._uid_] = pkidx
+
+        rco.extend(self._rco_for_normal_entity(entity, fields, before_create))
+
+        entity_tmp = get_alias_target(entity)
+        pc = self._add_poly_child(create_poly, entity_tmp, poly, fields, pk_fields)
+        if pc is True:
+            rco.append(_RCO_PUSH)
+
+            id_fields = []
+            for field in poly_id_fields:
+                id_fields.append(fields[field._uid_])
+
+            rco.append(RowConvertOp(RCO.CREATE_POLYMORPH_ENTITY, tuple(id_fields), create_poly))
+
+        return rco
+
+    def _add_poly_child(self, dict create_poly, EntityType entity, PolymorphMeta poly, dict fields, tuple pk_fields):
+        cdef Relation relation
+        cdef EntityType child
+        cdef bint has_poly_child = False
+        cdef dict child_rcos = {}
+        cdef Field field
+
+        for relation in poly.children(entity):
+            relation.update_join_expr()
+            child = relation._entity_
+            self.q.join(child, relation._default_, "LEFT")
+
+            for i, field in enumerate(pk_fields):
+                try:
+                    pkidx = fields[field._uid_]
+                except KeyError:
+                    pass
+                else:
+                    fields[child.__pk__[i]._uid_] = pkidx
+
+            self.q.load(child)
+            rcos = self._rco_for_normal_entity(child, fields, [
+                _RCO_POP,
+                RowConvertOp(RCO.SET_ATTR, relation),
+            ])
+
+            pc = self._add_poly_child(child_rcos, child, poly, fields, pk_fields)
+            if pc:
+                for k, v in child_rcos.items():
+                    v[0][0:0] = rcos + [_RCO_PUSH]
+
+                create_poly.update(child_rcos)
+
+            create_poly[poly.entities[child][0]] = [rcos]
+            has_poly_child = True
+
+        return has_poly_child
 
     def _rco_for_composite(self, Field field, EntityType entity, list path=None):
         cdef Field f
@@ -692,86 +844,60 @@ cdef class QueryFinalizer(Visitor):
         for f in entity.__fields__:
             if isinstance(f._impl_, CompositeImpl):
                 rco[0:0] = self._rco_for_composite(field, (<CompositeImpl>f._impl_)._entity_, path + [f._key_])
-                rco.append(RowConvertOp(RCO.POP))
+                rco.append(_RCO_POP)
                 rco.append(RowConvertOp(RCO.SET_ATTR, f))
             else:
                 idx = len(self.q._columns)
                 self.q._columns.append(getattr(src, f._name_))
                 rco.append(RowConvertOp(RCO.SET_ATTR_RECORD, f, idx))
 
-        rco.append(RowConvertOp(RCO.CREATE_ENTITY, entity))
-        rco.append(RowConvertOp(RCO.PUSH))
+        rco.append(RowConvertOp(RCO.CREATE_ENTITY, entity, True))
+        rco.append(_RCO_PUSH)
         return rco
 
-    def _rco_for_eager_relation(self):
-        return []
-
-    def _rco_for_lazy_relation(self, Relation relation, dict existing=None):
-        relation.update_join_expr()
-
+    def _rco_for_one_relation(self, Relation relation, dict existing=None):
         cdef EntityType load = relation._impl_.joined
-        cdef EntityType load_aliased = get_alias_target(load)
-        cdef RCO op
+        cdef Query col_query = Query(load).where(relation._impl_.join_expr).as_row()
+
+        if self.q._load:
+            col_query._load = dict(self.q._load)
+
+        column_name = self.q._get_next_alias()
+        cdef AliasExpression column_alias = self.visit(col_query.alias(column_name))
+        cdef Query column = column_alias.expr
+
+        col_idx = len(self.q._columns)
+        self.q._columns.append(column_alias)
+
+        return [RowConvertOp(RCO.CONVERT_SUB_ENTITY, col_idx, column._rcos), _RCO_PUSH]
+
+    def _rco_for_many_relation(self, Relation relation, dict existing=None):
+        cdef EntityType load = relation._impl_.joined
         cdef Query q
 
         if isinstance(relation._impl_, ManyToMany):
-            expr = relation._impl_.across_join_expr
-            op = RCO.LOAD_MULTI_ENTITY
             q = Query(relation._impl_.across) \
                 .columns(relation._impl_.joined) \
-                .join(relation._impl_.joined, relation._impl_.join_expr, "INNER")
+                .join(relation._impl_.joined, relation._impl_.join_expr, "INNER") \
+                .where(relation._impl_.across_join_expr)
         else:
-            expr = relation._impl_.join_expr
-            op = RCO.LOAD_ONE_ENTITY if isinstance(relation._impl_, ManyToOne) else RCO.LOAD_MULTI_ENTITY
-            q = Query(load)
+            q = Query(load).where(relation._impl_.join_expr)
 
         if self.q._load:
             q._load = dict(self.q._load)
 
-        cdef tuple fields = extract_fields(relation._entity_, expr)
-        cdef list indexes = []
+        column_name = self.q._get_next_alias()
+        alias_name = self.q._get_next_alias()
+        col_query = Query(q.alias(alias_name)).columns(raw(f'ARRAY_AGG("{alias_name}")'))
+        cdef AliasExpression column_alias = self.visit(col_query.alias(column_name))
+        cdef Query column = column_alias.expr
+        cdef AliasExpression subq_alias = column._select_from[0]
+        cdef Query subq = subq_alias.expr
 
-        if len(fields) == 0:
-            return None
+        col_idx = len(self.q._columns)
+        self.q._columns.append(column_alias)
 
-        for field in fields:
-            try:
-                idx = self._find_column_index(field)
-            except ValueError:
-                idx = len(self.q._columns)
-                self.q._columns.append(field)
-
-            indexes.append(idx)
-
-        return [RowConvertOp(op, tuple(indexes), QueryFactory(q, fields, expr))]
-
-    # TODO: optimalizálni a tuple létrehozást
-    # def _new_query_factory(self, EntityType loaded_entity, EntityType load, Relation r, Expression expr):
-    #     aliased = get_alias_target(load)
-    #     if load is not aliased:
-    #         expr = replace_entity(expr, load, get_alias_target(load))
-
-    #     fields = extract_fields(loaded_entity, expr)
-    #     indexes = []
-
-    #     for field in fields:
-    #         try:
-    #             idx = self._find_column_index(field)
-    #         except ValueError:
-    #             idx = len(self.q._columns)
-    #             self.q._columns.append(field)
-
-    #         indexes.append(idx)
-
-    #     if len(indexes) != 0:
-    #         if isinstance(r._impl_, ManyToMany):
-    #             qf = QueryFactory(Query(), fields, expr)
-    #         else:
-    #             qf = QueryFactory(Query(), fields, expr)
-    #         return tuple(indexes), qf
-    #     else:
-    #         return None, None
-
+        return [RowConvertOp(RCO.CONVERT_SUB_ENTITIES, col_idx, subq._rcos), _RCO_PUSH]
 
     def _find_column_index(self, EntityAttribute field):
         for i, c in enumerate(self.q._columns):
@@ -797,6 +923,18 @@ cdef inline determine_join(Query q, EntityType joined):
 
 @cython.final
 cdef class QueryFactory:
+    """
+    TODO: refactor plan
+    1. replace fileds with special ConstExpression
+    2. finalize query
+    3. compile query
+    4. create mapping between special ConstExpression and record index
+    5. rco...
+    6. REMOVE QueryFactory
+    7. REMOVE RCO.LOAD_ONE_ENTITY
+    8. REMOVE RCO.CONVERT_SUB_ENTITIES
+    """
+
     def __init__(self, Query query, tuple fields, Expression join_expr):
         self.query = query
         self.fields = fields
@@ -809,15 +947,25 @@ cdef class QueryFactory:
         return "<QueryFactory %r %r>" % (self.query._select_from, self.join_expr)
 
 
-# cdef class FinalizeVirtualAttr(ReplacerBase):
-#     cdef Query query
+class FieldConstExpr(ConstExpression):
+    pass
 
-#     def __cinit__(self, Query query):
-#         self.query = query
 
-#     def visit_virtual_attr(self, VirtualAttribute attr):
-#         if attr._expr:
-#             return attr._expr(attr._entity_, self.query, )
-#         else:
-#             raise ValueError("Expression not defined for: %r" % attr)
-#         return
+cdef class QueryCompiler:
+    def __cinit__(self, Dialect dialect):
+        self.dialect = dialect
+
+    cpdef compile_select(self, Query query):
+        raise NotImplementedError()
+
+    cpdef compile_insert(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
+        raise NotImplementedError()
+
+    cpdef compile_insert_or_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
+        raise NotImplementedError()
+
+    cpdef compile_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
+        raise NotImplementedError()
+
+    cpdef compile_delete(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
+        raise NotImplementedError()

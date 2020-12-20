@@ -1,4 +1,5 @@
 import cython
+import hashlib
 from cpython.object cimport PyObject
 from cpython.weakref cimport PyWeakref_NewRef, PyWeakref_GetObject
 from cpython.module cimport PyImport_Import, PyModule_GetDict
@@ -10,11 +11,12 @@ from ._field_impl cimport AutoImpl
 
 
 cdef class Field(EntityAttribute):
-    def __cinit__(self, impl = None, *, name = None, default = None, size = None, nullable = None):
+    def __cinit__(self, impl = None, *, name = None, default = None, size = None, nullable = None, on_update = None):
         self._default_ = default
         self._name_ = name
         self.type_cache = {}
         self.nullable = nullable
+        self.on_update = on_update
 
         if size is not None:
             if isinstance(size, list) or isinstance(size, tuple):
@@ -55,7 +57,8 @@ cdef class Field(EntityAttribute):
             name=self._name_,
             default=self._default_,
             size=(self.min_size, self.max_size),
-            nullable=self.nullable)
+            nullable=self.nullable,
+            on_update=self.on_update)
         res._exts_ = self.clone_exts(res)
         res._deps_ = set(self._deps_)
         res.type_cache = self.type_cache
@@ -90,6 +93,7 @@ cdef class Field(EntityAttribute):
             other_field.max_size = self.max_size
 
         other_field.nullable = self.nullable
+        other_field.on_update = self.on_update
 
 
 # field_proxy_attrs = ("__proxied__", "__repr__", "clone")
@@ -115,10 +119,6 @@ cdef class Field(EntityAttribute):
 
 
 cdef class FieldExtension(EntityAttributeExt):
-    pass
-
-
-cdef class FieldImpl(EntityAttributeImpl):
     pass
 
 
@@ -271,7 +271,7 @@ cdef class ForeignKey(FieldExtension):
             self.name = compute_fk_name(field, self.ref)
 
         if isinstance(field._impl_, AutoImpl):
-            field._impl_ = self.ref._impl_
+            (<AutoImpl>field._impl_)._ref_impl = self.ref._impl_
             field.min_size = self.ref.min_size
             field.max_size = self.ref.max_size
 
@@ -289,12 +289,17 @@ cdef class ForeignKey(FieldExtension):
 
 
 cdef compute_fk_name(Field field_from, Field field_to):
-    return "fk_%s__%s-%s__%s" % (
+    name = "fk_%s__%s-%s__%s" % (
         field_from._entity_.__name__,
         field_from._name_,
         field_to._entity_.__name__,
         field_to._name_
     )
+
+    if len(name) >= 63:
+        return f"fk_{hashlib.md5(name.encode()).hexdigest()}"
+    else:
+        return name
 
 
 cdef dict collect_foreign_keys(EntityType entity):

@@ -4,7 +4,7 @@ from yapic.entity._expression cimport Expression
 from yapic.entity._entity_diff cimport EntityDiff
 
 from ._ddl cimport DDLCompiler, DDLReflect
-from ._query_compiler cimport QueryCompiler
+from ._query cimport QueryCompiler
 
 cdef class Dialect:
     cpdef DDLCompiler create_ddl_compiler(self)

@@ -1,5 +1,9 @@
 from ._entity cimport EntityType, EntityBase, EntityAttributeImpl
-from ._field cimport Field, FieldImpl
+from ._field cimport Field
+
+
+cdef class FieldImpl(EntityAttributeImpl):
+    pass
 
 
 cdef class StringImpl(FieldImpl):
@@ -50,21 +54,21 @@ cdef class UUIDImpl(FieldImpl):
     pass
 
 
-cdef class ChoiceImpl(FieldImpl):
-    cdef object _enum
-    cdef readonly bint is_multi
-
-
 cdef class EntityTypeImpl(FieldImpl):
     cdef readonly EntityType _entity_
 
 
-cdef class JsonImpl(EntityTypeImpl):
-    pass
+cdef class JsonImpl(FieldImpl):
+    cdef readonly EntityType _object_
+    cdef readonly EntityType _list_
+    cdef bint _any_
+
+    cdef bint __check_dirty(self, object value)
+    cdef object __list_item(self, object value)
 
 
-cdef class JsonArrayImpl(JsonImpl):
-    cdef bint __check_dirty(self, list value)
+# cdef class JsonArrayImpl(JsonImpl):
+#     cdef bint __check_dirty(self, list value)
 
 
 cdef class CompositeImpl(EntityTypeImpl):
@@ -76,4 +80,14 @@ cdef class NamedTupleImpl(CompositeImpl):
 
 
 cdef class AutoImpl(FieldImpl):
-    pass
+    cdef readonly object _ref_impl
+
+
+cdef class ChoiceImpl(AutoImpl):
+    cdef readonly object _enum
+
+    cdef object _coerce(self, object value)
+
+
+cdef class ArrayImpl(FieldImpl):
+    cdef readonly object _item_impl_

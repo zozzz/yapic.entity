@@ -1,5 +1,7 @@
 # from hashids import Hashids
 
+from typing import Any
+
 from yapic.entity._entity import Entity
 from yapic.entity._entity cimport EntityType, EntityAttribute, EntityAttributeExtGroup
 from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, Index, AutoIncrement, StorageType
@@ -22,6 +24,7 @@ from yapic.entity._field_impl cimport (
     UUIDImpl,
     JsonImpl,
     CompositeImpl,
+    ArrayImpl,
 )
 from yapic.entity._geom_impl cimport (
     PointImpl,
@@ -278,7 +281,8 @@ cdef class PostgreDDLReflect(DDLReflect):
                 information_schema._pg_char_max_length(information_schema._pg_truetypid(pg_attribute.*, pg_type.*), information_schema._pg_truetypmod(pg_attribute.*, pg_type.*)) AS character_maximum_length,
                 information_schema._pg_numeric_precision(information_schema._pg_truetypid(pg_attribute.*, pg_type.*), information_schema._pg_truetypmod(pg_attribute.*, pg_type.*)) AS numeric_precision,
                 information_schema._pg_numeric_scale(information_schema._pg_truetypid(pg_attribute.*, pg_type.*), information_schema._pg_truetypmod(pg_attribute.*, pg_type.*)) AS numeric_scale,
-                pg_attribute.attlen as "size"
+                pg_attribute.attlen as "size",
+                pg_type.typcategory as "category"
                 {postgis_select}
             FROM pg_attribute
                 INNER JOIN pg_type ON pg_type.oid=pg_attribute.atttypid
@@ -350,7 +354,7 @@ cdef class PostgreDDLReflect(DDLReflect):
                 if ac:
                     field // ac
                     skip_default = True
-        elif typename == "text":
+        elif typename in ("text", "_text"):
             field = Field(StringImpl(), nullable=is_nullable)
         elif typename == "bytea":
             field = Field(BytesImpl(), nullable=is_nullable)
@@ -378,11 +382,7 @@ cdef class PostgreDDLReflect(DDLReflect):
         elif typename == "uuid":
             field = Field(UUIDImpl(), nullable=is_nullable)
         elif typename == "jsonb":
-            JSON_ENTITY_UID += 1
-
-            class JsonEntity(self.entity_base, name=f"JsonEntity{JSON_ENTITY_UID}"):
-                pass
-            field = Field(JsonImpl(JsonEntity), nullable=is_nullable)
+            field = Field(JsonImpl(Any), nullable=is_nullable)
         elif typename == "point":
             field = Field(PointImpl(), nullable=is_nullable)
         elif typename == "geometry":
@@ -397,12 +397,15 @@ cdef class PostgreDDLReflect(DDLReflect):
                 field = Field(PostGISLatLngImpl(record["geog_srid"]), nullable=is_nullable)
             else:
                 raise ValueError(f"Unhandled geometry type: {record['geog_type']}")
-        elif typeschema != "pg_catalog" and typeschema != "information_schema":
+        elif typeschema != "pg_catalog" and typeschema != "information_schema" and record["category"] == b"C":
             ctypename = f"{typeschema}.{typename}" if typeschema != "public" else f"{typename}"
             centity = registry[ctypename]
             field = Field(CompositeImpl(centity), nullable=is_nullable)
         else:
             raise TypeError("Can't determine type from sql type: %r" % typename)
+
+        if record["category"] == b"A":
+            field = Field(ArrayImpl(field._impl_), nullable=field.nullable)
 
         field._name_ = record["name"]
 

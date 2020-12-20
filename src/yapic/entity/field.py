@@ -1,13 +1,12 @@
 # flake8: noqa
 
-from _typeshed import NoneType
-from typing import Generic, NoReturn, TypeVar, Union, Optional, List, Tuple, Type, Any
+from typing import Generic, NoReturn, TypeVar, Union, Optional, List, Tuple, Type, Any, Callable
 from datetime import date, datetime, time
 from decimal import Decimal
 from enum import Enum
 import uuid
 
-from ._entity import Entity, EntityAttributeImpl
+from ._entity import EntityAttribute, EntityAttributeExt, Entity
 from ._field import Field as _Field, Index, ForeignKey, PrimaryKey, AutoIncrement
 from ._field_impl import (
     StringImpl,
@@ -24,15 +23,16 @@ from ._field_impl import (
     FloatImpl,
     UUIDImpl,
     JsonImpl as _JsonImpl,
-    JsonArrayImpl as _JsonArrayImpl,
     CompositeImpl as _CompositeImpl,
     AutoImpl,
+    ArrayImpl as _ArrayImpl,
 )
 from ._geom_impl import (
     PointType,
     PointImpl,
 )
 from ._virtual_attr import VirtualAttribute, VirtualAttributeImpl
+from ._expression import const
 
 Impl = TypeVar("Impl")
 PyType = TypeVar("PyType")
@@ -54,14 +54,15 @@ class Field(Generic[Impl, PyType, RawType], _Field):
                  name: Optional[str] = None,
                  default: Optional[Union[PyType, RawType]] = None,
                  size: Union[int, Tuple[int, int], None] = None,
-                 nullable: Optional[bool] = None):
-        self.__get__ = _Field.__get__
-        self.__set__ = _Field.__set__
+                 nullable: Optional[bool] = None,
+                 on_update: Callable[[Entity], Any] = None):
+        self.__get__ = _Field.__get__  # type: ignore
+        self.__set__ = _Field.__set__  # type: ignore
 
     def __get__(self, instance, owner) -> PyType:
         pass
 
-    def __set__(self, instance, value: Union[PyType, RawType, NoneType]) -> NoReturn:
+    def __set__(self, instance, value: Union[PyType, RawType, None]) -> NoReturn:
         pass
 
 
@@ -105,17 +106,18 @@ EnumT = TypeVar("EnumT", bound=Enum)
 
 class ChoiceImpl(Generic[EnumT], _ChoiceImpl):
     enum: Type[EnumT]
-    is_multi: bool
 
     def __init__(self, enum: Type[EnumT]):
         super().__init__(enum)
 
 
 class Choice(Generic[EnumT], Field[ChoiceImpl[EnumT], EnumT, Any]):
-    pass
+    def __new__(cls, impl, *args, **kwargs):
+        field = Field.__new__(cls, impl, *args, **kwargs)
+        return field // ForeignKey(impl.enum._entity_.value)
 
 
-EntityT = TypeVar("EntityT", bound=Enum)
+EntityT = TypeVar("EntityT")
 
 
 class JsonImpl(Generic[EntityT], _JsonImpl):
@@ -129,14 +131,7 @@ class Json(Generic[EntityT], Field[JsonImpl[EntityT], EntityT, str]):
     pass
 
 
-class JsonArrayImpl(Generic[EntityT], _JsonArrayImpl):
-    _entity_: Type[EntityT]
-
-    def __init__(self, entity: Type[EntityT]):
-        super().__init__(entity)
-
-
-class JsonArray(Generic[EntityT], Field[JsonArrayImpl[EntityT], List[EntityT], str]):
+class JsonArray(Generic[EntityT], Field[JsonImpl[List[EntityT]], List[EntityT], str]):
     pass
 
 
@@ -152,6 +147,52 @@ class Composite(Generic[EntityT], Field[CompositeImpl[EntityT], EntityT, str]):
 
 
 Point = Field[PointImpl, PointType, Any]
+
+
+class ArrayImpl(Generic[Impl], _ArrayImpl):
+    _item_impl_: Impl
+
+    def __init__(self, item_impl: Impl):
+        super().__init__(item_impl)
+
+
+class Array(Generic[Impl, PyType, RawType], Field[ArrayImpl[Impl], PyType, RawType]):
+    pass
+
+
+StringArray = Array[StringImpl, List[str], List[str]]
+IntArray = Array[IntImpl, List[int], List[int]]
+
+
+class CreatedTime(Field[DateTimeTzImpl, datetime, datetime]):
+    def __new__(cls, *args, **kwargs):
+        kwargs.setdefault("default", const.CURRENT_TIMESTAMP)
+        return Field.__new__(cls, *args, **kwargs)
+
+
+class _UpdatedTimeExt(EntityAttributeExt):
+    def init(self, attr: EntityAttribute):
+        from .sql.pgsql._trigger import PostgreTrigger
+
+        entity = attr._entity_
+        trigger = PostgreTrigger(
+            name=f"update-{attr._name_}",
+            before="UPDATE",
+            for_each="ROW",
+            when=f"""OLD.* IS DISTINCT FROM NEW.*""",
+            body=f"""
+                NEW."{attr._name_}" = CURRENT_TIMESTAMP;
+                RETURN NEW;
+            """,
+        )
+
+        entity.__triggers__.append(trigger)
+
+
+class UpdatedTime(Field[DateTimeTzImpl, datetime, datetime]):
+    def __new__(cls, *args, **kwargs):
+        field = Field.__new__(cls, *args, **kwargs)
+        return field // _UpdatedTimeExt()
 
 
 def virtual(fn) -> VirtualAttribute:
