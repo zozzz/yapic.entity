@@ -16,7 +16,7 @@ REGISTRY = Registry()
 dialect = PostgreDialect()
 
 
-@pytest.yield_fixture
+@pytest.fixture
 async def conn(pgsql):
     yield wrap_connection(pgsql, "pgsql")
 

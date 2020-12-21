@@ -26,9 +26,6 @@ cdef class Registry:
 
             self.resolve_deferred()
 
-            # if not entity.resolve_deferred():
-            #     self.deferred.append(entity)
-
     def __getitem__(self, str name):
         return self.entities[name]
 

@@ -8,6 +8,7 @@ cdef class Registry:
     cdef readonly object entities
     cdef readonly object locals
     cdef list deferred
+    cdef object __weakref__
 
     cpdef object register(self, str name, EntityType entity)
     cpdef keys(self)

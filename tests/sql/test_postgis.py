@@ -15,7 +15,7 @@ ddl = dialect.create_ddl_compiler()
 REGISTRY = Registry()
 
 
-@pytest.yield_fixture
+@pytest.fixture
 async def conn(pgsql):
     await pgsql.execute('CREATE EXTENSION IF NOT EXISTS "postgis"')
     yield wrap_connection(pgsql, "pgsql")

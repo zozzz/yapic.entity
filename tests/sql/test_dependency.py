@@ -6,7 +6,7 @@ from yapic.entity import (Serial, Int, String, ForeignKey, PrimaryKey, One, Many
 pytestmark = pytest.mark.asyncio  # type: ignore
 
 
-@pytest.yield_fixture  # type: ignore
+@pytest.fixture  # type: ignore
 async def conn(pgsql):
     yield wrap_connection(pgsql, "pgsql")
 

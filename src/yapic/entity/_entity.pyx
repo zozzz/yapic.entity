@@ -1,6 +1,7 @@
 import cython
 import random
 import string
+import weakref
 
 from collections.abc import ItemsView
 from operator import attrgetter
@@ -9,6 +10,7 @@ from cpython.object cimport PyObject
 from cpython.ref cimport Py_DECREF, Py_INCREF, Py_XDECREF, Py_XINCREF
 from cpython.tuple cimport PyTuple_SetItem, PyTuple_GetItem, PyTuple_New, PyTuple_GET_SIZE, PyTuple_SET_ITEM, PyTuple_GET_ITEM, PyTuple_Pack
 from cpython.module cimport PyImport_Import, PyModule_GetDict
+from cpython.weakref cimport PyWeakref_NewRef, PyWeakref_GetObject
 
 from ._field cimport Field, PrimaryKey, ForeignKey
 from ._field_impl cimport AutoImpl
@@ -220,7 +222,7 @@ cdef class EntityType(type):
 
     @property
     def __registry__(self):
-        return <object>self.registry
+        return <object>PyWeakref_GetObject(<object>self.registry)
 
     @property
     def __qname__(self):
@@ -606,6 +608,7 @@ cdef inline state_set_value(PyObject* initial, PyObject* current, EntityAttribut
 
     nv = (<EntityAttributeImpl>attr._impl_).state_set(<object>iv, <object>cv, value)
     Py_INCREF(<object>nv)
+    Py_XDECREF(cv)
     PyTuple_SET_ITEM(<object>current, idx, <object>nv)
 
 
@@ -688,8 +691,10 @@ cdef class EntityState:
     cdef object del_value(self, EntityAttribute attr):
         cdef PyObject* current = <PyObject*>self.current
         cdef PyObject* cv = PyTuple_GET_ITEM(<object>current, attr._index_)
+        cdef PyObject* nv = <PyObject*>NOTSET;
+        Py_INCREF(<object>nv)
         Py_XDECREF(cv)
-        PyTuple_SET_ITEM(<object>current, attr._index_, <object>NULL)
+        PyTuple_SET_ITEM(<object>current, attr._index_, <object>nv)
 
     cdef list data_for_insert(self):
         cdef int idx
@@ -961,13 +966,10 @@ cdef class EntityBase:
         cdef EntityType ent = cls
         cdef EntityType parent_entity
         cdef int mro_length = len(cls.__mro__)
-        cdef PyObject* _registry
+        cdef dict meta_dict = {}
 
         if name is not None:
             ent.__name__ = name
-
-        meta_dict = {}
-        _registry = <PyObject*>(<object>registry)
 
         for i in range(1, mro_length - 2):
             parent = cls.__mro__[i]
@@ -977,19 +979,21 @@ cdef class EntityBase:
                 if parent_entity.meta is not NULL:
                     meta_dict.update(<object>parent_entity.meta)
 
-                if _registry is <PyObject*>None:
-                    _registry = parent_entity.registry
+                if registry is None and parent_entity.registry is not NULL:
+                    registry = parent_entity.__registry__
 
         meta_dict.update(meta)
         meta_dict.pop("__fields__", None)
 
+        Py_XINCREF(<PyObject*>(<object>meta_dict))
         Py_XDECREF(ent.meta)
         ent.meta = <PyObject*>(<object>meta_dict)
-        Py_XINCREF(ent.meta)
+
+        cdef object registry_ref = PyWeakref_NewRef(registry, None)
+        Py_XINCREF(<PyObject*>(<object>registry_ref))
 
         Py_XDECREF(ent.registry)
-        ent.registry = _registry
-        Py_XINCREF(ent.registry)
+        ent.registry = <PyObject*>(<object>registry_ref)
 
     @property
     def __pk__(self):

@@ -21,7 +21,7 @@ cdef class EntityType(type):
     cdef PyObject* registry
     cdef PyObject* meta
     cdef readonly set __deps__
-    cdef object __weakref__
+    # cdef object __weakref__
 
     cdef object resolve_deferred(self)
     cpdef object __entity_ready__(self)

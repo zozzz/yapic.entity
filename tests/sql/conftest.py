@@ -54,7 +54,7 @@ def pgsql_docker():
     return start_container(PG_DOCKER_TAG, "yapic_entity_pgsql_docker", ports=[5432])
 
 
-@pytest.yield_fixture
+@pytest.fixture
 async def pgsql(pgsql_docker):
     for i in range(30):
         try:
