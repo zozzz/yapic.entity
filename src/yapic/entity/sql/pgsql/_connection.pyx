@@ -76,7 +76,8 @@ cdef class PostgreConnection(Connection):
         # print(q)
 
         self.conn._check_open()
-        _, res, _ = await self.conn._execute(q, p, 0, timeout, True)
+        _, res, _ = await self.conn._execute(q, p, 0, timeout, return_status=True)
+        # _, res, _ = await self.conn._execute(q, p, 0, timeout, True)
         return res and int(res[7:]) > 0
 
     async def __exec_iou(self, str q, values, EntityBase entity, EntityType entity_t, timeout):
