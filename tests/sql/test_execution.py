@@ -5,10 +5,11 @@ import pytest
 from datetime import datetime, date, time, tzinfo, timedelta
 from decimal import Decimal
 from yapic.entity.field import Choice
-from yapic.entity.sql import wrap_connection, Entity, sync, PostgreDialect
-from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool, ForeignKey,
-                          PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite, Auto, Numeric,
-                          Float, Point, UUID, virtual, StringArray, IntArray, CreatedTime, UpdatedTime, Enum)
+from yapic.entity.sql import wrap_connection, sync, PostgreDialect
+from yapic.entity import (Entity, Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool,
+                          ForeignKey, PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite,
+                          Auto, Numeric, Float, Point, UUID, virtual, StringArray, IntArray, CreatedTime, UpdatedTime,
+                          Enum, AutoIncrement)
 from yapic import json
 
 pytestmark = pytest.mark.asyncio
@@ -1145,3 +1146,29 @@ ALTER TABLE "execution"."EnumTest"
     await conn.save(inst)
     assert inst.str_enum is StringEnum.PAUSED
     assert inst.int_enum == IntEnum.RUNNING
+
+
+async def test_same_seq(conn, pgclean):
+    reg = Registry()
+
+    class Entity1(Entity, registry=reg, schema="execution"):
+        id: Int = AutoIncrement(("execution", "same_seq"))
+
+    class Entity2(Entity, registry=reg, schema="execution"):
+        id: Int = AutoIncrement(("execution", "same_seq"))
+
+    result = await sync(conn, reg)
+
+    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE SEQUENCE "execution"."same_seq";
+CREATE TABLE "execution"."Entity1" (
+  "id" INT4 DEFAULT nextval('"execution"."same_seq"'::regclass)
+);
+CREATE TABLE "execution"."Entity2" (
+  "id" INT4 DEFAULT nextval('"execution"."same_seq"'::regclass)
+);"""
+
+    await conn.conn.execute(result)
+
+    result = await sync(conn, reg)
+    assert result is None

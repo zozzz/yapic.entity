@@ -21,6 +21,9 @@ cdef class Dialect:
     cpdef str quote_ident(self, str ident):
         raise NotImplementedError()
 
+    cpdef list unquote_ident(self, str ident):
+        raise NotImplementedError()
+
     cpdef object quote_value(self, object value):
         raise NotImplementedError()
 

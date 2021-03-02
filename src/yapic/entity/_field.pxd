@@ -44,6 +44,7 @@ cdef class PrimaryKey(FieldExtension):
 
 
 cdef class AutoIncrement(FieldExtension):
+    cdef object _seq_arg
     cdef readonly EntityType sequence
 
 

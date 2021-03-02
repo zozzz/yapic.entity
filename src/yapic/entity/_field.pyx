@@ -140,30 +140,51 @@ cdef class PrimaryKey(FieldExtension):
 
 
 cdef class AutoIncrement(FieldExtension):
-    def __cinit__(self, EntityType sequence=None):
-        self.sequence = sequence
+    def __cinit__(self, object sequence=None):
+        self._seq_arg = sequence
 
     cpdef object bind(self):
         cdef EntityType entity
         cdef EntityType aliased
 
         if self.sequence is None:
-            entity = self.attr._entity_
-            aliased = get_alias_target(entity)
+            if self._seq_arg is None:
+                entity = self.attr._entity_
+                aliased = get_alias_target(entity)
 
-            if entity is aliased:
+                if entity is aliased:
+                    try:
+                        schema = entity.__meta__["schema"]
+                    except KeyError:
+                        schema = None
+
+                    name = f"{entity.__name__}_{self.attr._name_}_seq"
+                    self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=entity.__registry__, is_sequence=True)
+                else:
+                    self.sequence = getattr(aliased, self.attr._key_).get_ext(AutoIncrement).sequence
+            elif isinstance(self._seq_arg, EntityType):
+                self.sequence = self._seq_arg
+            elif isinstance(self._seq_arg, (list, tuple)):
+                if len(self._seq_arg) == 2:
+                    schema, name = self._seq_arg
+                elif len(self._seq_arg) == 1:
+                    schema = "public"
+                    name = self._seq_arg[0]
+                else:
+                    raise ValueError(f"Invalid sequence value: {self._seq_arg}")
+
+                entity = get_alias_target(self.attr._entity_)
+
                 try:
-                    schema = entity.__meta__["schema"]
+                    self.sequence = entity.__registry__[name if schema == "public" else f"{schema}.{name}"]
                 except KeyError:
-                    schema = None
-
-                name = f"{entity.__name__}_{self.attr._name_}_seq"
-                self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=entity.__registry__, is_sequence=True)
-            else:
-                self.sequence = getattr(aliased, self.attr._key_).get_ext(AutoIncrement).sequence
+                    self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=entity.__registry__, is_sequence=True)
 
         self.attr._deps_.add(self.sequence)
         return FieldExtension.bind(self)
+
+    cpdef object clone(self):
+        return type(self)(self._seq_arg)
 
     def __repr__(self):
         return "@AutoIncrement(%r)" % self.sequence
