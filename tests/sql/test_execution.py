@@ -1158,7 +1158,6 @@ async def test_same_seq(conn, pgclean):
         id: Int = AutoIncrement(("execution", "same_seq"))
 
     result = await sync(conn, reg)
-
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
 CREATE SEQUENCE "execution"."same_seq";
 CREATE TABLE "execution"."Entity1" (
@@ -1171,4 +1170,23 @@ CREATE TABLE "execution"."Entity2" (
     await conn.conn.execute(result)
 
     result = await sync(conn, reg)
+    assert result is None
+
+    reg2 = Registry()
+
+    class Entity1(Entity, registry=reg2, schema="execution"):
+        id: Serial
+
+    result = await sync(conn, reg2)
+    assert result == """DROP SEQUENCE "execution"."same_seq" CASCADE;
+DROP TABLE "execution"."Entity2" CASCADE;
+CREATE SEQUENCE "execution"."Entity1_id_seq";
+ALTER TABLE "execution"."Entity1"
+  ALTER COLUMN "id" SET DEFAULT nextval('"execution"."Entity1_id_seq"'::regclass),
+  ALTER COLUMN "id" SET NOT NULL,
+  ADD PRIMARY KEY("id");"""
+
+    await conn.conn.execute(result)
+
+    result = await sync(conn, reg2)
     assert result is None

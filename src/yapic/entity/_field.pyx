@@ -187,7 +187,7 @@ cdef class AutoIncrement(FieldExtension):
         return type(self)(self._seq_arg)
 
     def __repr__(self):
-        return "@AutoIncrement(%r)" % self.sequence
+        return "@AutoIncrement(%r)" % self.sequence.__qname__
 
 
 
