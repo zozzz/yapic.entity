@@ -209,6 +209,18 @@ cdef class AliasExpression(Expression):
         return AliasExpression(self.expr, alias)
 
 
+cdef class ColumnRefExpression(Expression):
+    def __cinit__(self, Expression expr, int index):
+        self.expr = expr
+        self.index = index
+
+    def __repr__(self):
+        return "<ColumnRef %s idx=%s>" % (self.expr, self.index)
+
+    cpdef visit(self, Visitor visitor):
+        return visitor.visit_column_ref(self)
+
+
 cdef class PathExpression(Expression):
     def __cinit__(self, list path):
         self._path_ = path

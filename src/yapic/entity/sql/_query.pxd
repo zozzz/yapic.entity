@@ -42,6 +42,7 @@ cdef class QueryFinalizer(Visitor):
     cdef readonly list rcos
     cdef readonly int in_or
     cdef readonly QueryCompiler compiler
+    cdef readonly dict virtual_indexes
 
 
 cdef class QueryCompiler(Visitor):

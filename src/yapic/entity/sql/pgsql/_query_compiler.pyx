@@ -12,7 +12,8 @@ from yapic.entity._expression cimport (
     AliasExpression,
     CallExpression,
     RawExpression,
-    PathExpression)
+    PathExpression,
+    ColumnRefExpression)
 from yapic.entity._expression import and_
 from yapic.entity._field cimport Field, PrimaryKey
 from yapic.entity._field_impl cimport JsonImpl, CompositeImpl, ArrayImpl
@@ -279,6 +280,9 @@ cdef class PostgreQueryCompiler(QueryCompiler):
             return self.visit((<AliasExpression>expr).expr)
         else:
             return f"{self.visit((<AliasExpression>expr).expr)} as {self.dialect.quote_ident((<AliasExpression>expr).value)}"
+
+    def visit_column_ref(self, ColumnRefExpression expr):
+        return str(expr.index + 1)
 
     def visit_query(self, expr):
         cdef PostgreQueryCompiler qc = self.dialect.create_query_compiler()

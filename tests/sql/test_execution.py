@@ -909,6 +909,10 @@ async def test_virtual_load(conn):
     obj = await conn.select(query).first()
     assert obj.data_concat == "NotLoaded"
 
+    query = Query(VirtualLoad).load(VirtualLoad.data_concat).order(VirtualLoad.data_concat.asc())
+    sql, params = dialect.create_query_compiler().compile_select(query)
+    assert sql == 'SELECT CONCAT_WS($1, "t0"."data_1", "t0"."data_2") FROM "execution"."VirtualLoad" "t0" ORDER BY 1 ASC'
+
 
 async def test_array(conn, pgclean):
     registry = Registry()

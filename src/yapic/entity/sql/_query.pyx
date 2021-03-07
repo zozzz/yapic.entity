@@ -4,8 +4,8 @@ import cython
 from yapic.entity._entity cimport EntityType, EntityAttribute, PolymorphMeta, get_alias_target, is_entity_alias
 from yapic.entity._field cimport Field, field_eq
 from yapic.entity._field_impl cimport CompositeImpl
-from yapic.entity._expression cimport (Expression, AliasExpression, DirectionExpression, Visitor, BinaryExpression,
-    UnaryExpression, CastExpression, CallExpression, RawExpression, PathExpression,
+from yapic.entity._expression cimport (Expression, AliasExpression, ColumnRefExpression, DirectionExpression, Visitor,
+    BinaryExpression, UnaryExpression, CastExpression, CallExpression, RawExpression, PathExpression,
     VirtualExpressionVal, VirtualExpressionBinary, VirtualExpressionDir, ConstExpression, raw)
 from yapic.entity._expression import and_
 from yapic.entity._relation cimport Relation, RelationImpl, ManyToOne, ManyToMany, RelatedAttribute, determine_join_expr, Loading
@@ -421,6 +421,7 @@ cdef class QueryFinalizer(Visitor):
         self.rcos = []
         self.in_or = 0
         self.compiler = compiler
+        self.virtual_indexes = {}
 
     def visit_binary(self, BinaryExpression expr):
         if expr.op == operator.__or__:
@@ -488,7 +489,15 @@ cdef class QueryFinalizer(Visitor):
         return self.visit(expr._create_expr_(self.q))
 
     def visit_vexpr_dir(self, VirtualExpressionDir expr):
-        return self.visit(expr._create_expr_(self.q))
+        cdef VirtualAttribute attr = expr.expr._virtual_
+        if attr._order:
+            return self.visit(expr._create_expr_(self.q))
+        else:
+            try:
+                idx = self._find_column_index(attr)
+                return expr.op(ColumnRefExpression(expr.expr, idx))
+            except:
+                return self.visit(expr._create_expr_(self.q))
 
     def visit_relation(self, expr):
         return expr
@@ -581,6 +590,10 @@ cdef class QueryFinalizer(Visitor):
                 else:
                     self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
                     self.q._columns.append(self.visit(expr))
+            elif isinstance(expr, VirtualExpressionVal):
+                self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
+                self.virtual_indexes[(<VirtualExpressionVal>expr)._virtual_._uid_] = len(self.q._columns)
+                self.q._columns.append(self.visit(expr))
             else:
                 self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
                 self.q._columns.append(self.visit(expr))
@@ -680,6 +693,8 @@ cdef class QueryFinalizer(Visitor):
                         idx = len(self.q._columns)
                         self.q._columns.append(self.visit(self.q._load[attr._uid_]))
                         existing[attr._uid_] = idx
+
+                self.virtual_indexes[attr._uid_] = idx
 
                 # not optimal, but working
                 rco.append(RowConvertOp(RCO.GET_RECORD, idx))
@@ -903,6 +918,12 @@ cdef class QueryFinalizer(Visitor):
         for i, c in enumerate(self.q._columns):
             if isinstance(c, EntityAttribute) and (<EntityAttribute>c)._uid_ is field._uid_:
                 return i
+
+        try:
+            return self.virtual_indexes[field._uid_]
+        except KeyError:
+            pass
+
         raise ValueError()
 
 
