@@ -511,10 +511,8 @@ cdef class PostgreDDLReflect(DDLReflect):
             else:
                 raise ValueError(f"Unexpected value as ident: {ident}")
 
-            seq_qname = f"{schema}.{name}"
-
             try:
-                seq = registry[seq_qname]
+                seq = registry[name if schema == "public" else f"{schema}.{name}"]
             except:
                 seq = None
 

@@ -159,7 +159,10 @@ cdef class AutoIncrement(FieldExtension):
                         schema = None
 
                     name = f"{entity.__name__}_{self.attr._name_}_seq"
-                    self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=entity.__registry__, is_sequence=True)
+                    try:
+                        self.sequence = entity.__registry__[name if schema == "public" else f"{schema}.{name}"]
+                    except KeyError:
+                        self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=entity.__registry__, is_sequence=True)
                 else:
                     self.sequence = getattr(aliased, self.attr._key_).get_ext(AutoIncrement).sequence
             elif isinstance(self._seq_arg, EntityType):
