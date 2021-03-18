@@ -1,8 +1,7 @@
-from typing import Generic, TypeVar, overload, Type, Union, Any, Optional
+from typing import Generic, List, NoReturn, TypeVar, Type, Union, Optional
 
 from . import _relation
-from .field import Field
-from ._relation import Loading
+from ._relation import Loading  # noqa
 
 __all__ = "Relation", "Many", "One", "ManyAcross", "Loading"
 
@@ -22,6 +21,14 @@ class Relation(Generic[Impl, T], _relation.Relation):
 
     def __init__(self, impl: Impl = None, *, join: Optional[str] = None):
         pass
+        # self.__get__ = _relation.Relation.__get__  # type: ignore
+        # self.__set__ = _relation.Relation.__set__  # type: ignore
+
+    def __get__(self, instance, owner) -> T:
+        return _relation.Relation.__get__(self, instance, owner)
+
+    def __set__(self, instance, value: Union[T, None]) -> NoReturn:
+        _relation.Relation.__set__(self, instance, value)
 
     # TODO: move to stub file
     # @overload
@@ -94,12 +101,12 @@ class One(Generic[JoinedT], Relation[ManyToOne[Type[JoinedT], RelatedItem[Joined
     __slots__ = ()
 
 
-class Many(Generic[JoinedT], Relation[OneToMany[Type[JoinedT], RelatedList[JoinedT]], RelatedList[JoinedT]]):
+class Many(Generic[JoinedT], Relation[OneToMany[Type[JoinedT], RelatedList[JoinedT]], List[JoinedT]]):
     __slots__ = ()
 
 
-class ManyAcross(Generic[AcrossT, JoinedT],
-                 Relation[ManyToMany[Type[JoinedT], Type[AcrossT], RelatedList[JoinedT]], RelatedList[JoinedT]]):
+class ManyAcross(Generic[AcrossT, JoinedT], Relation[ManyToMany[Type[JoinedT], Type[AcrossT], RelatedList[JoinedT]],
+                                                     List[JoinedT]]):
     __slots__ = ()
 
 

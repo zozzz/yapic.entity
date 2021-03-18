@@ -195,7 +195,7 @@ cdef class AutoIncrement(FieldExtension):
 
 
 cdef class Index(FieldExtension):
-    def __cinit__(self, str expr = None, *, str name = None, str method = "btree", bint unique = False, str collate = None):
+    def __cinit__(self, *, str expr = None, str name = None, str method = "btree", bint unique = False, str collate = None):
         self.name = name
         self.method = method
         self.unique = unique
@@ -203,7 +203,7 @@ cdef class Index(FieldExtension):
         self.expr = expr
 
     cpdef object clone(self):
-        return type(self)(self.expr, name=self.name, method=self.method, unique=self.unique, collate=self.collate)
+        return type(self)(expr=self.expr, name=self.name, method=self.method, unique=self.unique, collate=self.collate)
 
     cpdef object init(self, EntityAttribute attr):
         if not self.name:
