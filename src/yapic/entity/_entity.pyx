@@ -1098,12 +1098,7 @@ cdef class EntityBase:
         cdef dict res = {}
 
         for attr, value in self:
-            if isinstance(value, EntityBase):
-                res[attr._key_] = value.as_dict()
-            elif isinstance(value, list):
-                res[attr._key_] = [v.as_dict() for v in value]
-            else:
-                res[attr._key_] = value
+            res[attr._key_] = as_dict(value)
 
         return res
 
@@ -1113,6 +1108,15 @@ cdef class EntityBase:
             return "<%s %r>" % (type(self).__qname__, self.as_dict())
         else:
             return "<%s %r>" % (type(self).__qname__, self.__pk__)
+
+
+cdef object as_dict(object o):
+    if isinstance(o, EntityBase):
+        return o.as_dict()
+    elif isinstance(o, list):
+        return [as_dict(v) for v in o]
+    else:
+        return o
 
 
 class Entity(EntityBase, metaclass=EntityType, registry=REGISTRY, _root=True):
