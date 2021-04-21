@@ -190,17 +190,20 @@ cdef class Query(Expression):
             if condition is None:
                 raise RuntimeError("Missing join expression from relation: %r" % what)
 
-            if entity in self._select_from or entity in self._entities:
+            if entity in self._entities:
                 return self
 
         elif isinstance(what, EntityType):
-            if what in self._select_from or what in self._entities:
-                return self
-
             entity = <EntityType>what
+
+            if entity in self._entities:
+                return self
 
             if condition is None:
                 condition = determine_join(self, entity)
+
+        else:
+            raise ValueError(f"Want to join uexpected entity: {what}")
 
         self._entities.append(entity)
 

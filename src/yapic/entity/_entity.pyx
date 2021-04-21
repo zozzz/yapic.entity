@@ -272,7 +272,10 @@ cdef class EntityType(type):
         if aliased is self:
             return "<Entity %s>" % self.__qname__
         else:
-            return "<Alias(%s) of %r>" % (id(self), aliased)
+            if self.__name__:
+                return "<Alias(%s|%s) of %r>" % (id(self), self.__name__, aliased)
+            else:
+                return "<Alias(%s) of %r>" % (id(self), aliased)
             # return "<Alias of %r>" % aliased
 
     def alias(self, str alias = None):
