@@ -133,7 +133,11 @@ cdef class Connection:
                         else:
                             spath = getattr(path, attr._key_)
 
-                        await self._collect_attrs(value, for_insert, attrs, names, values, spath)
+                        # TODO: jobb megoldást találni arra, hogy felismerje azt,
+                        #       hogy ez composite mezőt módosítani kell, de maga a composite mező nem dirty
+                        #       mert egy másik lekérdezés composite mezője lett beállítva
+                        #       - Asetleg az EntityTypeImpl.state_get_dirty függvényben kéne megjelölni a mezőket dirtyre
+                        await self._collect_attrs(value, True, attrs, names, values, spath)
                         continue
 
                 attrs.append(attr)
