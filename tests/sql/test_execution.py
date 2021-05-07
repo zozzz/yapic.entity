@@ -656,6 +656,36 @@ CREATE TABLE "execution"."CallableDefault" (
   ALTER COLUMN "creator_id" SET NOT NULL;"""
 
 
+async def test_composite_set_null(conn):
+    await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
+    await conn.conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
+
+    reg_a = Registry()
+
+    class CompXY(Entity, registry=reg_a, schema="execution"):
+        x: Int
+        y: Int
+
+    class Entry(Entity, registry=reg_a, schema="execution"):
+        id: Serial
+        xy: Composite[CompXY]
+
+    result = await sync(conn, reg_a)
+    await conn.conn.execute(result)
+
+    entry = Entry(xy={"x": 1, "y": 2})
+    await conn.save(entry)
+
+    entry = await conn.select(Query(Entry).where(Entry.id == entry.id)).first()
+    assert entry.xy.x == 1
+    assert entry.xy.y == 2
+
+    entry.xy = None
+    await conn.save(entry)
+    entry = await conn.select(Query(Entry).where(Entry.id == entry.id)).first()
+    assert entry.xy is None
+
+
 async def test_pk_change(conn):
     await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
     await conn.conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
