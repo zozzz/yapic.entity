@@ -143,11 +143,7 @@ cdef class Connection:
                             await self._collect_attrs(value, True, attrs, names, values, spath)
                             continue
 
-                    if isinstance(value, Expression):
-                        values.append(value)
-                    else:
-                        field_type = self.dialect.get_field_type(<Field>attr)
-                        values.append(field_type.encode(value))
+                    values.append(self.dialect.encode_value(attr, value))
 
                 attrs.append(attr)
                 if has_nonpk_attr is False and not attr.get_ext(PrimaryKey):
@@ -170,14 +166,7 @@ cdef class Connection:
 
                             attrs.append(field)
                             names.append(self.dialect.quote_ident(field._name_))
-
-                            if value is None:
-                                values.append(None)
-                            elif isinstance(value, Expression):
-                                values.append(value)
-                            else:
-                                field_type = self.dialect.get_field_type(field)
-                                values.append(field_type.encode(value))
+                            values.append(self.dialect.encode_value(field, value))
 
             for attr in entity_type.__pk__:
                 field_name = self.dialect.quote_ident(attr._name_)
@@ -188,12 +177,7 @@ cdef class Connection:
 
                     attrs.append(attr)
                     names.append(field_name)
-
-                    if value is None:
-                        values.append(None)
-                    else:
-                        field_type = self.dialect.get_field_type(attr)
-                        values.append(field_type.encode(value))
+                    values.append(self.dialect.encode_value(attr, value))
 
 
 cpdef wrap_connection(conn, dialect):

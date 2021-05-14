@@ -15,6 +15,7 @@ cdef class Dialect:
     cpdef str quote_ident(self, str ident)
     cpdef list unquote_ident(self, str ident)
     cpdef object quote_value(self, object value)
+    cpdef object encode_value(self, Field field, object value)
     cpdef str table_qname(self, EntityType entity)
     cpdef StorageType get_field_type(self, Field field)
     cpdef bint expression_eq(self, Expression a, Expression b)
