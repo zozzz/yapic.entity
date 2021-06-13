@@ -1,4 +1,5 @@
 from inspect import iscoroutine
+from logging import getLogger, DEBUG
 
 from yapic.entity._entity cimport EntityType, EntityAttribute, NOTSET
 from yapic.entity._entity_diff cimport EntityDiff
@@ -16,6 +17,9 @@ from ._query_context cimport QueryContext
 from ._dialect cimport Dialect
 
 
+select_logger = getLogger("yapic.entity.sql.select")
+
+
 cdef class Connection:
     def __cinit__(self, conn, dialect):
         self.conn = conn
@@ -31,6 +35,9 @@ cdef class Connection:
     def select(self, Query q, *, prefetch=None, timeout=None):
         cdef QueryCompiler qc = self.dialect.create_query_compiler()
         sql, params = qc.compile_select(q)
+
+        if select_logger.isEnabledFor(DEBUG):
+            select_logger.debug(f"{sql} {params}")
 
         # print("\n" + "=" * 50)
         # print(sql, params)
