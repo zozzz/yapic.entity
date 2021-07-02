@@ -7,14 +7,13 @@ from yapic.entity._entity cimport EntityType, EntityState, EntityAttribute
 from yapic.entity._field cimport StorageType
 from yapic.entity._field_impl cimport CompositeImpl
 
-from ._connection cimport Connection
 from ._dialect cimport Dialect
 from ._record_converter cimport RCState
 from ._record_converter import convert_record
 
 
 cdef class QueryContext:
-    def __cinit__(self, Connection conn, cursor_factory, list rcos_list):
+    def __cinit__(self, conn, cursor_factory, list rcos_list):
         self.conn = conn
         self.cursor_factory = cursor_factory
         self.rcos_list = rcos_list
@@ -27,7 +26,7 @@ cdef class QueryContext:
         return rows
 
     async def fetchrow(self, *, timeout=None):
-        async with ensure_transaction(self.conn.conn):
+        async with ensure_transaction(self.conn):
             cursor = await self.cursor_factory
             row = await cursor.fetchrow(timeout=timeout)
             if row:
@@ -36,18 +35,18 @@ cdef class QueryContext:
                 return None
 
     async def forward(self, num, *, timeout=None):
-        async with ensure_transaction(self.conn.conn):
+        async with ensure_transaction(self.conn):
             cursor = await self.cursor_factory
             return await cursor.forward(num, timeout=timeout)
 
     async def fetchval(self, column=0, *, timeout=None):
-        async with ensure_transaction(self.conn.conn):
+        async with ensure_transaction(self.conn):
             cursor = await self.cursor_factory
             row = await cursor.fetchrow(timeout=timeout)
             return row[column]
 
     async def first(self, *, timeout=None):
-        async with ensure_transaction(self.conn.conn):
+        async with ensure_transaction(self.conn):
             cursor = await self.cursor_factory
             row = await cursor.fetchrow(timeout=timeout)
             if row is not None:
@@ -59,7 +58,7 @@ cdef class QueryContext:
         return convert_record(row, self.rcos_list, self.rc_state)
 
     async def __aiter__(self):
-        async with ensure_transaction(self.conn.conn):
+        async with ensure_transaction(self.conn):
             async for record in self.cursor_factory.__aiter__():
                 yield self.convert_row(record)
 

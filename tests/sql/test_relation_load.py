@@ -1,16 +1,10 @@
 import pytest
-from yapic.entity.sql import wrap_connection, sync, PostgreDialect
+from yapic.entity.sql import sync, PostgreDialect
 from yapic.entity import (Entity, Serial, Int, String, ForeignKey, PrimaryKey, One, Many, ManyAcross, Registry,
                           DependencyList, Json, Composite, save_operations, Auto, Query, Loading, Relation, raw)
 from yapic import json
 
 pytestmark = pytest.mark.asyncio  # type: ignore
-
-
-@pytest.fixture  # type: ignore
-async def conn(pgsql):
-    yield wrap_connection(pgsql, "pgsql")
-
 
 _registry = Registry()
 
@@ -152,7 +146,7 @@ ALTER TABLE "ent_load"."UserChild"
 ALTER TABLE "ent_load"."UserTags"
   ADD CONSTRAINT "fk_UserTags__user_id-User__id" FOREIGN KEY ("user_id") REFERENCES "ent_load"."User" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT,
   ADD CONSTRAINT "fk_UserTags__tag_id-Tag__id" FOREIGN KEY ("tag_id") REFERENCES "ent_load"."Tag" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
 
 async def test_load(conn):
@@ -265,7 +259,7 @@ async def test_mixin(conn):
         id: Serial
 
     result = await sync(conn, _registry)
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     t = Tracked(creator_id=1)
     await conn.save(t)

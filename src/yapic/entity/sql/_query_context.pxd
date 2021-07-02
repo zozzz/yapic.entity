@@ -1,9 +1,8 @@
-from ._connection cimport Connection
 from ._record_converter cimport RCState
 
 
 cdef class QueryContext:
-    cdef readonly Connection conn
+    cdef readonly object conn
     cdef object cursor_factory
     cdef list rcos_list
     cdef RCState rc_state

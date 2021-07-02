@@ -3,18 +3,13 @@
 import pytest
 from datetime import datetime, date, time, tzinfo, timedelta
 from decimal import Decimal
-from yapic.entity.sql import wrap_connection, sync, PostgreTrigger
+from yapic.entity.sql import sync, PostgreTrigger
 from yapic.entity import (Entity, Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool,
                           ForeignKey, PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite,
                           Auto, Numeric, Float, Point, UUID, virtual)
 
 pytestmark = pytest.mark.asyncio
 REGISTRY = Registry()
-
-
-@pytest.fixture
-async def conn(pgsql):
-    yield wrap_connection(pgsql, "pgsql")
 
 
 class TriggerTable(Entity, schema="_trigger", registry=REGISTRY):
@@ -54,7 +49,7 @@ CREATE TRIGGER "update_time"
   WHEN (OLD.* IS DISTINCT FROM NEW.*)
   EXECUTE FUNCTION "_trigger"."YT-TriggerTable-update_time-8085b1-af0df2"();"""
 
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     result = await sync(conn, REGISTRY)
     assert not result
@@ -84,7 +79,7 @@ CREATE TRIGGER "update_time"
   WHEN (OLD.* IS DISTINCT FROM NEW.*)
   EXECUTE FUNCTION "_trigger"."YT-TriggerTable-update_time-8085b1-af0df2"();"""
 
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     # CHANGE: when to None
     TriggerTable.__triggers__[0] = PostgreTrigger(
@@ -109,7 +104,7 @@ CREATE TRIGGER "update_time"
   FOR EACH ROW
   EXECUTE FUNCTION "_trigger"."YT-TriggerTable-update_time-af0df2"();"""
 
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     # CHANGE: when to original
     # CHANGE body
@@ -137,7 +132,7 @@ CREATE TRIGGER "update_time"
   WHEN (OLD.* IS DISTINCT FROM NEW.*)
   EXECUTE FUNCTION "_trigger"."YT-TriggerTable-update_time-8085b1-45cbab"();"""
 
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
 
 async def test_create_later(conn, pgclean):
@@ -153,7 +148,7 @@ CREATE TABLE "_trigger"."TriggerX" (
   "id" INT4 NOT NULL DEFAULT nextval('"_trigger"."TriggerX_id_seq"'::regclass),
   PRIMARY KEY("id")
 );"""
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     TriggerX.__triggers__.append(
         PostgreTrigger(
@@ -178,7 +173,7 @@ CREATE TRIGGER "update_time"
   WHEN (OLD.* IS DISTINCT FROM NEW.*)
   EXECUTE FUNCTION "_trigger"."YT-TriggerX-update_time-8085b1-af0df2"();"""
 
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     result = await sync(conn, r)
     assert not result

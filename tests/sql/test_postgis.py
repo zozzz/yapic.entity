@@ -3,7 +3,7 @@
 import pytest
 from datetime import datetime, date, time, tzinfo, timedelta
 from decimal import Decimal
-from yapic.entity.sql import wrap_connection, Entity, sync, PostgreDialect
+from yapic.entity.sql import Entity, sync, PostgreDialect
 from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool, ForeignKey,
                           PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite, Auto, Numeric,
                           Float, Point, UUID, virtual)
@@ -13,12 +13,6 @@ pytestmark = pytest.mark.asyncio
 dialect = PostgreDialect()
 ddl = dialect.create_ddl_compiler()
 REGISTRY = Registry()
-
-
-@pytest.fixture
-async def conn(pgsql):
-    await pgsql.execute('CREATE EXTENSION IF NOT EXISTS "postgis"')
-    yield wrap_connection(pgsql, "pgsql")
 
 
 class Point(Entity, schema="postgis", registry=REGISTRY):
@@ -47,7 +41,7 @@ CREATE TABLE "postgis"."Point" (
   PRIMARY KEY("id")
 );"""
 
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     result = await sync(conn, Point.__registry__)
     assert result is None

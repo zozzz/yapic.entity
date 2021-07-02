@@ -7,6 +7,7 @@ import asyncio
 from asyncpg.exceptions import OperatorInterventionError, PostgresConnectionError
 from docker import APIClient
 from docker.errors import ImageNotFound, NotFound
+from yapic.entity.sql.pgsql import PostgreConnection
 
 cli = APIClient()
 client = docker.from_env()
@@ -58,13 +59,24 @@ def pgsql_docker():
 async def pgsql(pgsql_docker):
     for i in range(30):
         try:
-            connection = await asyncpg.connect(user="root", password="root", database="root", host="127.0.0.1")
+            connection = await asyncpg.connect(user="root",
+                                               password="root",
+                                               database="root",
+                                               host="127.0.0.1",
+                                               connection_class=PostgreConnection)
             yield connection
         except (OperatorInterventionError, PostgresConnectionError):
             await asyncio.sleep(1)
         else:
             await connection.close()
             return
+
+
+# TODO: remove, csak a visszafele kompatibilitás miatt van
+@pytest.fixture
+async def conn(pgsql):
+    await pgsql.execute('CREATE EXTENSION IF NOT EXISTS "postgis"')
+    yield pgsql
 
 
 @pytest.fixture

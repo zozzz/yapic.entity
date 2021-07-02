@@ -6,11 +6,11 @@ from yapic.entity._registry cimport Registry, RegistryDiff
 from yapic.entity._registry import RegistryDiffKind
 from yapic.entity._field cimport StorageType
 
-from ._connection cimport Connection
+from ._connection import _collect_attrs
 from ._query cimport Query
 
 
-async def sync(Connection connection, Registry registry, EntityType entity_base=Entity):
+async def sync(connection, Registry registry, EntityType entity_base=Entity):
     if registry.deferred:
         for d in registry.deferred:
             print(d, d.__deferred__)
@@ -35,7 +35,7 @@ async def sync(Connection connection, Registry registry, EntityType entity_base=
         return None
 
 
-async def compare_data(Connection connection, RegistryDiff diff):
+async def compare_data(connection, RegistryDiff diff):
     for kind, param in diff:
         if kind is RegistryDiffKind.COMPARE_DATA:
             existing = await connection.select(Query().select_from(param[0]).columns(param[0]))
@@ -45,7 +45,7 @@ async def compare_data(Connection connection, RegistryDiff diff):
             yield (kind, param)
 
 
-async def convert_data_to_raw(Connection connection, tuple change):
+async def convert_data_to_raw(connection, tuple change):
     cdef EntityType entity_t
     cdef list attrs
     cdef list names
@@ -57,7 +57,7 @@ async def convert_data_to_raw(Connection connection, tuple change):
         attrs = []
         names = []
         values = []
-        await connection._collect_attrs(param, True, attrs, names, values)
+        await _collect_attrs(connection.dialect, param, True, attrs, names, values, None)
         return (kind, (entity_t, attrs, names, values))
     else:
         return kind, param

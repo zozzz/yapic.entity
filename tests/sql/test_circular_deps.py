@@ -2,7 +2,7 @@ import operator
 import pytest
 from typing import Any
 
-from yapic.entity.sql import wrap_connection, Entity, sync
+from yapic.entity.sql import Entity, sync
 from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool, ForeignKey,
                           PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite, Auto, Numeric,
                           Float, Point, UUID, virtual)
@@ -69,11 +69,6 @@ class File(Node, polymorph_id="file"):
 
 class Dir(Node, polymorph_id="dir"):
     dir_name: String
-
-
-@pytest.fixture
-async def conn(pgsql):
-    yield wrap_connection(pgsql, "pgsql")
 
 
 async def test_sync(conn, pgclean):
@@ -185,7 +180,7 @@ CREATE TRIGGER "polyd_Node"
   FOR EACH ROW
   EXECUTE FUNCTION "circular_deps"."YT-Dir-polyd_Node"();"""
 
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
 
 async def test_exec(conn):

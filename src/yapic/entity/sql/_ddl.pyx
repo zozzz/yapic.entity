@@ -353,5 +353,5 @@ cdef class DDLReflect:
         self.dialect = dialect
         self.entity_base = entity_base
 
-    async def get_entities(self, Connection conn, Registry registry):
+    async def get_entities(self, conn, Registry registry):
         raise NotImplementedError()

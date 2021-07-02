@@ -36,7 +36,6 @@ from .postgis._impl cimport (
 
 
 from .._ddl cimport DDLCompiler, DDLReflect
-from .._connection cimport Connection
 from ._trigger cimport PostgreTrigger
 
 
@@ -114,8 +113,8 @@ JSON_ENTITY_UID = 0
 
 
 cdef class PostgreDDLReflect(DDLReflect):
-    async def get_extensions(self, Connection conn):
-        exts = await conn.conn.fetch("""SELECT extname, extconfig FROM pg_catalog.pg_extension""")
+    async def get_extensions(self, conn):
+        exts = await conn.fetch("""SELECT extname, extconfig FROM pg_catalog.pg_extension""")
 
         result = {}
         for name, config in exts:
@@ -123,8 +122,8 @@ cdef class PostgreDDLReflect(DDLReflect):
 
         return result
 
-    async def get_entities(self, Connection conn, Registry registry):
-        types = await conn.conn.fetch("""
+    async def get_entities(self, conn, Registry registry):
+        types = await conn.fetch("""
             SELECT
                 "pg_type"."typrelid" as "id",
                 "pg_namespace"."nspname" as "schema",
@@ -177,14 +176,14 @@ cdef class PostgreDDLReflect(DDLReflect):
             await self.update_foreign_keys(conn, schema, table, registry)
             await self.update_indexes(conn, schema, table, id, registry)
 
-    async def create_entity(self, Connection conn, Registry registry, str schema, str table, list fields):
+    async def create_entity(self, conn, Registry registry, str schema, str table, list fields):
         schema = None if schema == "public" else schema
         class ReflectedEntity(self.entity_base, registry=registry, __fields__=fields, name=table, schema=schema):
             pass
         return ReflectedEntity
 
-    async def get_primary_keys(self, Connection conn, str schema, str table):
-        rows = await conn.conn.fetch(f"""
+    async def get_primary_keys(self, conn, str schema, str table):
+        rows = await conn.fetch(f"""
             SELECT "kcu"."column_name"
             FROM "information_schema"."table_constraints" "tc"
                 INNER JOIN "information_schema"."key_column_usage" "kcu"
@@ -197,8 +196,8 @@ cdef class PostgreDDLReflect(DDLReflect):
             """)
         return [row[0] for row in rows]
 
-    async def get_foreign_keys(self, Connection conn, str schema, str table):
-        return await conn.conn.fetch(f"""
+    async def get_foreign_keys(self, conn, str schema, str table):
+        return await conn.fetch(f"""
             SELECT
                 "tc"."constraint_name",
                 "ccu"."table_schema",
@@ -227,8 +226,8 @@ cdef class PostgreDDLReflect(DDLReflect):
             ORDER BY "kcu"."ordinal_position"
             """)
 
-    async def get_indexes(self, Connection conn, int table_id):
-        return await conn.conn.fetch(f"""
+    async def get_indexes(self, conn, int table_id):
+        return await conn.fetch(f"""
         SELECT
             pg_class.relname as "name",
             pg_am.amname as "method",
@@ -246,7 +245,7 @@ cdef class PostgreDDLReflect(DDLReflect):
             AND pg_index.indislive IS TRUE
         """)
 
-    async def get_fields(self, Connection conn, registry, extensions, str schema, str table, typeid):
+    async def get_fields(self, conn, registry, extensions, str schema, str table, typeid):
         if "postgis" in extensions:
             postgis_select = f""",
                 "geom"."type" as "geom_type",
@@ -269,7 +268,7 @@ cdef class PostgreDDLReflect(DDLReflect):
             postgis_select = f""
             postgis_join = f""
 
-        fields = await conn.conn.fetch(f"""
+        fields = await conn.fetch(f"""
             SELECT
                 "pg_attribute"."attname" as "name",
                 pg_get_expr(pg_attrdef.adbin, pg_attrdef.adrelid) as "default",
@@ -302,8 +301,8 @@ cdef class PostgreDDLReflect(DDLReflect):
 
         return result
 
-    async def get_triggers(self, Connection conn, registry, str schema, str table, typeid):
-        triggers = await conn.conn.fetch(f"""
+    async def get_triggers(self, conn, registry, str schema, str table, typeid):
+        triggers = await conn.fetch(f"""
             SELECT
                 "pg_trigger"."tgname",
                 "it"."action_timing",
@@ -333,7 +332,7 @@ cdef class PostgreDDLReflect(DDLReflect):
 
         return result
 
-    async def create_field(self, Connection conn, registry, str schema, str table, bint primary, record):
+    async def create_field(self, conn, registry, str schema, str table, bint primary, record):
         global JSON_ENTITY_UID
 
         cdef Field field
@@ -418,7 +417,7 @@ cdef class PostgreDDLReflect(DDLReflect):
             #         default = default[1:-(len(data_type) + 3)]
 
             if isinstance(default, str) and "::" in default:
-                default = await conn.conn.fetchval(f"SELECT {default}")
+                default = await conn.fetchval(f"SELECT {default}")
 
             field._default_ = default
 
@@ -427,7 +426,7 @@ cdef class PostgreDDLReflect(DDLReflect):
 
         return field
 
-    async def update_foreign_keys(self, Connection conn, str schema, str table, Registry registry):
+    async def update_foreign_keys(self, conn, str schema, str table, Registry registry):
         cdef ForeignKey fk
 
         fks = await self.get_foreign_keys(conn, schema, table)
@@ -458,7 +457,7 @@ cdef class PostgreDDLReflect(DDLReflect):
 
         entity.__extgroups__ += create_ext_groups(groups)
 
-    async def update_indexes(self, Connection conn, str schema, str table, table_id, Registry registry):
+    async def update_indexes(self, conn, str schema, str table, table_id, Registry registry):
         indexes = await self.get_indexes(conn, table_id)
 
         cdef EntityType entity = registry[f"{schema}.{table}" if schema != "public" else table]
@@ -496,7 +495,7 @@ cdef class PostgreDDLReflect(DDLReflect):
             entity.__extgroups__ += tuple(not_exists)
 
 
-    async def get_auto_increment(self, Connection conn, Registry registry, str schema, str table, str field, default):
+    async def get_auto_increment(self, conn, Registry registry, str schema, str table, str field, default):
         if not default:
             return None
 
@@ -521,8 +520,8 @@ cdef class PostgreDDLReflect(DDLReflect):
             return None
 
 
-    async def real_quote_ident(self, Connection conn, ident):
-        return await conn.conn.fetchval(f"SELECT quote_ident({self.dialect.quote_value(ident)})")
+    async def real_quote_ident(self, conn, ident):
+        return await conn.fetchval(f"SELECT quote_ident({self.dialect.quote_value(ident)})")
 
 
 cdef tuple create_ext_groups(dict groups):

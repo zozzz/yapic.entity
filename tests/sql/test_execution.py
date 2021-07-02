@@ -5,7 +5,7 @@ import pytest
 from datetime import datetime, date, time, tzinfo, timedelta
 from decimal import Decimal
 from yapic.entity.field import Choice
-from yapic.entity.sql import wrap_connection, sync, PostgreDialect
+from yapic.entity.sql import sync, PostgreDialect
 from yapic.entity import (Entity, Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool,
                           ForeignKey, PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite,
                           Auto, Numeric, Float, Point, UUID, virtual, StringArray, IntArray, CreatedTime, UpdatedTime,
@@ -15,11 +15,6 @@ from yapic import json
 pytestmark = pytest.mark.asyncio
 REGISTRY = Registry()
 dialect = PostgreDialect()
-
-
-@pytest.fixture
-async def conn(pgsql):
-    yield wrap_connection(pgsql, "pgsql")
 
 
 class Address(Entity, schema="execution", registry=REGISTRY):
@@ -111,7 +106,7 @@ ALTER TABLE "execution"."User"
 CREATE INDEX "idx_User__address_id" ON "execution_private"."User" USING btree ("address_id");
 ALTER TABLE "execution_private"."User"
   ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     result = await sync(conn, Address.__registry__)
     assert bool(result) is False
@@ -261,7 +256,7 @@ async def test_diff(conn):
         Gender(value="other", title="Other"),
     ]
 
-    await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
+    await conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
 
     result = await sync(conn, new_reg)
 
@@ -293,7 +288,7 @@ ALTER TABLE "execution"."User"
   ALTER COLUMN "naive_date" SET DEFAULT now(),
   ALTER COLUMN "created_time" SET DEFAULT CURRENT_TIMESTAMP;"""
 
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     result = await sync(conn, new_reg)
     assert bool(result) is False
@@ -305,7 +300,7 @@ ALTER TABLE "execution"."User"
     ]
     result = await sync(conn, new_reg)
     assert result == """DELETE FROM "execution"."Gender" WHERE "value"='other';"""
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     Gender.__fix_entries__ = [
         Gender(value="male", title="MaleX"),
@@ -316,7 +311,7 @@ ALTER TABLE "execution"."User"
     assert result == """INSERT INTO "execution"."Gender" ("value") VALUES ('insert') ON CONFLICT ("value") DO NOTHING;
 UPDATE "execution"."Gender" SET "title"='MaleX' WHERE "value"='male';
 UPDATE "execution"."Gender" SET "title"='FemaleY' WHERE "value"='female';"""
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
 
 async def test_diff_defaults(conn, pgclean):
@@ -338,7 +333,7 @@ CREATE TABLE "execution"."Defaults" (
   "bool_w_def" BOOLEAN NOT NULL DEFAULT TRUE,
   "interval" INT4 NOT NULL
 );"""
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     result = await sync(conn, reg)
     assert bool(result) is False
@@ -378,7 +373,7 @@ CREATE TABLE "execution"."JsonUser" (
   PRIMARY KEY("id")
 );"""
 
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     points = [
         {
@@ -465,15 +460,15 @@ CREATE TABLE "execution"."JsonUser" (
 INSERT INTO "execution"."JsonUser" ("id", "name") VALUES (1, '{"given":"Given","family":"Family"}') ON CONFLICT ("id") DO UPDATE SET "name"='{"given":"Given","family":"Family"}';
 INSERT INTO "execution"."JsonUser" ("id", "name") VALUES (2, '{"given":null,"family":null}') ON CONFLICT ("id") DO UPDATE SET "name"='{"given":null,"family":null}';"""
 
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     result = await sync(conn, reg_a)
     assert result is None
 
 
 async def test_composite(conn):
-    await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
-    await conn.conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
+    await conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
+    await conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
 
     reg_a = Registry()
     reg_b = Registry()
@@ -522,7 +517,7 @@ CREATE TABLE "execution"."Article" (
 CREATE INDEX "idx_Article__author_id" ON "execution"."Article" USING btree ("author_id");
 ALTER TABLE "execution"."Article"
   ADD CONSTRAINT "fk_Article__author_id-CompUser__id" FOREIGN KEY ("author_id") REFERENCES "execution"."CompUser" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     # TODO: kitalálni, hogyan lehet módosítani a composite typeot
     #     class CompName(Entity, registry=reg_b, schema="execution"):
@@ -541,7 +536,7 @@ ALTER TABLE "execution"."Article"
     #   ADD ATTRIBUTE "new_column" INT4,
     #   ALTER ATTRIBUTE "family" TYPE VARCHAR(50);"""
 
-    #     await conn.conn.execute(result)
+    #     await conn.execute(result)
     #     result = await sync(conn, reg_b)
     #     assert result is None
 
@@ -621,9 +616,9 @@ ALTER TABLE "execution"."Article"
 
 
 async def test_callable_default(conn):
-    await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
-    await conn.conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
-    await conn.conn.execute("DROP SCHEMA IF EXISTS execution_private CASCADE")
+    await conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
+    await conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
+    await conn.execute("DROP SCHEMA IF EXISTS execution_private CASCADE")
 
     reg = Registry()
 
@@ -640,7 +635,7 @@ CREATE TABLE "execution"."CallableDefault" (
   PRIMARY KEY("id")
 );"""
 
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     result = await sync(conn, reg)
     assert bool(result) is False
@@ -657,8 +652,8 @@ CREATE TABLE "execution"."CallableDefault" (
 
 
 async def test_composite_set_null(conn):
-    await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
-    await conn.conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
+    await conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
+    await conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
 
     reg_a = Registry()
 
@@ -671,7 +666,7 @@ async def test_composite_set_null(conn):
         xy: Composite[CompXY]
 
     result = await sync(conn, reg_a)
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     entry = Entry(xy={"x": 1, "y": 2})
     await conn.save(entry)
@@ -687,9 +682,9 @@ async def test_composite_set_null(conn):
 
 
 async def test_pk_change(conn):
-    await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
-    await conn.conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
-    await conn.conn.execute("DROP SCHEMA IF EXISTS execution_private CASCADE")
+    await conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
+    await conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
+    await conn.execute("DROP SCHEMA IF EXISTS execution_private CASCADE")
 
     reg = Registry()
 
@@ -701,7 +696,7 @@ async def test_pk_change(conn):
 CREATE TABLE "execution"."Address" (
   "id" INT4
 );"""
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     # ADD PRIMARY KEY
 
@@ -716,7 +711,7 @@ ALTER TABLE "execution"."Address"
   ALTER COLUMN "id" SET DEFAULT nextval('"execution"."Address_id_seq"'::regclass),
   ALTER COLUMN "id" SET NOT NULL,
   ADD PRIMARY KEY("id");"""
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     # DROP PRIMARY KEY
 
@@ -732,7 +727,7 @@ ALTER TABLE "execution"."Address"
   ALTER COLUMN "id" DROP NOT NULL,
   ALTER COLUMN "id" TYPE TEXT USING "id"::TEXT,
   ALTER COLUMN "id" DROP DEFAULT;"""
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     # CHANGE PRIMARY KEY
 
@@ -748,7 +743,7 @@ ALTER TABLE "execution"."Address"
   ALTER COLUMN "id" SET DEFAULT nextval('"execution"."Address_id_seq"'::regclass),
   ALTER COLUMN "id" SET NOT NULL,
   ADD PRIMARY KEY("id");"""
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     reg = Registry()
 
@@ -762,13 +757,13 @@ ALTER TABLE "execution"."Address"
   DROP CONSTRAINT IF EXISTS "Address_pkey",
   ADD COLUMN "id2" INT4 NOT NULL DEFAULT nextval('"execution"."Address_id2_seq"'::regclass),
   ADD PRIMARY KEY("id", "id2");"""
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
 
 async def test_fk_change(conn):
-    await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
-    await conn.conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
-    await conn.conn.execute("DROP SCHEMA IF EXISTS execution_private CASCADE")
+    await conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
+    await conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
+    await conn.execute("DROP SCHEMA IF EXISTS execution_private CASCADE")
 
     reg = Registry()
 
@@ -795,7 +790,7 @@ CREATE TABLE "execution"."User" (
 CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_id");
 ALTER TABLE "execution"."User"
   ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     # DROP FK
 
@@ -812,7 +807,7 @@ ALTER TABLE "execution"."User"
     assert result == """DROP INDEX IF EXISTS "execution"."idx_User__address_id";
 ALTER TABLE "execution"."User"
   DROP CONSTRAINT IF EXISTS "fk_User__address_id-Address__id";"""
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     # ADD FK
 
@@ -829,7 +824,7 @@ ALTER TABLE "execution"."User"
     assert result == """ALTER TABLE "execution"."User"
   ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
 CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_id");"""
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
 
 async def test_point(conn, pgclean):
@@ -840,7 +835,7 @@ async def test_point(conn, pgclean):
         point: Point
 
     result = await sync(conn, reg)
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     # TODO: kezelni, hogy adatbázisból van-e betöltve vagy sem
     p = PointTest(id=1, point=(1.25, 2.25))
@@ -881,7 +876,7 @@ async def test_date_types(conn):
             return self._dst
 
     result = await sync(conn, reg)
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     inst = DateTest(
         date=date(2001, 12, 21),
@@ -918,7 +913,7 @@ async def test_virtual_load(conn):
 
     result = await sync(conn, registry)
     if result:
-        await conn.conn.execute(result)
+        await conn.execute(result)
 
     inst = VirtualLoad(id=1, data_1="Hello", data_2="World")
     await conn.save(inst)
@@ -958,7 +953,7 @@ CREATE TABLE "execution"."ArrayTest" (
   "ints" INT[]
 );"""
 
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     result = await sync(conn, registry)
     assert result is None
@@ -977,7 +972,7 @@ ALTER TABLE "execution"."ArrayTest"
   ALTER COLUMN "ints" TYPE TEXT[] USING "ints"::TEXT[],
   ADD PRIMARY KEY("id");"""
 
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     result = await sync(conn, registry2)
     assert result is None
@@ -1030,7 +1025,7 @@ CREATE TRIGGER "update-updated_time"
   WHEN (OLD.* IS DISTINCT FROM NEW.*)
   EXECUTE FUNCTION "execution"."YT-UT-update-updated_time-8085b1-c1c14d"();"""
 
-    await conn.conn.execute(result)
+    await conn.execute(result)
     result = await sync(conn, R)
     assert result is None
 
@@ -1068,7 +1063,7 @@ async def test_on_update(conn, pgclean):
         updater_id2: Int = Field(on_update=get_user_id)
 
     result = await sync(conn, R)
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     inst = OnUpdate(id=1)
     await conn.save(inst)
@@ -1157,7 +1152,7 @@ ALTER TABLE "execution"."EnumTest"
   ADD CONSTRAINT "fk_EnumTest__int_enum-IntEnum__value" FOREIGN KEY ("int_enum") REFERENCES "execution"."IntEnum" ("value") ON UPDATE RESTRICT ON DELETE RESTRICT,
   ADD CONSTRAINT "fk_EnumTest__point-CompositeEnum__value" FOREIGN KEY ("point") REFERENCES "execution"."CompositeEnum" ("value") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
 
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     result = await sync(conn, R)
     assert result is None
@@ -1201,7 +1196,7 @@ CREATE TABLE "execution"."Entity2" (
   "id" INT4 DEFAULT nextval('"execution"."same_seq"'::regclass)
 );"""
 
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     result = await sync(conn, reg)
     assert result is None
@@ -1220,7 +1215,7 @@ ALTER TABLE "execution"."Entity1"
   ALTER COLUMN "id" SET NOT NULL,
   ADD PRIMARY KEY("id");"""
 
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     result = await sync(conn, reg2)
     assert result is None

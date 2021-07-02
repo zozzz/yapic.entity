@@ -10,6 +10,7 @@ from ._ddl cimport PostgreDDLCompiler, PostgreDDLReflect
 from ._query_compiler cimport PostgreQueryCompiler
 from ._type_factory cimport PostgreTypeFactory
 
+
 cdef class PostgreDialect(Dialect):
     cpdef DDLCompiler create_ddl_compiler(self):
         return PostgreDDLCompiler(self)

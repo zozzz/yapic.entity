@@ -1,4 +1,4 @@
-from yapic.entity.sql import wrap_connection, sync, PostgreDialect
+from yapic.entity.sql import PostgreDialect
 from yapic.entity import Entity, Registry, Int, String, DateTime, PrimaryKey, Serial
 from yapic.entity._entity import EntityState
 

@@ -1,15 +1,9 @@
 import pytest
-from yapic.entity.sql import wrap_connection, Entity, sync
+from yapic.entity.sql import Entity, sync
 from yapic.entity import (Serial, Int, String, ForeignKey, PrimaryKey, One, Many, ManyAcross, Registry, DependencyList,
                           Json, Composite, save_operations, Auto, AutoIncrement, Query)
 
 pytestmark = pytest.mark.asyncio  # type: ignore
-
-
-@pytest.fixture  # type: ignore
-async def conn(pgsql):
-    yield wrap_connection(pgsql, "pgsql")
-
 
 _registry = Registry()
 
@@ -62,7 +56,7 @@ class UserTags(BaseEntity, name="user-tags", schema="deps"):
 
 
 async def test_creation(conn):
-    await conn.conn.execute("""DROP SCHEMA IF EXISTS "deps" CASCADE""")
+    await conn.execute("""DROP SCHEMA IF EXISTS "deps" CASCADE""")
 
     assert Address.__deps__ == {Address.id.get_ext(AutoIncrement).sequence}
     assert Tag.__deps__ == {Tag.id.get_ext(AutoIncrement).sequence}
@@ -109,7 +103,7 @@ async def test_creation(conn):
     ]
 
     result = await sync(conn, _registry)
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
 
 async def test_insert(conn):
@@ -182,4 +176,4 @@ async def test_composite():
 
 
 async def test_cleanup(conn):
-    await conn.conn.execute("""DROP SCHEMA IF EXISTS "deps" CASCADE""")
+    await conn.execute("""DROP SCHEMA IF EXISTS "deps" CASCADE""")

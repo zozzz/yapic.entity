@@ -1,16 +1,10 @@
 import pytest
-from yapic.entity.sql import wrap_connection, sync
+from yapic.entity.sql import sync
 from yapic.entity import (Entity, Serial, Int, String, ForeignKey, PrimaryKey, One, Many, ManyAcross, Registry,
                           DependencyList, Json, Composite, save_operations, Auto, Query)
 
 pytestmark = pytest.mark.asyncio  # type: ignore
 REGISTRY = Registry()
-
-
-@pytest.fixture  # type: ignore
-async def conn(pgsql):
-    yield wrap_connection(pgsql, "pgsql")
-
 
 _registry = Registry()
 
@@ -123,7 +117,7 @@ CREATE TRIGGER "polyd_Worker"
   FOR EACH ROW
   EXECUTE FUNCTION "poly"."YT-WorkerY-polyd_Worker"();"""
 
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     result = await sync(conn, Worker.__registry__)
     assert bool(result) is False
@@ -283,7 +277,7 @@ async def test_ambiguous_load(conn, pgclean):
 
     result = await sync(conn, registry)
     # print(result)
-    await conn.conn.execute(result)
+    await conn.execute(result)
 
     p1 = PolyChild()
     p1.base_field = "base field 1"
@@ -312,4 +306,4 @@ async def test_ambiguous_load(conn, pgclean):
 
 
 # async def test_end(conn):
-#     await conn.conn.execute("""DROP SCHEMA IF EXISTS "poly" CASCADE""")
+#     await conn.execute("""DROP SCHEMA IF EXISTS "poly" CASCADE""")
