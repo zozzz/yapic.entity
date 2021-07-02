@@ -27,6 +27,34 @@ cdef class PostgreDialect(Dialect):
         ident = ident.replace('"', '""')
         return f'"{ident}"'
 
+    cpdef list unquote_ident(self, str ident):
+        cdef list result = []
+
+        while ident:
+            if ident[0] == '"':
+                end = chr_pos(ident, '"', 1)
+                if end == -1:
+                    raise ValueError("Unterminated ident escape")
+
+                result.append(ident[1:end])
+
+                dot = chr_pos(ident, '.')
+                if dot == -1:
+                    break
+                else:
+                    ident = ident[dot+1:]
+            else:
+                dot = chr_pos(ident, '.')
+                if dot == -1:
+                    result.append(ident.lower())
+                    break
+                else:
+                    result.append(ident[0:dot].lower())
+                    ident = ident[dot+1:]
+
+        return result
+
+
     cpdef object quote_value(self, object value):
         if isinstance(value, RawExpression):
             return (<RawExpression>value).expr
@@ -50,3 +78,22 @@ cdef class PostgreDialect(Dialect):
             return f"{self.quote_ident(schema)}.{self.quote_ident(entity.__name__)}"
         else:
             return self.quote_ident(entity.__name__)
+
+
+cdef int chr_pos(str inp, str char, int begin=0):
+    cdef int length = len(inp)
+
+    while True:
+        if begin >= length:
+            break
+
+        c = inp[begin]
+        if c == "\\":
+            begin += 2
+            continue
+        elif c == char:
+            return begin
+        else:
+            begin += 1
+
+    return -1

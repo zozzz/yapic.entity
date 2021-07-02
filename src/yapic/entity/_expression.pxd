@@ -41,6 +41,10 @@ cdef class AliasExpression(Expression):
     cdef readonly Expression expr
     cdef readonly str value
 
+cdef class ColumnRefExpression(Expression):
+    cdef readonly Expression expr
+    cdef readonly int index
+
 
 cdef Expression coerce_expression(object expr)
 

@@ -1,4 +1,5 @@
 from inspect import iscoroutine
+from logging import getLogger, DEBUG
 
 from yapic.entity._entity cimport EntityType, EntityAttribute, NOTSET
 from yapic.entity._entity_diff cimport EntityDiff
@@ -16,6 +17,9 @@ from ._query_context cimport QueryContext
 from ._dialect cimport Dialect
 
 
+select_logger = getLogger("yapic.entity.sql.select")
+
+
 cdef class Connection:
     def __cinit__(self, conn, dialect):
         self.conn = conn
@@ -31,6 +35,9 @@ cdef class Connection:
     def select(self, Query q, *, prefetch=None, timeout=None):
         cdef QueryCompiler qc = self.dialect.create_query_compiler()
         sql, params = qc.compile_select(q)
+
+        if select_logger.isEnabledFor(DEBUG):
+            select_logger.debug(f"{sql} {params}")
 
         # print("\n" + "=" * 50)
         # print(sql, params)
@@ -121,20 +128,29 @@ cdef class Connection:
                 if iscoroutine(value):
                     value = await value
 
-                if isinstance(attr._impl_, CompositeImpl):
-                    if not isinstance(value, EntityBase):
-                        value = (<CompositeImpl>(<Field>attr)._impl_)._entity_(value)
+                if value is None:
+                    values.append(None)
+                else:
+                    if isinstance(attr._impl_, CompositeImpl):
+                        if not isinstance(value, EntityBase):
+                            value = (<CompositeImpl>(<Field>attr)._impl_)._entity_(value)
 
-                    value = (<CompositeImpl>(<Field>attr)._impl_).data_for_write(value, for_insert)
+                        value = (<CompositeImpl>(<Field>attr)._impl_).data_for_write(value, for_insert)
 
-                    if isinstance(value, EntityBase):
-                        if path is None:
-                            spath = getattr(entity_type, attr._key_)
-                        else:
-                            spath = getattr(path, attr._key_)
+                        if isinstance(value, EntityBase):
+                            if path is None:
+                                spath = getattr(entity_type, attr._key_)
+                            else:
+                                spath = getattr(path, attr._key_)
 
-                        await self._collect_attrs(value, for_insert, attrs, names, values, spath)
-                        continue
+                            # TODO: jobb megoldást találni arra, hogy felismerje azt,
+                            #       hogy ez composite mezőt módosítani kell, de maga a composite mező nem dirty
+                            #       mert egy másik lekérdezés composite mezője lett beállítva
+                            #       - Asetleg az EntityTypeImpl.state_get_dirty függvényben kéne megjelölni a mezőket dirtyre
+                            await self._collect_attrs(value, True, attrs, names, values, spath)
+                            continue
+
+                    values.append(self.dialect.encode_value(attr, value))
 
                 attrs.append(attr)
                 if has_nonpk_attr is False and not attr.get_ext(PrimaryKey):
@@ -144,15 +160,6 @@ cdef class Connection:
                     names.append(self.dialect.quote_ident(attr._name_))
                 else:
                     names.append(_compile_path(self.dialect, getattr(path, attr._key_)))
-
-                if value is None:
-                    values.append(None)
-                else:
-                    if isinstance(value, Expression):
-                        values.append(value)
-                    else:
-                        field_type = self.dialect.get_field_type(<Field>attr)
-                        values.append(field_type.encode(value))
 
         if not for_insert and not path:
             if has_nonpk_attr is True:
@@ -166,14 +173,7 @@ cdef class Connection:
 
                             attrs.append(field)
                             names.append(self.dialect.quote_ident(field._name_))
-
-                            if value is None:
-                                values.append(None)
-                            elif isinstance(value, Expression):
-                                values.append(value)
-                            else:
-                                field_type = self.dialect.get_field_type(field)
-                                values.append(field_type.encode(value))
+                            values.append(self.dialect.encode_value(field, value))
 
             for attr in entity_type.__pk__:
                 field_name = self.dialect.quote_ident(attr._name_)
@@ -184,12 +184,7 @@ cdef class Connection:
 
                     attrs.append(attr)
                     names.append(field_name)
-
-                    if value is None:
-                        values.append(None)
-                    else:
-                        field_type = self.dialect.get_field_type(attr)
-                        values.append(field_type.encode(value))
+                    values.append(self.dialect.encode_value(attr, value))
 
 
 cpdef wrap_connection(conn, dialect):

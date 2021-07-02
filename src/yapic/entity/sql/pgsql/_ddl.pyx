@@ -1,5 +1,5 @@
 # from hashids import Hashids
-
+import re
 from typing import Any
 
 from yapic.entity._entity import Entity
@@ -38,6 +38,9 @@ from .postgis._impl cimport (
 from .._ddl cimport DDLCompiler, DDLReflect
 from .._connection cimport Connection
 from ._trigger cimport PostgreTrigger
+
+
+RE_NEXTVAL = re.compile(r"""nextval\('([^']+)'(?:::regclass)?\)""", re.I)
 
 
 cdef class PostgreDDLCompiler(DDLCompiler):
@@ -494,28 +497,29 @@ cdef class PostgreDDLReflect(DDLReflect):
 
 
     async def get_auto_increment(self, Connection conn, Registry registry, str schema, str table, str field, default):
-        if schema != "public":
-            prefix = await self.real_quote_ident(conn, schema)
-            prefix += "."
-            table_qname = f"{schema}."
-        else:
-            prefix = ""
-            table_qname = ""
+        if not default:
+            return None
 
-        seq_name = f"{table}_{field}_seq"
-        seq_name_q = await self.real_quote_ident(conn, seq_name)
-        auto_increment_default = f"""nextval('{prefix}{seq_name_q}'::regclass)"""
-        if auto_increment_default == default:
-            table_qname += seq_name
+        match = re.match(RE_NEXTVAL, default)
+        if match:
+            ident = self.dialect.unquote_ident(match[1])
+            if len(ident) == 2:
+                schema, name = ident
+            elif len(ident) == 1:
+                name = ident[0]
+                schema = "public"
+            else:
+                raise ValueError(f"Unexpected value as ident: {ident}")
 
             try:
-                seq = registry[table_qname]
-            except KeyError:
+                seq = registry[name if schema == "public" else f"{schema}.{name}"]
+            except:
                 seq = None
 
             return AutoIncrement(seq)
         else:
             return None
+
 
     async def real_quote_ident(self, Connection conn, ident):
         return await conn.conn.fetchval(f"SELECT quote_ident({self.dialect.quote_value(ident)})")

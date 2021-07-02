@@ -1,4 +1,5 @@
 from inspect import iscoroutine
+from logging import getLogger, DEBUG
 
 import cython
 from asyncpg import Record
@@ -8,6 +9,11 @@ from yapic.entity._field cimport Field, StorageType, PrimaryKey
 from yapic.entity._field_impl cimport CompositeImpl
 
 from .._connection cimport Connection
+
+
+insert_logger = getLogger("yapic.entity.sql.insert")
+update_logger = getLogger("yapic.entity.sql.update")
+delete_logger = getLogger("yapic.entity.sql.delete")
 
 
 cdef class PostgreConnection(Connection):
@@ -25,6 +31,9 @@ cdef class PostgreConnection(Connection):
         if not q:
             return False
 
+        if insert_logger.isEnabledFor(DEBUG):
+            insert_logger.debug(f"{q} {p}")
+
         return await self.__exec_iou(q, p, entity, ent, timeout)
 
     async def insert_or_update(self, EntityBase entity, timeout=None):
@@ -40,6 +49,11 @@ cdef class PostgreConnection(Connection):
 
         if not q:
             return entity
+
+        if insert_logger.isEnabledFor(DEBUG):
+            insert_logger.debug(f"{q} {p}")
+        elif update_logger.isEnabledFor(DEBUG):
+            update_logger.debug(f"{q} {p}")
 
         return await self.__exec_iou(q, p, entity, ent, timeout)
 
@@ -57,6 +71,9 @@ cdef class PostgreConnection(Connection):
         if not q:
             return entity
 
+        if update_logger.isEnabledFor(DEBUG):
+            update_logger.debug(f"{q} {p}")
+
         return await self.__exec_iou(q, p, entity, ent, timeout)
 
     async def delete(self, EntityBase entity, timeout=None):
@@ -73,10 +90,12 @@ cdef class PostgreConnection(Connection):
         if not q:
             return entity
 
-        # print(q)
+        if delete_logger.isEnabledFor(DEBUG):
+            delete_logger.debug(f"{q} {p}")
 
         self.conn._check_open()
-        _, res, _ = await self.conn._execute(q, p, 0, timeout, True)
+        _, res, _ = await self.conn._execute(q, p, 0, timeout, return_status=True)
+        # _, res, _ = await self.conn._execute(q, p, 0, timeout, True)
         return res and int(res[7:]) > 0
 
     async def __exec_iou(self, str q, values, EntityBase entity, EntityType entity_t, timeout):

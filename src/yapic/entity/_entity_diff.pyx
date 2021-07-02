@@ -125,10 +125,11 @@ cdef inline dict field_eq(Field a, Field b, object expression_eq):
     a_ac = a.get_ext(AutoIncrement)
     b_ac = b.get_ext(AutoIncrement)
 
-    if a_ac or b_ac:
-        if a_ac and b_ac:
-            pass
-        elif a_ac:
+    if a_ac is not None or b_ac is not None:
+        if a_ac is not None and b_ac is not None:
+            if a_ac != b_ac:
+                result["_default_"] = b_ac
+        elif a_ac is not None:
             result["_default_"] = None
         else:
             result["_default_"] = b_ac

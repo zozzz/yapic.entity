@@ -272,7 +272,10 @@ cdef class EntityType(type):
         if aliased is self:
             return "<Entity %s>" % self.__qname__
         else:
-            return "<Alias(%s) of %r>" % (id(self), aliased)
+            if self.__name__:
+                return "<Alias(%s|%s) of %r>" % (id(self), self.__name__, aliased)
+            else:
+                return "<Alias(%s) of %r>" % (id(self), aliased)
             # return "<Alias of %r>" % aliased
 
     def alias(self, str alias = None):
@@ -1098,12 +1101,7 @@ cdef class EntityBase:
         cdef dict res = {}
 
         for attr, value in self:
-            if isinstance(value, EntityBase):
-                res[attr._key_] = value.as_dict()
-            elif isinstance(value, list):
-                res[attr._key_] = [v.as_dict() for v in value]
-            else:
-                res[attr._key_] = value
+            res[attr._key_] = as_dict(value)
 
         return res
 
@@ -1113,6 +1111,15 @@ cdef class EntityBase:
             return "<%s %r>" % (type(self).__qname__, self.as_dict())
         else:
             return "<%s %r>" % (type(self).__qname__, self.__pk__)
+
+
+cdef object as_dict(object o):
+    if isinstance(o, EntityBase):
+        return o.as_dict()
+    elif isinstance(o, list):
+        return [as_dict(v) for v in o]
+    else:
+        return o
 
 
 class Entity(EntityBase, metaclass=EntityType, registry=REGISTRY, _root=True):

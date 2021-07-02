@@ -5,10 +5,11 @@ import pytest
 from datetime import datetime, date, time, tzinfo, timedelta
 from decimal import Decimal
 from yapic.entity.field import Choice
-from yapic.entity.sql import wrap_connection, Entity, sync, PostgreDialect
-from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool, ForeignKey,
-                          PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite, Auto, Numeric,
-                          Float, Point, UUID, virtual, StringArray, IntArray, CreatedTime, UpdatedTime, Enum)
+from yapic.entity.sql import wrap_connection, sync, PostgreDialect
+from yapic.entity import (Entity, Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool,
+                          ForeignKey, PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite,
+                          Auto, Numeric, Float, Point, UUID, virtual, StringArray, IntArray, CreatedTime, UpdatedTime,
+                          Enum, AutoIncrement)
 from yapic import json
 
 pytestmark = pytest.mark.asyncio
@@ -655,6 +656,36 @@ CREATE TABLE "execution"."CallableDefault" (
   ALTER COLUMN "creator_id" SET NOT NULL;"""
 
 
+async def test_composite_set_null(conn):
+    await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
+    await conn.conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
+
+    reg_a = Registry()
+
+    class CompXY(Entity, registry=reg_a, schema="execution"):
+        x: Int
+        y: Int
+
+    class Entry(Entity, registry=reg_a, schema="execution"):
+        id: Serial
+        xy: Composite[CompXY]
+
+    result = await sync(conn, reg_a)
+    await conn.conn.execute(result)
+
+    entry = Entry(xy={"x": 1, "y": 2})
+    await conn.save(entry)
+
+    entry = await conn.select(Query(Entry).where(Entry.id == entry.id)).first()
+    assert entry.xy.x == 1
+    assert entry.xy.y == 2
+
+    entry.xy = None
+    await conn.save(entry)
+    entry = await conn.select(Query(Entry).where(Entry.id == entry.id)).first()
+    assert entry.xy is None
+
+
 async def test_pk_change(conn):
     await conn.conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
     await conn.conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")
@@ -908,6 +939,10 @@ async def test_virtual_load(conn):
     obj = await conn.select(query).first()
     assert obj.data_concat == "NotLoaded"
 
+    query = Query(VirtualLoad).load(VirtualLoad.data_concat).order(VirtualLoad.data_concat.asc())
+    sql, params = dialect.create_query_compiler().compile_select(query)
+    assert sql == 'SELECT CONCAT_WS($1, "t0"."data_1", "t0"."data_2") FROM "execution"."VirtualLoad" "t0" ORDER BY 1 ASC'
+
 
 async def test_array(conn, pgclean):
     registry = Registry()
@@ -1145,3 +1180,47 @@ ALTER TABLE "execution"."EnumTest"
     await conn.save(inst)
     assert inst.str_enum is StringEnum.PAUSED
     assert inst.int_enum == IntEnum.RUNNING
+
+
+async def test_same_seq(conn, pgclean):
+    reg = Registry()
+
+    class Entity1(Entity, registry=reg, schema="execution"):
+        id: Int = AutoIncrement(("execution", "same_seq"))
+
+    class Entity2(Entity, registry=reg, schema="execution"):
+        id: Int = AutoIncrement(("execution", "same_seq"))
+
+    result = await sync(conn, reg)
+    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE SEQUENCE "execution"."same_seq";
+CREATE TABLE "execution"."Entity1" (
+  "id" INT4 DEFAULT nextval('"execution"."same_seq"'::regclass)
+);
+CREATE TABLE "execution"."Entity2" (
+  "id" INT4 DEFAULT nextval('"execution"."same_seq"'::regclass)
+);"""
+
+    await conn.conn.execute(result)
+
+    result = await sync(conn, reg)
+    assert result is None
+
+    reg2 = Registry()
+
+    class Entity1(Entity, registry=reg2, schema="execution"):
+        id: Serial
+
+    result = await sync(conn, reg2)
+    assert result == """DROP SEQUENCE "execution"."same_seq" CASCADE;
+DROP TABLE "execution"."Entity2" CASCADE;
+CREATE SEQUENCE "execution"."Entity1_id_seq";
+ALTER TABLE "execution"."Entity1"
+  ALTER COLUMN "id" SET DEFAULT nextval('"execution"."Entity1_id_seq"'::regclass),
+  ALTER COLUMN "id" SET NOT NULL,
+  ADD PRIMARY KEY("id");"""
+
+    await conn.conn.execute(result)
+
+    result = await sync(conn, reg2)
+    assert result is None
