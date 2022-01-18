@@ -31,7 +31,10 @@ cdef class EntityDiff:
         if extgroup_changes:
             self.changes.extend(extgroup_changes[0])
 
-        if a.__pk__ != b.__pk__:
+        a_pk_names = {field._name_ for field in a.__pk__}
+        b_pk_names = {field._name_ for field in b.__pk__}
+
+        if a_pk_names != b_pk_names:
             recreate_pk = True
             if a.__pk__:
                 self.changes.append((EntityDiffKind.REMOVE_PK, a))

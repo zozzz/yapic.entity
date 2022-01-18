@@ -5,7 +5,7 @@ from typing import Any
 from yapic.entity.sql import PostgreDialect
 from yapic.entity import (Query, Entity, Serial, String, DateTimeTz, Json, Composite, and_, or_, Int, ForeignKey, One,
                           ManyAcross, Field, func, Registry, Auto, startswith, endswith, contains, find, virtual, in_,
-                          IntArray)
+                          IntArray, PrimaryKey)
 
 dialect = PostgreDialect()
 
@@ -424,6 +424,7 @@ def test_call():
 
 
 def test_json():
+
     class UserJson(Entity):
         id: Serial
         name: Json[FullName]
@@ -447,6 +448,7 @@ def test_json():
 
 
 def test_composite():
+
     class UserComp2(Entity):
         id: Serial
         name: Composite[FullName]
@@ -508,6 +510,7 @@ def test_virtual():
 
 
 def test_virtual_composite():
+
     class UserComp3(Entity):
         id: Serial
         name: Composite[FullName]
@@ -519,6 +522,7 @@ def test_virtual_composite():
 
 
 def test_virtual_relation():
+
     class UserCompVR(Entity):
         id: Serial
         name: Composite[FullName]
@@ -538,6 +542,7 @@ def test_virtual_relation():
 
 
 def test_deep_raltion():
+
     class Deep(Entity):
         id: Serial
         user_id: Auto = ForeignKey(User.id)

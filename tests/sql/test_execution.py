@@ -865,6 +865,7 @@ async def test_date_types(conn):
         time_tz: TimeTz
 
     class FixedTz(tzinfo):
+
         def __init__(self, utcoffset):
             self._utcoffset = timedelta(hours=utcoffset)
             self._dst = timedelta(hours=0)
@@ -1219,3 +1220,34 @@ ALTER TABLE "execution"."Entity1"
 
     result = await sync(conn, reg2)
     assert result is None
+
+
+async def test_change_composite_pk(conn, pgclean):
+    R1 = Registry()
+
+    class CompositePk(Entity, registry=R1, schema="execution"):
+        id1: Int = Field(nullable=False) // PrimaryKey()
+        later_id: Int = Field(nullable=False)
+        id2: Int = Field(nullable=False) // PrimaryKey()
+
+    result = await sync(conn, R1)
+    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE TABLE "execution"."CompositePk" (
+  "id1" INT4 NOT NULL,
+  "later_id" INT4 NOT NULL,
+  "id2" INT4 NOT NULL,
+  PRIMARY KEY("id1", "id2")
+);"""
+    await conn.execute(result)
+
+    R2 = Registry()
+
+    class CompositePk(Entity, registry=R2, schema="execution"):
+        id1: Int = Field(nullable=False) // PrimaryKey()
+        later_id: Int = Field(nullable=False) // PrimaryKey()
+        id2: Int = Field(nullable=False)
+
+    result = await sync(conn, R2)
+    assert result == """ALTER TABLE "execution"."CompositePk"
+  DROP CONSTRAINT IF EXISTS "CompositePk_pkey",
+  ADD PRIMARY KEY("id1", "later_id");"""
