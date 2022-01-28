@@ -79,24 +79,28 @@ Auto = Field[AutoImpl, Any, Any]
 
 
 class Int(Field[IntImpl, int, int]):
+
     def __new__(cls, *args, **kwargs):
         kwargs.setdefault("size", 4)
         return Field.__new__(cls, *args, **kwargs)
 
 
 class Float(Field[FloatImpl, float, float]):
+
     def __new__(cls, *args, **kwargs):
         kwargs.setdefault("size", 4)
         return Field.__new__(cls, *args, **kwargs)
 
 
 class UUID(Field[UUIDImpl, uuid.UUID, uuid.UUID]):
+
     def __new__(cls, *args, **kwargs):
         kwargs.setdefault("default", uuid.uuid4)
         return Field.__new__(cls, *args, **kwargs)
 
 
 class Serial(Int):
+
     def __new__(cls, *args, **kwargs):
         return Int.__new__(cls, *args, **kwargs) // PrimaryKey() // AutoIncrement()
 
@@ -112,6 +116,7 @@ class ChoiceImpl(Generic[EnumT], _ChoiceImpl):
 
 
 class Choice(Generic[EnumT], Field[ChoiceImpl[EnumT], EnumT, Any]):
+
     def __new__(cls, impl, *args, **kwargs):
         field = Field.__new__(cls, impl, *args, **kwargs)
         return field // ForeignKey(impl.enum._entity_.value)
@@ -165,14 +170,18 @@ IntArray = Array[IntImpl, List[int], List[int]]
 
 
 class CreatedTime(Field[DateTimeTzImpl, datetime, datetime]):
+
     def __new__(cls, *args, **kwargs):
         kwargs.setdefault("default", const.CURRENT_TIMESTAMP)
         return Field.__new__(cls, *args, **kwargs)
 
 
 class _UpdatedTimeExt(EntityAttributeExt):
+
     def init(self, attr: EntityAttribute):
         from .sql.pgsql._trigger import PostgreTrigger
+
+        # TODO: old.updated_time is null or old.updated_time = new.updated_time
 
         entity = attr._entity_
         trigger = PostgreTrigger(
@@ -190,6 +199,7 @@ class _UpdatedTimeExt(EntityAttributeExt):
 
 
 class UpdatedTime(Field[DateTimeTzImpl, datetime, datetime]):
+
     def __new__(cls, *args, **kwargs):
         field = Field.__new__(cls, *args, **kwargs)
         return field // _UpdatedTimeExt()

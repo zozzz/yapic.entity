@@ -173,7 +173,9 @@ cdef class DDLCompiler:
                 if param.b.__meta__.get("is_type", False) is True:
                     lines.append(self.compile_type_diff(param))
                 else:
-                    lines.append(self.compile_entity_diff(param))
+                    _updates, _deferred = self.compile_entity_diff(param)
+                    lines.append(_updates)
+                    deferred.extend(_deferred)
             elif kind is RegistryDiffKind.INSERT_ENTITY:
                 qc = self.dialect.create_query_compiler()
                 q, p = qc.compile_insert_or_update(param[0], param[1], param[2], param[3], True)
@@ -201,6 +203,7 @@ cdef class DDLCompiler:
         alter = []
         pre = []
         post = []
+        deferred = []
 
         for kind, param in diff:
             if kind == EntityDiffKind.REMOVED:
@@ -208,6 +211,8 @@ cdef class DDLCompiler:
             elif kind == EntityDiffKind.CREATED:
                 alter.append(f"ADD COLUMN {self.compile_field(param, requirements)}")
             elif kind == EntityDiffKind.CHANGED:
+                if "_index_" in param[2]:
+                    return self.recreate_entity(param[0]._entity_, param[1]._entity_)
                 alter.extend(self.compile_field_diff(param[1], param[2]))
             elif kind == EntityDiffKind.REMOVE_PK:
                 alter.append(f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(param.__name__ + '_pkey')}")
@@ -239,7 +244,7 @@ cdef class DDLCompiler:
         else:
             alter = ""
 
-        return '\n'.join(filter(bool, ['\n'.join(pre), alter, '\n'.join(post)]))
+        return '\n'.join(filter(bool, ['\n'.join(pre), alter, '\n'.join(post)])), deferred
 
     def compile_create_extgroup(self, EntityAttributeExtGroup group):
         if group.type is ForeignKey:
@@ -347,6 +352,73 @@ cdef class DDLCompiler:
     def remove_trigger(self, EntityType entity, Trigger trigger):
         raise NotImplementedError()
 
+    def recreate_entity(self, EntityType old_entity, EntityType new_entity):
+        cdef list result = []
+        cdef EntityType entity
+        cdef Field field
+        cdef EntityAttributeExtGroup fk_group
+        cdef Registry old_registry = old_entity.__registry__
+        cdef dict strip_entity = {}
+        cdef dict fix_entity = {}
+
+        # drop referenced fks
+        # TODO: ha a jelenlegi RegistryDiff-ben módosult az fk_group akkor ne hozzuk létre újra
+        for field in old_entity.__fields__:
+            references = old_registry.get_referenced_foreign_keys(field)
+            for entity, fk_groups in references:
+                entity_qname = self.dialect.table_qname(entity)
+
+                for fk_group in fk_groups:
+                    strip_entity.setdefault(entity_qname, [])
+                    strip_entity[entity_qname].append(
+                        f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(fk_group.name)}"
+                    )
+
+                    fix_entity.setdefault(entity_qname, [])
+                    fix_entity[entity_qname].append(
+                        f"ADD {self.compile_foreign_key(fk_group)}",
+                    )
+
+        # for trigger in old_entity.__triggers__:
+        #     strip_entity.append(...)
+
+        if strip_entity:
+            result.append(compile_alters(strip_entity))
+
+        # rename
+        old_qname = self.dialect.table_qname(old_entity)
+        old_entity.__name__ = f"_{old_entity.__name__}"
+        result.append(f"ALTER TABLE {old_qname} RENAME TO {self.dialect.quote_ident(old_entity.__name__)};")
+
+        # create
+        entity_create, entity_deferred = self.compile_entity(new_entity)
+        result.append(entity_create)
+
+        # copy
+        old_fields = {field._name_ for field in old_entity.__fields__ if not field._virtual_}
+        new_fields = {field._name_ for field in new_entity.__fields__ if not field._virtual_}
+        field_indexes = {field._name_: field._index_ for field in new_entity.__fields__ if not field._virtual_}
+        field_names = list(sorted(old_fields & new_fields, key=field_indexes.get))
+
+        if field_names:
+            result.append(f"INSERT INTO {self.dialect.table_qname(new_entity)} ({','.join(field_names)})")
+            result.append(f"  SELECT {','.join(field_names)} FROM {self.dialect.table_qname(old_entity)};")
+
+        # delete renamed
+        result.append(f"DROP TABLE {self.dialect.table_qname(old_entity)} CASCADE;")
+
+        # restore deleted fks
+        if fix_entity:
+            result.append(compile_alters(fix_entity))
+
+        # complete table, trigger, index, fks, ...
+        # TODO: lehet úgy kéne menie mint a create table-nek, hogy csak az egész módosítás után fut le
+        # if entity_deferred:
+        #     result.extend(entity_deferred)
+
+        # result.append(f"-- RECREATE END {self.dialect.table_qname(new_entity)} --")
+        return "\n".join(result), entity_deferred
+
 
 cdef class DDLReflect:
     def __cinit__(self, Dialect dialect, EntityType entity_base):
@@ -355,3 +427,12 @@ cdef class DDLReflect:
 
     async def get_entities(self, conn, Registry registry):
         raise NotImplementedError()
+
+
+cdef compile_alter(str entity, list alters):
+    alter = ',\n  '.join(alters)
+    return f"ALTER TABLE {entity}\n  {alter};"
+
+
+cdef compile_alters(dict alters):
+    return "\n".join(compile_alter(k, v) for k, v in alters.items())

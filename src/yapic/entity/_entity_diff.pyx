@@ -54,8 +54,6 @@ cdef class EntityDiff:
         for r in sorted([b_fields[n] for n in created], key=lambda f: f._index_):
             self.changes.append((EntityDiffKind.CREATED, r))
 
-
-
         cdef Field a_field
         cdef Field b_field
 
@@ -109,9 +107,8 @@ cdef class EntityDiff:
 cdef inline dict field_eq(Field a, Field b, object expression_eq):
     result = {}
 
-    # XXX: implement field order change in pgsql
-    # if a._index_ != b._index_:
-    #     result["_index_"] = b._index_
+    if a._index_ != b._index_:
+        result["_index_"] = b._index_
 
     if a._name_ != b._name_:
         result["_name_"] = b._name_

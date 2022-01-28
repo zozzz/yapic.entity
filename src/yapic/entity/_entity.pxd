@@ -18,7 +18,8 @@ cdef class EntityType(type):
     cdef public list __fix_entries__
     cdef public list __triggers__
     cdef public tuple __extgroups__
-    cdef PyObject* registry
+    # cdef PyObject* registry
+    cdef Registry __registry__
     cdef PyObject* meta
     cdef readonly set __deps__
     # cdef object __weakref__

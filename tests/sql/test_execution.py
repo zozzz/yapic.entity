@@ -9,7 +9,7 @@ from yapic.entity.sql import sync, PostgreDialect
 from yapic.entity import (Entity, Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool,
                           ForeignKey, PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite,
                           Auto, Numeric, Float, Point, UUID, virtual, StringArray, IntArray, CreatedTime, UpdatedTime,
-                          Enum, AutoIncrement)
+                          Enum, AutoIncrement, Index)
 from yapic import json
 
 pytestmark = pytest.mark.asyncio
@@ -1251,3 +1251,141 @@ CREATE TABLE "execution"."CompositePk" (
     assert result == """ALTER TABLE "execution"."CompositePk"
   DROP CONSTRAINT IF EXISTS "CompositePk_pkey",
   ADD PRIMARY KEY("id1", "later_id");"""
+
+
+async def test_change_field_position(conn, pgclean):
+    # TODO: column törlés + index változtatás, mi lesz az fk-val?
+    # TODO: updated_time
+    R1 = Registry()
+
+    class Address(Entity, registry=R1, schema="execution"):
+        id: Serial
+        value: String
+
+    class User(Entity, registry=R1, schema="execution"):
+        id: Serial
+        address_id: Auto = ForeignKey(Address.id)
+        name: String
+        age: Int
+        email: String = Index(name="unique_email", unique=True)
+        updated_time: UpdatedTime = func.CURRENT_TIMESTAMP
+        for_delete: Int
+
+    class Article(Entity, registry=R1, schema="execution"):
+        id: Serial
+        author_id: Auto = ForeignKey(User.id)
+
+    result = await sync(conn, R1)
+    # print(result)
+    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE SEQUENCE "execution"."Address_id_seq";
+CREATE TABLE "execution"."Address" (
+  "id" INT4 NOT NULL DEFAULT nextval('"execution"."Address_id_seq"'::regclass),
+  "value" TEXT,
+  PRIMARY KEY("id")
+);
+CREATE SEQUENCE "execution"."Article_id_seq";
+CREATE SEQUENCE "execution"."User_id_seq";
+CREATE TABLE "execution"."User" (
+  "id" INT4 NOT NULL DEFAULT nextval('"execution"."User_id_seq"'::regclass),
+  "address_id" INT4,
+  "name" TEXT,
+  "age" INT4,
+  "email" TEXT,
+  "updated_time" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "for_delete" INT4,
+  PRIMARY KEY("id")
+);
+CREATE TABLE "execution"."Article" (
+  "id" INT4 NOT NULL DEFAULT nextval('"execution"."Article_id_seq"'::regclass),
+  "author_id" INT4,
+  PRIMARY KEY("id")
+);
+CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_id");
+CREATE UNIQUE INDEX "unique_email" ON "execution"."User" USING btree ("email");
+ALTER TABLE "execution"."User"
+  ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+CREATE OR REPLACE FUNCTION "execution"."YT-User-update-updated_time-8085b1-c1c14d"() RETURNS TRIGGER AS $$ BEGIN
+  NEW."updated_time" = CURRENT_TIMESTAMP;
+  RETURN NEW;
+END; $$ language 'plpgsql' ;
+CREATE TRIGGER "update-updated_time"
+  BEFORE UPDATE ON "execution"."User"
+  FOR EACH ROW
+  WHEN (OLD.* IS DISTINCT FROM NEW.*)
+  EXECUTE FUNCTION "execution"."YT-User-update-updated_time-8085b1-c1c14d"();
+CREATE INDEX "idx_Article__author_id" ON "execution"."Article" USING btree ("author_id");
+ALTER TABLE "execution"."Article"
+  ADD CONSTRAINT "fk_Article__author_id-User__id" FOREIGN KEY ("author_id") REFERENCES "execution"."User" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
+    await conn.execute(result)
+
+    address = Address(id=12, value="Address Value")
+    await conn.save(address)
+    user = User(id=33, address_id=address.id, name="Teszt Elek", age=20, email="test@example.com", for_delete=1)
+    await conn.save(user)
+    article = Article(id=44, author_id=user.id)
+    await conn.save(article)
+
+    R2 = Registry()
+
+    class Address(Entity, registry=R2, schema="execution"):
+        id: Serial
+        value: String
+
+    class User(Entity, registry=R2, schema="execution"):
+        id: Serial
+        address_id: Auto = ForeignKey(Address.id, on_delete="CASCADE")
+        name: String
+        email: String = Index(name="unique_email", unique=True)
+        age: Int
+        new_field: String
+        updated_time: UpdatedTime = func.CURRENT_TIMESTAMP
+
+    class Article(Entity, registry=R2, schema="execution"):
+        id: Serial
+        author_id: Auto = ForeignKey(User.id, on_delete="CASCADE")
+
+    result = await sync(conn, R2)
+    # print(result)
+    assert result == """ALTER TABLE "execution"."Article"
+  DROP CONSTRAINT IF EXISTS "fk_Article__author_id-User__id";
+ALTER TABLE "execution"."User" RENAME TO "_User";
+CREATE TABLE "execution"."User" (
+  "id" INT4 NOT NULL DEFAULT nextval('"execution"."User_id_seq"'::regclass),
+  "address_id" INT4,
+  "name" TEXT,
+  "email" TEXT,
+  "age" INT4,
+  "new_field" TEXT,
+  "updated_time" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY("id")
+);
+INSERT INTO "execution"."User" (id,address_id,name,email,age,updated_time)
+  SELECT id,address_id,name,email,age,updated_time FROM "execution"."_User";
+DROP TABLE "execution"."_User" CASCADE;
+ALTER TABLE "execution"."Article"
+  ADD CONSTRAINT "fk_Article__author_id-User__id" FOREIGN KEY ("author_id") REFERENCES "execution"."User" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+ALTER TABLE "execution"."Article"
+  DROP CONSTRAINT IF EXISTS "fk_Article__author_id-User__id",
+  ADD CONSTRAINT "fk_Article__author_id-User__id" FOREIGN KEY ("author_id") REFERENCES "execution"."User" ("id") ON UPDATE RESTRICT ON DELETE CASCADE;
+CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_id");
+CREATE UNIQUE INDEX "unique_email" ON "execution"."User" USING btree ("email");
+ALTER TABLE "execution"."User"
+  ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE CASCADE;
+CREATE OR REPLACE FUNCTION "execution"."YT-User-update-updated_time-8085b1-c1c14d"() RETURNS TRIGGER AS $$ BEGIN
+  NEW."updated_time" = CURRENT_TIMESTAMP;
+  RETURN NEW;
+END; $$ language 'plpgsql' ;
+CREATE TRIGGER "update-updated_time"
+  BEFORE UPDATE ON "execution"."User"
+  FOR EACH ROW
+  WHEN (OLD.* IS DISTINCT FROM NEW.*)
+  EXECUTE FUNCTION "execution"."YT-User-update-updated_time-8085b1-c1c14d"();"""
+    await conn.execute(result)
+
+    address = await conn.select(Query(Address).where(Address.id == address.id)).first()
+    assert address is not None
+    user = await conn.select(Query(User).where(User.id == user.id)).first()
+    assert user is not None
+    article = await conn.select(Query(Article).where(Article.id == article.id)).first()
+    assert article is not None

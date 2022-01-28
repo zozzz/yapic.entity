@@ -14,6 +14,7 @@ class BaseEntity(Entity, registry=Registry(), _root=True):
 
 
 def test_basic():
+
     class User(BaseEntity):
         pass
 
@@ -44,6 +45,7 @@ def test_basic():
 
 
 def test_int():
+
     class Ints(BaseEntity):
         int_small: Int = Field(size=2)
         int_medium: Int = Field(size=4)
@@ -91,6 +93,7 @@ def test_int():
 
 
 def test_int_with_defaults():
+
     class IntWithDef(BaseEntity):
         int_small: Int = 0
 
@@ -101,6 +104,7 @@ def test_int_with_defaults():
 
 
 def test_string():
+
     class A(BaseEntity):
         id: String = Field(size=[10, 10]) // PrimaryKey()
         name: String = Field(size=50)
@@ -119,6 +123,7 @@ def test_string():
 
 @pytest.mark.skip(reason="Enum is in planning stage...")
 def test_enum():
+
     class Mood(Enum):
         SAD = "sad"
         OK = "ok"
@@ -141,6 +146,7 @@ def test_enum():
 
 
 def test_index():
+
     class IndexedTable(BaseEntity):
         idx_1: Int = Index()
         idx_2: Int = Index(name="custom_name")
@@ -164,6 +170,7 @@ CREATE INDEX "idx_IndexedTable__idx_5" ON "IndexedTable" USING btree ("idx_5") C
 
 
 def test_fk():
+
     class A3(BaseEntity):
         id: Serial
 
@@ -201,6 +208,7 @@ CREATE INDEX "idx_B__id_x" ON "B" USING btree ("id_x");"""
 
 
 def test_date():
+
     class A4(BaseEntity):
         date: Date
         date_time: DateTime
@@ -217,6 +225,7 @@ def test_date():
 
 
 def test_bool():
+
     class A5(BaseEntity):
         is_active: Bool = 1
 
@@ -227,6 +236,7 @@ def test_bool():
 
 
 def test_json():
+
     class Position(BaseEntity):
         x: Int
         y: Int
@@ -244,6 +254,7 @@ def test_json():
 
 
 def test_composite():
+
     class FullName(BaseEntity):
         title: String
         family: String
@@ -263,6 +274,7 @@ def test_composite():
 
 @pytest.mark.skip(reason="Implement recursion handling")
 def test_self_ref():
+
     class Node(BaseEntity):
         id: Serial
         parent_id: Auto = ForeignKey("Node.id")
@@ -279,6 +291,7 @@ CREATE INDEX "idx_Node__parent_id" ON "Node" USING btree ("parent_id");"""
 
 
 def test_mixin():
+
     class FKUser(Entity):
         id: Serial
 
@@ -303,6 +316,7 @@ CREATE INDEX "idx_MEntity__user_id" ON "MEntity" USING btree ("user_id");"""
 
 
 def test_array():
+
     class ArrayTest(Entity):
         id: Serial
         strings: StringArray

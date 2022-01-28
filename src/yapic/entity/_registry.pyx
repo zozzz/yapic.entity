@@ -2,7 +2,7 @@ import cython
 from enum import Enum
 from weakref import WeakValueDictionary
 
-from ._entity cimport DependencyList, EntityBase, EntityType, EntityAttribute, EntityAttributeExt, EntityAttributeImpl, NOTSET
+from ._entity cimport DependencyList, EntityBase, EntityType, EntityAttribute, EntityAttributeExt, EntityAttributeExtGroup, EntityAttributeImpl, NOTSET
 from ._entity_diff cimport EntityDiff
 from ._field cimport ForeignKey
 
@@ -50,6 +50,7 @@ cdef class Registry:
         reg.entities = res
         return reg
 
+    # TODO: remove, and replace with get_referenced_foreign_keys
     cpdef list get_foreign_key_refs(self, EntityAttribute column):
         cdef list result = []
         cdef list per_entity
@@ -72,6 +73,32 @@ cdef class Registry:
                 result.append((entity, per_entity))
 
         return result
+
+    cpdef list get_referenced_foreign_keys(self, EntityAttribute column):
+        cdef list result = []
+        cdef list per_entity
+        cdef EntityType entity
+        cdef EntityAttribute field
+        cdef EntityAttributeExt ext
+        cdef EntityAttributeExtGroup group
+        cdef ForeignKey fk
+
+        for entity in self.entities.values():
+            per_entity = []
+
+            for group in entity.__extgroups__:
+                if group in per_entity:
+                    continue
+                elif group.type is ForeignKey:
+                    for fk in group.items:
+                        if fk.ref._entity_ is column._entity_ and fk.ref._name_ == column._name_:
+                            per_entity.append(group)
+
+            if len(per_entity) != 0:
+                result.append((entity, per_entity))
+
+        return result
+
 
 
     # cdef resolve_deferred(self):
