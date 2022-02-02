@@ -41,14 +41,14 @@ cdef class Registry:
     cpdef items(self):
         return self.entities.items()
 
-    cpdef filter(self, fn):
-        cdef dict res = {}
-        for k, v in self.entities.items():
-            if fn(v):
-                res[k] = v
-        reg = Registry()
-        reg.entities = res
-        return reg
+    # cpdef filter(self, fn):
+    #     cdef dict res = {}
+    #     for k, v in self.entities.items():
+    #         if fn(v):
+    #             res[k] = v
+    #     reg = Registry()
+    #     reg.entities = res
+    #     return reg
 
     # TODO: remove, and replace with get_referenced_foreign_keys
     cpdef list get_foreign_key_refs(self, EntityAttribute column):
@@ -148,16 +148,14 @@ class RegistryDiffKind(Enum):
 @cython.final
 cdef class RegistryDiff:
     def __cinit__(self, Registry a, Registry b, object entity_diff):
-        a = a.filter(skip_virtual)
-        b = b.filter(skip_virtual)
         self.a = a
         self.b = b
         self.changes = []
         cdef DependencyList order = DependencyList()
         cdef EntityBase fix
 
-        a_names = set(a.keys())
-        b_names = set(b.keys())
+        a_names = {k for k, v in a.items() if is_virtual(v) is False}
+        b_names = {k for k, v in b.items() if is_virtual(v) is False}
 
         for removed in sorted(a_names - b_names):
             val = a[removed]
@@ -227,8 +225,8 @@ cdef class RegistryDiff:
         return result
 
 
-def skip_virtual(EntityType ent):
-    return ent.__meta__.get("is_virtual", False) is not True
+cdef bint is_virtual(EntityType ent):
+    return ent.__meta__.get("is_virtual", False)
 
 
 cdef object entity_data_is_eq(EntityBase a, EntityBase b):

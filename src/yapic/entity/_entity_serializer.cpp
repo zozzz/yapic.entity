@@ -1194,6 +1194,7 @@ struct __pyx_obj_5yapic_6entity_9_registry_Registry {
   PyObject *entities;
   PyObject *locals;
   PyObject *deferred;
+  PyObject *__weakref__;
 };
 
 
@@ -1243,7 +1244,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityType {
   PyObject *__fix_entries__;
   PyObject *__triggers__;
   PyObject *__extgroups__;
-  struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx___registry__;
+  PyObject *registry;
   PyObject *meta;
   PyObject *__deps__;
 };
@@ -1684,7 +1685,6 @@ struct __pyx_vtabstruct_5yapic_6entity_9_registry_Registry {
   PyObject *(*keys)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, int __pyx_skip_dispatch);
   PyObject *(*values)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, int __pyx_skip_dispatch);
   PyObject *(*items)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, int __pyx_skip_dispatch);
-  PyObject *(*filter)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, PyObject *, int __pyx_skip_dispatch);
   PyObject *(*get_foreign_key_refs)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *, int __pyx_skip_dispatch);
   PyObject *(*get_referenced_foreign_keys)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *, int __pyx_skip_dispatch);
   PyObject *(*resolve_deferred)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *);

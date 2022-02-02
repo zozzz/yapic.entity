@@ -1292,6 +1292,7 @@ struct __pyx_obj_5yapic_6entity_9_registry_Registry {
   PyObject *entities;
   PyObject *locals;
   PyObject *deferred;
+  PyObject *__weakref__;
 };
 
 
@@ -1341,7 +1342,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityType {
   PyObject *__fix_entries__;
   PyObject *__triggers__;
   PyObject *__extgroups__;
-  struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx___registry__;
+  PyObject *registry;
   PyObject *meta;
   PyObject *__deps__;
 };
@@ -2107,7 +2108,6 @@ struct __pyx_vtabstruct_5yapic_6entity_9_registry_Registry {
   PyObject *(*keys)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, int __pyx_skip_dispatch);
   PyObject *(*values)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, int __pyx_skip_dispatch);
   PyObject *(*items)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, int __pyx_skip_dispatch);
-  PyObject *(*filter)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, PyObject *, int __pyx_skip_dispatch);
   PyObject *(*get_foreign_key_refs)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *, int __pyx_skip_dispatch);
   PyObject *(*get_referenced_foreign_keys)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *, int __pyx_skip_dispatch);
   PyObject *(*resolve_deferred)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *);
@@ -3439,7 +3439,7 @@ static const char __pyx_k_NOT_NULL[] = " NOT NULL";
 static const char __pyx_k_entity_2[] = "entity";
 static const char __pyx_k_nullable[] = "nullable";
 static const char __pyx_k_regclass[] = "::regclass)";
-static const char __pyx_k_registry[] = "registry";
+static const char __pyx_k_registry[] = "__registry__";
 static const char __pyx_k_CREATE_PK[] = "CREATE_PK";
 static const char __pyx_k_DROP_TYPE[] = "DROP TYPE ";
 static const char __pyx_k_ON_DELETE[] = " ON DELETE ";
@@ -3459,6 +3459,7 @@ static const char __pyx_k_ValueError[] = "ValueError";
 static const char __pyx_k_new_entity[] = "new_entity";
 static const char __pyx_k_old_entity[] = "old_entity";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
+static const char __pyx_k_registry_2[] = "registry";
 static const char __pyx_k_setdefault[] = "setdefault";
 static const char __pyx_k_startswith[] = "startswith";
 static const char __pyx_k_ALTER_TABLE[] = "ALTER TABLE ";
@@ -3673,6 +3674,7 @@ static PyObject *__pyx_n_s_recreate_entity;
 static PyObject *__pyx_n_s_ref;
 static PyObject *__pyx_kp_u_regclass;
 static PyObject *__pyx_n_s_registry;
+static PyObject *__pyx_n_s_registry_2;
 static PyObject *__pyx_n_s_remove_trigger;
 static PyObject *__pyx_n_s_requirements;
 static PyObject *__pyx_n_u_schema;
@@ -11860,8 +11862,9 @@ static PyObject *__pyx_pf_5yapic_6entity_3sql_4_ddl_11DDLCompiler_32recreate_ent
  *         cdef dict strip_entity = {}
  *         cdef dict fix_entity = {}
  */
-  __pyx_t_1 = ((PyObject *)__pyx_v_old_entity->__pyx___registry__);
-  __Pyx_INCREF(__pyx_t_1);
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_old_entity), __pyx_n_s_registry); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 360, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5yapic_6entity_9_registry_Registry))))) __PYX_ERR(0, 360, __pyx_L1_error)
   __pyx_v_old_registry = ((struct __pyx_obj_5yapic_6entity_9_registry_Registry *)__pyx_t_1);
   __pyx_t_1 = 0;
 
@@ -12988,7 +12991,7 @@ static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_10DDLReflect_3get_entities(P
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("get_entities (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_conn,&__pyx_n_s_registry,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_conn,&__pyx_n_s_registry_2,0};
     PyObject* values[2] = {0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
@@ -13008,7 +13011,7 @@ static PyObject *__pyx_pw_5yapic_6entity_3sql_4_ddl_10DDLReflect_3get_entities(P
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_registry)) != 0)) kw_args--;
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_registry_2)) != 0)) kw_args--;
         else {
           __Pyx_RaiseArgtupleInvalid("get_entities", 1, 2, 2, 1); __PYX_ERR(0, 428, __pyx_L3_error)
         }
@@ -14578,6 +14581,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_ref, __pyx_k_ref, sizeof(__pyx_k_ref), 0, 0, 1, 1},
   {&__pyx_kp_u_regclass, __pyx_k_regclass, sizeof(__pyx_k_regclass), 0, 1, 0, 0},
   {&__pyx_n_s_registry, __pyx_k_registry, sizeof(__pyx_k_registry), 0, 0, 1, 1},
+  {&__pyx_n_s_registry_2, __pyx_k_registry_2, sizeof(__pyx_k_registry_2), 0, 0, 1, 1},
   {&__pyx_n_s_remove_trigger, __pyx_k_remove_trigger, sizeof(__pyx_k_remove_trigger), 0, 0, 1, 1},
   {&__pyx_n_s_requirements, __pyx_k_requirements, sizeof(__pyx_k_requirements), 0, 0, 1, 1},
   {&__pyx_n_u_schema, __pyx_k_schema, sizeof(__pyx_k_schema), 0, 1, 0, 1},

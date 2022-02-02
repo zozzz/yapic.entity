@@ -1286,6 +1286,7 @@ struct __pyx_obj_5yapic_6entity_9_registry_Registry {
   PyObject *entities;
   PyObject *locals;
   PyObject *deferred;
+  PyObject *__weakref__;
 };
 
 
@@ -1335,7 +1336,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityType {
   PyObject *__fix_entries__;
   PyObject *__triggers__;
   PyObject *__extgroups__;
-  struct __pyx_obj_5yapic_6entity_9_registry_Registry *__pyx___registry__;
+  PyObject *registry;
   PyObject *meta;
   PyObject *__deps__;
 };
@@ -1999,7 +2000,6 @@ struct __pyx_vtabstruct_5yapic_6entity_9_registry_Registry {
   PyObject *(*keys)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, int __pyx_skip_dispatch);
   PyObject *(*values)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, int __pyx_skip_dispatch);
   PyObject *(*items)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, int __pyx_skip_dispatch);
-  PyObject *(*filter)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, PyObject *, int __pyx_skip_dispatch);
   PyObject *(*get_foreign_key_refs)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *, int __pyx_skip_dispatch);
   PyObject *(*get_referenced_foreign_keys)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *, struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *, int __pyx_skip_dispatch);
   PyObject *(*resolve_deferred)(struct __pyx_obj_5yapic_6entity_9_registry_Registry *);
@@ -4359,167 +4359,120 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__convert_record
  * 
  * 
  * cdef tuple _record_idexes_to_tuple(tuple idx_list, object record):             # <<<<<<<<<<<<<<
- *     cdef tuple result
  *     cdef int length = len(idx_list)
+ *     cdef tuple result = PyTuple_New(length)
  */
 
 static PyObject *__pyx_f_5yapic_6entity_3sql_17_record_converter__record_idexes_to_tuple(PyObject *__pyx_v_idx_list, PyObject *__pyx_v_record) {
-  PyObject *__pyx_v_result = 0;
   int __pyx_v_length;
+  PyObject *__pyx_v_result = 0;
   long __pyx_v_i;
   PyObject *__pyx_v_val = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   Py_ssize_t __pyx_t_1;
-  int __pyx_t_2;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  int __pyx_t_5;
-  int __pyx_t_6;
-  long __pyx_t_7;
+  PyObject *__pyx_t_2 = NULL;
+  int __pyx_t_3;
+  int __pyx_t_4;
+  long __pyx_t_5;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_record_idexes_to_tuple", 0);
 
-  /* "yapic/entity/sql/_record_converter.pyx":119
- * cdef tuple _record_idexes_to_tuple(tuple idx_list, object record):
- *     cdef tuple result
- *     cdef int length = len(idx_list)             # <<<<<<<<<<<<<<
+  /* "yapic/entity/sql/_record_converter.pyx":118
  * 
- *     if length == 1:
+ * cdef tuple _record_idexes_to_tuple(tuple idx_list, object record):
+ *     cdef int length = len(idx_list)             # <<<<<<<<<<<<<<
+ *     cdef tuple result = PyTuple_New(length)
+ * 
  */
   if (unlikely(__pyx_v_idx_list == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 119, __pyx_L1_error)
+    __PYX_ERR(0, 118, __pyx_L1_error)
   }
-  __pyx_t_1 = PyTuple_GET_SIZE(__pyx_v_idx_list); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 119, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_GET_SIZE(__pyx_v_idx_list); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 118, __pyx_L1_error)
   __pyx_v_length = __pyx_t_1;
 
-  /* "yapic/entity/sql/_record_converter.pyx":121
+  /* "yapic/entity/sql/_record_converter.pyx":119
+ * cdef tuple _record_idexes_to_tuple(tuple idx_list, object record):
  *     cdef int length = len(idx_list)
+ *     cdef tuple result = PyTuple_New(length)             # <<<<<<<<<<<<<<
  * 
- *     if length == 1:             # <<<<<<<<<<<<<<
- *         return (record[idx_list[0]],)
- *     else:
+ *     for i in range(0, length):
  */
-  __pyx_t_2 = ((__pyx_v_length == 1) != 0);
-  if (__pyx_t_2) {
+  __pyx_t_2 = PyTuple_New(__pyx_v_length); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_v_result = ((PyObject*)__pyx_t_2);
+  __pyx_t_2 = 0;
+
+  /* "yapic/entity/sql/_record_converter.pyx":121
+ *     cdef tuple result = PyTuple_New(length)
+ * 
+ *     for i in range(0, length):             # <<<<<<<<<<<<<<
+ *         val = record[idx_list[i]]
+ *         Py_INCREF(<object>val)
+ */
+  __pyx_t_3 = __pyx_v_length;
+  __pyx_t_4 = __pyx_t_3;
+  for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
+    __pyx_v_i = __pyx_t_5;
 
     /* "yapic/entity/sql/_record_converter.pyx":122
  * 
- *     if length == 1:
- *         return (record[idx_list[0]],)             # <<<<<<<<<<<<<<
- *     else:
- *         result = PyTuple_New(length)
+ *     for i in range(0, length):
+ *         val = record[idx_list[i]]             # <<<<<<<<<<<<<<
+ *         Py_INCREF(<object>val)
+ *         PyTuple_SET_ITEM(<object>result, i, <object>val)
  */
-    __Pyx_XDECREF(__pyx_r);
     if (unlikely(__pyx_v_idx_list == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
       __PYX_ERR(0, 122, __pyx_L1_error)
     }
-    __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_v_record, PyTuple_GET_ITEM(__pyx_v_idx_list, 0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 122, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 122, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_GIVEREF(__pyx_t_3);
-    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3);
-    __pyx_t_3 = 0;
-    __pyx_r = ((PyObject*)__pyx_t_4);
-    __pyx_t_4 = 0;
-    goto __pyx_L0;
+    __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_v_record, PyTuple_GET_ITEM(__pyx_v_idx_list, __pyx_v_i)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 122, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_XDECREF_SET(__pyx_v_val, __pyx_t_2);
+    __pyx_t_2 = 0;
 
-    /* "yapic/entity/sql/_record_converter.pyx":121
- *     cdef int length = len(idx_list)
- * 
- *     if length == 1:             # <<<<<<<<<<<<<<
- *         return (record[idx_list[0]],)
- *     else:
+    /* "yapic/entity/sql/_record_converter.pyx":123
+ *     for i in range(0, length):
+ *         val = record[idx_list[i]]
+ *         Py_INCREF(<object>val)             # <<<<<<<<<<<<<<
+ *         PyTuple_SET_ITEM(<object>result, i, <object>val)
+ *     return result
  */
+    Py_INCREF(__pyx_v_val);
+
+    /* "yapic/entity/sql/_record_converter.pyx":124
+ *         val = record[idx_list[i]]
+ *         Py_INCREF(<object>val)
+ *         PyTuple_SET_ITEM(<object>result, i, <object>val)             # <<<<<<<<<<<<<<
+ *     return result
+ */
+    PyTuple_SET_ITEM(__pyx_v_result, __pyx_v_i, __pyx_v_val);
   }
 
-  /* "yapic/entity/sql/_record_converter.pyx":124
- *         return (record[idx_list[0]],)
- *     else:
- *         result = PyTuple_New(length)             # <<<<<<<<<<<<<<
- *         for i in range(0, length):
- *             val = record[idx_list[i]]
+  /* "yapic/entity/sql/_record_converter.pyx":125
+ *         Py_INCREF(<object>val)
+ *         PyTuple_SET_ITEM(<object>result, i, <object>val)
+ *     return result             # <<<<<<<<<<<<<<
  */
-  /*else*/ {
-    __pyx_t_4 = PyTuple_New(__pyx_v_length); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 124, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_v_result = ((PyObject*)__pyx_t_4);
-    __pyx_t_4 = 0;
-
-    /* "yapic/entity/sql/_record_converter.pyx":125
- *     else:
- *         result = PyTuple_New(length)
- *         for i in range(0, length):             # <<<<<<<<<<<<<<
- *             val = record[idx_list[i]]
- *             Py_INCREF(<object>val)
- */
-    __pyx_t_5 = __pyx_v_length;
-    __pyx_t_6 = __pyx_t_5;
-    for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
-      __pyx_v_i = __pyx_t_7;
-
-      /* "yapic/entity/sql/_record_converter.pyx":126
- *         result = PyTuple_New(length)
- *         for i in range(0, length):
- *             val = record[idx_list[i]]             # <<<<<<<<<<<<<<
- *             Py_INCREF(<object>val)
- *             PyTuple_SET_ITEM(<object>result, i, <object>val)
- */
-      if (unlikely(__pyx_v_idx_list == Py_None)) {
-        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 126, __pyx_L1_error)
-      }
-      __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_v_record, PyTuple_GET_ITEM(__pyx_v_idx_list, __pyx_v_i)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 126, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __Pyx_XDECREF_SET(__pyx_v_val, __pyx_t_4);
-      __pyx_t_4 = 0;
-
-      /* "yapic/entity/sql/_record_converter.pyx":127
- *         for i in range(0, length):
- *             val = record[idx_list[i]]
- *             Py_INCREF(<object>val)             # <<<<<<<<<<<<<<
- *             PyTuple_SET_ITEM(<object>result, i, <object>val)
- *         return result
- */
-      Py_INCREF(__pyx_v_val);
-
-      /* "yapic/entity/sql/_record_converter.pyx":128
- *             val = record[idx_list[i]]
- *             Py_INCREF(<object>val)
- *             PyTuple_SET_ITEM(<object>result, i, <object>val)             # <<<<<<<<<<<<<<
- *         return result
- */
-      PyTuple_SET_ITEM(__pyx_v_result, __pyx_v_i, __pyx_v_val);
-    }
-
-    /* "yapic/entity/sql/_record_converter.pyx":129
- *             Py_INCREF(<object>val)
- *             PyTuple_SET_ITEM(<object>result, i, <object>val)
- *         return result             # <<<<<<<<<<<<<<
- */
-    __Pyx_XDECREF(__pyx_r);
-    __Pyx_INCREF(__pyx_v_result);
-    __pyx_r = __pyx_v_result;
-    goto __pyx_L0;
-  }
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_result);
+  __pyx_r = __pyx_v_result;
+  goto __pyx_L0;
 
   /* "yapic/entity/sql/_record_converter.pyx":117
  * 
  * 
  * cdef tuple _record_idexes_to_tuple(tuple idx_list, object record):             # <<<<<<<<<<<<<<
- *     cdef tuple result
  *     cdef int length = len(idx_list)
+ *     cdef tuple result = PyTuple_New(length)
  */
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_2);
   __Pyx_AddTraceback("yapic.entity.sql._record_converter._record_idexes_to_tuple", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;

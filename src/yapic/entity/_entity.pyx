@@ -38,7 +38,6 @@ cdef class EntityType(type):
         cdef list fields = kwargs.get("__fields__", [])
         cdef list __attrs__ = []
         cdef list __triggers__ = []
-        cdef Registry __registry__ = kwargs.get("registry", None)
 
         cdef Factory factory
         cdef EntityAttribute attr
@@ -54,9 +53,6 @@ cdef class EntityType(type):
                     base_entity = base
                 else:
                     raise ValueError("More than one Entity base is not allowed")
-
-                if __registry__ is None:
-                    __registry__ = (<EntityType>base_entity).__registry__
 
             # TODO: trigger inheritance kezelése, jelenleg nem szabad csak úgy lemásolni a parent-et mert így rossz
             # if hasattr(base, "__triggers__"):
@@ -184,7 +180,6 @@ cdef class EntityType(type):
 
         self.__fix_entries__ = None
         self.__triggers__ = __triggers__
-        self.__registry__ = __registry__
         self.__deferred__ = []
         self.__fields__ = tuple(fields)
         self.__attrs__ = tuple(fields + __attrs__)
@@ -219,11 +214,15 @@ cdef class EntityType(type):
                 mdict = PyModule_GetDict(module)
                 (<object>mdict)[args[0]] = self
 
-                self.__registry__.register(self.__qname__, self)
+                (<Registry>self.__registry__).register(self.__qname__, self)
 
     @property
     def __meta__(self):
         return <object>self.meta
+
+    @property
+    def __registry__(self):
+        return <object>PyWeakref_GetObject(<object>self.registry)
 
     @property
     def __qname__(self):
@@ -289,6 +288,7 @@ cdef class EntityType(type):
 
     def __dealloc__(self):
         Py_XDECREF(self.meta)
+        Py_XDECREF(self.registry)
 
     cdef object resolve_deferred(self):
         cdef EntityAttribute attr
@@ -982,12 +982,21 @@ cdef class EntityBase:
                 if parent_entity.meta is not NULL:
                     meta_dict.update(<object>parent_entity.meta)
 
+                if registry is None and parent_entity.registry is not NULL:
+                    registry = parent_entity.__registry__
+
         meta_dict.update(meta)
         meta_dict.pop("__fields__", None)
 
         Py_XINCREF(<PyObject*>(<object>meta_dict))
         Py_XDECREF(ent.meta)
         ent.meta = <PyObject*>(<object>meta_dict)
+
+        cdef object registry_ref = PyWeakref_NewRef(registry, None)
+        Py_XINCREF(<PyObject*>(<object>registry_ref))
+
+        Py_XDECREF(ent.registry)
+        ent.registry = <PyObject*>(<object>registry_ref)
 
     @property
     def __pk__(self):

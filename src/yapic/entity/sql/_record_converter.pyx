@@ -115,15 +115,11 @@ cdef object _convert_record(list stack, object record, list rcos_list, RCState s
 
 
 cdef tuple _record_idexes_to_tuple(tuple idx_list, object record):
-    cdef tuple result
     cdef int length = len(idx_list)
+    cdef tuple result = PyTuple_New(length)
 
-    if length == 1:
-        return (record[idx_list[0]],)
-    else:
-        result = PyTuple_New(length)
-        for i in range(0, length):
-            val = record[idx_list[i]]
-            Py_INCREF(<object>val)
-            PyTuple_SET_ITEM(<object>result, i, <object>val)
-        return result
+    for i in range(0, length):
+        val = record[idx_list[i]]
+        Py_INCREF(<object>val)
+        PyTuple_SET_ITEM(<object>result, i, <object>val)
+    return result
