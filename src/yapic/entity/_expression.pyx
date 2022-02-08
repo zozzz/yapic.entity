@@ -3,6 +3,8 @@ import cython
 
 from cpython.object cimport PyObject
 from cpython.tuple cimport PyTuple_New, PyTuple_GET_ITEM, PyTuple_SET_ITEM, PyTuple_GET_SIZE
+from cpython.list cimport PyList_New, PyList_SET_ITEM
+from cpython.ref cimport Py_DECREF, Py_INCREF, Py_XDECREF, Py_XINCREF
 
 
 cdef extern from "Python.h":
@@ -76,7 +78,7 @@ cdef class BinaryExpression(Expression):
         self.negated = False
 
     def __repr__(self):
-        return "<Expr %r %s%r %r>" % (self.left, ("NOT " if self.negated else ""), self.op, self.right)
+        return "<BinaryExpr %r %s%r %r>" % (self.left, ("NOT " if self.negated else ""), self.op, self.right)
 
     # TODO: maybe need to clone current + handle child classes as well
     def __invert__(BinaryExpression self):
@@ -169,9 +171,9 @@ cdef class DirectionExpression(Expression):
 
 
 cdef class CallExpression(Expression):
-    def __cinit__(self, Expression callable, args):
+    def __cinit__(self, Expression callable, tuple args):
         self.callable = callable
-        self.args = tuple(map(coerce_expression, args))
+        self.args = coerce_expr_list(args)
 
     def __repr__(self):
         if self.args:
@@ -360,48 +362,6 @@ cdef class VirtualExpressionDir(Expression):
         return "<VirtualDir %r %r>" % (self.expr, self.op)
 
 
-# cdef class VirtualExpression(BinaryExpression):
-#     def __init__(self, object attr, Expression left, Expression right, object op):
-#         self._attr = attr
-#         super().__init__(left, right, op)
-
-#     cpdef visit(self, Visitor visitor):
-#         if self.left._cmp:
-#             if not self._cached:
-#                 if isinstance(self.right, ConstExpression):
-#                     value = (<ConstExpression>self.right).value
-#                 else:
-#                     value = self.right
-
-#                 self._cached = self.left._cmp(self.left._entity_, None, self.op, value)
-#             return visitor.visit(self._cached)
-#         else:
-#             raise ValueError("Compare expression is not defined for: %r" % self.left)
-
-# cdef class GetAttrExprisson(Expression):
-#     def __cinit__(self, Expression obj, object name):
-#         self.obj = obj
-#         self.name = name
-
-#     def __getattr__(self, name):
-#         if isinstance(self.name, str):
-#             return GetAttrExprisson(self, name)
-#         else:
-#             return getattr(self.name, name)
-
-#     cpdef visit(self, Visitor visitor):
-#         return visitor.visit_getattr(self)
-
-
-# cdef class GetItemExprisson(Expression):
-#     def __cinit__(self, Expression obj, object index):
-#         self.obj = obj
-#         self.index = index
-
-#     cpdef visit(self, Visitor visitor):
-#         return visitor.visit_getitem(self)
-
-
 cdef class Visitor:
     cpdef visit(self, Expression expr):
         return expr.visit(self)
@@ -421,39 +381,101 @@ cdef class Visitor:
         fn_name = f"visit_unary_{unary.op.__name__}"
         return getattr(self, fn_name)(unary)
 
+    def _visit_iterable(self, expr):
+        if isinstance(expr, tuple):
+            return self._visit_tuple(expr)
+        elif isinstance(expr, list):
+            return self._visit_list(expr)
+        else:
+            return self._visit_any_iterable(expr)
+
+    def _visit_list(self, list expr):
+        cdef int length = len(expr)
+        cdef list result = PyList_New(length)
+        cdef object item
+
+        for i in range(0, length):
+            item = self.visit(<object>(<PyObject*>(<list>expr)[i]))
+            Py_INCREF(item)
+            PyList_SET_ITEM(result, i, item)
+
+        return result
+
+    def _visit_tuple(self, tuple expr):
+        cdef int length = len(expr)
+        cdef tuple result = PyTuple_New(length)
+        cdef object item
+
+        for i in range(0, length):
+            item = self.visit(<object>(<PyObject*>(<tuple>expr)[i]))
+            Py_INCREF(item)
+            PyTuple_SET_ITEM(result, i, item)
+
+        return result
+
+    def _visit_any_iterable(self, object expr):
+        cdef list res = []
+        for expr in expr:
+            res.append(self.visit(expr))
+        return res
+
+
 
 cdef Expression coerce_expression(object expr):
     if isinstance(expr, Expression):
         return <Expression>expr
     else:
-        if isinstance(expr, list) or isinstance(expr, tuple):
-            expr = tuple(coerce_expression(x) for x in expr)
+        if isinstance(expr, (list, tuple)):
+            expr = coerce_expr_list(expr)
         elif isinstance(expr, str) and (<str>expr).isspace():
             return RawExpression(f"'{expr}'")
         return ConstExpression(expr, type(expr))
 
 
+cdef tuple coerce_expr_list(object expr):
+    cdef int length = len(expr)
+    cdef tuple result = PyTuple_New(length)
+    cdef object item
+
+    if length > 0:
+        if isinstance(expr, list):
+            for i in range(0, length):
+                item = coerce_expression(<object>(<PyObject*>(<list>expr)[i]))
+                Py_INCREF(item)
+                PyTuple_SET_ITEM(result, i, item)
+        elif isinstance(expr, tuple):
+            for i in range(0, length):
+                item = coerce_expression(<object>(<PyObject*>(<tuple>expr)[i]))
+                Py_INCREF(item)
+                PyTuple_SET_ITEM(result, i, item)
+        else:
+            raise ValueError(f"Unexpected expression list: {expr}")
+
+    return result
+
+
+
 def and_(*expr):
-    if not expr:
+    cdef int length = len(expr)
+
+    if length == 0:
         raise ValueError("Expression must not be empty")
 
     res = expr[0]
-
-    for i in range(1, len(expr)):
+    for i in range(1, length):
         res &= expr[i]
-
     return res
 
 
 def or_(*expr):
-    if not expr:
+    cdef int length = len(expr)
+
+    if length == 0:
         raise ValueError("Expression must not be empty")
 
     res = expr[0]
-
-    for i in range(1, len(expr)):
+    for i in range(1, length):
         res |= expr[i]
-
     return res
 
 

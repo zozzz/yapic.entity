@@ -55,6 +55,7 @@ cdef class UUIDImpl(FieldImpl):
 
 
 cdef class EntityTypeImpl(FieldImpl):
+    # TODO: rename
     cdef readonly EntityType _entity_
 
 

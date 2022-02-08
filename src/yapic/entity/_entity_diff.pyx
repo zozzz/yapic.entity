@@ -21,7 +21,7 @@ class EntityDiffKind(Enum):
 
 @cython.final
 cdef class EntityDiff:
-    def __cinit__(self, EntityType a, EntityType b, object expression_eq=None):
+    def __cinit__(self, EntityType a, EntityType b, object expression_eq=None, bint compare_field_position=True):
         cdef Field field
         self.a = a
         self.b = b
@@ -62,7 +62,7 @@ cdef class EntityDiff:
             a_field = a_fields[r]
             b_field = b_fields[r]
 
-            changed = field_eq(a_field, b_field, expression_eq)
+            changed = field_eq(a_field, b_field, expression_eq, compare_field_position)
             if changed:
                 self.changes.append((EntityDiffKind.CHANGED, (a_field, b_field, changed)))
 
@@ -104,10 +104,10 @@ cdef class EntityDiff:
         return iter(self.changes)
 
 
-cdef inline dict field_eq(Field a, Field b, object expression_eq):
+cdef inline dict field_eq(Field a, Field b, object expression_eq, bint compare_field_position):
     result = {}
 
-    if a._index_ != b._index_:
+    if compare_field_position and a._index_ != b._index_:
         result["_index_"] = b._index_
 
     if a._name_ != b._name_:

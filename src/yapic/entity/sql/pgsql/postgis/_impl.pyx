@@ -12,7 +12,7 @@ DEFAULT_SRID = 4326
 
 cdef class PostGISImpl(CompositeImpl):
     def __init__(self, entity, int srid=0):
-        entity.__meta__["is_virtual"] = True
+        entity.__meta__["is_builtin"] = True
         super().__init__(entity)
         self.srid = srid or DEFAULT_SRID
 
@@ -24,7 +24,7 @@ class PostGISPointType(Entity,
                 registry=POSTGIS_REG,
                 _root=True,
                 is_type=True,
-                is_virtual=True,
+                is_builtin=True,
                 __fields__ = [
                     Field(FloatImpl(), name="x", size=8),
                     Field(FloatImpl(), name="y", size=8),
@@ -45,16 +45,16 @@ cdef class PostGISPointImpl(PostGISImpl):
 
     cpdef getattr(self, EntityAttribute attr, object key):
         if key == "x":
-            return CallExpression(RawExpression("ST_X"), [attr.cast("GEOMETRY")])
+            return CallExpression(RawExpression("ST_X"), (attr.cast("GEOMETRY"), ))
         elif key == "y":
-            return CallExpression(RawExpression("ST_Y"), [attr.cast("GEOMETRY")])
+            return CallExpression(RawExpression("ST_Y"), (attr.cast("GEOMETRY"), ))
         elif key == "srid":
-            return CallExpression(RawExpression("ST_SRID"), [attr.cast("GEOMETRY")])
+            return CallExpression(RawExpression("ST_SRID"), (attr.cast("GEOMETRY"), ))
 
     cpdef object data_for_write(self, EntityBase value, bint for_insert):
-        result = CallExpression(RawExpression("ST_MakePoint"), [value.x, value.y])
+        result = CallExpression(RawExpression("ST_MakePoint"), (value.x, value.y))
         srid = value.srid or self.srid
-        return CallExpression(RawExpression("ST_SetSRID"), [result, srid])
+        return CallExpression(RawExpression("ST_SetSRID"), (result, srid))
 
     def __repr__(self):
         return "PostGIS.Point"
@@ -64,7 +64,7 @@ class PostGISLatLngType(Entity,
                 registry=POSTGIS_REG,
                 _root=True,
                 is_type=True,
-                is_virtual=True,
+                is_builtin=True,
                 __fields__ = [
                     Field(FloatImpl(), name="lat", size=8),
                     Field(FloatImpl(), name="lng", size=8),
@@ -85,16 +85,16 @@ cdef class PostGISLatLngImpl(PostGISImpl):
 
     cpdef getattr(self, EntityAttribute attr, object key):
         if key == "lng":
-            return CallExpression(RawExpression("ST_X"), [attr.cast("GEOMETRY")])
+            return CallExpression(RawExpression("ST_X"), (attr.cast("GEOMETRY"), ))
         elif key == "lat":
-            return CallExpression(RawExpression("ST_Y"), [attr.cast("GEOMETRY")])
+            return CallExpression(RawExpression("ST_Y"), (attr.cast("GEOMETRY"), ))
         elif key == "srid":
-            return CallExpression(RawExpression("ST_SRID"), [attr.cast("GEOMETRY")])
+            return CallExpression(RawExpression("ST_SRID"), (attr.cast("GEOMETRY"), ))
 
     cpdef object data_for_write(self, EntityBase value, bint for_insert):
-        result = CallExpression(RawExpression("ST_MakePoint"), [value.lng, value.lat])
+        result = CallExpression(RawExpression("ST_MakePoint"), (value.lng, value.lat))
         srid = value.srid or self.srid
-        return CallExpression(RawExpression("ST_SetSRID"), [result, srid])
+        return CallExpression(RawExpression("ST_SetSRID"), (result, srid))
 
     def __repr__(self):
         return "PostGIS.LatLng"

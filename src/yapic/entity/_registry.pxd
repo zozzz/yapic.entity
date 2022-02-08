@@ -5,10 +5,10 @@ from ._entity cimport EntityType, EntityAttribute
 
 @cython.final
 cdef class Registry:
+    cdef object __weakref__
     cdef readonly object entities
     cdef readonly object locals
     cdef list deferred
-    cdef object __weakref__
 
     cpdef object register(self, str name, EntityType entity)
     cpdef keys(self)

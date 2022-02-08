@@ -162,27 +162,27 @@ cdef class Query(Expression):
             self._joins = {}
 
         if isinstance(what, Relation):
-            (<Relation>what).update_join_expr()
             impl = (<Relation>what)._impl_
 
             if isinstance(impl, ManyToMany):
                 cross_condition = (<ManyToMany>impl).across_join_expr
-                cross_what = (<ManyToMany>impl).across
+                cross_what = (<ManyToMany>impl).get_across_alias()
 
                 if cross_what not in self._entities:
                     self._entities.append(cross_what)
 
+                cross_what_id = id(cross_what)
                 try:
-                    existing = self._joins[cross_what]
+                    existing = self._joins[cross_what_id]
                 except KeyError:
-                    self._joins[cross_what] = [cross_what, cross_condition, type]
+                    self._joins[cross_what_id] = [cross_what, cross_condition, type]
                 else:
                     if type.upper().startswith("INNER"):
                         existing[2] = type
                 type = "INNER"
 
             condition = impl.join_expr
-            entity = impl.joined
+            entity = impl.get_joined_alias()
 
             if entity is None:
                 raise RuntimeError("Relation is deferred: %r" % what)
@@ -212,10 +212,11 @@ cdef class Query(Expression):
         if aliased not in self._entities:
             self._entities.append(aliased)
 
+        entity_id = id(entity)
         try:
-            existing = self._joins[entity]
+            existing = self._joins[entity_id]
         except KeyError:
-            self._joins[entity] = [entity, condition, type]
+            self._joins[entity_id] = [entity, condition, type]
         else:
             if type.upper().startswith("INNER"):
                 existing[2] = type
@@ -355,13 +356,44 @@ cdef class Query(Expression):
             self.__alias_c += 1
             return alias
 
+    def __repr__(self):
+        cdef list parts = []
+
+        if self._select_from:
+            parts.append(f"from = {self._select_from}")
+
+        if self._columns:
+            parts.append(f"columns = {self._columns}")
+
+        if self._joins:
+            parts.append(f"joins = {self._joins}")
+            # parts.append(f"joins = {tuple(self._joins.values())}")
+
+        if self._where:
+            parts.append(f"where = {self._where}")
+
+        if self._order:
+            parts.append(f"order = {self._order}")
+
+        if self._group:
+            parts.append(f"group = {self._group}")
+
+        if self._having:
+            parts.append(f"having = {self._having}")
+
+        if self._range:
+            parts.append(f"range = {self._range}")
+
+        sep = ",\n\t"
+        return f"<Query \n\t{sep.join(parts)}\n>"
+
 
 # TODO: beautify
 cdef object load_options(dict target, tuple input):
     for inp in input:
         if isinstance(inp, Relation):
             target[(<Relation>inp)._uid_] = inp
-            target[(<Relation>inp)._impl_.joined] = inp
+            target[(<Relation>inp)._impl_.get_joined_alias()] = inp
         elif isinstance(inp, EntityAttribute):
             target[(<EntityAttribute>inp)._uid_] = inp
         elif isinstance(inp, VirtualExpressionVal):
@@ -374,11 +406,11 @@ cdef object load_options(dict target, tuple input):
                 if isinstance(entry, Relation):
                     target[(<Relation>entry)._uid_] = entry
                     if is_last:
-                        target[(<Relation>entry)._impl_.joined] = entry
+                        target[(<Relation>entry)._impl_.get_joined_alias()] = entry
                 elif isinstance(entry, Field):
                     if isinstance((<Field>entry)._impl_, CompositeImpl):
                         if is_last:
-                            target[(<Field>entry)._impl_._entity_] = entry
+                            target[(<CompositeImpl>(<Field>entry)._impl_)._entity_] = entry
 
                     target[(<Field>entry)._uid_] = entry
                 elif isinstance(entry, RelatedAttribute):
@@ -453,14 +485,15 @@ cdef class QueryFinalizer(Visitor):
             return res.desc()
 
     def visit_call(self, CallExpression expr):
-        return CallExpression(self.visit(expr.callable), self._visit_list(expr.args))
+        return CallExpression(self.visit(expr.callable), self._visit_iterable(expr.args))
 
     def visit_raw(self, expr):
         return expr
 
-    def visit_field(self, expr):
-        if not self.q._entity_reachable(expr._entity_, True):
-            self.q.join(expr._entity_, type="LEFT" if self.in_or > 0 else "INNER")
+    def visit_field(self, Field expr):
+        cdef EntityType expr_entity = expr.get_entity()
+        if not self.q._entity_reachable(expr_entity, True):
+            self.q.join(expr_entity, type="LEFT" if self.in_or > 0 else "INNER")
         return expr
 
     def visit_const(self, expr):
@@ -534,19 +567,19 @@ cdef class QueryFinalizer(Visitor):
             self._visit_columns(self.q._select_from)
 
         if self.q._where:
-            self.q._where = self._visit_list(self.q._where)
+            self.q._where = self._visit_iterable(self.q._where)
 
         if self.q._order:
-            self.q._order = self._visit_list(self.q._order)
+            self.q._order = self._visit_iterable(self.q._order)
 
         if self.q._group:
-            self.q._group = self._visit_list(self.q._group)
+            self.q._group = self._visit_iterable(self.q._group)
 
         if self.q._having:
-            self.q._having = self._visit_list(self.q._having)
+            self.q._having = self._visit_iterable(self.q._having)
 
         if self.q._distinct:
-            self.q._distinct = self._visit_list(self.q._distinct)
+            self.q._distinct = self._visit_iterable(self.q._distinct)
 
         self.q._rcos = self.rcos
 
@@ -601,27 +634,6 @@ cdef class QueryFinalizer(Visitor):
                 self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
                 self.q._columns.append(self.visit(expr))
 
-    def _visit_list(self, expr_list):
-        cdef list res = []
-        for expr in expr_list:
-            res.append(self.visit(expr))
-        return res
-
-    # def _select_entity(self, EntityType entity, dict fields={}):
-    #     cdef PolymorphMeta polymorph = entity.__meta__.get("polymorph", None)
-
-    #     if fields is None:
-    #         fields = {}
-
-    #     if polymorph:
-    #         self.rcos.append(self._select_polymorph(entity, polymorph, fields))
-    #     else:
-    #         self.rcos.append(self._rco_for_entity(entity))
-
-    # def _select_polymorph(self, EntityType entity, PolymorphMeta poly, dict fields):
-
-
-
 
     def _rco_for_entity(self, EntityType entity_type, dict existing=None, list before_create=[]):
         cdef PolymorphMeta polymorph = entity_type.__meta__.get("polymorph", None)
@@ -636,6 +648,7 @@ cdef class QueryFinalizer(Visitor):
 
     def _rco_for_normal_entity(self, EntityType entity_type, dict existing=None, list before_create=[]):
         cdef EntityType aliased = get_alias_target(entity_type)
+        cdef EntityType attr_entity
         cdef list rco = [RowConvertOp(RCO.CREATE_STATE, aliased)]
         cdef EntityAttribute attr
         cdef Field field
@@ -646,11 +659,12 @@ cdef class QueryFinalizer(Visitor):
         for attr in entity_type.__attrs__:
             if isinstance(attr, Field):
                 field = <Field>attr
+                attr_entity = field.get_entity()
 
-                if ((field._uid_ in self.q._load or field._entity_ in self.q._load)
+                if ((field._uid_ in self.q._load or attr_entity in self.q._load)
                         and (not self.q._exclude
                             or field._uid_ not in self.q._exclude
-                            or field._entity_ not in self.q._exclude)):
+                            or attr_entity not in self.q._exclude)):
 
                     if isinstance(field._impl_, CompositeImpl):
                         rco[0:0] = self._rco_for_composite(field, (<CompositeImpl>field._impl_)._entity_)
@@ -672,15 +686,14 @@ cdef class QueryFinalizer(Visitor):
                 loading = <Loading>attr.get_ext(Loading)
                 if attr._uid_ in self.q._load or (loading is not None and loading.always):
                     relation = <Relation>attr
-                    relation.update_join_expr()
 
                     if loading is not None and loading.always:
                         if loading.fields:
-                            joined_entity = relation._impl_.joined
+                            joined_entity = relation._impl_.get_joined_alias()
                             for fname in loading.fields:
                                 self.q.load(getattr(joined_entity, fname))
                         else:
-                            self.q.load(relation._impl_.joined)
+                            self.q.load(relation._impl_.get_joined_alias())
 
                     if isinstance(relation._impl_, ManyToOne):
                         relation_rco.append((relation, self._rco_for_one_relation(relation, existing)))
@@ -741,7 +754,7 @@ cdef class QueryFinalizer(Visitor):
                 self.q.join(relation, None, "INNER")
 
             relation = parents[len(parents) - 1]
-            entity_tmp = relation._impl_.joined
+            entity_tmp = relation._impl_.get_joined_alias()
         else:
             entity_tmp = entity
 
@@ -762,7 +775,7 @@ cdef class QueryFinalizer(Visitor):
                 before_create = []
             parent_relation = relation
 
-            entity_tmp = relation._impl_.joined
+            entity_tmp = relation._impl_.get_joined_alias()
 
             for i, field in enumerate(pk_fields):
                 try:
@@ -818,8 +831,7 @@ cdef class QueryFinalizer(Visitor):
         cdef Field field
 
         for relation in poly.children(entity):
-            relation.update_join_expr()
-            child = relation._entity_
+            child = relation.get_entity()
             self.q.join(child, relation._default_, "LEFT")
 
             for i, field in enumerate(pk_fields):
@@ -874,7 +886,7 @@ cdef class QueryFinalizer(Visitor):
         return rco
 
     def _rco_for_one_relation(self, Relation relation, dict existing=None):
-        cdef EntityType load = relation._impl_.joined
+        cdef EntityType load = relation._impl_.get_joined_alias()
         cdef Query col_query = Query(load).where(relation._impl_.join_expr).as_row()
 
         if self.q._load:
@@ -890,13 +902,13 @@ cdef class QueryFinalizer(Visitor):
         return [RowConvertOp(RCO.CONVERT_SUB_ENTITY, col_idx, column._rcos), _RCO_PUSH]
 
     def _rco_for_many_relation(self, Relation relation, dict existing=None):
-        cdef EntityType load = relation._impl_.joined
+        cdef EntityType load = relation._impl_.get_joined_alias()
         cdef Query q
 
         if isinstance(relation._impl_, ManyToMany):
-            q = Query(relation._impl_.across) \
-                .columns(relation._impl_.joined) \
-                .join(relation._impl_.joined, relation._impl_.join_expr, "INNER") \
+            q = Query(relation._impl_.get_across_alias()) \
+                .columns(relation._impl_.get_joined_alias()) \
+                .join(relation._impl_.get_joined_alias(), relation._impl_.join_expr, "INNER") \
                 .where(relation._impl_.across_join_expr)
         else:
             q = Query(load).where(relation._impl_.join_expr)

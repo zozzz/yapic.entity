@@ -10,13 +10,13 @@ from ._connection import _collect_attrs
 from ._query cimport Query
 
 
-async def sync(connection, Registry registry, EntityType entity_base=Entity):
+async def sync(connection, Registry registry, EntityType entity_base=Entity, compare_field_position=True):
     if registry.deferred:
         for d in registry.deferred:
             print(d, d.__deferred__)
         raise RuntimeError("This registry is not fully resolved, some of entities maybe deferred: %r" % registry.deferred)
 
-    cdef RegistryDiff diff = await connection.diff(registry, entity_base)
+    cdef RegistryDiff diff = await connection.diff(registry, entity_base, compare_field_position=compare_field_position)
 
     # print("\n".join(map(repr, diff.changes)))
 

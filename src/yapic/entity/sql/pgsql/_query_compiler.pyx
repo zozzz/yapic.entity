@@ -66,7 +66,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
         if query._group:
             self.parts.append("GROUP BY")
-            self.parts.append(", ".join(visit_list(self, query._group)))
+            self.parts.append(", ".join(self._visit_iterable(query._group)))
 
         if query._having:
             self.parts.append("HAVING")
@@ -76,7 +76,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
         if query._order:
             self.parts.append("ORDER BY")
-            self.parts.append(", ".join(visit_list(self, query._order)))
+            self.parts.append(", ".join(self._visit_iterable(query._order)))
 
         if query._range:
             if query._range.start:
@@ -122,13 +122,13 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
         return result
 
-    def visit_field(self, field):
+    def visit_field(self, Field field):
         try:
-            tbl = self._get_entity_alias(field._entity_)[1]
+            tbl = self._get_entity_alias(field.get_entity())[1]
         except KeyError:
-            # print("MISSING", field, field._entity_, get_alias_target(field._entity_), hash(field._entity_))
+            # print("MISSING", field, field.get_entity(), get_alias_target(field.get_entity()), hash(field.get_entity()))
             raise RuntimeError("Field entity is not found in query: %r" % field)
-            # tbl = self.dialect.table_qname(field._entity_)
+            # tbl = self.dialect.table_qname(field.get_entity())
 
         return f'{tbl}.{self.dialect.quote_ident(field._name_)}'
 
@@ -353,9 +353,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         return path_expr(self.dialect, state, compiled, attrs)
 
     def visit_call(self, CallExpression expr):
-        args = []
-        for a in expr.args:
-            args.append(self.visit(a))
+        cdef tuple args = self._visit_iterable(expr.args)
         return f"{self.visit(expr.callable)}({', '.join(args)})"
 
     def visit_raw(self, RawExpression expr):
@@ -554,13 +552,6 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
         return "".join(("DELETE FROM ", self.dialect.table_qname(get_alias_target(entity)),
              " WHERE ", " AND ".join(where))), params
-
-
-cdef visit_list(PostgreQueryCompiler qc, list items):
-    cdef list res = []
-    for x in items:
-        res.append(qc.visit(x))
-    return res
 
 
 cdef compile_binary(PostgreQueryCompiler qc, BinaryExpression expr, str op):

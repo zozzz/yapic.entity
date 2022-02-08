@@ -17,12 +17,6 @@ cdef class Field(EntityAttribute):
 
 cdef inline bint field_eq(Field a, Field b):
     return a._uid_ is b._uid_
-    # return get_alias_target(a._entity_) is get_alias_target(b._entity_) \
-    #     and a._name_ == b._name_
-
-
-# cdef class FieldProxy(Field):
-#     cdef readonly Field __proxied__
 
 
 cdef class FieldExtension(EntityAttributeExt):

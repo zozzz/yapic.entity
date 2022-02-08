@@ -60,7 +60,7 @@ cdef class Field(EntityAttribute):
             nullable=self.nullable,
             on_update=self.on_update)
         res._exts_ = self.clone_exts(res)
-        res._deps_ = set(self._deps_)
+        res._deps_ = self._deps_.clone()
         res.type_cache = self.type_cache
         return res
 
@@ -73,8 +73,9 @@ cdef class Field(EntityAttribute):
             return type
 
     def __repr__(self):
-        if self._entity_:
-            return "<Field %s: %s of %s>" % (self._name_, self._impl_, self._entity_)
+        cdef EntityType entity = self.get_entity()
+        if entity:
+            return "<Field %s: %s of %s>" % (self._name_, self._impl_, entity)
         else:
             return "<Field %s: %s (unbound)>" % (self._name_, self._impl_)
 
@@ -146,10 +147,11 @@ cdef class AutoIncrement(FieldExtension):
     cpdef object bind(self):
         cdef EntityType entity
         cdef EntityType aliased
+        cdef EntityAttribute attr = self.get_attr()
 
         if self.sequence is None:
             if self._seq_arg is None:
-                entity = self.attr._entity_
+                entity = attr.get_entity()
                 aliased = get_alias_target(entity)
 
                 if entity is aliased:
@@ -158,13 +160,13 @@ cdef class AutoIncrement(FieldExtension):
                     except KeyError:
                         schema = None
 
-                    name = f"{entity.__name__}_{self.attr._name_}_seq"
+                    name = f"{entity.__name__}_{attr._name_}_seq"
                     try:
-                        self.sequence = entity.__registry__[name if schema == "public" else f"{schema}.{name}"]
+                        self.sequence = entity.get_registry()[name if not schema or schema == "public" else f"{schema}.{name}"]
                     except KeyError:
-                        self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=entity.__registry__, is_sequence=True)
+                        self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=entity.get_registry(), is_sequence=True)
                 else:
-                    self.sequence = getattr(aliased, self.attr._key_).get_ext(AutoIncrement).sequence
+                    self.sequence = getattr(aliased, attr._key_).get_ext(AutoIncrement).sequence
             elif isinstance(self._seq_arg, EntityType):
                 self.sequence = self._seq_arg
             elif isinstance(self._seq_arg, (list, tuple)):
@@ -176,14 +178,14 @@ cdef class AutoIncrement(FieldExtension):
                 else:
                     raise ValueError(f"Invalid sequence value: {self._seq_arg}")
 
-                entity = get_alias_target(self.attr._entity_)
+                entity = get_alias_target(attr.get_entity())
 
                 try:
-                    self.sequence = entity.__registry__[name if schema == "public" else f"{schema}.{name}"]
+                    self.sequence = entity.get_registry()[name if not schema or schema == "public" else f"{schema}.{name}"]
                 except KeyError:
-                    self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=entity.__registry__, is_sequence=True)
+                    self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=entity.get_registry(), is_sequence=True)
 
-        self.attr._deps_.add(self.sequence)
+        attr._deps_.add_entity(self.sequence)
         return FieldExtension.bind(self)
 
     cpdef object clone(self):
@@ -207,13 +209,13 @@ cdef class Index(FieldExtension):
 
     cpdef object init(self, EntityAttribute attr):
         if not self.name:
-            self.name = f"idx_{attr._entity_.__name__}__{attr._name_}"
+            self.name = f"idx_{attr.get_entity().__name__}__{attr._name_}"
         self.group_by = self.name
 
         FieldExtension.init(self, attr)
 
     def __repr__(self):
-        return "@%sIndex(%s USING %s ON %s %s)" % ("Unique" if self.unique else "", self.name, self.method, self.expr or self.attr._name_, self.collate or "")
+        return "@%sIndex(%s USING %s ON %s %s)" % ("Unique" if self.unique else "", self.name, self.method, self.expr or self.get_attr()._name_, self.collate or "")
 
 
 cdef class Unique(FieldExtension):
@@ -233,7 +235,7 @@ cdef class ForeignKey(FieldExtension):
 
         for i in range(1, len(items)):
             fk = <ForeignKey>items[i]
-            if fk.ref._entity_ != main.ref._entity_:
+            if fk.ref.get_entity() != main.ref.get_entity():
                 raise ValueError(f"Can't use fields from different entities in the same foreign key: '{main.name}'")
             elif fk.on_update != main.on_update:
                 raise ValueError(f"Can't use different 'on_update' value in the same foreign key: '{main.name}'")
@@ -278,18 +280,20 @@ cdef class ForeignKey(FieldExtension):
             return False
 
         cdef Field field = self.attr
+        cdef EntityType field_entity
 
         if self.ref is None:
-            module = PyImport_Import(field._entity_.__module__)
+            field_entity = field.get_entity()
+            module = PyImport_Import(field_entity.__module__)
             mdict = PyModule_GetDict(module)
-            ldict = {field._entity_.__qualname__.split(".").pop(): field._entity_}
-            ldict.update(field._entity_.__registry__.locals)
+            ldict = {field_entity.__qualname__.split(".").pop(): field_entity}
+            ldict.update(field_entity.__registry__.locals)
             try:
                 self.ref = eval(self._ref, <object>mdict, <object>ldict)
             except NameError as e:
                 return False
 
-        field._deps_.add(self.ref._entity_)
+        field._deps_.add_entity(self.ref.get_entity())
 
         if self.name is None:
             self.name = compute_fk_name(field, self.ref)
@@ -314,9 +318,9 @@ cdef class ForeignKey(FieldExtension):
 
 cdef compute_fk_name(Field field_from, Field field_to):
     name = "fk_%s__%s-%s__%s" % (
-        field_from._entity_.__name__,
+        field_from.get_entity().__name__,
         field_from._name_,
-        field_to._entity_.__name__,
+        field_to.get_entity().__name__,
         field_to._name_
     )
 
@@ -329,6 +333,7 @@ cdef compute_fk_name(Field field_from, Field field_to):
 cdef dict collect_foreign_keys(EntityType entity):
     cdef dict fks = {}
     cdef Field field
+    cdef Field referenced
     cdef ForeignKey fk
     cdef ForeignKey fkInFks
 
@@ -344,7 +349,7 @@ cdef dict collect_foreign_keys(EntityType entity):
 
                 if fk.name in fks:
                     for fkInFks in fks[fk.name]:
-                        if fkInFks.ref._entity_ != referenced._entity_:
+                        if fkInFks.ref.get_entity() != referenced.get_entity():
                             raise ValueError("Can't use fields from different entities in the same foreign key")
                         elif fk.on_update != fkInFks.on_update:
                             raise ValueError("Can't use different 'on_update' value in the same foreign key")

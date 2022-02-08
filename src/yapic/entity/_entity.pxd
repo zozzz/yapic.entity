@@ -18,13 +18,13 @@ cdef class EntityType(type):
     cdef public list __fix_entries__
     cdef public list __triggers__
     cdef public tuple __extgroups__
-    cdef PyObject* registry
+    cdef PyObject* registry_ref
     # cdef Registry __registry__
     cdef PyObject* meta
-    cdef readonly set __deps__
-    # cdef object __weakref__
+    cdef readonly EntityDependency __deps__
 
     cdef object resolve_deferred(self)
+    cdef Registry get_registry(self)
     cpdef object __entity_ready__(self)
 
 
@@ -38,17 +38,22 @@ cdef class EntityBase:
 
 
 cdef class EntityAttribute(Expression):
+    cdef object __weakref__
     cdef object _impl
+    cdef object entityref
     cdef readonly str _key_
     cdef readonly int _index_
     cdef readonly str _name_
     cdef readonly object _default_
     cdef readonly EntityAttributeImpl _impl_
-    cdef readonly EntityType _entity_
+    # cdef readonly EntityType _entity_
     cdef readonly list _exts_
-    cdef readonly set _deps_
+    cdef readonly EntityDependency _deps_
     cdef readonly bint _virtual_
     cdef readonly int _uid_
+
+    cdef EntityType get_entity(self)
+    cdef EntityType set_entity(self, EntityType entity)
 
     cdef object init(self, EntityType entity)
     # returns true when successfully bind, otherwise the system can try bind in the later time
@@ -61,10 +66,14 @@ cdef class EntityAttribute(Expression):
 
 
 cdef class EntityAttributeExt:
-    cdef readonly EntityAttribute attr
+    cdef object attr_ref
+    # cdef readonly EntityAttribute attr
     cdef list _tmp
     cdef bint bound
     cdef str group_by
+
+    cdef EntityAttribute get_attr(self)
+    cdef object set_attr(self, EntityAttribute val)
 
     cpdef object init(self, EntityAttribute attr)
     # returns true when successfully bind, otherwise the system can try bind in the later time
@@ -126,6 +135,19 @@ cdef class EntityState:
     cdef bint _is_empty(self)
 
 
+@cython.final
+cdef class EntityDependency:
+    cdef object registry_ref
+    cdef set entity_names
+
+    cdef Registry get_registry(self)
+
+    cpdef add_entity(self, EntityType entity)
+    cpdef EntityDependency merge(self, EntityDependency other)
+    cpdef EntityDependency intersection(self, EntityDependency other)
+    cpdef list entities(self)
+    cpdef EntityDependency clone(self)
+
 
 @cython.final
 cdef class DependencyList(list):
@@ -144,7 +166,7 @@ cdef class DependencyList(list):
 @cython.final
 cdef class PolymorphMeta:
     cdef readonly tuple id_fields
-    cdef readonly dict entities
+    cdef list _decls
 
     @staticmethod
     cdef tuple normalize_id(object id)
@@ -153,3 +175,24 @@ cdef class PolymorphMeta:
     cpdef list parents(self, EntityType entity)
     cpdef list children(self, EntityType entity)
     cdef object _parents(self, EntityType entity, list result)
+
+
+cdef inline entity_is_builtin(EntityType entity):
+    try:
+        return entity.__meta__["is_builtin"] is True
+    except KeyError:
+        return False
+
+
+cdef inline entity_is_virtual(EntityType entity):
+    try:
+        return entity.__meta__["is_virtual"] is True
+    except KeyError:
+        return False
+
+
+cdef inline entity_is_type(EntityType entity):
+    try:
+        return entity.__meta__["is_type"] is True
+    except KeyError:
+        return False

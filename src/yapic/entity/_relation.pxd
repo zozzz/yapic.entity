@@ -8,7 +8,7 @@ from ._field cimport Field
 
 
 cdef class Relation(EntityAttribute):
-    cdef object update_join_expr(self)
+    pass
 
 
 @cython.final
@@ -23,32 +23,41 @@ cdef class RelatedAttributeImpl(EntityAttributeImpl):
 
 
 cdef class RelationImpl(EntityAttributeImpl):
-    cdef readonly ValueStore state_impl
-    # orignal joined entity
-    cdef readonly EntityType _joined
-    # entity alias for relation
-    cdef readonly EntityType joined
-    cdef readonly object join_expr
+    cdef object joined_entity_ref
+    cdef EntityType joined_alias_ref
+    cdef object relation_ref
+    cdef Expression _join_expr
 
-    # cdef object new_value_store(self)
-    # cdef void set_value_store_type(self, object t)
-    cdef object determine_join_expr(self, EntityType entity, Relation attr)
+    cdef readonly ValueStore state_impl
+
+
+    cdef EntityType get_joined_entity(self)
+    cdef EntityType get_joined_alias(self)
+    cdef Relation get_relation(self)
+    cdef void _update_join_expr(self)
+    # cdef object determine_join_expr(self, EntityType entity, Relation attr)
+
     cdef object resolve_default(self, Relation attr)
     cdef object _eval(self, Relation attr, str expr)
 
 
 cdef class ManyToOne(RelationImpl):
-    pass
+    cdef object _determine_join_expr(self)
 
 
 cdef class OneToMany(RelationImpl):
-    pass
+    cdef object _determine_join_expr(self)
+
 
 cdef class ManyToMany(RelationImpl):
-    cdef readonly EntityType _across
-    cdef readonly EntityType across
-    cdef readonly object across_join_expr
+    cdef object across_entity_ref
+    cdef EntityType across_alias_ref
+    cdef Expression _across_join_expr
 
+    cdef EntityType get_across_entity(self)
+    cdef EntityType get_across_alias(self)
+
+    cdef tuple _determine_join_expr(self)
 
 # @cython.final
 # @cython.freelist(1000)

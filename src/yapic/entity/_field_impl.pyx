@@ -81,7 +81,7 @@ cdef class EntityTypeImpl(FieldImpl):
         super().__init__()
 
     cpdef object init(self, EntityAttribute attr):
-        attr._deps_.add(self._entity_)
+        attr._deps_.add_entity(self._entity_)
         return True
 
     cpdef getattr(self, EntityAttribute attr, object key):
@@ -145,9 +145,9 @@ cdef class JsonImpl(FieldImpl):
 
     cpdef object init(self, EntityAttribute attr):
         if self._object_:
-            attr._deps_.add(self._object_)
+            attr._deps_.add_entity(self._object_)
         if self._list_:
-            attr._deps_.add(self._list_)
+            attr._deps_.add_entity(self._list_)
         return True
 
     cpdef getattr(self, EntityAttribute attr, object key):

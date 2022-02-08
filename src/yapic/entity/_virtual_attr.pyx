@@ -13,7 +13,7 @@ cdef class VirtualAttribute(EntityAttribute):
 
     def __get__(self, instance, owner):
         if instance is None:
-            return VirtualExpressionVal(self, self._entity_)
+            return VirtualExpressionVal(self, self.get_entity())
         elif isinstance(instance, EntityBase):
             res = (<EntityBase>instance).__state__.get_value(self)
             if res is NOTSET:
@@ -36,7 +36,7 @@ cdef class VirtualAttribute(EntityAttribute):
             raise ValueError("Can't delete attribute: '%s'" % self._key_)
 
     cpdef clone(self):
-        return type(self)(self._impl,
+        return type(self)(self._impl_,
             get=self._get,
             set=self._set,
             delete=self._del,

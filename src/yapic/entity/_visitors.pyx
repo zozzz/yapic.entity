@@ -83,8 +83,7 @@ cdef class EntityReplacer(ReplacerBase):
         self.to = to
 
     def visit_field(self, Field expr):
-        cdef EntityType fent = expr._entity_
-        if fent is self.what:
+        if expr.get_entity() is self.what:
             return getattr(self.to, expr._key_)
         else:
             return expr
@@ -92,12 +91,11 @@ cdef class EntityReplacer(ReplacerBase):
     def visit_relation(self, Relation relation):
         cdef Relation clone
 
-        if relation._entity_ is self.what:
+        if relation.get_entity() is self.what:
             clone = relation.clone()
             clone.init(self.to)
             if not clone.bind():
                 raise RuntimeError("...")
-            clone.update_join_expr()
             return clone
         else:
             return relation
@@ -125,7 +123,7 @@ cdef class FieldAssigner(ReplacerBase):
             else:
                 return expr.op(left, right)
 
-            if attr._entity_ is self.where_t:
+            if attr.get_entity() is self.where_t:
                 self.where_o.__state__.set_value(attr, value)
             else:
                 return expr.op(left, right)
@@ -133,7 +131,7 @@ cdef class FieldAssigner(ReplacerBase):
             return expr.op(left, right)
 
     def visit_field(self, Field expr):
-        cdef EntityType ent = expr._entity_
+        cdef EntityType ent = expr.get_entity()
         cdef EntityBase data
 
         try:
@@ -150,7 +148,7 @@ cdef class FieldExtractor(Walk):
         self.fields = []
 
     def visit_field(self, Field field):
-        if field._entity_ is self.entity:
+        if field.get_entity() is self.entity:
             self.fields.append(field)
 
 
@@ -170,10 +168,9 @@ cdef class FieldReplacer(ReplacerBase):
 
     def visit_relation(self, Relation relation):
         cdef Relation clone = relation.clone()
-        clone.init(relation._entity_)
+        clone.init(relation.get_entity())
         if not clone.bind():
             raise RuntimeError("...")
-        clone.update_join_expr()
 
         if isinstance(clone._impl_, ManyToMany):
             clone._impl_.join_expr = self.visit(clone._impl_.join_expr)

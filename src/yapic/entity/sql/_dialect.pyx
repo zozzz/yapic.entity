@@ -51,5 +51,5 @@ cdef class Dialect:
         qc = self.create_query_compiler()
         return qc.visit(a) == qc.visit(b)
 
-    cpdef EntityDiff entity_diff(self, EntityType a, EntityType b):
-        return EntityDiff(a, b, self.expression_eq)
+    cpdef EntityDiff entity_diff(self, EntityType a, EntityType b, bint compare_field_position):
+        return EntityDiff(a, b, self.expression_eq, compare_field_position)

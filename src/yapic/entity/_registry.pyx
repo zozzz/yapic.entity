@@ -1,8 +1,7 @@
 import cython
 from enum import Enum
-from weakref import WeakValueDictionary
 
-from ._entity cimport DependencyList, EntityBase, EntityType, EntityAttribute, EntityAttributeExt, EntityAttributeExtGroup, EntityAttributeImpl, NOTSET
+from ._entity cimport DependencyList, EntityBase, EntityType, EntityAttribute, EntityAttributeExt, EntityAttributeExtGroup, EntityAttributeImpl, NOTSET, entity_is_builtin, entity_is_virtual
 from ._entity_diff cimport EntityDiff
 from ._field cimport ForeignKey
 
@@ -10,7 +9,6 @@ from ._field cimport ForeignKey
 @cython.final
 cdef class Registry:
     def __cinit__(self):
-        # self.entities = WeakValueDictionary()
         self.entities = {}
         self.locals = {}
         self.deferred = []
@@ -22,7 +20,8 @@ cdef class Registry:
             insert_local_ref(self.locals, name, entity)
 
             self.entities[name] = entity
-            self.deferred.append(entity)
+            if entity.__deferred__:
+                self.deferred.append(entity)
 
             self.resolve_deferred()
 
@@ -41,15 +40,6 @@ cdef class Registry:
     cpdef items(self):
         return self.entities.items()
 
-    # cpdef filter(self, fn):
-    #     cdef dict res = {}
-    #     for k, v in self.entities.items():
-    #         if fn(v):
-    #             res[k] = v
-    #     reg = Registry()
-    #     reg.entities = res
-    #     return reg
-
     # TODO: remove, and replace with get_referenced_foreign_keys
     cpdef list get_foreign_key_refs(self, EntityAttribute column):
         cdef list result = []
@@ -66,7 +56,7 @@ cdef class Registry:
                 for ext in field._exts_:
                     if isinstance(ext, ForeignKey):
                         fk = <ForeignKey>ext
-                        if fk.ref._entity_ is column._entity_ and fk.ref._name_ == column._name_:
+                        if fk.ref.get_entity() is column.get_entity() and fk.ref._name_ == column._name_:
                             per_entity.append(field._key_)
 
             if len(per_entity) != 0:
@@ -91,7 +81,7 @@ cdef class Registry:
                     continue
                 elif group.type is ForeignKey:
                     for fk in group.items:
-                        if fk.ref._entity_ is column._entity_ and fk.ref._name_ == column._name_:
+                        if fk.ref.get_entity() is column.get_entity() and fk.ref._name_ == column._name_:
                             per_entity.append(group)
 
             if len(per_entity) != 0:
@@ -99,19 +89,6 @@ cdef class Registry:
 
         return result
 
-
-
-    # cdef resolve_deferred(self):
-    #     cdef EntityType entity
-    #     cdef list deferred = self.deferred
-    #     cdef int index = len(deferred) - 1
-
-    #     while index >= 0:
-    #         entity = deferred[index]
-    #         if entity.resolve_deferred():
-    #             deferred.pop(index)
-
-    #         index -= 1
     cdef resolve_deferred(self):
         cdef EntityType entity
         cdef list deferred = self.deferred
@@ -125,14 +102,10 @@ cdef class Registry:
                 break
             lastLen = length
 
-            length -= 1
-            while length >= 0:
-                entity = deferred[length]
+            for i in reversed(range(0, length)):
+                entity = deferred[i]
                 if entity.resolve_deferred():
-                    deferred.pop(length)
-
-                length -= 1
-
+                    deferred.pop(i)
 
 
 class RegistryDiffKind(Enum):
@@ -147,15 +120,15 @@ class RegistryDiffKind(Enum):
 
 @cython.final
 cdef class RegistryDiff:
-    def __cinit__(self, Registry a, Registry b, object entity_diff):
+    def __cinit__(self, Registry a, Registry b, object entity_diff, bint compare_field_position):
         self.a = a
         self.b = b
         self.changes = []
         cdef DependencyList order = DependencyList()
         cdef EntityBase fix
 
-        a_names = {k for k, v in a.items() if is_virtual(v) is False}
-        b_names = {k for k, v in b.items() if is_virtual(v) is False}
+        a_names = {k for k, v in a.items() if need_to_compare(v)}
+        b_names = {k for k, v in b.items() if need_to_compare(v)}
 
         for removed in sorted(a_names - b_names):
             val = a[removed]
@@ -173,7 +146,7 @@ cdef class RegistryDiff:
 
         for maybe_changed in sorted(a_names & b_names):
             val = b[maybe_changed]
-            diff = entity_diff(a[maybe_changed], val)
+            diff = entity_diff(a[maybe_changed], val, compare_field_position)
             if diff:
                 self.changes.append((RegistryDiffKind.CHANGED, diff))
                 order.add(val)
@@ -225,8 +198,8 @@ cdef class RegistryDiff:
         return result
 
 
-cdef bint is_virtual(EntityType ent):
-    return ent.__meta__.get("is_virtual", False)
+cdef inline need_to_compare(EntityType entity):
+    return not entity_is_builtin(entity) and not entity_is_virtual(entity)
 
 
 cdef object entity_data_is_eq(EntityBase a, EntityBase b):
@@ -266,14 +239,18 @@ cdef insert_local_ref(dict locals, str name, EntityType entity):
     last_part = parts.pop()
 
     container = locals
-    for p in parts:
-        try:
-            container = container[p]
-        except KeyError:
-            new_container = _localdict()
-            container[p] = new_container
-            container = new_container
+    # XXX: Register by EntityName (but this is bad, need to remove)
     container[last_part] = entity
+
+    if len(parts) > 0:
+        for p in parts:
+            try:
+                container = container[p]
+            except KeyError:
+                new_container = _localdict()
+                container[p] = new_container
+                container = new_container
+        container[last_part] = entity
 
 
 class _localdict(dict):

@@ -174,15 +174,15 @@ class Connection:
         await reflect.get_entities(self, reg)
         return reg
 
-    def registry_diff(self, Registry a, Registry b):
-        return RegistryDiff(a, b, self.__entity_diff)
+    def registry_diff(self, Registry a, Registry b, compare_field_position=True):
+        return RegistryDiff(a, b, self.__entity_diff, compare_field_position=compare_field_position)
 
-    def __entity_diff(self, a, b):
-        return self.dialect.entity_diff(a, b)
+    def __entity_diff(self, a, b, compare_field_position):
+        return self.dialect.entity_diff(a, b, compare_field_position)
 
-    async def diff(self, Registry new_reg, EntityType entity_base=Entity):
+    async def diff(self, Registry new_reg, EntityType entity_base=Entity, compare_field_position=True):
         registry = await self.reflect(entity_base)
-        return self.registry_diff(registry, new_reg)
+        return self.registry_diff(registry, new_reg, compare_field_position=compare_field_position)
 
 
 

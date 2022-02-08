@@ -115,7 +115,6 @@ cdef set_poly_id(EntityBase main):
 
 
 cdef set_related_attrs(Relation attr, EntityBase main, EntityBase related, DependencyList order, list ops):
-    attr.update_join_expr()
     if isinstance(attr._impl_, ManyToMany):
         across_entity = attr._impl_._across()
 
@@ -172,18 +171,18 @@ cdef class FieldUpdater(Visitor):
 
         if expr.op is __eq__:
             if isinstance(left, EntityAttribute):
-                left = get_alias_target(left._entity_).__attrs__[left._index_]
+                left = get_alias_target((<EntityAttribute>left).get_entity()).__attrs__[left._index_]
 
             if isinstance(right, EntityAttribute):
-                right = get_alias_target(right._entity_).__attrs__[right._index_]
+                right = get_alias_target((<EntityAttribute>right).get_entity()).__attrs__[right._index_]
 
-            if isinstance(left, EntityAttribute) and test_entity_type_eq(self.target_t, left._entity_):
-                if isinstance(right, EntityAttribute) and test_entity_type_eq(self.source_t, right._entity_):
+            if isinstance(left, EntityAttribute) and test_entity_type_eq(self.target_t, (<EntityAttribute>left).get_entity()):
+                if isinstance(right, EntityAttribute) and test_entity_type_eq(self.source_t, (<EntityAttribute>right).get_entity()):
                     self.result.append((self.target, left, self.source, right))
                 else:
                     self.target.__state__.set_value(left, right)
-            elif isinstance(right, EntityAttribute) and test_entity_type_eq(self.target_t, right._entity_):
-                if isinstance(left, EntityAttribute) and test_entity_type_eq(self.source_t, left._entity_):
+            elif isinstance(right, EntityAttribute) and test_entity_type_eq(self.target_t, (<EntityAttribute>right).get_entity()):
+                if isinstance(left, EntityAttribute) and test_entity_type_eq(self.source_t, (<EntityAttribute>left).get_entity()):
                     self.result.append((self.target, right, self.source, left))
                 else:
                     self.target.__state__.set_value(right, left)
@@ -207,7 +206,7 @@ cdef class FieldUpdater(Visitor):
         return expr
 
     def visit_field(self, EntityAttribute expr):
-        if get_alias_target(expr._entity_) is self.source_t:
+        if get_alias_target(expr.get_entity()) is self.source_t:
             val = self.source.__state__.get_value(expr)
             if val is not NOTSET:
                 return val

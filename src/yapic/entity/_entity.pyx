@@ -1,3 +1,4 @@
+import sys
 import cython
 import random
 import string
@@ -183,7 +184,14 @@ cdef class EntityType(type):
         self.__deferred__ = []
         self.__fields__ = tuple(fields)
         self.__attrs__ = tuple(fields + __attrs__)
-        self.__deps__ = set()
+
+
+    def __init__(self, *args, _root=False, __fields__=None, is_alias=False, **kwargs):
+        type.__init__(self, *args)
+
+        cdef EntityAttribute attr
+
+        self.__deps__ = EntityDependency(<object>self.registry_ref)
 
         pk = []
 
@@ -201,20 +209,11 @@ cdef class EntityType(type):
             if not attr.bind():
                 self.__deferred__.append(attr)
 
+        if _root is False and not is_alias:
+            self.get_registry().register(self.__qname__, self)
+
         if not self.__deferred__:
             self.__entity_ready__()
-
-    def __init__(self, *args, _root=False, __fields__=None, is_alias=False, **kwargs):
-        type.__init__(self, *args)
-
-        if _root is False:
-            if not is_alias:
-                # TODO: better solution for registering entity early for resolving
-                module = PyImport_Import(self.__module__)
-                mdict = PyModule_GetDict(module)
-                (<object>mdict)[args[0]] = self
-
-                (<Registry>self.__registry__).register(self.__qname__, self)
 
     @property
     def __meta__(self):
@@ -222,7 +221,13 @@ cdef class EntityType(type):
 
     @property
     def __registry__(self):
-        return <object>PyWeakref_GetObject(<object>self.registry)
+        return self.get_registry()
+
+    cdef Registry get_registry(self):
+        if self.registry_ref is not <PyObject*>None:
+            return <object>PyWeakref_GetObject(<object>self.registry_ref)
+        else:
+            return None
 
     @property
     def __qname__(self):
@@ -273,9 +278,9 @@ cdef class EntityType(type):
             return "<Entity %s>" % self.__qname__
         else:
             if self.__name__:
-                return "<Alias(%s|%s) of %r>" % (id(self), self.__name__, aliased)
+                return "<Alias(%s|%s) of %r>" % (id(self), self.__name__, aliased.__qname__)
             else:
-                return "<Alias(%s) of %r>" % (id(self), aliased)
+                return "<Alias(%s) of %r>" % (id(self), aliased.__qname__)
             # return "<Alias of %r>" % aliased
 
     def alias(self, str alias = None):
@@ -283,12 +288,14 @@ cdef class EntityType(type):
             # alias = "".join(random.choices(string.ascii_letters, k=6))
             alias = ""
 
-        aliased = get_alias_target(self)
-        return EntityType(alias, (aliased,), {}, name=alias, schema=None, is_alias=True)
+        original = get_alias_target(self)
+        class AliasedEntity(original, name=alias, schema=None, is_alias=True):
+            pass
+        return AliasedEntity
 
     def __dealloc__(self):
         Py_XDECREF(self.meta)
-        Py_XDECREF(self.registry)
+        Py_XDECREF(self.registry_ref)
 
     cdef object resolve_deferred(self):
         cdef EntityAttribute attr
@@ -312,7 +319,7 @@ cdef class EntityType(type):
 
     cpdef object __entity_ready__(self):
         for attr in self.__attrs__:
-            self.__deps__ |= attr._deps_
+            self.__deps__ = self.__deps__.merge(attr._deps_)
 
         cdef EntityAttributeExtGroup group
         for group in self.__extgroups__:
@@ -379,7 +386,7 @@ cdef EntityAttribute init_attribute(EntityAttribute by_type, object value):
             by_type._exts_.extend(ext._tmp)
 
         for ext in by_type._exts_:
-            ext.attr = by_type
+            ext.set_attr(by_type)
 
         return by_type
     else:
@@ -401,7 +408,7 @@ cdef class EntityAttribute(Expression):
             impl = args[0]
             if isinstance(impl, EntityAttributeImpl):
                 self._impl_ = impl
-                self._impl = impl
+                self._impl = None
             else:
                 self._impl_ = None
                 self._impl = impl
@@ -409,14 +416,38 @@ cdef class EntityAttribute(Expression):
             self._impl = None
 
         self._exts_ = []
-        self._deps_ = set()
+
+    @property
+    def _entity_(self):
+        return self.get_entity()
+
+    @_entity_.setter
+    def _entity_(self, EntityType value):
+        self.set_entity(value)
+
+    cdef EntityType set_entity(self, EntityType entity):
+        if self.entityref is not None:
+            current = <object>PyWeakref_GetObject(self.entityref)
+            if current is not None:
+                if current is entity:
+                    return
+                else:
+                    raise ValueError("Can't rebind entity attribute")
+
+        self.entityref = <object>PyWeakref_NewRef(entity, None)
+
+    cdef EntityType get_entity(self):
+        if self.entityref is None:
+            return None
+        return <object>PyWeakref_GetObject(self.entityref)
 
     def __floordiv__(EntityAttribute self, EntityAttributeExt other):
-        if other.attr is not None:
-            if other.attr is not self:
+        other_attr = other.get_attr()
+        if other_attr is not None:
+            if other_attr is not self:
                 raise RuntimeError("Can't rebind entity attribute")
         else:
-            other.attr = self
+            other.set_attr(self)
         self._exts_.append(other)
         return self
 
@@ -439,9 +470,8 @@ cdef class EntityAttribute(Expression):
         instance.__state__.del_value(self)
 
     cdef object init(self, EntityType entity):
-        if self._entity_ is not None and self._entity_ is not entity:
-            raise RuntimeError("Can't rebind entity attribute")
-        self._entity_ = entity
+        self.set_entity(entity)
+        self._deps_ = EntityDependency(<object>entity.registry_ref)
 
         for ext in self._exts_:
             ext.init(self)
@@ -453,11 +483,11 @@ cdef class EntityAttribute(Expression):
 
             if is_forward_decl(self._impl):
                 try:
-                    self._impl_ = new_instance_from_forward(self._impl, self._entity_.__registry__.locals)
+                    self._impl_ = new_instance_from_forward(self._impl, self.get_entity().get_registry().locals)
                 except NameError as e:
                     return False
             else:
-                self._impl_ = self._impl
+                raise ValueError(f"Unexpected attribute implementation: {self._impl}")
             self._impl = None
 
         if not self._impl_.inited:
@@ -483,7 +513,7 @@ cdef class EntityAttribute(Expression):
         res = []
         for ext in self._exts_:
             ext = ext.clone()
-            ext.attr = attr
+            ext.set_attr(attr)
             res.append(ext)
         return res
 
@@ -494,8 +524,9 @@ cdef class EntityAttribute(Expression):
 
     cpdef copy_into(self, EntityAttribute other):
         other._exts_[0:0] = self._exts_
-        other._deps_ &= self._deps_
         other._default_ = self._default_
+        # TODO: ez valóban kell-e
+        # other._deps_ &= self._deps_
 
 
 cdef class EntityAttributeExt:
@@ -507,27 +538,39 @@ cdef class EntityAttributeExt:
         self._tmp = []
         self.bound = False
 
-    def __floordiv__(EntityAttributeExt self, EntityAttributeExt other):
-        if not self.attr and other.attr:
-            self.attr = other.attr
+    @property
+    def attr(self):
+        return self.get_attr()
 
-        if self.attr:
-            self.attr._exts_.append(self)
-            self.attr._exts_.extend(self._tmp)
-            return self.attr
+    cdef EntityAttribute get_attr(self):
+        if self.attr_ref is not None:
+            return <object>PyWeakref_GetObject(self.attr_ref)
+        else:
+            return None
+
+    cdef object set_attr(self, EntityAttribute val):
+        if val is not None:
+            self.attr_ref = <object>PyWeakref_NewRef(val, None)
+        else:
+            self.attr_ref = None
+
+    def __floordiv__(EntityAttributeExt self, EntityAttributeExt other):
+        cdef EntityAttribute attr = self.get_attr()
+
+        if not attr and other.get_attr():
+            attr = other.get_attr()
+
+        if attr:
+            attr._exts_.append(self)
+            attr._exts_.extend(self._tmp)
+            return attr
         else:
             self._tmp.append(other)
             self._tmp.extend(other._tmp)
             return self
 
     cpdef object init(self, EntityAttribute attr):
-        # TODO: handle error, only if after bind is called
-        # if self.attr is not None:
-        #     if self.attr is not attr:
-        #         raise RuntimeError("Can't rebind entity attribute extension")
-        #     else:
-        #         return
-        self.attr = attr
+        self.set_attr(attr)
 
     cpdef object bind(self):
         return True
@@ -970,6 +1013,7 @@ cdef class EntityBase:
         cdef EntityType parent_entity
         cdef int mro_length = len(cls.__mro__)
         cdef dict meta_dict = {}
+        cdef object registry_ref = None
 
         if name is not None:
             ent.__name__ = name
@@ -982,8 +1026,9 @@ cdef class EntityBase:
                 if parent_entity.meta is not NULL:
                     meta_dict.update(<object>parent_entity.meta)
 
-                if registry is None and parent_entity.registry is not NULL:
-                    registry = parent_entity.__registry__
+                if registry_ref is None and registry is None and parent_entity.registry_ref is not <PyObject*>None:
+                    registry_ref = <object>parent_entity.registry_ref
+
 
         meta_dict.update(meta)
         meta_dict.pop("__fields__", None)
@@ -992,11 +1037,15 @@ cdef class EntityBase:
         Py_XDECREF(ent.meta)
         ent.meta = <PyObject*>(<object>meta_dict)
 
-        cdef object registry_ref = PyWeakref_NewRef(registry, None)
-        Py_XINCREF(<PyObject*>(<object>registry_ref))
+        if registry_ref is None:
+            if registry is not None:
+                registry_ref = <object>PyWeakref_NewRef(registry, None)
+            else:
+                raise ValueError("Missing registry")
 
-        Py_XDECREF(ent.registry)
-        ent.registry = <PyObject*>(<object>registry_ref)
+        Py_XINCREF(<PyObject*>(<object>registry_ref))
+        Py_XDECREF(ent.registry_ref)
+        ent.registry_ref = <PyObject*>(<object>registry_ref)
 
     @property
     def __pk__(self):
@@ -1127,6 +1176,65 @@ class Entity(EntityBase, metaclass=EntityType, registry=REGISTRY, _root=True):
 
 
 @cython.final
+cdef class EntityDependency:
+    def __cinit__(self, object registry_ref):
+        self.registry_ref = registry_ref
+        self.entity_names = set()
+
+    cdef Registry get_registry(self):
+        if self.registry_ref is not None:
+            return <object>PyWeakref_GetObject(self.registry_ref)
+        else:
+            return None
+
+    cpdef add_entity(self, EntityType entity):
+        # if entity is builtin we dont need in dependecies
+        if entity_is_builtin(entity):
+            return self
+
+        if self.get_registry() is not entity.get_registry():
+            raise ValueError(f"Can't add different registry dependency: {entity}")
+
+        self.entity_names.add(entity.__qname__)
+        return self
+
+    cpdef EntityDependency merge(self, EntityDependency other):
+        if other.entity_names and self.get_registry() is not other.get_registry():
+            raise ValueError("Can't merge different registry dependendcies")
+
+        result = EntityDependency(self.registry_ref)
+        result.entity_names = self.entity_names | other.entity_names
+        return result
+
+
+    cpdef EntityDependency intersection(self, EntityDependency other):
+        if self.get_registry() is not other.get_registry():
+            raise ValueError("Can't determine instersection of different registries")
+
+        result = EntityDependency(self.registry_ref)
+        result.entity_names = self.entity_names & other.entity_names
+        return result
+
+    cpdef list entities(self):
+        cdef Registry registry = self.get_registry()
+        cdef list result = []
+
+        for name in self.entity_names:
+            result.append(registry[name])
+
+        return result
+
+    cpdef EntityDependency clone(self):
+        cdef EntityDependency result = EntityDependency(self.registry_ref)
+        result.entity_names = set(self.entity_names)
+        return result
+
+    def __repr__(self):
+        return repr(self.entity_names)
+
+
+
+@cython.final
 cdef class DependencyList:
     def __cinit__(self):
         self.items = []
@@ -1139,7 +1247,7 @@ cdef class DependencyList:
         if item not in self:
             self.items.append(item)
 
-        for dep in sorted(item.__deps__, key=attrgetter("__name__")):
+        for dep in sorted(item.__deps__.entities(), key=attrgetter("__qname__")):
             self._add(item, dep, cd)
 
     cpdef index(self, EntityType item):
@@ -1178,7 +1286,7 @@ cdef class DependencyList:
                     all_deps_in_list = False
 
         if not all_deps_in_list:
-            for dd in sorted(dep.__deps__, key=attrgetter("__name__")):
+            for dd in sorted(dep.__deps__.entities(), key=attrgetter("__qname__")):
                 self._add(dep, dd, cd)
 
         cd.discard(dep)
@@ -1215,7 +1323,7 @@ cdef bint _is_dependency(EntityType a, EntityType b):
 
     for attr in a.__attrs__:
         fk = attr.get_ext(ForeignKey)
-        if fk and fk.ref._entity_ is b:
+        if fk and fk.ref.get_entity() is b:
             if isinstance(attr, Field) and not (<Field>attr).nullable:
                 return True
     return False
@@ -1223,32 +1331,6 @@ cdef bint _is_dependency(EntityType a, EntityType b):
 
 @cython.final
 cdef class PolymorphMeta:
-    def __cinit__(self, EntityType ent, object id):
-        self.id_fields = PolymorphMeta.normalize_id(id)
-        self.entities = {}
-
-    def get_entity(self, poly_id):
-        poly_id = PolymorphMeta.normalize_id(poly_id)
-        cdef EntityType entity = None
-
-        for entity, v in self.entities.items():
-            id, rel = <tuple>v
-            if id == poly_id:
-                return entity
-
-        raise ValueError("Unexpected value for polymorph id: %r" % poly_id)
-
-    def new_entity(self, poly_id):
-        cdef EntityType entity = self.get_entity(poly_id)
-        return entity()
-
-    cdef object add(self, object id, EntityType entity, object relation):
-        if not isinstance(relation, Relation):
-            raise TypeError("Relation expected, but got: %r" % relation)
-
-        id = PolymorphMeta.normalize_id(id)
-        self.entities[entity] = (id, relation)
-
     @staticmethod
     cdef tuple normalize_id(object id):
         if not isinstance(id, tuple):
@@ -1257,6 +1339,40 @@ cdef class PolymorphMeta:
             else:
                 return (id,)
         return id
+
+    def __cinit__(self, EntityType ent, object id):
+        self.id_fields = PolymorphMeta.normalize_id(id)
+        self._decls = []
+
+    def _each_decls(self):
+        for ref, id, relation in self._decls:
+            yield (<object>PyWeakref_GetObject(ref), id, relation)
+
+    def get_entity(self, poly_id):
+        poly_id = PolymorphMeta.normalize_id(poly_id)
+        cdef EntityType entity = None
+
+        for entity, id, rel in self._each_decls():
+            if id == poly_id:
+                return entity
+
+        raise ValueError("Unexpected value for polymorph id: %r" % poly_id)
+
+    def new_instance(self, poly_id):
+        cdef EntityType entity = self.get_entity(poly_id)
+        return entity()
+
+    cdef object add(self, object id, EntityType entity, object relation):
+        if not isinstance(relation, Relation):
+            raise TypeError("Relation expected, but got: %r" % relation)
+
+        id = PolymorphMeta.normalize_id(id)
+
+        for existing, id, rel in self._each_decls():
+            if existing is entity:
+                raise ValueError(f"{existing} is already in polymorph")
+
+        self._decls.append((<object>PyWeakref_NewRef(entity, self.__on_entity_freed), id, relation))
 
     cpdef list parents(self, EntityType entity):
         entity = get_alias_target(entity)
@@ -1267,21 +1383,26 @@ cdef class PolymorphMeta:
     cdef object _parents(self, EntityType entity, list result):
         cdef Relation relation
 
-        for x in self.entities.values():
-            relation = <Relation>((<tuple>x)[1])
-            if relation._entity_ is entity:
+        for value in self._decls:
+            relation = <Relation>((<tuple>value)[1])
+            if relation.get_entity() is entity:
                 result.append(relation)
-                self._parents(relation._impl_._joined, result)
-
+                self._parents(relation._impl_.get_joined_entity(), result)
 
     cpdef list children(self, EntityType entity):
         cdef Relation relation
         entity = get_alias_target(entity)
         cdef list result = []
 
-        for x in self.entities.values():
-            relation = <Relation>((<tuple>x)[1])
-            if get_alias_target(relation._impl_._joined) is entity:
+        for value in self._decls:
+            relation = <Relation>((<tuple>value)[1])
+            if get_alias_target(relation._impl_.get_joined_entity()) is entity:
                 result.append(relation)
 
         return result
+
+    def __on_entity_freed(self, ref):
+        for i in reversed(range(0, len(self._decls))):
+            ent_ref, id, rel = self._decls[i]
+            if ent_ref is ref:
+                del self._decls[i]

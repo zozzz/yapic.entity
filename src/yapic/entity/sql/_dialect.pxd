@@ -19,4 +19,4 @@ cdef class Dialect:
     cpdef str table_qname(self, EntityType entity)
     cpdef StorageType get_field_type(self, Field field)
     cpdef bint expression_eq(self, Expression a, Expression b)
-    cpdef EntityDiff entity_diff(self, EntityType a, EntityType b)
+    cpdef EntityDiff entity_diff(self, EntityType a, EntityType b, bint compare_field_position)
