@@ -12,7 +12,7 @@ DEFAULT_SRID = 4326
 
 cdef class PostGISImpl(CompositeImpl):
     def __init__(self, entity, int srid=0):
-        entity.__meta__["is_builtin"] = True
+        entity.set_meta("is_builtin", True)
         super().__init__(entity)
         self.srid = srid or DEFAULT_SRID
 

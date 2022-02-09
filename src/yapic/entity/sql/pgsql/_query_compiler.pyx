@@ -295,7 +295,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         cdef list attrs = []
         cdef str state = None
 
-        for item in (<list>expr._path_):
+        for item in expr._path_:
             if state == "relation":
                 if compiled:
                     raise NotImplementedError()
@@ -348,7 +348,6 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                     state = new_state
                     if not compiled:
                         compiled = self.visit(item)
-
 
         return path_expr(self.dialect, state, compiled, attrs)
 

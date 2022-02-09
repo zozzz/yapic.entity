@@ -4007,7 +4007,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_48in_(struct
  *                 values = values[0]
  *             elif isinstance(values[0], set):
  */
-    __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_values, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_values, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = PyList_Check(__pyx_t_3); 
     __pyx_t_5 = (__pyx_t_4 != 0);
@@ -4045,8 +4045,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_48in_(struct
  *             elif isinstance(values[0], set):
  *                 values = list(values[0])
  */
-      __pyx_t_3 = PyTuple_GET_ITEM(__pyx_v_values, 0);
-      __Pyx_INCREF(__pyx_t_3);
+      __pyx_t_3 = __Pyx_GetItemInt_Tuple(__pyx_v_values, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 45, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF_SET(__pyx_v_values, __pyx_t_3);
       __pyx_t_3 = 0;
 
@@ -4067,7 +4067,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_48in_(struct
  *                 values = list(values[0])
  * 
  */
-    __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_values, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_values, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = PySet_Check(__pyx_t_3); 
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -4081,7 +4081,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_48in_(struct
  * 
  *             if isinstance(values, (list, tuple)) and len(values) == 1:
  */
-      __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_values, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_values, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_6 = PySequence_List(__pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 47, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
@@ -4137,7 +4137,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_48in_(struct
  *     def is_true(Expression self): return self == True
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_6 = __Pyx_GetItemInt(__pyx_v_values, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 50, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_GetItemInt(__pyx_v_values, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 50, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_operator); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
@@ -10916,8 +10916,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_2__getat
   __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = (__pyx_t_2 - 1);
-  __pyx_t_1 = PyList_GET_ITEM(__pyx_v_self->_path_, __pyx_t_3);
-  __Pyx_INCREF(__pyx_t_1);
+  __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->_path_, __pyx_t_3, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 232, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_last_item = __pyx_t_1;
   __pyx_t_1 = 0;
 
@@ -11017,7 +11017,10 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_2__getat
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
       __PYX_ERR(0, 238, __pyx_L1_error)
     }
-    __pyx_t_7 = (__pyx_v_last_item == PyList_GET_ITEM(((struct __pyx_obj_5yapic_6entity_11_expression_PathExpression *)__pyx_v_obj)->_path_, 0));
+    __pyx_t_6 = __Pyx_GetItemInt_List(((struct __pyx_obj_5yapic_6entity_11_expression_PathExpression *)__pyx_v_obj)->_path_, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 238, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_7 = (__pyx_v_last_item == __pyx_t_6);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_5 = (__pyx_t_7 != 0);
     __pyx_t_4 = __pyx_t_5;
     __pyx_L5_bool_binop_done:;
@@ -11179,8 +11182,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_4__getit
   __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = (__pyx_t_2 - 1);
-  __pyx_t_1 = PyList_GET_ITEM(__pyx_v_self->_path_, __pyx_t_3);
-  __Pyx_INCREF(__pyx_t_1);
+  __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->_path_, __pyx_t_3, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 248, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_last_item = __pyx_t_1;
   __pyx_t_1 = 0;
 
@@ -11237,7 +11240,10 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_14PathExpression_4__getit
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
       __PYX_ERR(0, 252, __pyx_L1_error)
     }
-    __pyx_t_6 = (__pyx_v_last_item == PyList_GET_ITEM(((struct __pyx_obj_5yapic_6entity_11_expression_PathExpression *)__pyx_v_obj)->_path_, 0));
+    __pyx_t_1 = __Pyx_GetItemInt_List(((struct __pyx_obj_5yapic_6entity_11_expression_PathExpression *)__pyx_v_obj)->_path_, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 252, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_6 = (__pyx_v_last_item == __pyx_t_1);
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_4 = (__pyx_t_6 != 0);
     __pyx_t_5 = __pyx_t_4;
     __pyx_L5_bool_binop_done:;
@@ -15857,7 +15863,10 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_8_visit_list(str
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
       __PYX_ERR(0, 398, __pyx_L1_error)
     }
-    __pyx_t_6 = ((PyObject *)PyList_GET_ITEM(((PyObject*)__pyx_v_expr), __pyx_v_i));
+    __pyx_t_2 = __Pyx_GetItemInt_List(((PyObject*)__pyx_v_expr), __pyx_v_i, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 398, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_6 = ((PyObject *)__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (!(likely(((((PyObject *)__pyx_t_6)) == Py_None) || likely(__Pyx_TypeTest(((PyObject *)__pyx_t_6), __pyx_ptype_5yapic_6entity_11_expression_Expression))))) __PYX_ERR(0, 398, __pyx_L1_error)
     __pyx_t_2 = ((struct __pyx_vtabstruct_5yapic_6entity_11_expression_Visitor *)__pyx_v_self->__pyx_vtab)->visit(__pyx_v_self, ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)((PyObject *)__pyx_t_6)), 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 398, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
@@ -16012,7 +16021,10 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_10_visit_tuple(s
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
       __PYX_ERR(0, 410, __pyx_L1_error)
     }
-    __pyx_t_6 = ((PyObject *)PyTuple_GET_ITEM(((PyObject*)__pyx_v_expr), __pyx_v_i));
+    __pyx_t_2 = __Pyx_GetItemInt_Tuple(((PyObject*)__pyx_v_expr), __pyx_v_i, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 410, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_6 = ((PyObject *)__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (!(likely(((((PyObject *)__pyx_t_6)) == Py_None) || likely(__Pyx_TypeTest(((PyObject *)__pyx_t_6), __pyx_ptype_5yapic_6entity_11_expression_Expression))))) __PYX_ERR(0, 410, __pyx_L1_error)
     __pyx_t_2 = ((struct __pyx_vtabstruct_5yapic_6entity_11_expression_Visitor *)__pyx_v_self->__pyx_vtab)->visit(__pyx_v_self, ((struct __pyx_obj_5yapic_6entity_11_expression_Expression *)((PyObject *)__pyx_t_6)), 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 410, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
@@ -16551,7 +16563,10 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_coerce_expr_list(PyObject 
           PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
           __PYX_ERR(0, 443, __pyx_L1_error)
         }
-        __pyx_t_8 = ((PyObject *)PyList_GET_ITEM(((PyObject*)__pyx_v_expr), __pyx_v_i));
+        __pyx_t_2 = __Pyx_GetItemInt_List(((PyObject*)__pyx_v_expr), __pyx_v_i, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 443, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        __pyx_t_8 = ((PyObject *)__pyx_t_2);
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_t_2 = ((PyObject *)__pyx_f_5yapic_6entity_11_expression_coerce_expression(((PyObject *)__pyx_t_8))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 443, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_XDECREF_SET(__pyx_v_item, __pyx_t_2);
@@ -16620,7 +16635,10 @@ static PyObject *__pyx_f_5yapic_6entity_11_expression_coerce_expr_list(PyObject 
           PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
           __PYX_ERR(0, 448, __pyx_L1_error)
         }
-        __pyx_t_8 = ((PyObject *)PyTuple_GET_ITEM(((PyObject*)__pyx_v_expr), __pyx_v_i));
+        __pyx_t_2 = __Pyx_GetItemInt_Tuple(((PyObject*)__pyx_v_expr), __pyx_v_i, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 448, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        __pyx_t_8 = ((PyObject *)__pyx_t_2);
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_t_2 = ((PyObject *)__pyx_f_5yapic_6entity_11_expression_coerce_expression(((PyObject *)__pyx_t_8))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 448, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_XDECREF_SET(__pyx_v_item, __pyx_t_2);
@@ -16759,6 +16777,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_and_(CYTHON_UNUSED PyObje
   int __pyx_t_4;
   int __pyx_t_5;
   long __pyx_t_6;
+  PyObject *__pyx_t_7 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -16813,8 +16832,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_and_(CYTHON_UNUSED PyObje
  *     for i in range(1, length):
  *         res &= expr[i]
  */
-  __pyx_t_3 = PyTuple_GET_ITEM(__pyx_v_expr, 0);
-  __Pyx_INCREF(__pyx_t_3);
+  __pyx_t_3 = __Pyx_GetItemInt_Tuple(__pyx_v_expr, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 464, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_res = __pyx_t_3;
   __pyx_t_3 = 0;
 
@@ -16837,10 +16856,13 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_and_(CYTHON_UNUSED PyObje
  *     return res
  * 
  */
-    __pyx_t_3 = PyNumber_InPlaceAnd(__pyx_v_res, PyTuple_GET_ITEM(__pyx_v_expr, __pyx_v_i)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 466, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetItemInt_Tuple(__pyx_v_expr, __pyx_v_i, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 466, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF_SET(__pyx_v_res, __pyx_t_3);
-    __pyx_t_3 = 0;
+    __pyx_t_7 = PyNumber_InPlaceAnd(__pyx_v_res, __pyx_t_3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 466, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF_SET(__pyx_v_res, __pyx_t_7);
+    __pyx_t_7 = 0;
   }
 
   /* "yapic/entity/_expression.pyx":467
@@ -16866,6 +16888,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_and_(CYTHON_UNUSED PyObje
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_7);
   __Pyx_AddTraceback("yapic.entity._expression.and_", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -16914,6 +16937,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_2or_(CYTHON_UNUSED PyObje
   int __pyx_t_4;
   int __pyx_t_5;
   long __pyx_t_6;
+  PyObject *__pyx_t_7 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -16968,8 +16992,8 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_2or_(CYTHON_UNUSED PyObje
  *     for i in range(1, length):
  *         res |= expr[i]
  */
-  __pyx_t_3 = PyTuple_GET_ITEM(__pyx_v_expr, 0);
-  __Pyx_INCREF(__pyx_t_3);
+  __pyx_t_3 = __Pyx_GetItemInt_Tuple(__pyx_v_expr, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 476, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_res = __pyx_t_3;
   __pyx_t_3 = 0;
 
@@ -16992,10 +17016,13 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_2or_(CYTHON_UNUSED PyObje
  *     return res
  * 
  */
-    __pyx_t_3 = PyNumber_InPlaceOr(__pyx_v_res, PyTuple_GET_ITEM(__pyx_v_expr, __pyx_v_i)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 478, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetItemInt_Tuple(__pyx_v_expr, __pyx_v_i, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 478, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF_SET(__pyx_v_res, __pyx_t_3);
-    __pyx_t_3 = 0;
+    __pyx_t_7 = PyNumber_InPlaceOr(__pyx_v_res, __pyx_t_3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 478, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF_SET(__pyx_v_res, __pyx_t_7);
+    __pyx_t_7 = 0;
   }
 
   /* "yapic/entity/_expression.pyx":479
@@ -17021,6 +17048,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_2or_(CYTHON_UNUSED PyObje
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_7);
   __Pyx_AddTraceback("yapic.entity._expression.or_", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;

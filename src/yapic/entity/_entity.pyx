@@ -31,23 +31,18 @@ REGISTRY = Registry()
 
 
 cdef class EntityType(type):
-    def __cinit__(self, *args, **kwargs):
+    @staticmethod
+    def __prepare__(*args, **kwargs):
+        scope = type.__prepare__(*args, **kwargs)
+        scope["__slots__"] = ()
+        return scope
+
+    def ____cinit__(self, *args, **kwargs):
+        print("EntityType.__cinit__")
         # XXX: DONT REMOVE
         (name, bases, attrs) = args
 
-
-        cdef list fields = kwargs.get("__fields__", [])
-        cdef list __attrs__ = []
-        cdef list __triggers__ = []
-
-        cdef Factory factory
-        cdef EntityAttribute attr
-        cdef EntityType aliased
         cdef EntityType base_entity = None
-        cdef PolymorphMeta poly_meta = None
-        cdef tuple hints
-        cdef object polymorph = self.__meta__.get("polymorph", None)
-
         for base in bases:
             if isinstance(base, EntityType):
                 if base_entity is None:
@@ -55,169 +50,280 @@ cdef class EntityType(type):
                 else:
                     raise ValueError("More than one Entity base is not allowed")
 
-            # TODO: trigger inheritance kezelése, jelenleg nem szabad csak úgy lemásolni a parent-et mert így rossz
-            # if hasattr(base, "__triggers__"):
-            #     for t in base.__triggers__:
-            #         if t not in __triggers__:
-            #             __triggers__.append(t)
-
-        try:
-            is_alias = self.__meta__["is_alias"] is True
-            is_alias = is_alias and len(bases) == 1 and isinstance(bases[0], EntityType)
-        except:
-            is_alias = False
-
-        if polymorph:
-            if not isinstance(polymorph, PolymorphMeta):
-                polymorph = PolymorphMeta(self, polymorph)
-                self.__meta__["polymorph"] = polymorph
-            poly_meta = <PolymorphMeta>polymorph
-
-        if is_alias:
-            aliased = <EntityType>bases[0]
-
-            # aliased.resolve_deferred()
-            if not aliased.resolve_deferred():
-                raise RuntimeError("Can't alias deferred entity")
-
-            for v in aliased.__attrs__:
-                if isinstance(v, EntityAttribute):
-                    attr = (<EntityAttribute>v).clone()
-                    attr._key_ = (<EntityAttribute>v)._key_
-
-                    if isinstance(attr, Field):
-                        fields.append(attr)
-                    else:
-                        __attrs__.append(attr)
-
-                    if attr._key_:
-                        setattr(self, attr._key_, attr)
-        elif fields:
-            for attr in fields:
-                attr._key_ = attr._name_
-                setattr(self, attr._name_, attr)
-        else:
-            hints = get_type_hints(self)
-
-            if poly_meta and base_entity and base_entity.__pk__:
-                found = None
-                for i, t in enumerate(__triggers__):
-                    if isinstance(t, PolymorphParentDeleteTrigger) and (<PolymorphParentDeleteTrigger>t).parent_entity is base_entity:
-                        found = i
-                        break
-
-                if found is not None:
-                    __triggers__[found] = PolymorphParentDeleteTrigger(base_entity)
-                else:
-                    __triggers__.append(PolymorphParentDeleteTrigger(base_entity))
-
-            if poly_meta and base_entity.__fields__:
-                poly_join = None
-                poly_relation = Relation(ManyToOne(base_entity, RelatedItem()))
-
-                for attr in base_entity.__attrs__:
-                    if attr.get_ext(PrimaryKey):
-                        self_pk = Field(AutoImpl(), name=attr._name_) \
-                            // ForeignKey(attr, on_delete="CASCADE", on_update="CASCADE") \
-                            // PrimaryKey()
-                        fields.append(self_pk)
-                        (<EntityAttribute>self_pk)._key_ = attr._key_
-                        setattr(self, attr._key_, self_pk)
-
-                        if poly_join is None:
-                            poly_join = self_pk == attr
-                        else:
-                            poly_join &= self_pk == attr
-                    elif attr._key_:
-                        # TODO: stateless
-                        self_attr = RelatedAttribute(poly_relation, name=attr._key_)
-                        __attrs__.append(self_attr)
-                        (<EntityAttribute>self_attr)._key_ = attr._key_
-                        if attr._key_:
-                            setattr(self, attr._key_, self_attr)
-
-                (<Relation>poly_relation)._default_ = poly_join
-                __attrs__.append(poly_relation)
-                poly_meta.add(self.__meta__["polymorph_id"], self, poly_relation)
+        cdef object poly_meta = self.get_meta("polymorph", None)
+        cdef PolymorphMeta polymorph = None
+        if poly_meta:
+            if isinstance(poly_meta, PolymorphMeta):
+                polymorph = <PolymorphMeta>poly_meta
+            else:
+                polymorph = PolymorphMeta(self, poly_meta)
+                self.set_meta("polymorph", polymorph)
 
 
-            if hints[1] is not None:
-                for name, type in (<dict>hints[1]).items():
-                    if poly_meta and hasattr(base_entity, name):
-                        continue
 
-                    factory = Factory.create(type)
-                    if factory is None:
-                        continue
 
-                    try:
-                        value = attrs[name]
-                    except KeyError:
-                        value = getattr(self, name, NOTSET)
-                        if isinstance(value, EntityAttribute):
-                            value = value.clone()
+        # if 0 and is_alias:
+        #     aliased = <EntityType>bases[0]
 
-                    attr_type = factory.hints[0]
+        #     # aliased.resolve_deferred()
+        #     if not aliased.resolve_deferred():
+        #         raise RuntimeError("Can't alias deferred entity")
 
-                    if issubclass(attr_type, EntityAttribute):
-                        attr = init_attribute(factory(), value)
-                        attr._key_ = name
-                        if not attr._name_:
-                            attr._name_ = name
+        #     for v in aliased.__attrs__:
+        #         if isinstance(v, EntityAttribute):
+        #             attr = (<EntityAttribute>v).clone()
+        #             attr._key_ = (<EntityAttribute>v)._key_
 
-                        if isinstance(attr, Field):
-                            fields.append(attr)
-                        else:
-                            __attrs__.append(attr)
+        #             if isinstance(attr, Field):
+        #                 fields.append(attr)
+        #             else:
+        #                 __attrs__.append(attr)
 
-                        setattr(self, name, attr)
+        #             if attr._key_:
+        #                 setattr(self, attr._key_, attr)
+
 
         # add virtual attributes
-        for k, v in attrs.items():
-            if isinstance(v, VirtualAttribute):
-                if not (<VirtualAttribute>v)._key_:
-                    __attrs__.append(v)
-                    (<VirtualAttribute>v)._key_ = k
-
-        self.__fix_entries__ = None
-        self.__triggers__ = __triggers__
-        self.__deferred__ = []
-        self.__fields__ = tuple(fields)
-        self.__attrs__ = tuple(fields + __attrs__)
+        # for k, v in attrs.items():
+        #     if isinstance(v, VirtualAttribute):
+        #         if not (<VirtualAttribute>v)._key_:
+        #             __attrs__.append(v)
+        #             (<VirtualAttribute>v)._key_ = k
 
 
-    def __init__(self, *args, _root=False, __fields__=None, is_alias=False, **kwargs):
-        type.__init__(self, *args)
 
         cdef EntityAttribute attr
+        cdef list __attrs__ = None
+        cdef list __fields__ = []
 
+        cdef list fields = kwargs.get("__fields__", [])
+        if fields:
+            for field in fields:
+                if not isinstance(field, Field):
+                    raise ValueError(f"__fields__ contains invalid value: {field}")
+            __attrs__ = fields
+        else:
+            __attrs__ = self._compute_attrs(base_entity, polymorph, attrs)
+
+
+        for attr in __attrs__:
+            if isinstance(attr, VirtualAttribute):
+                pass
+            else:
+                if attr._key_ is not None:
+                    setattr(self, attr._key_, attr)
+
+                if isinstance(attr, Field):
+                    __fields__.append(attr)
+
+
+
+
+
+
+        # TODO: add_entry(**kwargs)
+        self.__fix_entries__ = None
+        self.__deferred__ = []
+        # self.__fields__ = tuple(fields)
+        # self.__attrs__ = tuple(fields + __attrs__)
+        # self.__triggers__ = __triggers__
+        self.__triggers__ = self._compute_triggers(base_entity, polymorph, attrs)
+        self.__fields__ = tuple(__fields__)
+        self.__attrs__ = tuple(__attrs__)
+
+
+    def __init__(self, name, bases, attrs, _root=False, **kwargs):
+        super().__init__(name, bases, attrs)
+
+        self.__fix_entries__ = None
+        self.__deferred__ = []
         self.__deps__ = EntityDependency(<object>self.registry_ref)
 
-        pk = []
+        # determine base entity
+        cdef EntityType base_entity = None
+        for base in bases:
+            if isinstance(base, EntityType):
+                if base_entity is None:
+                    base_entity = base
+                else:
+                    raise ValueError("More than one Entity base is not allowed")
 
-        for i, attr in enumerate(self.__attrs__):
-            attr._index_ = i
+        # determine polymorph
+        cdef object poly_meta = self.get_meta("polymorph", None)
+        cdef PolymorphMeta polymorph = None
+        if poly_meta:
+            if isinstance(poly_meta, PolymorphMeta):
+                polymorph = <PolymorphMeta>poly_meta
+            else:
+                polymorph = PolymorphMeta(self, poly_meta)
+                self.set_meta("polymorph", polymorph)
+
+        # determine attributes
+        cdef EntityAttribute attr
+        cdef list __attrs__ = None
+        cdef list __fields__ = []
+        cdef list non_fields = []
+        cdef list __pk__ = []
+        # TODO: cdef object self_ref = <object>PyWeakref_NewRef(self, None)
+
+        cdef list fields = kwargs.get("__fields__", [])
+        if fields:
+            for field in fields:
+                if not isinstance(field, Field):
+                    raise ValueError(f"__fields__ contains invalid value: {field}")
+            __attrs__ = fields
+        else:
+            __attrs__ = self._compute_attrs(base_entity, polymorph, attrs)
+
+        for attr in __attrs__:
+            # TODO: attr.init(self_ref)
             attr.init(self)
+            if isinstance(attr, VirtualAttribute):
+                non_fields.append(attr)
+            else:
+                if attr._key_ is not None:
+                    setattr(self, attr._key_, attr)
 
-            if isinstance(attr, Field) and (<Field>attr).get_ext(PrimaryKey):
-                pk.append(attr)
+                if isinstance(attr, Field):
+                    __fields__.append(attr)
+                    if attr.get_ext(PrimaryKey):
+                        __pk__.append(attr)
+                else:
+                    non_fields.append(attr)
 
-        self.__pk__ = tuple(pk)
+        # finalizing
+        self.__pk__ = tuple(__pk__)
+        self.__fields__ = tuple(__fields__)
+        self.__attrs__ = tuple(__fields__ + non_fields)
         self.__extgroups__ = group_extensions(self)
 
-        for attr in self.__attrs__:
+        for index, attr in enumerate(self.__attrs__):
+            attr._index_ = index
             if not attr.bind():
                 self.__deferred__.append(attr)
 
-        if _root is False and not is_alias:
+        self.__triggers__ = self._compute_triggers(base_entity, polymorph, attrs)
+
+        if _root is False and not is_entity_alias(self):
             self.get_registry().register(self.__qname__, self)
 
         if not self.__deferred__:
             self.__entity_ready__()
 
+    cdef list _compute_triggers(self, EntityType base_entity, PolymorphMeta polymorph, object attrs):
+        cdef list result = []
+
+        if polymorph and base_entity and base_entity.__pk__:
+            found = None
+            for i, t in enumerate(result):
+                if isinstance(t, PolymorphParentDeleteTrigger) and (<PolymorphParentDeleteTrigger>t).parent_entity is base_entity:
+                    found = i
+                    break
+
+            if found is not None:
+                result[found] = PolymorphParentDeleteTrigger(base_entity)
+            else:
+                result.append(PolymorphParentDeleteTrigger(base_entity))
+
+        return result
+
+
+    cdef list _compute_attrs(self, EntityType base_entity, PolymorphMeta polymorph, object attrs):
+        cdef tuple hints = get_type_hints(self)
+        cdef Factory factory
+        cdef EntityAttribute attr
+        cdef list result = []
+
+        if polymorph and base_entity.__fields__:
+            polymoph_id = self.get_meta("polymorph_id")
+            poly_join = None
+            poly_relation = Relation(ManyToOne(base_entity, RelatedItem()))
+
+            for attr in base_entity.__attrs__:
+                if attr.get_ext(PrimaryKey):
+                    self_pk = Field(AutoImpl(), name=attr._name_) \
+                        // ForeignKey(attr, on_delete="CASCADE", on_update="CASCADE") \
+                        // PrimaryKey()
+                    (<EntityAttribute>self_pk)._key_ = attr._key_
+                    result.append(self_pk)
+
+                    if poly_join is None:
+                        poly_join = self_pk == attr
+                    else:
+                        poly_join &= self_pk == attr
+                elif attr._key_:
+                    # TODO: stateless
+                    self_attr = RelatedAttribute(poly_relation, name=attr._key_)
+                    result.append(self_attr)
+                    (<EntityAttribute>self_attr)._key_ = attr._key_
+
+            (<Relation>poly_relation)._default_ = poly_join
+            result.append(poly_relation)
+            polymorph.add(polymoph_id, self, poly_relation)
+
+        if hints[1] is not None:
+            for name, type in (<dict>hints[1]).items():
+                if polymorph and hasattr(base_entity, name):
+                    continue
+
+                factory = Factory.create(type)
+                if factory is None:
+                    continue
+
+                try:
+                    value = attrs[name]
+                except KeyError:
+                    value = getattr(self, name, NOTSET)
+                    if isinstance(value, EntityAttribute):
+                        value = (<EntityAttribute>value).clone()
+
+                attr_type = factory.hints[0]
+
+                if issubclass(attr_type, EntityAttribute):
+                    attr = init_attribute(factory(), value)
+                    attr._key_ = name
+                    if not attr._name_:
+                        attr._name_ = name
+
+                    result.append(attr)
+
+
+        for k, v in attrs.items():
+            if isinstance(v, VirtualAttribute):
+                if not (<VirtualAttribute>v)._key_:
+                    (<VirtualAttribute>v)._key_ = k
+                    # if no key, they have not initialized, but if have key parent is initialized
+                    result.append(v)
+
+        return result
+
     @property
     def __meta__(self):
         return <object>self.meta
+
+    cpdef object get_meta(self, str key=None, default=NOTSET):
+        if isinstance(<object>self.meta, dict):
+            if key is None:
+                return <object>self.meta
+            else:
+                try:
+                    return (<dict>self.meta)[key]
+                except KeyError:
+                    if default is NOTSET:
+                        raise KeyError(f"Missing '{key}' from <Entity {self.__module__}::{self.__name__}>.__meta__ properties")
+                    else:
+                        return default
+        else:
+            raise RuntimeError(f"<Entity {self.__module__}::{self.__name__}>.__meta__ is not initilazied")
+
+    cpdef object set_meta(self, str key, object value):
+        (<object>self.meta)[key] = value
+
+    cpdef bint has_meta(self, str key):
+        if isinstance(<object>self.meta, dict):
+            return key in (<dict>self.meta)
+        else:
+            return False
 
     @property
     def __registry__(self):
@@ -232,20 +338,16 @@ cdef class EntityType(type):
     @property
     def __qname__(self):
         try:
-            schema = self.__meta__["schema"]
+            schema = self.get_meta("schema")
         except KeyError:
             return self.__name__
         else:
-            if schema is None:
+            if not schema:
                 return self.__name__
             else:
                 return f"{schema}.{self.__name__}"
 
-    @staticmethod
-    def __prepare__(*args, **kwargs):
-        scope = type.__prepare__(*args, **kwargs)
-        scope["__slots__"] = ()
-        return scope
+
 
     # def __getattr__(self, name):
     #     cdef PolymorphMeta poly
@@ -272,30 +374,19 @@ cdef class EntityType(type):
     #         # return object.__getattr__(self, name)
     #         raise AttributeError(f"type object '{self}' has no attribute '{name}'")
 
-    def __repr__(self):
-        aliased = get_alias_target(self)
-        if aliased is self:
-            return "<Entity %s>" % self.__qname__
-        else:
-            if self.__name__:
-                return "<Alias(%s|%s) of %r>" % (id(self), self.__name__, aliased.__qname__)
-            else:
-                return "<Alias(%s) of %r>" % (id(self), aliased.__qname__)
-            # return "<Alias of %r>" % aliased
+
 
     def alias(self, str alias = None):
-        if alias is None:
-            # alias = "".join(random.choices(string.ascii_letters, k=6))
-            alias = ""
+        cdef EntityType original = get_alias_target(self)
+        registry = original.get_registry()
+        return EntityAlias(alias or "", (EntityBase,), {}, alias_target=original, registry=registry)
 
-        original = get_alias_target(self)
-        class AliasedEntity(original, name=alias, schema=None, is_alias=True):
-            pass
-        return AliasedEntity
+        # original = get_alias_target(self)
+        # class AliasedEntity(original, name=alias, schema=None, is_alias=True):
+        #     pass
+        # return AliasedEntity
 
-    def __dealloc__(self):
-        Py_XDECREF(self.meta)
-        Py_XDECREF(self.registry_ref)
+
 
     cdef object resolve_deferred(self):
         cdef EntityAttribute attr
@@ -325,6 +416,72 @@ cdef class EntityType(type):
         for group in self.__extgroups__:
             type(group.items[0]).validate_group(group)
 
+    def __repr__(self):
+        return f"<Entity {self.__qname__}>"
+
+    def __dealloc__(self):
+        Py_XDECREF(self.meta)
+        Py_XDECREF(self.registry_ref)
+
+
+@cython.final
+cdef class EntityAlias(EntityType):
+    def __init__(self, *args, EntityType alias_target, **kwargs):
+        if not alias_target.resolve_deferred():
+            raise RuntimeError(f"Can't alias deferred entity: {alias_target}")
+
+        self.set_entity(alias_target)
+        super().__init__(*args, **kwargs)
+
+    cdef EntityType get_entity(self):
+        if self.entity_ref is not None:
+            return <EntityType>PyWeakref_GetObject(self.entity_ref)
+
+    cdef EntityType set_entity(self, EntityType entity):
+        if self.entity_ref is not None:
+            raise ValueError("Can't set entity on alias")
+        self.entity_ref = <object>PyWeakref_NewRef(entity, None)
+
+    cdef list _compute_attrs(self, EntityType base_entity, PolymorphMeta polymorph, object attrs):
+        cdef EntityType aliased = self.get_entity()
+        cdef EntityAttribute attr
+        cdef list result = []
+
+        for v in aliased.__attrs__:
+            if isinstance(v, EntityAttribute):
+                attr = (<EntityAttribute>v).clone()
+                attr._key_ = (<EntityAttribute>v)._key_
+                result.append(attr)
+
+        return result
+
+    cdef list _compute_triggers(self, EntityType base_entity, PolymorphMeta polymorph, object attrs):
+        return []
+
+    # def __instancecheck__(self, instance):
+    #     return isinstance(instance, self.get_entity())
+
+    # def __subclasscheck__(self, subclass):
+    #     return issubclass(subclass, self.get_entity())
+
+    def __repr__(self):
+        entity = self.get_entity()
+        if self.__name__:
+            return f"<Alias({id(self)}|{self.__name__}) of {entity.__qname__}>"
+        else:
+            return f"<Alias({id(self)}) of {entity.__qname__}>"
+
+
+cpdef bint is_entity_alias(object o):
+    return type(o) is EntityAlias
+
+
+cpdef EntityType get_alias_target(EntityType o):
+    if is_entity_alias(o):
+        return (<EntityAlias>o).get_entity()
+    else:
+        return o
+
 
 cdef tuple group_extensions(EntityType entity):
     cdef dict ext_groups = {}
@@ -351,22 +508,6 @@ cdef tuple group_extensions(EntityType entity):
 
     return tuple(ext_group_list)
 
-
-cpdef bint is_entity_alias(object o):
-    cdef dict meta
-    if isinstance(o, EntityType):
-        meta = (<EntityType>o).__meta__
-        return meta.get("is_alias", False) is True
-    return False
-
-
-cpdef EntityType get_alias_target(EntityType o):
-    cdef tuple mro
-    if is_entity_alias(o):
-        mro = o.__mro__
-        return mro[1]
-    else:
-        return o
 
 cdef EntityAttribute init_attribute(EntityAttribute by_type, object value):
     cdef EntityAttribute field
@@ -427,7 +568,7 @@ cdef class EntityAttribute(Expression):
 
     cdef EntityType set_entity(self, EntityType entity):
         if self.entityref is not None:
-            current = <object>PyWeakref_GetObject(self.entityref)
+            current = <EntityType>PyWeakref_GetObject(self.entityref)
             if current is not None:
                 if current is entity:
                     return
@@ -439,7 +580,7 @@ cdef class EntityAttribute(Expression):
     cdef EntityType get_entity(self):
         if self.entityref is None:
             return None
-        return <object>PyWeakref_GetObject(self.entityref)
+        return <EntityType>PyWeakref_GetObject(self.entityref)
 
     def __floordiv__(EntityAttribute self, EntityAttributeExt other):
         other_attr = other.get_attr()
@@ -544,7 +685,7 @@ cdef class EntityAttributeExt:
 
     cdef EntityAttribute get_attr(self):
         if self.attr_ref is not None:
-            return <object>PyWeakref_GetObject(self.attr_ref)
+            return <EntityAttribute>PyWeakref_GetObject(self.attr_ref)
         else:
             return None
 
@@ -997,9 +1138,9 @@ cdef class EntityBase:
                 self.__state__.update(kw, False)
 
             model = type(self)
-            poly = (<dict>model.__meta__).get("polymorph", None)
+            poly = model.get_meta("polymorph", None)
             if poly is not None:
-                poly_id = (<dict>model.__meta__).get("polymorph_id", None)
+                poly_id = model.get_meta("polymorph_id", None)
                 if poly_id is not None:
                     poly_id = PolymorphMeta.normalize_id(poly_id)
                     for i, idf in enumerate(poly.id_fields):
@@ -1008,7 +1149,7 @@ cdef class EntityBase:
             self.__state__.init()
 
     @classmethod
-    def __init_subclass__(cls, *, str name=None, Registry registry=None, bint _root=False, **meta):
+    def __init_subclass__(cls, *, str name=None, Registry registry=None, bint _root=False, EntityType alias_target=None, **meta):
         cdef EntityType ent = cls
         cdef EntityType parent_entity
         cdef int mro_length = len(cls.__mro__)
@@ -1155,7 +1296,8 @@ cdef class EntityBase:
         return res
 
     def __repr__(self):
-        is_type = (type(self).__meta__.get("is_type", False))
+        cdef EntityType entity = type(self)
+        is_type = entity.get_meta("is_type", False)
         if is_type is True:
             return "<%s %r>" % (type(self).__qname__, self.as_dict())
         else:

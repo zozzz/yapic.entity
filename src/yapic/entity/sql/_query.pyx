@@ -18,7 +18,7 @@ from ._dialect cimport Dialect
 
 cdef class Query(Expression):
     def __cinit__(self):
-        self._entities = []
+        self._entities = set()
         self._load = {}
         self._exclude = {}
         self._parent = None
@@ -40,8 +40,8 @@ cdef class Query(Expression):
         if from_ not in self._select_from:
             self._select_from.append(from_)
 
-        if isinstance(from_, EntityType) and from_ not in self._entities:
-            self._entities.append(from_)
+        if isinstance(from_, EntityType):
+            self._entities.add(from_)
 
         return self
 
@@ -168,8 +168,7 @@ cdef class Query(Expression):
                 cross_condition = (<ManyToMany>impl).across_join_expr
                 cross_what = (<ManyToMany>impl).get_across_alias()
 
-                if cross_what not in self._entities:
-                    self._entities.append(cross_what)
+                self._entities.add(cross_what)
 
                 cross_what_id = id(cross_what)
                 try:
@@ -205,12 +204,11 @@ cdef class Query(Expression):
         else:
             raise ValueError(f"Want to join uexpected entity: {what}")
 
-        self._entities.append(entity)
+        self._entities.add(entity)
 
         # TODO: Nem biztos, hogy ezt így kéne...
         aliased = get_alias_target(entity)
-        if aliased not in self._entities:
-            self._entities.append(aliased)
+        self._entities.add(aliased)
 
         entity_id = id(entity)
         try:
@@ -300,7 +298,7 @@ cdef class Query(Expression):
         if self._suffix:      q._suffix = list(self._suffix)
         if self._joins:       q._joins = dict(self._joins)
         if self._range:       q._range = slice(self._range.start, self._range.stop, self._range.step)
-        if self._entities:    q._entities = list(self._entities)
+        if self._entities:    q._entities = set(self._entities)
         if self._load:        q._load = dict(self._load)
         if self._exclude:     q._exclude = dict(self._exclude)
         if self._parent:      q._parent = self._parent.clone()
@@ -385,7 +383,7 @@ cdef class Query(Expression):
             parts.append(f"range = {self._range}")
 
         sep = ",\n\t"
-        return f"<Query \n\t{sep.join(parts)}\n>"
+        return f"<{'Sub' if self._parent else ''}Query \n\t{sep.join(parts)}\n>"
 
 
 # TODO: beautify
@@ -515,7 +513,6 @@ cdef class QueryFinalizer(Visitor):
                     self.q.join(p, type="LEFT" if self.in_or > 0 else "INNER")
                 else:
                     break
-
         return PathExpression(list(expr._path_))
 
     def visit_vexpr_val(self, VirtualExpressionVal expr):
@@ -636,7 +633,7 @@ cdef class QueryFinalizer(Visitor):
 
 
     def _rco_for_entity(self, EntityType entity_type, dict existing=None, list before_create=[]):
-        cdef PolymorphMeta polymorph = entity_type.__meta__.get("polymorph", None)
+        cdef PolymorphMeta polymorph = entity_type.get_meta("polymorph", None)
 
         if existing is None:
             existing = {}
@@ -659,12 +656,12 @@ cdef class QueryFinalizer(Visitor):
         for attr in entity_type.__attrs__:
             if isinstance(attr, Field):
                 field = <Field>attr
-                attr_entity = field.get_entity()
+                # attr_entity = field.get_entity()
 
-                if ((field._uid_ in self.q._load or attr_entity in self.q._load)
+                if ((field._uid_ in self.q._load or entity_type in self.q._load)
                         and (not self.q._exclude
                             or field._uid_ not in self.q._exclude
-                            or attr_entity not in self.q._exclude)):
+                            or entity_type not in self.q._exclude)):
 
                     if isinstance(field._impl_, CompositeImpl):
                         rco[0:0] = self._rco_for_composite(field, (<CompositeImpl>field._impl_)._entity_)

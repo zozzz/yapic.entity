@@ -155,14 +155,10 @@ cdef class AutoIncrement(FieldExtension):
                 aliased = get_alias_target(entity)
 
                 if entity is aliased:
-                    try:
-                        schema = entity.__meta__["schema"]
-                    except KeyError:
-                        schema = None
-
+                    schema = entity.get_meta("schema", "public")
                     name = f"{entity.__name__}_{attr._name_}_seq"
                     try:
-                        self.sequence = entity.get_registry()[name if not schema or schema == "public" else f"{schema}.{name}"]
+                        self.sequence = entity.get_registry()[name if schema == "public" else f"{schema}.{name}"]
                     except KeyError:
                         self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=entity.get_registry(), is_sequence=True)
                 else:

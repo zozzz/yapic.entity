@@ -19,8 +19,8 @@ cdef class DDLCompiler:
         cdef list table_parts = []
         cdef list requirements = []
         cdef list deferred = []
-        is_type = entity.__meta__.get("is_type", False) is True
-        is_sequence = entity.__meta__.get("is_sequence", False) is True
+        is_type = entity.get_meta("is_type", False) is True
+        is_sequence = entity.get_meta("is_sequence", False) is True
 
         if is_type is True:
             table_parts.append(f"CREATE TYPE {self.dialect.table_qname(entity)} AS (\n")
@@ -154,14 +154,14 @@ cdef class DDLCompiler:
     def compile_registry_diff(self, RegistryDiff diff):
         lines = []
         deferred = []
-        schemas_created = {ent.__meta__.get("schema", "public") for ent in diff.a.values()}
+        schemas_created = {ent.get_meta("schema", "public") for ent in diff.a.values()}
         schemas_created.add("public")
 
         for kind, param in diff:
             if kind is RegistryDiffKind.REMOVED:
                 lines.append(self.drop_entity(param))
             elif kind is RegistryDiffKind.CREATED:
-                schema = param.__meta__.get("schema", "public")
+                schema = param.get_meta("schema", "public")
                 if schema and schema not in schemas_created:
                     schemas_created.add(schema)
                     lines.append(f"CREATE SCHEMA IF NOT EXISTS {self.dialect.quote_ident(schema)};")
@@ -170,7 +170,7 @@ cdef class DDLCompiler:
                 lines.append(_tbl)
                 deferred.extend(_deferred)
             elif kind is RegistryDiffKind.CHANGED:
-                if param.b.__meta__.get("is_type", False) is True:
+                if param.b.get_meta("is_type", False) is True:
                     lines.append(self.compile_type_diff(param))
                 else:
                     _updates, _deferred = self.compile_entity_diff(param)
@@ -337,8 +337,8 @@ cdef class DDLCompiler:
         return result
 
     def drop_entity(self, EntityType entity):
-        cdef bint is_type = entity.__meta__.get("is_type", False) is True
-        cdef bint is_sequence = entity.__meta__.get("is_sequence", False) is True
+        cdef bint is_type = entity.get_meta("is_type", False) is True
+        cdef bint is_sequence = entity.get_meta("is_sequence", False) is True
         if is_type:
             return f"DROP TYPE {self.dialect.table_qname(entity)} CASCADE;"
         elif is_sequence:

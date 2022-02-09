@@ -30,10 +30,10 @@ cdef class RelationImpl(EntityAttributeImpl):
 
     cdef readonly ValueStore state_impl
 
-
     cdef EntityType get_joined_entity(self)
     cdef EntityType get_joined_alias(self)
     cdef Relation get_relation(self)
+    cdef void set_relation(self, Relation value)
     cdef void _update_join_expr(self)
     # cdef object determine_join_expr(self, EntityType entity, Relation attr)
 

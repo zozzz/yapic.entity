@@ -99,7 +99,7 @@ cdef _collect_entities(EntityBase entity, DependencyList order, list ops, object
 cdef set_poly_id(EntityBase main):
     cdef EntityType main_t = type(main)
     try:
-        poly = main_t.__meta__["polymorph"]
+        poly = main_t.get_meta("polymorph")
     except KeyError:
         return
 
@@ -217,9 +217,9 @@ cdef class FieldUpdater(Visitor):
 
 
 cdef bint test_entity_type_eq(EntityType a, EntityType b):
-    if "polymorph" in b.__meta__ and issubclass(b, a):
+    if b.has_meta("polymorph") and issubclass(b, a):
         return True
-    elif "polymorph" in a.__meta__ and issubclass(a, b):
+    elif a.has_meta("polymorph") and issubclass(a, b):
         return True
     else:
         return a is b

@@ -25,7 +25,21 @@ cdef class EntityType(type):
 
     cdef object resolve_deferred(self)
     cdef Registry get_registry(self)
+    cdef list _compute_triggers(self, EntityType base_entity, PolymorphMeta polymorph, object attrs)
+    cdef list _compute_attrs(self, EntityType base_entity, PolymorphMeta polymorph, object attrs)
+
     cpdef object __entity_ready__(self)
+    cpdef object get_meta(self, str key=*, default=*)
+    cpdef object set_meta(self, str key, object value)
+    cpdef bint has_meta(self, str key)
+
+
+@cython.final
+cdef class EntityAlias(EntityType):
+    cdef object entity_ref
+
+    cdef EntityType get_entity(self)
+    cdef EntityType set_entity(self, EntityType entity)
 
 
 cpdef bint is_entity_alias(object o)

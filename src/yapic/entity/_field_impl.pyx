@@ -76,7 +76,7 @@ cdef class UUIDImpl(FieldImpl):
 
 cdef class EntityTypeImpl(FieldImpl):
     def __init__(self, entity):
-        entity.__meta__["is_type"] = True
+        entity.set_meta("is_type", True)
         self._entity_ = entity
         super().__init__()
 
@@ -127,14 +127,14 @@ cdef class JsonImpl(FieldImpl):
 
         if isinstance(type, EntityType):
             self._object_ = type
-            type.__meta__["is_virtual"] = True
+            (<EntityType>type).set_meta("is_virtual", True)
         elif hasattr(type, "__origin__") and type.__origin__ is list:
             args = type.__args__
             if len(args) == 1:
                 item_type = args[0]
                 if isinstance(item_type, EntityType):
                     self._list_ = item_type
-                    item_type.__meta__["is_virtual"] = True
+                    (<EntityType>item_type).set_meta("is_virtual", True)
                 else:
                     self._any_ = True
             else:
@@ -276,8 +276,8 @@ cdef bint json_eq(object a, object b):
 cdef class CompositeImpl(EntityTypeImpl):
     cdef bint _is_eq(self, object other):
         if isinstance(other, CompositeImpl):
-            self_ent = entity_qname(self._entity_)
-            other_ent = entity_qname((<CompositeImpl>other)._entity_)
+            self_ent = self._entity_.__qname__
+            other_ent = (<CompositeImpl>other)._entity_.__qname__
             return self_ent == other_ent
         else:
             return False
@@ -290,8 +290,8 @@ cdef class CompositeImpl(EntityTypeImpl):
 
 
 cdef class NamedTupleImpl(CompositeImpl):
-    def __init__(self, entity):
-        entity.__meta__["is_virtual"] = True
+    def __init__(self, EntityType entity):
+        entity.set_meta("is_virtual", True)
         super().__init__(entity)
 
     cpdef getattr(self, EntityAttribute attr, object key):
@@ -389,15 +389,3 @@ cdef class ArrayImpl(FieldImpl):
 
     def __repr__(self):
         return f"Array({self._item_impl_})"
-
-
-cdef str entity_qname(EntityType ent):
-    try:
-        schema = ent.__meta__["schema"]
-    except KeyError:
-        return ent.__name__
-    else:
-        if not schema or schema == "public":
-            return ent.__name__
-        else:
-            return f"{schema}.{ent.__name__}"

@@ -22,7 +22,7 @@ cdef class Relation(EntityAttribute):
         cdef RelationImpl impl
         if EntityAttribute.bind(self):
             impl = self._impl_
-            impl.relation = self
+            impl.set_relation(self)
             if self._default_:
                 # TODO: megoldani, hogy ne legyen átadva a Relation
                 if not impl.resolve_default(self):
@@ -94,13 +94,16 @@ cdef class RelationImpl(EntityAttributeImpl):
 
     @relation.setter
     def relation(self, Relation value):
+        self.set_relation(value)
+
+    cdef Relation get_relation(self):
+        return <object>PyWeakref_GetObject(self.relation_ref)
+
+    cdef void set_relation(self, Relation value):
         if value is not None:
             self.relation_ref = <object>PyWeakref_NewRef(value, None)
         else:
             self.relation_ref = None
-
-    cdef Relation get_relation(self):
-        return <object>PyWeakref_GetObject(self.relation_ref)
 
     @property
     def join_expr(self):
@@ -119,7 +122,6 @@ cdef class RelationImpl(EntityAttributeImpl):
 
     cpdef object clone(self):
         cdef RelationImpl c = type(self)(self.get_joined_entity(), self.state_impl)
-        c.joined_alias_ref = self.joined_alias_ref
         return c
 
     cdef object state_init(self, object initial):
@@ -159,33 +161,14 @@ cdef class ManyToOne(RelationImpl):
 
         if relation._default_ is not None:
             join_expr = replace_entity(relation._default_, joined, aliased)
+
+            target_aliased = get_alias_target(target)
+            if target_aliased is not target:
+                join_expr = replace_entity(join_expr, target_aliased, target)
         else:
             join_expr = determine_join_expr(target, aliased)
 
-        target_aliased = get_alias_target(target)
-        if target_aliased is not target:
-            join_expr = replace_entity(join_expr, target_aliased, target)
-
         return join_expr
-
-
-    # cdef object determine_join_expr(self, EntityType entity, Relation attr):
-    #     cdef EntityType original = self.get_joined_entity()
-    #     if original is not entity and not can_determine_join_cond(original):
-    #         return False
-
-    #     aliased = self.get_joined_alias()
-
-    #     if attr._default_:
-    #         self.join_expr = replace_entity(attr._default_, original, aliased)
-    #     else:
-    #         self.join_expr = determine_join_expr(entity, aliased)
-
-    #     entity_aliased = get_alias_target(entity)
-    #     if entity_aliased is not entity:
-    #         self.join_expr = replace_entity(self.join_expr, entity_aliased, entity)
-
-    #     return True
 
     cdef object resolve_default(self, Relation attr):
         if isinstance(attr._default_, str):
@@ -228,24 +211,6 @@ cdef class OneToMany(RelationImpl):
             join_expr = replace_entity(join_expr, target_aliased, target)
 
         return join_expr
-
-    # cdef object determine_join_expr(self, EntityType entity, Relation attr):
-    #     cdef EntityType original = self.get_joined_entity()
-    #     if original is not entity and not can_determine_join_cond(original):
-    #         return False
-
-    #     aliased = self.get_joined_alias()
-
-    #     if attr._default_:
-    #         self.join_expr = replace_entity(attr._default_, original, aliased)
-    #     else:
-    #         self.join_expr = determine_join_expr(aliased, entity)
-
-    #     entity_aliased = get_alias_target(entity)
-    #     if entity_aliased is not entity:
-    #         self.join_expr = replace_entity(self.join_expr, entity_aliased, entity)
-
-    #     return True
 
     cdef object resolve_default(self, Relation attr):
         if isinstance(attr._default_, str):
@@ -356,8 +321,6 @@ cdef class ManyToMany(RelationImpl):
 
     cpdef object clone(self):
         cdef ManyToMany c = type(self)(self.get_joined_entity(), self.state_impl, self.get_across_entity())
-        c.joined_alias_ref = self.joined_alias_ref
-        c.across_alias_ref = self.across_alias_ref
         return c
 
     def __repr__(self):
@@ -374,7 +337,10 @@ cdef determine_join_expr(EntityType entity, EntityType joined):
     cdef object found = None
     cdef EntityAttributeExtGroup group
 
-    for group in filter(lambda v: v.type is ForeignKey, entity.__extgroups__):
+    for group in entity.__extgroups__:
+        if group.type is not ForeignKey:
+            continue
+
         fk = <ForeignKey>group.items[0]
 
         if fk.ref.get_entity() is joined:

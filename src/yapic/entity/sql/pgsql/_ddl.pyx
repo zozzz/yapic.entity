@@ -49,7 +49,7 @@ cdef class PostgreDDLCompiler(DDLCompiler):
         if not isinstance(trigger, PostgreTrigger):
             return
 
-        schema = entity.__meta__.get("schema", "public")
+        schema = entity.get_meta("schema", "public")
         schema = f"{self.dialect.quote_ident(schema)}." if schema != "public" else ""
         trigger_name = f"{schema}{self.dialect.quote_ident(trigger.get_unique_name(entity))}"
         res = [f"CREATE OR REPLACE FUNCTION {trigger_name}() RETURNS TRIGGER AS $$ BEGIN"]
@@ -77,7 +77,7 @@ cdef class PostgreDDLCompiler(DDLCompiler):
         if not isinstance(trigger, PostgreTrigger):
             return
 
-        schema = entity.__meta__.get("schema", "public")
+        schema = entity.get_meta("schema", "public")
         schema = f"{self.dialect.quote_ident(schema)}." if schema != "public" else ""
         trigger_name = f"{schema}{self.dialect.quote_ident(trigger.get_unique_name(entity))}"
 
@@ -159,8 +159,8 @@ cdef class PostgreDDLReflect(DDLReflect):
             else:
                 fields = await self.get_fields(conn, registry, extensions, schema, table, id)
                 entity = await self.create_entity(conn, registry, schema, table, fields)
-            entity.__meta__["is_type"] = kind == b"c"
-            entity.__meta__["is_sequence"] = kind == b"S"
+            entity.set_meta("is_type", kind == b"c")
+            entity.set_meta("is_sequence", kind ==b"S")
 
             for attr in entity.__fields__:
                 if attr._default_ is not None:
