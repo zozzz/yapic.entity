@@ -7,6 +7,7 @@ import cython
 from ._entity cimport EntityBase, EntityType, EntityState, EntityAttribute, NOTSET, DependencyList, get_alias_target
 from ._relation cimport Relation, ManyToMany, OneToMany
 from ._expression cimport Visitor, Expression, ConstExpression, RawExpression, UnaryExpression, BinaryExpression
+from ._entity cimport get_alias_target
 
 
 class EntityOperation(IntFlag):
@@ -116,13 +117,14 @@ cdef set_poly_id(EntityBase main):
 
 cdef set_related_attrs(Relation attr, EntityBase main, EntityBase related, DependencyList order, list ops):
     if isinstance(attr._impl_, ManyToMany):
-        across_entity = attr._impl_._across()
+        across_alias = (<ManyToMany>attr._impl_).get_across_alias()
+        across_entity = get_alias_target(across_alias)()
 
         append_fields(across_entity, main, attr._impl_.across_join_expr, ops)
         append_fields(across_entity, related, attr._impl_.join_expr, ops)
 
         _collect_entities(across_entity, order, ops, EntityOperation.INSERT_OR_UPDATE)
-        order.add(attr._impl_._across)
+        order.add(across_alias)
     elif isinstance(attr._impl_, OneToMany):
         append_fields(related, main, attr._impl_.join_expr, ops)
     else:

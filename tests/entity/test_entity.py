@@ -6,6 +6,7 @@ from yapic import json
 
 
 def test_entity_basics():
+
     class PrimaryKey(FieldExtension):
         pass
 
@@ -38,6 +39,7 @@ def test_entity_basics():
 
 
 def test_field_ext():
+
     class FE1(FieldExtension):
         pass
 
@@ -52,7 +54,7 @@ def test_field_ext():
 
     class Ent2(Entity):
         f1: String = FE1()
-        f2: String = Field() // FE2()
+        f2: String = Field() // FE2() // FE4()
         f3: String = FE3() // FE4()
 
     f1 = Ent2.__fields__[0]
@@ -63,9 +65,11 @@ def test_field_ext():
 
     f2 = Ent2.__fields__[1]
     assert isinstance(f2, Field)
-    assert len(f2._exts_) == 1
+    assert len(f2._exts_) == 2
     assert isinstance(f2._exts_[0], FE2)
+    assert isinstance(f2._exts_[1], FE4)
     assert f2._exts_[0].attr == f2
+    assert f2._exts_[1].attr == f2
 
     f3 = Ent2.__fields__[2]
     assert isinstance(f3, Field)
@@ -77,6 +81,7 @@ def test_field_ext():
 
 
 def test_entity_state_common():
+
     class User1(Entity):
         id: Int
         name: String
@@ -100,6 +105,7 @@ def test_entity_state_common():
 
 
 def test_entity_state_usage():
+
     class User2(Entity):
         id: Int
         name: String
@@ -127,6 +133,7 @@ def test_entity_state_usage():
 
 
 def test_entity_iter():
+
     class User3(Entity):
         id: Int
         name: String

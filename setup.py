@@ -1,13 +1,14 @@
 import sys
 import os
-import glob
-import math
+import shutil
 from pathlib import Path
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
 from distutils.extension import Extension
 from Cython.Build import cythonize
 from Cython.Build.Dependencies import parse_dependencies
+
+RECOMPILE = True
 
 subcommand_args = []
 if "--" in sys.argv:
@@ -112,7 +113,9 @@ def get_max_mtime(deps: list):
     return max(os.path.getmtime(p) for p in deps)
 
 
-update_deps()
+if RECOMPILE:
+    shutil.rmtree(os.path.join(os.path.dirname(__file__), "build"), ignore_errors=True)
+    update_deps()
 
 
 def cmd_prerun(cmd: TestCommand, requirements):
@@ -124,7 +127,8 @@ def cmd_prerun(cmd: TestCommand, requirements):
                 sys.path.insert(0, dp)
 
     # cmd.distribution.get_command_obj("build").force = True
-    cmd.run_command("build")
+    if RECOMPILE:
+        cmd.run_command("build")
 
     ext = cmd.get_finalized_command("build_ext")
     ep = str(Path(ext.build_lib).absolute())
@@ -153,6 +157,7 @@ class PyTest(TestCommand):
             self.pytest_args += " " + self.file.replace("\\", "/")
 
     def run(self):
+
         def requirements(dist):
             yield dist.install_requires
             yield dist.tests_require
@@ -161,7 +166,6 @@ class PyTest(TestCommand):
         self.run_tests()
 
     def run_tests(self):
-        import shlex
         import pytest
         errno = pytest.main(subcommand_args)
         sys.exit(errno)
@@ -183,7 +187,7 @@ almafa = setup(
         compiler_directives={
             "language_level": 3,
             "iterable_coroutine": False,
-            "boundscheck": False,
+            "boundscheck": DEVELOP,
             "wraparound": False,
             "auto_pickle": False
         },

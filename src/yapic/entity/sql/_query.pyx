@@ -391,7 +391,7 @@ cdef object load_options(dict target, tuple input):
     for inp in input:
         if isinstance(inp, Relation):
             target[(<Relation>inp)._uid_] = inp
-            target[(<Relation>inp)._impl_.get_joined_alias()] = inp
+            target[(<RelationImpl>(<Relation>inp)._impl_).get_joined_alias()] = inp
         elif isinstance(inp, EntityAttribute):
             target[(<EntityAttribute>inp)._uid_] = inp
         elif isinstance(inp, VirtualExpressionVal):
@@ -404,7 +404,7 @@ cdef object load_options(dict target, tuple input):
                 if isinstance(entry, Relation):
                     target[(<Relation>entry)._uid_] = entry
                     if is_last:
-                        target[(<Relation>entry)._impl_.get_joined_alias()] = entry
+                        target[(<RelationImpl>(<Relation>entry)._impl_).get_joined_alias()] = entry
                 elif isinstance(entry, Field):
                     if isinstance((<Field>entry)._impl_, CompositeImpl):
                         if is_last:
@@ -686,11 +686,11 @@ cdef class QueryFinalizer(Visitor):
 
                     if loading is not None and loading.always:
                         if loading.fields:
-                            joined_entity = relation._impl_.get_joined_alias()
+                            joined_entity = (<RelationImpl>relation._impl_).get_joined_alias()
                             for fname in loading.fields:
                                 self.q.load(getattr(joined_entity, fname))
                         else:
-                            self.q.load(relation._impl_.get_joined_alias())
+                            self.q.load((<RelationImpl>relation._impl_).get_joined_alias())
 
                     if isinstance(relation._impl_, ManyToOne):
                         relation_rco.append((relation, self._rco_for_one_relation(relation, existing)))
@@ -751,7 +751,7 @@ cdef class QueryFinalizer(Visitor):
                 self.q.join(relation, None, "INNER")
 
             relation = parents[len(parents) - 1]
-            entity_tmp = relation._impl_.get_joined_alias()
+            entity_tmp = (<RelationImpl>relation._impl_).get_joined_alias()
         else:
             entity_tmp = entity
 
@@ -772,7 +772,7 @@ cdef class QueryFinalizer(Visitor):
                 before_create = []
             parent_relation = relation
 
-            entity_tmp = relation._impl_.get_joined_alias()
+            entity_tmp = (<RelationImpl>relation._impl_).get_joined_alias()
 
             for i, field in enumerate(pk_fields):
                 try:
@@ -829,7 +829,7 @@ cdef class QueryFinalizer(Visitor):
 
         for relation in poly.children(entity):
             child = relation.get_entity()
-            self.q.join(child, relation._default_, "LEFT")
+            self.q.join(child, relation._default_, type="LEFT")
 
             for i, field in enumerate(pk_fields):
                 try:
@@ -852,7 +852,7 @@ cdef class QueryFinalizer(Visitor):
 
                 create_poly.update(child_rcos)
 
-            create_poly[poly.entities[child][0]] = [rcos]
+            create_poly[poly.get_id(child)] = [rcos]
             has_poly_child = True
 
         return has_poly_child
@@ -882,9 +882,10 @@ cdef class QueryFinalizer(Visitor):
         rco.append(_RCO_PUSH)
         return rco
 
+    # TODO: optimize with joins instead of subquerry
     def _rco_for_one_relation(self, Relation relation, dict existing=None):
-        cdef EntityType load = relation._impl_.get_joined_alias()
-        cdef Query col_query = Query(load).where(relation._impl_.join_expr).as_row()
+        cdef EntityType load = (<RelationImpl>relation._impl_).get_joined_alias()
+        cdef Query col_query = Query(load).where((<RelationImpl>relation._impl_).join_expr).as_row()
 
         if self.q._load:
             col_query._load = dict(self.q._load)
@@ -899,16 +900,18 @@ cdef class QueryFinalizer(Visitor):
         return [RowConvertOp(RCO.CONVERT_SUB_ENTITY, col_idx, column._rcos), _RCO_PUSH]
 
     def _rco_for_many_relation(self, Relation relation, dict existing=None):
-        cdef EntityType load = relation._impl_.get_joined_alias()
+        cdef ManyToMany rimm
+        cdef EntityType load = (<RelationImpl>relation._impl_).get_joined_alias()
         cdef Query q
 
         if isinstance(relation._impl_, ManyToMany):
-            q = Query(relation._impl_.get_across_alias()) \
-                .columns(relation._impl_.get_joined_alias()) \
-                .join(relation._impl_.get_joined_alias(), relation._impl_.join_expr, "INNER") \
-                .where(relation._impl_.across_join_expr)
+            rimm = <ManyToMany>relation._impl_
+            q = Query(rimm.get_across_alias()) \
+                .columns(rimm.get_joined_alias()) \
+                .join(rimm.get_joined_alias(), rimm.join_expr, "INNER") \
+                .where(rimm.across_join_expr)
         else:
-            q = Query(load).where(relation._impl_.join_expr)
+            q = Query(load).where((<RelationImpl>relation._impl_).join_expr)
 
         if self.q._load:
             q._load = dict(self.q._load)

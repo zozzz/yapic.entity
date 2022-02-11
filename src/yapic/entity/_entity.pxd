@@ -17,16 +17,21 @@ cdef class EntityType(type):
     cdef readonly list __deferred__
     cdef public list __fix_entries__
     cdef public list __triggers__
-    cdef public tuple __extgroups__
+    cdef public dict __extgroups__
     cdef PyObject* registry_ref
     # cdef Registry __registry__
     cdef PyObject* meta
     cdef readonly EntityDependency __deps__
 
-    cdef object resolve_deferred(self)
+    cdef EntityType get_base_entity(self)
     cdef Registry get_registry(self)
-    cdef list _compute_triggers(self, EntityType base_entity, PolymorphMeta polymorph, object attrs)
-    cdef list _compute_attrs(self, EntityType base_entity, PolymorphMeta polymorph, object attrs)
+    cdef list _compute_attrs(self, EntityType base_entity, PolymorphMeta polymorph, object cls_dict)
+    cdef list _compute_triggers(self)
+    # cdef object _finalize(self)
+    cdef object _stage_resolving(self)
+    cdef object _stage_resolved(self)
+    cdef bint is_deferred(self)
+    cdef bint is_empty(self)
 
     cpdef object __entity_ready__(self)
     cpdef object get_meta(self, str key=*, default=*)
@@ -40,6 +45,7 @@ cdef class EntityAlias(EntityType):
 
     cdef EntityType get_entity(self)
     cdef EntityType set_entity(self, EntityType entity)
+    cdef void _copy_meta(self, keys)
 
 
 cpdef bint is_entity_alias(object o)
@@ -54,7 +60,7 @@ cdef class EntityBase:
 cdef class EntityAttribute(Expression):
     cdef object __weakref__
     cdef object _impl
-    cdef object entityref
+    cdef object entity_ref
     cdef readonly str _key_
     cdef readonly int _index_
     cdef readonly str _name_
@@ -67,43 +73,60 @@ cdef class EntityAttribute(Expression):
     cdef readonly int _uid_
 
     cdef EntityType get_entity(self)
-    cdef EntityType set_entity(self, EntityType entity)
+    # cdef EntityType set_entity(self, EntityType entity)
 
-    cdef object init(self, EntityType entity)
+    cdef object _bind(self, object entity_ref, object registry_ref)
+    cdef EntityAttribute _rebind(self, EntityType entity)
+    cdef object _resolve_deferred(self)
+    cpdef object init(self)
+
+    # cdef object init(self, EntityType entity)
     # returns true when successfully bind, otherwise the system can try bind in the later time
-    cdef object bind(self)
+    # cdef object bind(self)
     # cdef object entity_ready(self, EntityType entity)
     cpdef clone(self)
     cpdef get_ext(self, ext_type)
     cpdef clone_exts(self, EntityAttribute attr)
     cpdef copy_into(self, EntityAttribute other)
+    cpdef _entity_repr(self)
 
 
 cdef class EntityAttributeExt:
     cdef object attr_ref
-    # cdef readonly EntityAttribute attr
-    cdef list _tmp
-    cdef bint bound
-    cdef str group_by
+
+    cdef object _bind(self, object attr_ref)
+    cdef object _resolve_deferred(self)
 
     cdef EntityAttribute get_attr(self)
-    cdef object set_attr(self, EntityAttribute val)
+    cdef EntityType get_entity(self)
+    # cdef object set_attr(self, EntityAttribute val)
 
-    cpdef object init(self, EntityAttribute attr)
+    cpdef object init(self)
     # returns true when successfully bind, otherwise the system can try bind in the later time
-    cpdef object bind(self)
+    # cpdef object bind(self)
     cpdef object clone(self)
     # cpdef object entity_ready(self, EntityType entity)
+    cpdef object add_to_group(self, str key)
+
+
+@cython.final
+cdef class EntityAttributeExtList(list):
+    pass
 
 
 cdef class EntityAttributeExtGroup:
     cdef readonly str name
-    cdef readonly tuple items
+    cdef readonly list items
     cdef readonly object type
 
 
 cdef class EntityAttributeImpl:
+    # cdef object attr_ref
     cdef bint inited
+
+    # cdef EntityAttribute get_attr(self)
+    # cdef object _bind(self, object attr_ref)
+    cdef object _resolve_deferred(self, EntityAttribute attr)
 
     # returns true when successfully bind, otherwise the system can try bind in the later time
     cpdef object init(self, EntityAttribute attr)

@@ -89,14 +89,8 @@ cdef class EntityReplacer(ReplacerBase):
             return expr
 
     def visit_relation(self, Relation relation):
-        cdef Relation clone
-
         if relation.get_entity() is self.what:
-            clone = relation.clone()
-            clone.init(self.to)
-            if not clone.bind():
-                raise RuntimeError("...")
-            return clone
+            return relation._rebind(self.to)
         else:
             return relation
 
@@ -167,10 +161,7 @@ cdef class FieldReplacer(ReplacerBase):
         return expr
 
     def visit_relation(self, Relation relation):
-        cdef Relation clone = relation.clone()
-        clone.init(relation.get_entity())
-        if not clone.bind():
-            raise RuntimeError("...")
+        cdef Relation clone = relation._rebind(relation.get_entity())
 
         if isinstance(clone._impl_, ManyToMany):
             clone._impl_.join_expr = self.visit(clone._impl_.join_expr)

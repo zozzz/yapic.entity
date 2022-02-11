@@ -53,15 +53,16 @@ cdef class DDLCompiler:
             requirements.append("")
             table_parts.insert(0, "\n".join(requirements))
 
-        for x in filter(lambda v: v.type is Index, entity.__extgroups__):
-            deferred.append(self.compile_create_index(x))
+        compiled_fks = []
+        for value in entity.__extgroups__.values():
+            if value.type is Index:
+                deferred.append(self.compile_create_index(value))
+            elif value.type is ForeignKey:
+                compiled_fks.append(f"ADD {self.compile_foreign_key(value)}")
 
-        cdef tuple fks = tuple(filter(lambda v: v.type is ForeignKey, entity.__extgroups__))
-        if fks:
+        if compiled_fks:
             if is_type:
                 raise ValueError("Foreign keys is not supported on Composite Types")
-
-            compiled_fks = [f"ADD {cfk}" for cfk in self.compile_foreign_keys(fks)]
             alter = ',\n  '.join(compiled_fks)
             deferred.append(f"ALTER TABLE {self.dialect.table_qname(entity)}\n  {alter};")
 
@@ -104,10 +105,6 @@ cdef class DDLCompiler:
                 res += f" DEFAULT nextval({self.dialect.quote_value(self.dialect.table_qname(seq))}::regclass)"
 
         return res
-
-    def compile_foreign_keys(self, tuple fks):
-        for group in fks:
-            yield self.compile_foreign_key(group)
 
     def compile_foreign_key(self, EntityAttributeExtGroup key):
         cdef str res = f"CONSTRAINT {self.dialect.quote_ident(key.name)} FOREIGN KEY ("
@@ -246,21 +243,21 @@ cdef class DDLCompiler:
 
         return '\n'.join(filter(bool, ['\n'.join(pre), alter, '\n'.join(post)])), deferred
 
-    def compile_create_extgroup(self, EntityAttributeExtGroup group):
-        if group.type is ForeignKey:
-            pass
-        elif group.type is Index:
-            pass
-        else:
-            pass
+    # def compile_create_extgroup(self, EntityAttributeExtGroup group):
+    #     if group.type is ForeignKey:
+    #         pass
+    #     elif group.type is Index:
+    #         pass
+    #     else:
+    #         pass
 
-    def compile_remove_extgroup(self, EntityAttributeExtGroup group):
-        if group.type is ForeignKey:
-            yield
-        elif group.type is Index:
-            pass
-        else:
-            pass
+    # def compile_remove_extgroup(self, EntityAttributeExtGroup group):
+    #     if group.type is ForeignKey:
+    #         yield
+    #     elif group.type is Index:
+    #         pass
+    #     else:
+    #         pass
 
     def compile_type_diff(self, EntityDiff diff):
         requirements = []
@@ -379,8 +376,8 @@ cdef class DDLCompiler:
                         f"ADD {self.compile_foreign_key(fk_group)}",
                     )
 
-        # for trigger in old_entity.__triggers__:
-        #     strip_entity.append(...)
+        for trigger in old_entity.__triggers__:
+            strip_entity.append(self.remove_trigger(trigger))
 
         if strip_entity:
             result.append(compile_alters(strip_entity))

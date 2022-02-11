@@ -267,12 +267,12 @@ def test_entity_alias():
         .where(TEST.id == 42)
 
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == 'SELECT "TEST"."id", "TEST"."name", "TEST"."email", "TEST"."created_time", "TEST"."address_id" FROM "User" "TEST" INNER JOIN "Address" "t2" ON "TEST"."address_id" = "t2"."id" WHERE "t2"."title" = $1 AND "TEST"."id" = $2'
+    assert sql == 'SELECT "TEST"."id", "TEST"."name", "TEST"."email", "TEST"."created_time", "TEST"."address_id" FROM "User" "TEST" INNER JOIN "Address" "t0" ON "TEST"."address_id" = "t0"."id" WHERE "t0"."title" = $1 AND "TEST"."id" = $2'
     assert params == ("OK", 42)
 
     q = Query().select_from(TEST).join(TEST.tags).where(TEST.tags.value == 42)
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == 'SELECT "TEST"."id", "TEST"."name", "TEST"."email", "TEST"."created_time", "TEST"."address_id" FROM "User" "TEST" INNER JOIN "UserTags" "t2" ON "t2"."user_id" = "TEST"."id" INNER JOIN "Tag" "t4" ON "t2"."tag_id" = "t4"."id" WHERE "t4"."value" = $1'
+    assert sql == 'SELECT "TEST"."id", "TEST"."name", "TEST"."email", "TEST"."created_time", "TEST"."address_id" FROM "User" "TEST" INNER JOIN "UserTags" "t0" ON "t0"."user_id" = "TEST"."id" INNER JOIN "Tag" "t1" ON "t0"."tag_id" = "t1"."id" WHERE "t1"."value" = $1'
     assert params == (42, )
 
 
@@ -304,7 +304,7 @@ def test_join_relation():
 def test_join_across_relation():
     q = Query().select_from(User).join(User.tags).where(User.tags.value == "nice")
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" INNER JOIN "UserTags" "t1" ON "t1"."user_id" = "t0"."id" INNER JOIN "Tag" "t3" ON "t1"."tag_id" = "t3"."id" WHERE "t3"."value" = $1'
+    assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" INNER JOIN "UserTags" "t1" ON "t1"."user_id" = "t0"."id" INNER JOIN "Tag" "t2" ON "t1"."tag_id" = "t2"."id" WHERE "t2"."value" = $1'
     assert params == ("nice", )
 
 
@@ -325,7 +325,7 @@ def test_join_entity_across():
 def test_auto_join_relation():
     q = Query().select_from(User).where(User.tags.value == "nice")
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" INNER JOIN "UserTags" "t1" ON "t1"."user_id" = "t0"."id" INNER JOIN "Tag" "t3" ON "t1"."tag_id" = "t3"."id" WHERE "t3"."value" = $1'
+    assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" INNER JOIN "UserTags" "t1" ON "t1"."user_id" = "t0"."id" INNER JOIN "Tag" "t2" ON "t1"."tag_id" = "t2"."id" WHERE "t2"."value" = $1'
     assert params == ("nice", )
 
 
@@ -333,7 +333,6 @@ def test_auto_join_relation():
 def test_eager_load():
     q = Query().select_from(User).columns(User, User.address, User.tags)
     sql, params = dialect.create_query_compiler().compile_select(q)
-    print(sql)
     assert sql == ''
     assert params == ()
 
@@ -419,21 +418,22 @@ def test_call():
 
     sql, params = dialect.create_query_compiler().compile_select(q)
 
-    assert sql == f'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE DATE_FORMAT("t0"."created_time", $1) = $2'
+    assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE DATE_FORMAT("t0"."created_time", $1) = $2'
     assert params == ("%Y-%m-%d", "2019-01-01")
 
 
+class UserJson(Entity):
+    id: Serial
+    name: Json[FullName]
+
+
+class Article(Entity):
+    id: Serial
+    author_id: Int = ForeignKey(UserJson.id)
+    author: One[UserJson]
+
+
 def test_json():
-
-    class UserJson(Entity):
-        id: Serial
-        name: Json[FullName]
-
-    class Article(Entity):
-        id: Serial
-        author_id: Int = ForeignKey(UserJson.id)
-        author: One[UserJson]
-
     q = Query().select_from(UserJson).where(UserJson.name.family == "Kiss")
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == """SELECT "t0"."id", "t0"."name" FROM "UserJson" "t0" WHERE jsonb_extract_path("t0"."name", 'family') = $1"""
@@ -447,28 +447,30 @@ def test_json():
     assert params == ("Kiss", 1)
 
 
+class UserComp2(Entity):
+    id: Serial
+    name: Composite[FullName]
+
+
+class Article2(Entity):
+    id: Serial
+    author_id: Int = ForeignKey(UserComp2.id)
+    author: One[UserComp2]
+
+
 def test_composite():
 
-    class UserComp2(Entity):
-        id: Serial
-        name: Composite[FullName]
-
-    class Article2(Entity):
-        id: Serial
-        author_id: Int = ForeignKey(UserComp2.id)
-        author: One[UserComp2]
-
-    q = Query().select_from(UserComp2).where(UserComp2.name.family == "Kiss")
+    q = Query().select_from(UserComp2).where(UserComp2.name.family == "Teszt")
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == """SELECT "t0"."id", ("t0"."name")."title", ("t0"."name")."family", ("t0"."name")."given", ("t0"."name")."xyz" FROM "UserComp2" "t0" WHERE ("t0"."name")."family" = $1"""
-    assert params == ("Kiss", )
+    assert params == ("Teszt", )
 
     q = Query().select_from(Article2) \
-        .where(Article2.author.name.family == "Kiss") \
+        .where(Article2.author.name.family == "Teszt") \
         .where(Article2.author.name.xyz.z == 1)
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == """SELECT "t0"."id", "t0"."author_id" FROM "Article2" "t0" INNER JOIN "UserComp2" "t1" ON "t0"."author_id" = "t1"."id" WHERE ("t1"."name")."family" = $1 AND jsonb_extract_path(("t1"."name")."xyz", 'z') = $2"""
-    assert params == ("Kiss", 1)
+    assert params == ("Teszt", 1)
 
 
 reg_ambiguous = Registry()
@@ -484,7 +486,7 @@ class ArticleA(Entity, registry=reg_ambiguous):
     creator_id: Auto = ForeignKey(UserA.id)
     creator: One[UserA] = "UserA.id == ArticleA.creator_id"
 
-    updater_id: Auto = ForeignKey(User.id)
+    updater_id: Auto = ForeignKey(UserA.id)
     updater: One[UserA] = "UserA.id == ArticleA.updater_id"
 
 
@@ -493,7 +495,7 @@ def test_ambiguous():
         .where(ArticleA.creator.id == 1) \
         .where(ArticleA.updater.id.is_null())
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == """SELECT "t0"."id", "t0"."creator_id", "t0"."updater_id" FROM "ArticleA" "t0" INNER JOIN "UserA" "t1" ON "t1"."id" = "t0"."creator_id" INNER JOIN "UserA" "t3" ON "t3"."id" = "t0"."updater_id" WHERE "t1"."id" = $1 AND "t3"."id" IS NULL"""
+    assert sql == """SELECT "t0"."id", "t0"."creator_id", "t0"."updater_id" FROM "ArticleA" "t0" INNER JOIN "UserA" "t1" ON "t1"."id" = "t0"."creator_id" INNER JOIN "UserA" "t2" ON "t2"."id" = "t0"."updater_id" WHERE "t1"."id" = $1 AND "t2"."id" IS NULL"""
     assert params == (1, )
 
 
@@ -509,29 +511,30 @@ def test_virtual():
     assert params == ("Jane", "Doe", "Jhon", "Smith")
 
 
+class UserComp3(Entity):
+    id: Serial
+    name: Composite[FullName]
+
+
 def test_virtual_composite():
-
-    class UserComp3(Entity):
-        id: Serial
-        name: Composite[FullName]
-
     q = Query(UserComp3).where(UserComp3.name.formatted.contains("Jane Doe"))
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == """SELECT "t0"."id", ("t0"."name")."title", ("t0"."name")."family", ("t0"."name")."given", ("t0"."name")."xyz" FROM "UserComp3" "t0" WHERE ("t0"."name")."family" ILIKE ('%' || $1 || '%') OR ("t0"."name")."family" ILIKE ('%' || $2 || '%') OR ("t0"."name")."given" ILIKE ('%' || $1 || '%') OR ("t0"."name")."given" ILIKE ('%' || $2 || '%')"""
     assert params == ("Jane", "Doe")
 
 
+class UserCompVR(Entity):
+    id: Serial
+    name: Composite[FullName]
+
+
+class ArticleVR(Entity):
+    id: Serial
+    user_id: Auto = ForeignKey(UserCompVR.id)
+    user: One[UserCompVR]
+
+
 def test_virtual_relation():
-
-    class UserCompVR(Entity):
-        id: Serial
-        name: Composite[FullName]
-
-    class ArticleVR(Entity):
-        id: Serial
-        user_id: Auto = ForeignKey(UserCompVR.id)
-        user: One[UserCompVR]
-
     q = Query(ArticleVR) \
         .columns(ArticleVR.user.name.formatted) \
         .where(ArticleVR.user.name.formatted.contains("Jane Doe")) \
@@ -541,13 +544,13 @@ def test_virtual_relation():
     assert params == ("Jane", "Doe")
 
 
+class Deep(Entity):
+    id: Serial
+    user_id: Auto = ForeignKey(User.id)
+    user: One[User]
+
+
 def test_deep_raltion():
-
-    class Deep(Entity):
-        id: Serial
-        user_id: Auto = ForeignKey(User.id)
-        user: One[User]
-
     q = Query(Deep).where(Deep.user.tags.value == "OK")
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == """SELECT "t0"."id", "t0"."user_id" FROM "Deep" "t0" INNER JOIN "User" "t1" ON "t0"."user_id" = "t1"."id" INNER JOIN "UserTags" "t2" ON "t2"."user_id" = "t1"."id" INNER JOIN "Tag" "t3" ON "t2"."tag_id" = "t3"."id" WHERE "t3"."value" = $1"""

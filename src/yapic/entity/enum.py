@@ -1,33 +1,21 @@
-from enum import Enum as _Enum, EnumMeta as _EnumMeta
+from enum import Enum as _Enum
+from typing import Dict
 
-# from yapic.entity import String, Int, PrimaryKey, Entity, EntityType, Registry
 from .field import String, Int, PrimaryKey
 from ._entity import Entity, EntityType
-from ._registry import Registry
+
+_EnumMeta = type(_Enum)
 
 
 class EntityEnumMeta(_EnumMeta):
-    def __new__(cls, name, bases, clsdict, *, _entity=Entity, **kwargs):
-        base_entity = _entity
-        if bases:
-            base_entities = [base._entity_ for base in bases if hasattr(base, "_entity_")]
-            if base_entities:
-                base_entity = base_entities[0]
 
-        __init__ = clsdict.pop("__init__", None)
-        __json__ = clsdict.pop("__json__", None)
-        new_ent = EntityType(name, (base_entity, ), clsdict, **kwargs)
-        if __init__ is not None:
-            dict.__setitem__(clsdict, "__init__", __init__)
-        if __json__ is not None:
-            dict.__setitem__(clsdict, "__json__", __json__)
+    def __new__(cls, name, bases, clsdict, *, _entity=Entity, _root=False, **kwargs):
+        new_ent = new_entity(name, bases, clsdict, _entity=_entity, **kwargs)
 
-        new_ent.__fix_entries__ = []
-
-        ignore = []
-        for field in new_ent.__fields__:
+        ignore = set()
+        for field in new_ent.__attrs__:
             key = field._key_
-            ignore.append(key)
+            ignore.add(key)
             try:
                 idx = clsdict._member_names.index(key)
             except ValueError:
@@ -36,11 +24,7 @@ class EntityEnumMeta(_EnumMeta):
                 clsdict._member_names.pop(idx)
                 clsdict._last_values.pop(idx)
 
-        cignore = clsdict.get("_ignore_", [])
-        cignore.extend(ignore)
-
-        clsdict["_ignore_"] = ignore
-
+        clsdict["_ignore_"] = list(set(clsdict.get("_ignore_", [])) | ignore)
         dict.__setitem__(clsdict, "_entity_", new_ent)
 
         return _EnumMeta.__new__(cls, name, bases, clsdict)
@@ -48,6 +32,34 @@ class EntityEnumMeta(_EnumMeta):
     @staticmethod
     def __prepare__(cls, *args, **kwargs):
         return _EnumMeta.__prepare__(cls, *args)
+
+
+def new_entity(name, bases, clsdict, *, _entity=Entity, **kwargs):
+    base_entity = _entity
+    for base in bases:
+        try:
+            base_entity = base._entity_
+        except AttributeError:
+            pass
+        else:
+            break
+
+    for attr in base_entity.__attrs__:
+        if attr._key_ not in clsdict:
+            clsdict[attr._key_] = attr.clone()
+
+    temp_removed = {}
+    for k in list(clsdict.keys()):
+        if k.startswith("_") and k != "__annotations__":
+            temp_removed[k] = clsdict.pop(k)
+
+    new_ent = EntityType(name, (base_entity, ), clsdict, **kwargs)
+    new_ent.__fix_entries__ = []
+
+    for k, v in temp_removed.items():
+        dict.__setitem__(clsdict, k, v)
+
+    return new_ent
 
 
 class Enum(_Enum, _root=True, metaclass=EntityEnumMeta):
@@ -90,24 +102,3 @@ class Enum(_Enum, _root=True, metaclass=EntityEnumMeta):
 
     def __json__(self):
         return self._inst_
-
-
-# R = Registry()
-
-# class X(Enum, _root=True, registry=R, schema="enum"):
-#     pass
-
-# class Test(X):
-#     RUNNING = "Running"
-#     PAUSED = "Paused"
-
-# class Test2(Enum):
-#     value: Int = PrimaryKey()
-
-#     RUNNING_2 = "Running"
-#     PAUSED_2 = "Paused"
-#     EXTRA = ("CustomId", "Custom Label", 10)
-#     VALAMI = dict(label="CSODA LABEL")
-
-# print(Test._entity_.__fields__)
-# print(Test2._entity_.__fields__)

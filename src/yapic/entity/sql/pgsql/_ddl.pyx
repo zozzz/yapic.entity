@@ -123,6 +123,8 @@ cdef class PostgreDDLReflect(DDLReflect):
         return result
 
     async def get_entities(self, conn, Registry registry):
+        cdef EntityType entity
+
         types = await conn.fetch("""
             SELECT
                 "pg_type"."typrelid" as "id",
@@ -173,8 +175,9 @@ cdef class PostgreDDLReflect(DDLReflect):
             entity.__triggers__ = await self.get_triggers(conn, registry, schema, table, id)
 
         for id, schema, table, kind in types:
-            await self.update_foreign_keys(conn, schema, table, registry)
-            await self.update_indexes(conn, schema, table, id, registry)
+            entity = registry[f"{schema}.{table}" if schema != "public" else table]
+            await self.update_indexes(conn, schema, table, id, entity, registry)
+            await self.update_foreign_keys(conn, schema, table, id, entity, registry)
 
     async def create_entity(self, conn, Registry registry, str schema, str table, list fields):
         schema = None if schema == "public" else schema
@@ -426,12 +429,11 @@ cdef class PostgreDDLReflect(DDLReflect):
 
         return field
 
-    async def update_foreign_keys(self, conn, str schema, str table, Registry registry):
-        cdef ForeignKey fk
-
+    async def update_foreign_keys(self, conn, str schema, str table, table_id, EntityType entity, Registry registry):
         fks = await self.get_foreign_keys(conn, schema, table)
-        cdef EntityType entity = registry[f"{schema}.{table}" if schema != "public" else table]
-        cdef dict groups = {}
+
+        cdef ForeignKey fk
+        cdef Field field
 
         for fk_desc in fks:
             field = getattr(entity, fk_desc["field_name"])
@@ -447,22 +449,12 @@ cdef class PostgreDDLReflect(DDLReflect):
                 on_delete=fk_desc["delete_rule"])
 
             field // fk
-            fk.init(field)
-            fk.bind()
 
-            try:
-                groups[fk.group_by].append(fk)
-            except KeyError:
-                groups[fk.group_by] = [fk]
-
-        entity.__extgroups__ += create_ext_groups(groups)
-
-    async def update_indexes(self, conn, str schema, str table, table_id, Registry registry):
+    async def update_indexes(self, conn, str schema, str table, table_id, EntityType entity, Registry registry):
         indexes = await self.get_indexes(conn, table_id)
 
-        cdef EntityType entity = registry[f"{schema}.{table}" if schema != "public" else table]
-        cdef dict groups = {}
         cdef Index idx
+        cdef Field field
 
         for idx_desc in indexes:
             if idx_desc["field"]:
@@ -478,22 +470,6 @@ cdef class PostgreDDLReflect(DDLReflect):
                 raise NotImplementedError()
 
             field // idx
-            idx.init(field)
-            idx.bind()
-
-            try:
-                groups[idx.group_by].append(idx)
-            except KeyError:
-                groups[idx.group_by] = [idx]
-
-        not_exists = []
-        for g in create_ext_groups(groups):
-            if g not in entity.__extgroups__:
-                not_exists.append(g)
-
-        if not_exists:
-            entity.__extgroups__ += tuple(not_exists)
-
 
     async def get_auto_increment(self, conn, Registry registry, str schema, str table, str field, default):
         if not default:
@@ -522,16 +498,6 @@ cdef class PostgreDDLReflect(DDLReflect):
 
     async def real_quote_ident(self, conn, ident):
         return await conn.fetchval(f"SELECT quote_ident({self.dialect.quote_value(ident)})")
-
-
-cdef tuple create_ext_groups(dict groups):
-    cdef list res = []
-    for grouped in groups.values():
-        group = EntityAttributeExtGroup(grouped[0].name, type(grouped[0]))
-        group.items = tuple(grouped)
-        res.append(group)
-    return tuple(res)
-
 
 
 cdef list reident_lines(str data, int ident_size = 2):

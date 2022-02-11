@@ -170,7 +170,7 @@ async def test_load(conn):
     q = Query(User).where(User.id == 1).load(User, User.address, User.children, User.tags)
     dialect = PostgreDialect()
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == """SELECT "t4"."id", ("t4"."name")."title", ("t4"."name")."family", ("t4"."name")."given", "t4"."address_id", "t5"."id", "t5"."addr", (SELECT array_agg("t1") FROM (SELECT "t6"."id", "t6"."parent_id", "t6"."name" FROM "ent_load"."UserChild" "t6" WHERE "t6"."parent_id" = "t4"."id") as "t1") as "t0", (SELECT array_agg("t3") FROM (SELECT "t8"."id", "t8"."value" FROM "ent_load"."UserTags" "t7" INNER JOIN "ent_load"."Tag" "t8" ON "t7"."tag_id" = "t8"."id" WHERE "t7"."user_id" = "t4"."id") as "t3") as "t2" FROM "ent_load"."User" "t4" LEFT JOIN "ent_load"."Address" "t5" ON "t4"."address_id" = "t5"."id" WHERE "t4"."id" = $1"""
+    assert sql == """SELECT "t5"."id", ("t5"."name")."title", ("t5"."name")."family", ("t5"."name")."given", "t5"."address_id", (SELECT ROW("t6"."id", "t6"."addr") FROM "ent_load"."Address" "t6" WHERE "t5"."address_id" = "t6"."id") as "t0", (SELECT ARRAY_AGG("t2") FROM (SELECT "t7"."id", "t7"."parent_id", "t7"."name" FROM "ent_load"."UserChild" "t7" WHERE "t7"."parent_id" = "t5"."id") as "t2") as "t1", (SELECT ARRAY_AGG("t4") FROM (SELECT "t9"."id", "t9"."value" FROM "ent_load"."UserTags" "t8" INNER JOIN "ent_load"."Tag" "t9" ON "t8"."tag_id" = "t9"."id" WHERE "t8"."user_id" = "t5"."id") as "t4") as "t3" FROM "ent_load"."User" "t5" WHERE "t5"."id" = $1"""
     assert params == (1, )
 
     user = await conn.select(q).first()
@@ -238,7 +238,7 @@ async def test_load_many_across(conn):
     q = Query(User).load(User, User.tags).where(User.id == user.id)
     dialect = PostgreDialect()
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == """SELECT "t2"."id", ("t2"."name")."title", ("t2"."name")."family", ("t2"."name")."given", "t2"."address_id", (SELECT array_agg("t1") FROM (SELECT "t4"."id", "t4"."value" FROM "ent_load"."UserTags" "t3" INNER JOIN "ent_load"."Tag" "t4" ON "t3"."tag_id" = "t4"."id" WHERE "t3"."user_id" = "t2"."id") as "t1") as "t0" FROM "ent_load"."User" "t2" WHERE "t2"."id" = $1"""
+    assert sql == """SELECT "t2"."id", ("t2"."name")."title", ("t2"."name")."family", ("t2"."name")."given", "t2"."address_id", (SELECT ARRAY_AGG("t1") FROM (SELECT "t4"."id", "t4"."value" FROM "ent_load"."UserTags" "t3" INNER JOIN "ent_load"."Tag" "t4" ON "t3"."tag_id" = "t4"."id" WHERE "t3"."user_id" = "t2"."id") as "t1") as "t0" FROM "ent_load"."User" "t2" WHERE "t2"."id" = $1"""
     assert params == (user.id, )
 
     user = await conn.select(q).first()
@@ -251,6 +251,7 @@ async def test_load_many_across(conn):
 
 
 async def test_mixin(conn):
+
     class Tracking:
         creator_id: Auto = ForeignKey(User.id)
         creator: One[User] = lambda cls: cls.creator_id == User.id
@@ -346,7 +347,7 @@ async def test_deep_load_one(conn):
     )
     dialect = PostgreDialect()
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == """SELECT "t0"."id", "t0"."something_id", "t1"."id", "t1"."article_id", "t2"."id", "t2"."creator_id", "t2"."updater_id", "t3"."id", ("t3"."name")."title", ("t3"."name")."family", ("t3"."name")."given", "t3"."address_id" FROM "ent_load"."Something2" "t0" LEFT JOIN "ent_load"."Something" "t1" ON "t0"."something_id" = "t1"."id" LEFT JOIN "ent_load"."Article" "t2" ON "t2"."id" = "t1"."article_id" LEFT JOIN "ent_load"."User" "t3" ON "t3"."id" = "t2"."creator_id" WHERE "t0"."id" = $1"""
+    assert sql == """SELECT "t3"."id", "t3"."something_id", (SELECT ROW("t4"."id", "t4"."article_id", (SELECT ROW("t5"."id", "t5"."creator_id", "t5"."updater_id", (SELECT ROW("t6"."id", ("t6"."name")."title", ("t6"."name")."family", ("t6"."name")."given", "t6"."address_id") FROM "ent_load"."User" "t6" WHERE "t6"."id" = "t5"."creator_id")) FROM "ent_load"."Article" "t5" WHERE "t5"."id" = "t4"."article_id")) FROM "ent_load"."Something" "t4" WHERE "t3"."something_id" = "t4"."id") as "t0" FROM "ent_load"."Something2" "t3" WHERE "t3"."id" = $1"""
     assert params == (1, )
 
     s = await conn.select(q).first()
@@ -363,7 +364,7 @@ async def test_load_multi_entity(conn):
     )
     await conn.save(user)
 
-    other_field = raw(f"1").alias("something")
+    other_field = raw("1").alias("something")
 
     q = Query(User) \
         .columns(User, other_field) \

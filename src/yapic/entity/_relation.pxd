@@ -25,57 +25,38 @@ cdef class RelatedAttributeImpl(EntityAttributeImpl):
 cdef class RelationImpl(EntityAttributeImpl):
     cdef object joined_entity_ref
     cdef EntityType joined_alias_ref
-    cdef object relation_ref
-    cdef Expression _join_expr
+    cdef readonly Expression join_expr
 
     cdef readonly ValueStore state_impl
 
     cdef EntityType get_joined_entity(self)
     cdef EntityType get_joined_alias(self)
-    cdef Relation get_relation(self)
-    cdef void set_relation(self, Relation value)
-    cdef void _update_join_expr(self)
-    # cdef object determine_join_expr(self, EntityType entity, Relation attr)
 
-    cdef object resolve_default(self, Relation attr)
+    cdef object resolve_default(self, EntityAttribute relation)
     cdef object _eval(self, Relation attr, str expr)
+    cdef bint _can_resolve(self, EntityAttribute relation)
 
 
 cdef class ManyToOne(RelationImpl):
-    cdef object _determine_join_expr(self)
+    cdef Expression _determine_join_expr(self, EntityAttribute relation)
 
 
 cdef class OneToMany(RelationImpl):
-    cdef object _determine_join_expr(self)
+    cdef Expression _determine_join_expr(self, EntityAttribute relation)
 
 
 cdef class ManyToMany(RelationImpl):
     cdef object across_entity_ref
     cdef EntityType across_alias_ref
-    cdef Expression _across_join_expr
+    cdef readonly Expression across_join_expr
 
     cdef EntityType get_across_entity(self)
     cdef EntityType get_across_alias(self)
 
-    cdef tuple _determine_join_expr(self)
-
-# @cython.final
-# @cython.freelist(1000)
-# cdef class RelationState:
-#     cdef tuple data
-
-#     cdef object get_value(self, int index)
-#     cdef bint set_value(self, int index, object value)
-#     cdef bint del_value(self, int index)
-#     cpdef reset(self)
+    cdef tuple _determine_join_expr(self, EntityAttribute relation)
 
 
 cdef class ValueStore:
-    # cdef object get_value(self)
-    # cdef bint set_value(self, object value)
-    # cdef bint del_value(self)
-    # cpdef reset(self)
-
     cpdef object state_init(self, object initial)
     cpdef object state_set(self, object initial, object current, object value)
     cpdef object state_get_dirty(self, object initial, object current)

@@ -12,18 +12,30 @@ cdef class Registry:
         self.entities = {}
         self.locals = {}
         self.deferred = []
+        self.resolved = []
+        self.resolving = set()
+        self.is_draft = False
+        self.in_resolving = 0
 
-    cpdef object register(self, str name, EntityType entity):
+    cdef object register(self, str name, EntityType entity):
         if name in self.entities:
             raise ValueError("entity already registered: %r" % entity)
         else:
-            insert_local_ref(self.locals, name, entity)
-
-            self.entities[name] = entity
-            if entity.__deferred__:
+            if entity.is_empty():
+                self.entities[name] = entity
+                if entity._stage_resolving() is False:
+                    raise RuntimeError("Empty entity resolving failed")
+                entity._stage_resolved()
+            else:
+                self.entities[name] = entity
                 self.deferred.append(entity)
 
-            self.resolve_deferred()
+                if self.is_draft is False:
+                    insert_local_ref(self.locals, name, entity)
+                    self._finalize_entities()
+                else:
+                    self.deferred.append(entity)
+
 
     def __getitem__(self, str name):
         return self.entities[name]
@@ -76,7 +88,7 @@ cdef class Registry:
         for entity in self.entities.values():
             per_entity = []
 
-            for group in entity.__extgroups__:
+            for group in entity.__extgroups__.values():
                 if group in per_entity:
                     continue
                 elif group.type is ForeignKey:
@@ -89,12 +101,16 @@ cdef class Registry:
 
         return result
 
-    cdef resolve_deferred(self):
+    cdef _finalize_entities(self):
         cdef EntityType entity
-        cdef list deferred = self.deferred
+        cdef list deferred = self.__get_for_resolving()
+        cdef list resolved = self.resolved
+        cdef set resolving = self.resolving
         cdef int lastLen = -1
         cdef int length
         cdef int i
+
+        self.in_resolving += 1
 
         while True:
             length = len(deferred)
@@ -103,9 +119,33 @@ cdef class Registry:
             lastLen = length
 
             for i in reversed(range(0, length)):
-                entity = deferred[i]
-                if entity.resolve_deferred():
+                entity = <EntityType>deferred[i]
+                if entity._stage_resolving() is True:
+                    print("RESOLVING SUCC", entity)
                     deferred.pop(i)
+                    resolved.append(entity)
+                    resolving.remove(entity)
+
+        for entity in deferred:
+            resolving.remove(entity)
+
+        self.in_resolving -= 1
+
+        if self.in_resolving <= 0 and len(deferred) == 0:
+            length = len(resolved)
+            for i in reversed(range(0, length)):
+                entity = <EntityType>resolved[i]
+                entity._stage_resolved()
+            self.resolved = []
+
+    cdef __get_for_resolving(self):
+        cdef list result = []
+        for entity in self.deferred:
+            if entity not in self.resolving:
+                self.resolving.add(entity)
+                result.append(entity)
+        return result
+
 
 
 class RegistryDiffKind(Enum):

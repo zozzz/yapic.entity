@@ -11,7 +11,6 @@ POINT_REGISTRY = Registry()
 # TODO ha is_type is True vagy is_builltin akkor nem kell registry + hozzáadható a deps-hez
 class PointType(Entity,
                 registry=POINT_REGISTRY,
-                _root=True,
                 is_type=True,
                 is_builtin=True,
                 __fields__ = [

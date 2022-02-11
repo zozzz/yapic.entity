@@ -17,17 +17,18 @@ class TriggerTable(Entity, schema="_trigger", registry=REGISTRY):
     updated_time: DateTimeTz
 
 
-TriggerTable.__triggers__.append(
-    PostgreTrigger(
-        name="update_time",
-        before="UPDATE",
-        for_each="ROW",
-        when="OLD.* IS DISTINCT FROM NEW.*",
-        body="""
-            NEW.updated_time = NOW();
-            RETURN NEW;
-        """,
-    ))
+original_trigger = PostgreTrigger(
+    name="update_time",
+    before="UPDATE",
+    for_each="ROW",
+    when="OLD.* IS DISTINCT FROM NEW.*",
+    body="""
+        NEW.updated_time = NOW();
+        RETURN NEW;
+    """,
+)
+
+TriggerTable.__triggers__ = [original_trigger]
 
 
 async def test_sync(conn, pgclean):
@@ -39,7 +40,7 @@ CREATE TABLE "_trigger"."TriggerTable" (
   "updated_time" TIMESTAMPTZ,
   PRIMARY KEY("id")
 );
-CREATE OR REPLACE FUNCTION "_trigger"."YT-TriggerTable-update_time-8085b1-af0df2"() RETURNS TRIGGER AS $$ BEGIN
+CREATE OR REPLACE FUNCTION "_trigger"."YT-TriggerTable-update_time-8085b1-18ebfe"() RETURNS TRIGGER AS $$ BEGIN
   NEW.updated_time = NOW();
   RETURN NEW;
 END; $$ language 'plpgsql' ;
@@ -47,7 +48,7 @@ CREATE TRIGGER "update_time"
   BEFORE UPDATE ON "_trigger"."TriggerTable"
   FOR EACH ROW
   WHEN (OLD.* IS DISTINCT FROM NEW.*)
-  EXECUTE FUNCTION "_trigger"."YT-TriggerTable-update_time-8085b1-af0df2"();"""
+  EXECUTE FUNCTION "_trigger"."YT-TriggerTable-update_time-8085b1-18ebfe"();"""
 
     await conn.execute(result)
 
@@ -59,7 +60,7 @@ CREATE TRIGGER "update_time"
         name="update_time",
         after="UPDATE",
         for_each="ROW",
-        when="OLD.* IS DISTINCT FROM NEW.*",
+        when='OLD.* IS DISTINCT FROM NEW.* AND (NEW."updated_time" IS NULL OR OLD."updated_time" = NEW."updated_time")',
         body="""
             NEW.updated_time = NOW();
             RETURN NEW;
@@ -68,69 +69,42 @@ CREATE TRIGGER "update_time"
 
     result = await sync(conn, REGISTRY)
     assert result == """DROP TRIGGER IF EXISTS "update_time" ON "_trigger"."TriggerTable";
-DROP FUNCTION IF EXISTS "_trigger"."YT-TriggerTable-update_time-8085b1-af0df2";
-CREATE OR REPLACE FUNCTION "_trigger"."YT-TriggerTable-update_time-8085b1-af0df2"() RETURNS TRIGGER AS $$ BEGIN
+DROP FUNCTION IF EXISTS "_trigger"."YT-TriggerTable-update_time-8085b1-18ebfe";
+CREATE OR REPLACE FUNCTION "_trigger"."YT-TriggerTable-update_time-386fb5-af0df2"() RETURNS TRIGGER AS $$ BEGIN
   NEW.updated_time = NOW();
   RETURN NEW;
 END; $$ language 'plpgsql' ;
 CREATE TRIGGER "update_time"
   AFTER UPDATE ON "_trigger"."TriggerTable"
   FOR EACH ROW
-  WHEN (OLD.* IS DISTINCT FROM NEW.*)
-  EXECUTE FUNCTION "_trigger"."YT-TriggerTable-update_time-8085b1-af0df2"();"""
+  WHEN (OLD.* IS DISTINCT FROM NEW.* AND (NEW."updated_time" IS NULL OR OLD."updated_time" = NEW."updated_time"))
+  EXECUTE FUNCTION "_trigger"."YT-TriggerTable-update_time-386fb5-af0df2"();"""
 
     await conn.execute(result)
 
-    # CHANGE: when to None
-    TriggerTable.__triggers__[0] = PostgreTrigger(
-        name="update_time",
-        after="UPDATE",
-        for_each="ROW",
-        body="""
-            NEW.updated_time = NOW();
-            RETURN NEW;
-        """,
-    )
+    # CHANGE: remove all triggers
+    TriggerTable.__triggers__ = []
 
     result = await sync(conn, REGISTRY)
     assert result == """DROP TRIGGER IF EXISTS "update_time" ON "_trigger"."TriggerTable";
-DROP FUNCTION IF EXISTS "_trigger"."YT-TriggerTable-update_time-8085b1-af0df2";
-CREATE OR REPLACE FUNCTION "_trigger"."YT-TriggerTable-update_time-af0df2"() RETURNS TRIGGER AS $$ BEGIN
-  NEW.updated_time = NOW();
-  RETURN NEW;
-END; $$ language 'plpgsql' ;
-CREATE TRIGGER "update_time"
-  AFTER UPDATE ON "_trigger"."TriggerTable"
-  FOR EACH ROW
-  EXECUTE FUNCTION "_trigger"."YT-TriggerTable-update_time-af0df2"();"""
+DROP FUNCTION IF EXISTS "_trigger"."YT-TriggerTable-update_time-386fb5-af0df2";"""
 
     await conn.execute(result)
 
     # CHANGE: when to original
     # CHANGE body
-    TriggerTable.__triggers__[0] = PostgreTrigger(
-        name="update_time",
-        after="UPDATE",
-        for_each="ROW",
-        when="OLD.* IS DISTINCT FROM NEW.*",
-        body="""
-            NEW.updated_time = NOW();
-            RETURN OLD;
-        """,
-    )
+    TriggerTable.__triggers__ = [original_trigger]
 
     result = await sync(conn, REGISTRY)
-    assert result == """DROP TRIGGER IF EXISTS "update_time" ON "_trigger"."TriggerTable";
-DROP FUNCTION IF EXISTS "_trigger"."YT-TriggerTable-update_time-af0df2";
-CREATE OR REPLACE FUNCTION "_trigger"."YT-TriggerTable-update_time-8085b1-45cbab"() RETURNS TRIGGER AS $$ BEGIN
+    assert result == """CREATE OR REPLACE FUNCTION "_trigger"."YT-TriggerTable-update_time-8085b1-18ebfe"() RETURNS TRIGGER AS $$ BEGIN
   NEW.updated_time = NOW();
-  RETURN OLD;
+  RETURN NEW;
 END; $$ language 'plpgsql' ;
 CREATE TRIGGER "update_time"
-  AFTER UPDATE ON "_trigger"."TriggerTable"
+  BEFORE UPDATE ON "_trigger"."TriggerTable"
   FOR EACH ROW
   WHEN (OLD.* IS DISTINCT FROM NEW.*)
-  EXECUTE FUNCTION "_trigger"."YT-TriggerTable-update_time-8085b1-45cbab"();"""
+  EXECUTE FUNCTION "_trigger"."YT-TriggerTable-update_time-8085b1-18ebfe"();"""
 
     await conn.execute(result)
 

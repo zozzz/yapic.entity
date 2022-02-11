@@ -4,49 +4,67 @@ import docker
 import json
 import asyncpg
 import asyncio
+import pytest_asyncio
+from contextlib import contextmanager
 from asyncpg.exceptions import OperatorInterventionError, PostgresConnectionError
 from docker import APIClient
 from docker.errors import ImageNotFound, NotFound
 from yapic.entity.sql.pgsql import PostgreConnection
 
-cli = APIClient()
-client = docker.from_env()
-
 PG_DOCKER_TAG = "yapic_entity:pgsql_test"
 SELF_PATH = os.path.realpath(os.path.dirname(__file__))
 
+if False:
+    import uvloop
+    uvloop.install()
+
+
+@contextmanager
+def docker_client():
+    client = docker.from_env()
+    try:
+        yield client
+    finally:
+        client.close()
+
 
 def build_docker(path, tag, force=False):
-    if force is False:
+    with docker_client() as client:
+        if force is False:
+            try:
+                return client.images.get(tag)
+            except ImageNotFound:
+                pass
+
+        cli = APIClient()
         try:
-            return client.images.get(tag)
-        except ImageNotFound:
-            pass
+            for out in cli.build(path=path, rm=True, tag=tag):
+                for line in out.decode("utf-8").split("\r\n"):
+                    if line:
+                        line = json.loads(line)
+                        sys.stdout.write(line.get("stream", ""))
+        finally:
+            cli.close()
 
-    for out in cli.build(path=path, rm=True, tag=tag):
-        for line in out.decode("utf-8").split("\r\n"):
-            if line:
-                line = json.loads(line)
-                sys.stdout.write(line.get("stream", ""))
-
-    return client.images.get(tag)
+        return client.images.get(tag)
 
 
 def start_container(image, name, ports):
-    try:
-        return client.containers.get(name)
-    except NotFound:
-        # docker run -d --name yapic_entity_pgsql_docker -p 5432:5432 --rm yapic_entity:pgsql_test
-        return client.containers.run(
-            image,
-            name=name,
-            detach=True,
-            stream=False,
-            remove=True,
-            ports={f"{port}/tcp": port
-                   for port in ports},
-            cap_add=["SYS_PTRACE"],
-        )
+    with docker_client() as client:
+        try:
+            return client.containers.get(name)
+        except NotFound:
+            # docker run -d --name yapic_entity_pgsql_docker -p 5432:5432 --rm yapic_entity:pgsql_test
+            return client.containers.run(
+                image,
+                name=name,
+                detach=True,
+                stream=False,
+                remove=True,
+                ports={f"{port}/tcp": port
+                       for port in ports},
+                cap_add=["SYS_PTRACE"],
+            )
 
 
 @pytest.fixture
@@ -55,7 +73,7 @@ def pgsql_docker():
     return start_container(PG_DOCKER_TAG, "yapic_entity_pgsql_docker", ports=[5432])
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def pgsql(pgsql_docker):
     for i in range(30):
         try:
@@ -72,14 +90,13 @@ async def pgsql(pgsql_docker):
             return
 
 
-# TODO: remove, csak a visszafele kompatibilitás miatt van
-@pytest.fixture
+@pytest_asyncio.fixture
 async def conn(pgsql):
     await pgsql.execute('CREATE EXTENSION IF NOT EXISTS "postgis"')
     yield pgsql
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def pgclean(pgsql):
     q = """SELECT 'DROP SCHEMA "' || nspname || '" CASCADE;'
         FROM pg_namespace

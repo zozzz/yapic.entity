@@ -5,7 +5,7 @@ from cpython.weakref cimport PyWeakref_NewRef, PyWeakref_GetObject
 from cpython.module cimport PyImport_Import, PyModule_GetDict
 
 from ._expression cimport Expression, Visitor
-from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeExt, EntityAttributeExtGroup, EntityAttributeImpl, get_alias_target
+from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeExt, EntityAttributeExtGroup, EntityAttributeImpl, get_alias_target, Registry
 from ._factory cimport ForwardDecl, get_type_hints, new_instance, new_instance_from_forward, is_forward_decl
 from ._field_impl cimport AutoImpl
 
@@ -41,7 +41,7 @@ cdef class Field(EntityAttribute):
     def __getitem__(self, key):
         return self._impl_.getitem(self, key)
 
-    cdef object init(self, EntityType entity):
+    cpdef object init(self):
         if self.nullable is None:
             self.nullable = True
             if self.get_ext(PrimaryKey):
@@ -50,7 +50,7 @@ cdef class Field(EntityAttribute):
                 self.nullable = bool(self._default_ is None)
             elif isinstance(self._default_, Expression):
                 self.nullable = False
-        return EntityAttribute.init(self, entity)
+        return EntityAttribute.init(self)
 
     cpdef clone(self):
         cdef Field res = type(self)(self._impl_,
@@ -73,11 +73,7 @@ cdef class Field(EntityAttribute):
             return type
 
     def __repr__(self):
-        cdef EntityType entity = self.get_entity()
-        if entity:
-            return "<Field %s: %s of %s>" % (self._name_, self._impl_, entity)
-        else:
-            return "<Field %s: %s (unbound)>" % (self._name_, self._impl_)
+        return f"<Field {self._name_}: {self._impl_} {self._entity_repr()}>"
 
     cpdef visit(self, Visitor visitor):
         return visitor.visit_field(self)
@@ -144,23 +140,28 @@ cdef class AutoIncrement(FieldExtension):
     def __cinit__(self, object sequence=None):
         self._seq_arg = sequence
 
-    cpdef object bind(self):
+    cdef object _resolve_deferred(self):
+        if FieldExtension._resolve_deferred(self) is False:
+            return False
+
         cdef EntityType entity
         cdef EntityType aliased
         cdef EntityAttribute attr = self.get_attr()
+        cdef Registry registry
 
         if self.sequence is None:
             if self._seq_arg is None:
                 entity = attr.get_entity()
                 aliased = get_alias_target(entity)
+                registry = entity.get_registry()
 
                 if entity is aliased:
-                    schema = entity.get_meta("schema", "public")
+                    schema = entity.get_meta("schema", None)
                     name = f"{entity.__name__}_{attr._name_}_seq"
                     try:
-                        self.sequence = entity.get_registry()[name if schema == "public" else f"{schema}.{name}"]
+                        self.sequence = registry[name if schema is None or schema == "public" else f"{schema}.{name}"]
                     except KeyError:
-                        self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=entity.get_registry(), is_sequence=True)
+                        self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=<object>entity.registry_ref, is_sequence=True)
                 else:
                     self.sequence = getattr(aliased, attr._key_).get_ext(AutoIncrement).sequence
             elif isinstance(self._seq_arg, EntityType):
@@ -175,20 +176,24 @@ cdef class AutoIncrement(FieldExtension):
                     raise ValueError(f"Invalid sequence value: {self._seq_arg}")
 
                 entity = get_alias_target(attr.get_entity())
+                registry = entity.get_registry()
 
                 try:
-                    self.sequence = entity.get_registry()[name if not schema or schema == "public" else f"{schema}.{name}"]
+                    self.sequence = registry[name if not schema or schema == "public" else f"{schema}.{name}"]
                 except KeyError:
-                    self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=entity.get_registry(), is_sequence=True)
+                    self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=<object>entity.registry_ref, is_sequence=True)
 
         attr._deps_.add_entity(self.sequence)
-        return FieldExtension.bind(self)
+        return True
 
     cpdef object clone(self):
         return type(self)(self._seq_arg)
 
     def __repr__(self):
-        return "@AutoIncrement(%r)" % self.sequence.__qname__
+        if self.sequence:
+            return "@AutoIncrement(%r)" % self.sequence.__qname__
+        else:
+            return "@AutoIncrement(%r)" % self._seq_arg
 
 
 
@@ -203,15 +208,17 @@ cdef class Index(FieldExtension):
     cpdef object clone(self):
         return type(self)(expr=self.expr, name=self.name, method=self.method, unique=self.unique, collate=self.collate)
 
-    cpdef object init(self, EntityAttribute attr):
+    cpdef object init(self):
+        cdef EntityAttribute attr
         if not self.name:
+            attr = self.get_attr()
             self.name = f"idx_{attr.get_entity().__name__}__{attr._name_}"
-        self.group_by = self.name
 
-        FieldExtension.init(self, attr)
+        self.add_to_group(self.name)
+        return FieldExtension.init(self)
 
     def __repr__(self):
-        return "@%sIndex(%s USING %s ON %s %s)" % ("Unique" if self.unique else "", self.name, self.method, self.expr or self.get_attr()._name_, self.collate or "")
+        return "@%sIndex(%s USING %s ON %s %s)" % ("Unique" if self.unique else "", self.name, self.method, self.expr or self.get_attr(), self.collate or "")
 
 
 cdef class Unique(FieldExtension):
@@ -225,7 +232,7 @@ _CodeType = type(compile("1", "<string>", "eval"))
 cdef class ForeignKey(FieldExtension):
     @classmethod
     def validate_group(self, EntityAttributeExtGroup group):
-        cdef tuple items = group.items
+        cdef list items = group.items
         cdef ForeignKey main = items[0]
         cdef ForeignKey fk
 
@@ -256,26 +263,19 @@ cdef class ForeignKey(FieldExtension):
         self.on_update = on_update
         self.on_delete = on_delete
 
-    cpdef object init(self, EntityAttribute attr):
+    cdef _bind(self, object attr_ref):
+        FieldExtension._bind(self, attr_ref)
+
+        cdef EntityAttribute attr = self.get_attr()
         cdef Index index = attr.get_ext(Index)
         if not index and not attr.get_ext(PrimaryKey):
-            index = Index()
-            attr // index
-            index.init(attr)
+            attr // Index()
 
-        if self.name is None:
-            self.group_by = attr._name_
-        else:
-            self.group_by = self.name
-
-        FieldExtension.init(self, attr)
-
-
-    cpdef object bind(self):
-        if FieldExtension.bind(self) is False:
+    cdef object _resolve_deferred(self):
+        if FieldExtension._resolve_deferred(self) is False:
             return False
 
-        cdef Field field = self.attr
+        cdef Field field = self.get_attr()
         cdef EntityType field_entity
 
         if self.ref is None:
@@ -293,6 +293,8 @@ cdef class ForeignKey(FieldExtension):
 
         if self.name is None:
             self.name = compute_fk_name(field, self.ref)
+
+        self.add_to_group(self.name)
 
         if isinstance(field._impl_, AutoImpl):
             (<AutoImpl>field._impl_)._ref_impl = self.ref._impl_
@@ -324,38 +326,3 @@ cdef compute_fk_name(Field field_from, Field field_to):
         return f"fk_{hashlib.md5(name.encode()).hexdigest()}"
     else:
         return name
-
-
-cdef dict collect_foreign_keys(EntityType entity):
-    cdef dict fks = {}
-    cdef Field field
-    cdef Field referenced
-    cdef ForeignKey fk
-    cdef ForeignKey fkInFks
-
-    for field in entity.__fields__:
-        for ext in field._exts_:
-            if isinstance(ext, ForeignKey):
-                fk = <ForeignKey>ext
-            else:
-                continue
-
-            if fk is not None:
-                referenced = fk.ref
-
-                if fk.name in fks:
-                    for fkInFks in fks[fk.name]:
-                        if fkInFks.ref.get_entity() != referenced.get_entity():
-                            raise ValueError("Can't use fields from different entities in the same foreign key")
-                        elif fk.on_update != fkInFks.on_update:
-                            raise ValueError("Can't use different 'on_update' value in the same foreign key")
-                        elif fk.on_delete != fkInFks.on_delete:
-                            raise ValueError("Can't use different 'on_delete' value in the same foreign key")
-                    fks[fk.name].append(fk)
-                else:
-                    fks[fk.name] = [fk]
-
-    for k, v in fks.items():
-        fks[k] = tuple(v)
-
-    return fks

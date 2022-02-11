@@ -172,26 +172,9 @@ cdef inline list compare_exts(list a, list b):
     return None
 
 
-
-# cdef inline tuple compare_fks(EntityType a, EntityType b):
-#     removed = []
-#     created = []
-
-#     a_fks = set(filter(lambda v: v.type is ForeignKey, a.__extgroups__))
-#     b_fks = set(filter(lambda v: v.type is ForeignKey, b.__extgroups__))
-
-#     removed = [(EntityDiffKind.REMOVE_EXTGROUP, (x[0].name, x)) for x in a_fks - b_fks]
-#     created = [(EntityDiffKind.CREATE_EXTGROUP, (x[0].name, x)) for x in b_fks - a_fks]
-
-#     if removed or created:
-#         return (removed, created)
-#     else:
-#         return None
-
-
 cdef inline tuple compare_extgroups(EntityType a, EntityType b):
-    a_groups = set(a.__extgroups__)
-    b_groups = set(b.__extgroups__)
+    a_groups = set(a.__extgroups__.values())
+    b_groups = set(b.__extgroups__.values())
 
     removed = [(EntityDiffKind.REMOVE_EXTGROUP, x) for x in a_groups - b_groups]
     created = [(EntityDiffKind.CREATE_EXTGROUP, x) for x in b_groups - a_groups]

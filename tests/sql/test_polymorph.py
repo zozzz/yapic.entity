@@ -155,6 +155,16 @@ async def test_query_from_workerx(conn):
     assert params == ("OK", )
 
 
+@pytest.mark.skip("TODO")
+async def test_query_from_workerx_alias(conn):
+    POLY = WorkerX.alias("POLY")
+    q = Query().select_from(POLY).where(POLY.employee_field == "OK")
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    print(sql)
+    assert sql == ""
+    assert params == ("OK", )
+
+
 async def test_load_one(conn):
     q = Query().select_from(Organization).load(Organization.employee).where(Organization.id == 1)
     sql, params = conn.dialect.create_query_compiler().compile_select(q)

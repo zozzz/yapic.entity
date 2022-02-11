@@ -61,5 +61,3 @@ cdef class ForeignKey(FieldExtension):
     cdef readonly str on_update
     cdef readonly str on_delete
 
-
-cdef dict collect_foreign_keys(EntityType entity)

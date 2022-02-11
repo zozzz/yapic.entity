@@ -5,7 +5,7 @@ import pytest
 from datetime import datetime, date, time, tzinfo, timedelta
 from decimal import Decimal
 from yapic.entity.field import Choice
-from yapic.entity.sql import sync, PostgreDialect
+from yapic.entity.sql import sync as _sync, PostgreDialect
 from yapic.entity import (Entity, Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool,
                           ForeignKey, PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite,
                           Auto, Numeric, Float, Point, UUID, virtual, StringArray, IntArray, CreatedTime, UpdatedTime,
@@ -15,6 +15,7 @@ from yapic import json
 pytestmark = pytest.mark.asyncio
 REGISTRY = Registry()
 dialect = PostgreDialect()
+sync = lambda c, r: _sync(c, r, compare_field_position=False)
 
 
 class Address(Entity, schema="execution", registry=REGISTRY):
@@ -1254,8 +1255,6 @@ CREATE TABLE "execution"."CompositePk" (
 
 
 async def test_change_field_position(conn, pgclean):
-    # TODO: column törlés + index változtatás, mi lesz az fk-val?
-    # TODO: updated_time
     R1 = Registry()
 
     class Address(Entity, registry=R1, schema="execution"):
@@ -1275,7 +1274,7 @@ async def test_change_field_position(conn, pgclean):
         id: Serial
         author_id: Auto = ForeignKey(User.id)
 
-    result = await sync(conn, R1)
+    result = await _sync(conn, R1, compare_field_position=True)
     # print(result)
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
 CREATE SEQUENCE "execution"."Address_id_seq";
@@ -1345,7 +1344,7 @@ ALTER TABLE "execution"."Article"
         id: Serial
         author_id: Auto = ForeignKey(User.id, on_delete="CASCADE")
 
-    result = await sync(conn, R2)
+    result = await _sync(conn, R2, compare_field_position=True)
     # print(result)
     assert result == """ALTER TABLE "execution"."Article"
   DROP CONSTRAINT IF EXISTS "fk_Article__author_id-User__id";

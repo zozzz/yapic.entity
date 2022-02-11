@@ -169,9 +169,13 @@ class Connection:
         return True
 
     async def reflect(self, EntityType base=Entity):
-        reg = Registry()
+        cdef Registry reg = Registry()
+        reg.is_draft = True
         reflect = self.dialect.create_ddl_reflect(base)
         await reflect.get_entities(self, reg)
+        reg._finalize_entities()
+        if reg.deferred:
+            raise RuntimeError(f"Can't finalize all entities, remaining: {reg.deferred}")
         return reg
 
     def registry_diff(self, Registry a, Registry b, compare_field_position=True):

@@ -22,7 +22,6 @@ cdef class PostGISImpl(CompositeImpl):
 
 class PostGISPointType(Entity,
                 registry=POSTGIS_REG,
-                _root=True,
                 is_type=True,
                 is_builtin=True,
                 __fields__ = [
@@ -62,7 +61,6 @@ cdef class PostGISPointImpl(PostGISImpl):
 
 class PostGISLatLngType(Entity,
                 registry=POSTGIS_REG,
-                _root=True,
                 is_type=True,
                 is_builtin=True,
                 __fields__ = [

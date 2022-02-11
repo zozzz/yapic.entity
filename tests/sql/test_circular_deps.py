@@ -1,11 +1,7 @@
-import operator
 import pytest
-from typing import Any
 
-from yapic.entity.sql import Entity, sync
-from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool, ForeignKey,
-                          PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite, Auto, Numeric,
-                          Float, Point, UUID, virtual)
+from yapic.entity import (Entity, Field, Serial, Int, String, ForeignKey, One, Query, Registry, Auto, Many)
+from yapic.entity.sql import sync
 
 pytestmark = pytest.mark.asyncio
 
@@ -23,7 +19,8 @@ class Document(Entity, schema="circular_deps", registry=REGISTRY):
 class DocumentGroup(Entity, schema="circular_deps", registry=REGISTRY):
     id: Serial
     primary_document_id: Int = ForeignKey(Document.id)
-    primary_document: One[Document] = "DocumentGroup.primary_document_id == Document.id"
+    primary_document: One[Document] = "Document.id == DocumentGroup.primary_document_id"
+    children: Many[Document] = "Document.group_id == DocumentGroup.id"
 
 
 class __User(Entity, name="User", schema="circular_deps", registry=REGISTRY):
@@ -33,6 +30,7 @@ class __User(Entity, name="User", schema="circular_deps", registry=REGISTRY):
     contract: One[Document]
     profile_image_id: Auto = ForeignKey("circular_deps.File.id", on_delete="SET NULL")
     profile_image: One["circular_deps.File"]
+    articles: Many["Article"] = "User.id == Article.author_id"
 
 
 class A(Entity, schema="circular_deps", registry=REGISTRY):
@@ -59,9 +57,6 @@ class Node(Entity, schema="circular_deps", registry=REGISTRY, polymorph="type"):
     author_id: Auto = ForeignKey("circular_deps.User.id")
     author: One["circular_deps.User"]
 
-    # TODO: Windows fatal exception: access violation
-    # author: One["User"]
-
 
 class File(Node, polymorph_id="file"):
     file_name: String
@@ -69,6 +64,24 @@ class File(Node, polymorph_id="file"):
 
 class Dir(Node, polymorph_id="dir"):
     dir_name: String
+
+
+class Article(Entity, schema="circular_deps", registry=REGISTRY):
+    id: Serial
+    author_id: Auto = ForeignKey(__User.id)
+    # TODO: ezen az útvonalon lehet a __User ugyan az, de az article mindig új alias
+    author: One[__User] = "User.id == Article.author_id"
+    updater_id: Auto = ForeignKey(__User.id)
+    updater: One[__User] = "User.id == Article.updater_id"
+
+
+"""
+select *
+from article
+  inner join user on user.id = article.author_id
+  left join articles on articles.author_id = user.id
+
+"""
 
 
 async def test_sync(conn, pgclean):
