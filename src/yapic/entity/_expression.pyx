@@ -362,6 +362,54 @@ cdef class VirtualExpressionDir(Expression):
         return "<VirtualDir %r %r>" % (self.expr, self.op)
 
 
+@cython.final
+cdef class ExpressionPlaceholder(Expression):
+    def __cinit__(self, object origin, str name):
+        self.origin = origin
+        self.path = []
+        self.name = name
+
+    def __getattr__(self, key):
+        self.origin = getattr(self.origin, key)
+        self.path.append((EPA.GETATTR, key))
+        return self
+
+    def __getitem__(self, key):
+        self.origin = self.origin[key]
+        self.path.append((EPA.GETITEM, key))
+        return self
+
+    def __call__(self, *args, **kwargs):
+        self.origin = self.origin(*args, **kwargs)
+        self.path.append((EPA.CALL, (args, kwargs)))
+        return self
+
+    cpdef visit(self, Visitor visitor):
+        return visitor.visit_expression_placeholder(self)
+
+    def __repr__(self):
+        return f"<Placeholder {self.name} {self.path}>"
+
+    cdef Expression eval(self, object origion):
+        cdef list path = self.path
+        cdef object result = origion
+        cdef EPA op
+
+        for entry in self.path:
+            op = (<tuple>entry)[0]
+
+            if op == EPA.GETATTR:
+                result = getattr(result, (<tuple>entry)[1])
+            elif op == EPA.GETITEM:
+                result = result[(<tuple>entry)[1]]
+            elif op == EPA.CALL:
+                result = result(*(<tuple>entry)[1], **(<tuple>entry)[2])
+            else:
+                raise RuntimeError(f"Uknown operation: {op}")
+
+        return coerce_expression(result)
+
+
 cdef class Visitor:
     cpdef visit(self, Expression expr):
         return expr.visit(self)

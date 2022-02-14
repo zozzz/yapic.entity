@@ -1,26 +1,31 @@
 import cython
 from enum import Enum
+from collections import deque
 
 from ._entity cimport DependencyList, EntityBase, EntityType, EntityAttribute, EntityAttributeExt, EntityAttributeExtGroup, EntityAttributeImpl, NOTSET, entity_is_builtin, entity_is_virtual
 from ._entity_diff cimport EntityDiff
 from ._field cimport ForeignKey
 
 
+# TODO: inherit from dict
 @cython.final
 cdef class Registry:
     def __cinit__(self):
         self.entities = {}
-        self.locals = {}
-        self.deferred = []
+        self.locals = ScopeDict()
+        self.deferred = deque()
         self.resolved = []
-        self.resolving = set()
+        # self.resolving = set()
         self.is_draft = False
         self.in_resolving = 0
 
-    cdef object register(self, str name, EntityType entity):
+    cdef object register(self, EntityType entity):
+        cdef str name = entity.__qname__
         if name in self.entities:
             raise ValueError("entity already registered: %r" % entity)
         else:
+            # TODO: ha az in_resolving != 0 akkor egy új resolving contextet kezdjen
+
             if entity.is_empty():
                 self.entities[name] = entity
                 if entity._stage_resolving() is False:
@@ -28,10 +33,15 @@ cdef class Registry:
                 entity._stage_resolved()
             else:
                 self.entities[name] = entity
-                self.deferred.append(entity)
+
 
                 if self.is_draft is False:
-                    insert_local_ref(self.locals, name, entity)
+                    self.locals.set_path(name, entity)
+                    for d in self.deferred:
+                        if (<EntityType>d).resolve_ctx is not None:
+                            (<EntityType>d).resolve_ctx.add_forward(entity)
+
+                    self.deferred.append(entity)
                     self._finalize_entities()
                 else:
                     self.deferred.append(entity)
@@ -101,51 +111,44 @@ cdef class Registry:
 
         return result
 
+    # TODO: optimize
     cdef _finalize_entities(self):
+        if self.in_resolving is True:
+            return
+        self.in_resolving = True
+
         cdef EntityType entity
-        cdef list deferred = self.__get_for_resolving()
-        cdef list resolved = self.resolved
-        cdef set resolving = self.resolving
-        cdef int lastLen = -1
-        cdef int length
-        cdef int i
+        cdef object deferred = self.deferred
+        cdef object nextq = deque()
+        cdef int length = len(deferred)
+        cdef int last_length = 0
 
-        self.in_resolving += 1
+        while last_length != length:
+            last_length = length
 
-        while True:
-            length = len(deferred)
-            if length == 0 or length == lastLen:
-                break
-            lastLen = length
-
-            for i in reversed(range(0, length)):
-                entity = <EntityType>deferred[i]
+            while True:
+                entity = <EntityType>deferred.pop()
                 if entity._stage_resolving() is True:
-                    print("RESOLVING SUCC", entity)
-                    deferred.pop(i)
-                    resolved.append(entity)
-                    resolving.remove(entity)
+                    self.resolved.append(entity)
+                else:
+                    nextq.append(entity)
+                if len(deferred) == 0:
+                    break
 
-        for entity in deferred:
-            resolving.remove(entity)
+            deferred = nextq
+            length = len(deferred)
+            if length == 0:
+                break
+            else:
+                nextq = deque()
 
-        self.in_resolving -= 1
-
-        if self.in_resolving <= 0 and len(deferred) == 0:
-            length = len(resolved)
-            for i in reversed(range(0, length)):
-                entity = <EntityType>resolved[i]
+        self.deferred = deferred
+        if len(deferred) == 0:
+            for entity in self.resolved:
                 entity._stage_resolved()
             self.resolved = []
 
-    cdef __get_for_resolving(self):
-        cdef list result = []
-        for entity in self.deferred:
-            if entity not in self.resolving:
-                self.resolving.add(entity)
-                result.append(entity)
-        return result
-
+        self.in_resolving = False
 
 
 class RegistryDiffKind(Enum):
@@ -274,37 +277,28 @@ cdef object entity_data_is_eq(EntityBase a, EntityBase b):
     return True
 
 
-cdef insert_local_ref(dict locals, str name, EntityType entity):
-    parts = name.split(".")
-    last_part = parts.pop()
+@cython.final
+cdef class ScopeDict(dict):
+    def __getattr__(self, key):
+        try:
+            return self[key]
+        except KeyError:
+            raise NameError(f"No such attribute: {key}")
 
-    container = locals
-    # XXX: Register by EntityName (but this is bad, need to remove)
-    container[last_part] = entity
+    cdef set_path(self, str path, object value):
+        cdef list parts = path.split(".")
+        cdef str last_part = parts.pop()
+        cdef dict container = <dict>self
 
-    if len(parts) > 0:
         for p in parts:
             try:
-                container = container[p]
+                container = <dict>container[p]
             except KeyError:
-                new_container = _localdict()
+                new_container = ScopeDict()
                 container[p] = new_container
-                container = new_container
-        container[last_part] = entity
+                container = <dict>new_container
+            else:
+                if not isinstance(container, dict):
+                    raise ValueError(f"Can't set '{path}' on {self}")
 
-
-class _localdict(dict):
-    def __getattr__(self, name):
-        if name in self:
-            return self[name]
-        else:
-            raise NameError("No such attribute: " + name)
-
-    def __setattr__(self, name, value):
-        self[name] = value
-
-    def __delattr__(self, name):
-        if name in self:
-            del self[name]
-        else:
-            raise NameError("No such attribute: " + name)
+        container[last_part] = value

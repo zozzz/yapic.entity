@@ -27,7 +27,7 @@ class User(Entity, registry=_registry, schema="ent_load"):
     address_id: Auto = ForeignKey(Address.id)
     address: One[Address]
 
-    children: Many["UserChild"]
+    children: Many["ent_load.UserChild"]
 
     tags: ManyAcross["UserTags", "Tag"]
 
@@ -50,15 +50,15 @@ class UserChild(Entity, registry=_registry, schema="ent_load"):
 
 class Article(Entity, registry=_registry, schema="ent_load"):
     id: Serial
-    creator_id: Auto = ForeignKey(User.id)
-    creator: One[User] = "User.id == Article.creator_id"
+    creator_id: Auto = ForeignKey("ent_load.User.id")
+    creator: One[User] = "ent_load.User.id == Article.creator_id"
     updater_id: Auto = ForeignKey(User.id)
-    updater: One[User] = "User.id == Article.updater_id"
+    updater: One[User] = "User.id == ent_load.Article.updater_id"
 
 
 class Something(Entity, registry=_registry, schema="ent_load"):
     id: Serial
-    article_id: Auto = ForeignKey(Article.id)
+    article_id: Auto = ForeignKey("Article.id")
     article: One[Article] = Relation(join="Article.id == Something.article_id") // Loading(always=True)
 
 

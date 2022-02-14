@@ -49,6 +49,16 @@ class UserTags(Entity):
 
 ```
 
+Recursive:
+```python
+class Node(Entity):
+   id: Serial
+   parent_id: Int
+   parent: One["Node"] = "_self_.parent_id = _joined_.id"
+   children: Many["Node"] = "_self_.id = _joined_.parent_id"
+```
+
+
 Field Extensions:
 ```python
 

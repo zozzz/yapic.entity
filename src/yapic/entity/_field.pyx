@@ -8,6 +8,7 @@ from ._expression cimport Expression, Visitor
 from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeExt, EntityAttributeExtGroup, EntityAttributeImpl, get_alias_target, Registry
 from ._factory cimport ForwardDecl, get_type_hints, new_instance, new_instance_from_forward, is_forward_decl
 from ._field_impl cimport AutoImpl
+from ._resolve cimport ResolveContext
 
 
 cdef class Field(EntityAttribute):
@@ -140,8 +141,8 @@ cdef class AutoIncrement(FieldExtension):
     def __cinit__(self, object sequence=None):
         self._seq_arg = sequence
 
-    cdef object _resolve_deferred(self):
-        if FieldExtension._resolve_deferred(self) is False:
+    cdef object _resolve_deferred(self, ResolveContext ctx):
+        if FieldExtension._resolve_deferred(self, ctx) is False:
             return False
 
         cdef EntityType entity
@@ -184,7 +185,7 @@ cdef class AutoIncrement(FieldExtension):
                     self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=<object>entity.registry_ref, is_sequence=True)
 
         attr._deps_.add_entity(self.sequence)
-        return True
+        return self.sequence.is_resolved()
 
     cpdef object clone(self):
         return type(self)(self._seq_arg)
@@ -251,8 +252,6 @@ cdef class ForeignKey(FieldExtension):
         self.ref = None
 
         if isinstance(field, str):
-            self._ref = compile(field, field, "eval")
-        elif isinstance(field, _CodeType):
             self._ref = field
         elif not isinstance(field, Field):
             raise TypeError("Incorrect argument for ForeignKey field parameter")
@@ -271,24 +270,18 @@ cdef class ForeignKey(FieldExtension):
         if not index and not attr.get_ext(PrimaryKey):
             attr // Index()
 
-    cdef object _resolve_deferred(self):
-        if FieldExtension._resolve_deferred(self) is False:
+    cdef object _resolve_deferred(self, ResolveContext ctx):
+        if FieldExtension._resolve_deferred(self, ctx) is False:
             return False
 
-        cdef Field field = self.get_attr()
-        cdef EntityType field_entity
-
         if self.ref is None:
-            field_entity = field.get_entity()
-            module = PyImport_Import(field_entity.__module__)
-            mdict = PyModule_GetDict(module)
-            ldict = {field_entity.__qualname__.split(".").pop(): field_entity}
-            ldict.update(field_entity.__registry__.locals)
             try:
-                self.ref = eval(self._ref, <object>mdict, <object>ldict)
-            except NameError as e:
+                self.ref = ctx.eval(self._ref, {})
+            except NameError:
                 return False
+            self._ref = None
 
+        cdef Field field = self.get_attr()
         field._deps_.add_entity(self.ref.get_entity())
 
         if self.name is None:
@@ -304,8 +297,13 @@ cdef class ForeignKey(FieldExtension):
         return True
 
     cpdef object clone(self):
-        if isinstance(self._ref, tuple):
-            ref = ".".join(self._ref)
+        # XXX: mi ez a tuple?
+        # if isinstance(self._ref, tuple):
+        #     ref = ".".join(self._ref)
+        # else:
+        #     ref = self._ref
+        if self.ref is not None:
+            ref = self.ref
         else:
             ref = self._ref
         return type(self)(ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)

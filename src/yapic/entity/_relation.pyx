@@ -7,22 +7,25 @@ from cpython.module cimport PyImport_Import, PyModule_GetDict
 from cpython.weakref cimport PyWeakref_NewRef, PyWeakref_GetObject
 
 from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeImpl, EntityAttributeExt, EntityAttributeExtGroup, get_alias_target, NOTSET
-from ._expression cimport Expression, Visitor, PathExpression, VirtualExpressionVal
+from ._expression cimport Expression, Visitor, PathExpression, VirtualExpressionVal, ExpressionPlaceholder
 from ._field cimport Field, ForeignKey
 from ._factory cimport Factory, ForwardDecl, new_instance_from_forward, is_forward_decl
-from ._visitors cimport replace_entity
+from ._visitors cimport replace_entity, replace_placeholder
 from ._error cimport JoinError
+from ._resolve cimport ResolveContext
 
 
 cdef class Relation(EntityAttribute):
     def __cinit__(self, *args, join = None):
         self._default_ = join
 
-    cdef object _resolve_deferred(self):
-        if EntityAttribute._resolve_deferred(self) is False:
+    cdef object _resolve_deferred(self, ResolveContext ctx):
+        if EntityAttribute._resolve_deferred(self, ctx) is False:
             return False
         if not isinstance(self._impl_, RelationImpl):
             raise ValueError(f"Relation attribute implementation is wrong type: {self._impl_}")
+
+        (<RelationImpl>self._impl_).set_relation(self)
         return True
 
     def __getattr__(self, name):
@@ -72,21 +75,42 @@ cdef class RelationImpl(EntityAttributeImpl):
     def joined(self):
         return self.get_joined_alias()
 
-    cdef object _resolve_deferred(self, EntityAttribute relation):
-        # TODO: merge _can_resolve and resolve_default
-        if EntityAttributeImpl._resolve_deferred(self, relation) is True and self._can_resolve(relation) is True:
+    @property
+    def join_expr(self):
+        return self.get_join_expr()
+
+    @join_expr.setter
+    def join_expr(self, Expression value):
+        self._join_expr = value
+
+    cdef Expression get_join_expr(self):
+        raise NotImplementedError()
+
+    cdef Relation set_relation(self, Relation relation):
+        if self.relation_ref is None:
+            self.relation_ref = <object>PyWeakref_NewRef(relation, None)
+        else:
+            current = <object>PyWeakref_GetObject(self.relation_ref)
+            if current is not relation:
+                raise RuntimeError(f"Can't rebind {self}")
+
+    cdef Relation get_relation(self):
+        if self.relation_ref is not None:
+            return <object>PyWeakref_GetObject(self.relation_ref)
+        else:
+            return None
+
+    cdef object _resolve_deferred(self, ResolveContext ctx, EntityAttribute relation):
+        if EntityAttributeImpl._resolve_deferred(self, ctx, relation) is True:
             if relation._default_:
                 # TODO: rework
-                return self.resolve_default(relation)
+                return self.resolve_default(ctx, relation)
             else:
                 return True
         else:
             return False
 
-    cdef bint _can_resolve(self, EntityAttribute relation):
-        raise NotImplementedError()
-
-    cdef object resolve_default(self, EntityAttribute relation):
+    cdef object resolve_default(self, ResolveContext ctx, EntityAttribute relation):
         raise NotImplementedError()
 
     cpdef object clone(self):
@@ -102,27 +126,15 @@ cdef class RelationImpl(EntityAttributeImpl):
     cdef object state_get_dirty(self, object initial, object current):
         return self.state_impl.state_get_dirty(initial, current)
 
-    cdef object _eval(self, Relation attr, str expr):
-        cdef EntityType attr_entity = attr.get_entity()
-        module = PyImport_Import(attr_entity.__module__)
-        mdict = PyModule_GetDict(module)
-        ldict = {attr_entity.__qualname__.split(".").pop(): attr_entity}
-        ldict.update(attr_entity.get_registry().locals)
-        return eval(expr, <object>mdict, <object>ldict)
-
 
 cdef class ManyToOne(RelationImpl):
     def __repr__(self):
         return "ManyToOne %r" % self.get_joined_entity()
 
-    cdef bint _can_resolve(self, EntityAttribute relation):
-        cdef EntityType target = relation.get_entity()
-        cdef EntityType joined = self.get_joined_entity()
-        return joined is not target and can_determine_join_cond(joined)
-
-    cpdef object init(self, EntityAttribute relation):
-        self.join_expr = self._determine_join_expr(relation)
-        return RelationImpl.init(self, relation)
+    cdef Expression get_join_expr(self):
+        if self._join_expr is None:
+            self._join_expr = self._determine_join_expr(self.get_relation())
+        return self._join_expr
 
     cdef Expression _determine_join_expr(self, EntityAttribute relation):
         cdef EntityType target = relation.get_entity()
@@ -131,7 +143,11 @@ cdef class ManyToOne(RelationImpl):
         aliased = self.get_joined_alias()
 
         if relation._default_ is not None:
-            join_expr = replace_entity(relation._default_, joined, aliased)
+            join_expr = replace_placeholder(relation._default_, {
+                "_self_": target,
+                "_joined_": aliased,
+            })
+            join_expr = replace_entity(join_expr, joined, aliased)
 
             target_aliased = get_alias_target(target)
             if target_aliased is not target:
@@ -141,10 +157,13 @@ cdef class ManyToOne(RelationImpl):
 
         return join_expr
 
-    cdef object resolve_default(self, EntityAttribute relation):
+    cdef object resolve_default(self, ResolveContext ctx, EntityAttribute relation):
         if isinstance(relation._default_, str):
             try:
-                relation._default_ = self._eval(relation, relation._default_)
+                relation._default_ = ctx.eval(relation._default_, {
+                    "_self_": ExpressionPlaceholder(relation.get_entity(), "_self_") ,
+                    "_joined_": ExpressionPlaceholder(self.get_joined_entity(), "_joined_"),
+                })
             except NameError:
                 return False
         elif isinstance(relation._default_, Expression):
@@ -159,14 +178,10 @@ cdef class OneToMany(RelationImpl):
     def __repr__(self):
         return "OneToMany %r" % self.get_joined_entity()
 
-    cdef bint _can_resolve(self, EntityAttribute relation):
-        cdef EntityType target = relation.get_entity()
-        cdef EntityType joined = self.get_joined_entity()
-        return joined is not target and can_determine_join_cond(joined)
-
-    cpdef object init(self, EntityAttribute relation):
-        self.join_expr = self._determine_join_expr(relation)
-        return RelationImpl.init(self, relation)
+    cdef Expression get_join_expr(self):
+        if self._join_expr is None:
+            self._join_expr = self._determine_join_expr(self.get_relation())
+        return self._join_expr
 
     cdef Expression _determine_join_expr(self, EntityAttribute relation):
         cdef EntityType target = relation.get_entity()
@@ -175,20 +190,28 @@ cdef class OneToMany(RelationImpl):
         aliased = self.get_joined_alias()
 
         if relation._default_:
-            join_expr = replace_entity(relation._default_, joined, aliased)
+            join_expr = replace_placeholder(relation._default_, {
+                "_self_": target,
+                "_joined_": aliased,
+            })
+
+            join_expr = replace_entity(join_expr, joined, aliased)
+
+            target_aliased = get_alias_target(target)
+            if target_aliased is not target:
+                join_expr = replace_entity(join_expr, target_aliased, target)
         else:
             join_expr = determine_join_expr(aliased, target)
 
-        target_aliased = get_alias_target(target)
-        if target_aliased is not target:
-            join_expr = replace_entity(join_expr, target_aliased, target)
-
         return join_expr
 
-    cdef object resolve_default(self, EntityAttribute relation):
+    cdef object resolve_default(self, ResolveContext ctx, EntityAttribute relation):
         if isinstance(relation._default_, str):
             try:
-                relation._default_ = self._eval(relation, relation._default_)
+                relation._default_ = ctx.eval(relation._default_, {
+                    "_self_": ExpressionPlaceholder(relation.get_entity(), "_self_") ,
+                    "_joined_": ExpressionPlaceholder(self.get_joined_entity(), "_joined_"),
+                })
             except NameError:
                 return False
         elif callable(relation._default_) and not isinstance(relation._default_, Expression):
@@ -208,6 +231,14 @@ cdef class ManyToMany(RelationImpl):
     def across(self):
         return self.get_across_alias()
 
+    @property
+    def across_join_expr(self):
+        return self.get_across_join_expr()
+
+    @across_join_expr.setter
+    def across_join_expr(self, Expression value):
+        self._across_join_expr = value
+
     cdef EntityType get_across_entity(self):
         return <object>PyWeakref_GetObject(self.across_entity_ref)
 
@@ -217,16 +248,15 @@ cdef class ManyToMany(RelationImpl):
             self.across_alias_ref = original.alias()
         return self.across_alias_ref
 
-    cdef bint _can_resolve(self, EntityAttribute relation):
-        cdef EntityType target = relation.get_entity()
-        cdef EntityType joined = self.get_joined_entity()
-        cdef EntityType across = self.get_across_entity()
-        return (joined is target or can_determine_join_cond(joined)) \
-            and can_determine_join_cond(across)
+    cdef Expression get_join_expr(self):
+        if self._join_expr is None:
+            self._across_join_expr, self._join_expr = self._determine_join_expr(self.get_relation())
+        return self._join_expr
 
-    cpdef object init(self, EntityAttribute relation):
-        self.across_join_expr, self.join_expr = self._determine_join_expr(relation)
-        return RelationImpl.init(self, relation)
+    cdef Expression get_across_join_expr(self):
+        if self._across_join_expr is None:
+            self._across_join_expr, self._join_expr = self._determine_join_expr(self.get_relation())
+        return self._across_join_expr
 
     cdef tuple _determine_join_expr(self, EntityAttribute relation):
         cdef EntityType target = relation.get_entity()
@@ -246,21 +276,21 @@ cdef class ManyToMany(RelationImpl):
 
             target_aliased = get_alias_target(target)
             if target_aliased is not target:
-                join_expr = replace_entity(join_expr, target_aliased, target)
                 across_join_expr = replace_entity(across_join_expr, target_aliased, target)
+                join_expr = replace_entity(join_expr, target_aliased, target)
         else:
             across_join_expr = determine_join_expr(across_alias, target)
             join_expr = determine_join_expr(across_alias, joined_alias)
 
         return (across_join_expr, join_expr)
 
-    cdef object resolve_default(self, EntityAttribute relation):
+    cdef object resolve_default(self, ResolveContext ctx, EntityAttribute relation):
         if isinstance(relation._default_, dict):
             resolved = {}
             for entity, join in relation._default_.items():
                 if isinstance(entity, str):
                     try:
-                        entity = self._eval(relation, entity)
+                        entity = ctx.eval(entity, {})
                     except NameError:
                         return False
 
@@ -269,7 +299,7 @@ cdef class ManyToMany(RelationImpl):
 
                 if isinstance(join, str):
                     try:
-                        join = self._eval(relation, join)
+                        join = ctx.eval(join, {})
                     except NameError:
                         return False
 
@@ -437,16 +467,6 @@ cdef class Loading(EntityAttributeExt):
         return "@Loading(always=%s, fields=%s)" % (self.always, self.fields)
 
 
-cdef bint can_determine_join_cond(EntityType entity):
-    cdef EntityAttribute attr
-
-    for attr in entity.__deferred__:
-        if attr.get_ext(ForeignKey):
-            return False
-
-    return True
-
-
 @cython.final
 cdef class RelatedAttribute(EntityAttribute):
     def __cinit__(self, Relation rel, *, str name, **kwargs):
@@ -494,9 +514,10 @@ cdef class RelatedAttribute(EntityAttribute):
     cpdef clone(self):
         raise RuntimeError("Clone behavior is undefined, need manual clone")
 
-    cdef object _resolve_deferred(self):
-        if EntityAttribute._resolve_deferred(self) is True:
-            return self.__relation__._resolve_deferred()
+    cdef object _resolve_deferred(self, ResolveContext ctx):
+        if EntityAttribute._resolve_deferred(self, ctx) is True:
+            # TODO: dont do double resolve, just chekc if resolved
+            return self.__relation__._resolve_deferred(ctx)
         else:
             return False
 

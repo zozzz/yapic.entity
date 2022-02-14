@@ -114,9 +114,9 @@ cdef class EntityType(type):
 
         if _root is False:
             if is_entity_alias(self) is False:
-                self.get_registry().register(self.__qname__, self)
+                self.resolve_ctx = ResolveContext(self, sys._getframe(0))
+                self.get_registry().register(self)
             else:
-                print("alias creation", self.get_registry().deferred)
                 if self._stage_resolving() is False:
                     raise RuntimeError(f"Can't resolve entity alias: {self} ({self.__deferred__})")
                 self._stage_resolved()
@@ -279,10 +279,10 @@ cdef class EntityType(type):
 
     def alias(self, str alias = None):
         cdef EntityType original = get_alias_target(self)
-        return EntityAlias(alias or "", (EntityBase,), {}, alias_target=original, registry=<object>original.registry_ref)
+        cdef dict clsdict = {"__new__": _no_alias_instance, "__init__": _no_alias_instance}
+        return EntityAlias(alias or "", (EntityBase,), clsdict, alias_target=original, registry=<object>original.registry_ref)
 
     cdef object _stage_resolving(self):
-        print("RESOLVING", self)
         cdef EntityAttribute attr
         cdef list deferred = self.__deferred__
         cdef list unresolved
@@ -290,7 +290,7 @@ cdef class EntityType(type):
         while True:
             unresolved = []
             for attr in deferred:
-                if attr._resolve_deferred() is False:
+                if attr._resolve_deferred(self.resolve_ctx) is False:
                     unresolved.append(attr)
 
             # cant resolve any new attr
@@ -302,10 +302,11 @@ cdef class EntityType(type):
         return len(deferred) == 0
 
     cdef object _stage_resolved(self):
-        print("RESOLVED", self)
         cdef EntityAttributeExtGroup group
         cdef PolymorphMeta polymorph
         cdef EntityAttribute attr
+
+        self.resolve_ctx = None
 
         for attr in self.__attrs__:
             attr.init()
@@ -320,6 +321,9 @@ cdef class EntityType(type):
 
     cdef bint is_deferred(self):
         return len(self.__deferred__) != 0
+
+    cdef bint is_resolved(self):
+        return len(self.__deferred__) == 0
 
     cdef bint is_empty(self):
         return len(self.__attrs__) == 0
@@ -362,7 +366,8 @@ cdef class EntityAlias(EntityType):
 
         for v in aliased.__attrs__:
             if isinstance(v, RelatedAttribute):
-                relatad_attrs.append(v)
+                relatad_attrs.append((len(result), v))
+                result.append(None)
             elif isinstance(v, EntityAttribute):
                 attr = (<EntityAttribute>v).clone()
                 attr._key_ = (<EntityAttribute>v)._key_
@@ -371,10 +376,10 @@ cdef class EntityAlias(EntityType):
                 if isinstance(attr, Relation):
                     relations[id(v)] = attr
 
-        for relatad_attr in relatad_attrs:
+        for i, relatad_attr in relatad_attrs:
             attr = RelatedAttribute(relations[id((<RelatedAttribute>relatad_attr).__relation__)], name=(<RelatedAttribute>relatad_attr)._name_)
             attr._key_ = (<RelatedAttribute>relatad_attr)._key_
-            result.append(attr)
+            result[i] = attr
 
         # TODO: clone PolymorphMeta
         # self.set_meta("polymorph", self.get_meta("polymorph", None))
@@ -408,6 +413,10 @@ cdef class EntityAlias(EntityType):
             return f"<Alias({id(self)}|{self.__name__}) of {entity.__qname__}>"
         else:
             return f"<Alias({id(self)}) of {entity.__qname__}>"
+
+
+def _no_alias_instance(self, *args, **kwargs):
+    raise RuntimeError(f"{self} is only alias, and cannot be instantiated")
 
 
 cpdef bint is_entity_alias(object o):
@@ -544,7 +553,7 @@ cdef class EntityAttribute(Expression):
             for ext in self._exts_:
                 ext._bind(attr_ref)
 
-    cdef object _resolve_deferred(self):
+    cdef object _resolve_deferred(self, ResolveContext ctx):
         cdef EntityAttributeExt ext
 
         if self._impl_ is None:
@@ -553,18 +562,18 @@ cdef class EntityAttribute(Expression):
 
             if is_forward_decl(self._impl):
                 try:
-                    self._impl_ = new_instance_from_forward(self._impl, self.get_entity().get_registry().locals)
+                    self._impl_ = ctx.forward_ref(self._impl)
                 except NameError as e:
                     return False
             else:
                 raise ValueError(f"Unexpected attribute implementation: {self._impl}")
             self._impl = None
 
-        if self._impl_._resolve_deferred(self) is False:
+        if self._impl_._resolve_deferred(ctx, self) is False:
             return False
 
         for ext in self._exts_:
-            if not ext._resolve_deferred():
+            if not ext._resolve_deferred(ctx):
                 return False
 
         return True
@@ -583,16 +592,19 @@ cdef class EntityAttribute(Expression):
             ext.init()
 
     cdef EntityAttribute _rebind(self, EntityType entity):
-        cdef EntityAttribute new_attr = self.clone()
-        cdef object entity_ref = <object>PyWeakref_NewRef(entity, None)
-        cdef object registry_ref = <object>entity.registry_ref
-
-        if new_attr._bind(entity_ref, registry_ref) \
-                and new_attr._resolve_deferred() \
-                and new_attr.init():
-            return new_attr
-
         raise RuntimeError(f"Can't rebind attribute {self}")
+
+        # TODO: ...
+        # cdef EntityAttribute new_attr = self.clone()
+        # cdef object entity_ref = <object>PyWeakref_NewRef(entity, None)
+        # cdef object registry_ref = <object>entity.registry_ref
+
+        # if new_attr._bind(entity_ref, registry_ref) \
+        #         and new_attr._resolve_deferred() \
+        #         and new_attr.init():
+        #     return new_attr
+
+        # raise RuntimeError(f"Can't rebind attribute {self}")
 
     cpdef clone(self):
         raise NotImplementedError()
@@ -655,7 +667,7 @@ cdef class EntityAttributeExt:
                 raise RuntimeError(f"Can't rebind attribute extension {current} -> {new}")
         return True
 
-    cdef object _resolve_deferred(self):
+    cdef object _resolve_deferred(self, ResolveContext ctx):
         return True
 
     def __floordiv__(EntityAttributeExt self, EntityAttributeExt other):
@@ -668,8 +680,8 @@ cdef class EntityAttributeExt:
         cdef EntityType entity = self.get_entity()
         cdef EntityAttributeExtGroup group
 
-        if is_entity_alias(entity):
-            return
+        # if is_entity_alias(entity):
+        #     return
 
         try:
             group = entity.__extgroups__[key]
@@ -731,23 +743,7 @@ cdef class EntityAttributeImpl:
     def __cinit__(self, *args, **kwargs):
         self.inited = False
 
-    # cdef EntityAttribute get_attr(self):
-    #     if self.attr_ref is not None:
-    #         return <EntityAttribute>PyWeakref_GetObject(self.attr_ref)
-    #     else:
-    #         return None
-
-    # cdef object _bind(self, object attr_ref):
-    #     if self.attr_ref is None:
-    #         self.attr_ref = attr_ref
-    #     else:
-    #         current = <object>PyWeakref_GetObject(self.attr_ref)
-    #         new = <object>PyWeakref_GetObject(attr_ref)
-    #         print("impl._bind", id(current), id(new))
-    #         if current is not new:
-    #             raise ValueError(f"Can't rebind attribute ({self.get_attr()._key_}) implementation {current} -> {new}")
-
-    cdef object _resolve_deferred(self, EntityAttribute attr):
+    cdef object _resolve_deferred(self, ResolveContext ctx, EntityAttribute attr):
         return True
 
     cpdef object init(self, EntityAttribute attr):
@@ -1321,6 +1317,7 @@ class Entity(EntityBase, metaclass=EntityType, registry=REGISTRY, _root=True):
     pass
 
 
+# TODO inherit from set
 @cython.final
 cdef class EntityDependency:
     def __cinit__(self, object registry_ref):

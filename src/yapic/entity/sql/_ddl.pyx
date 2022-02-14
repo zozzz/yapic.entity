@@ -376,11 +376,11 @@ cdef class DDLCompiler:
                         f"ADD {self.compile_foreign_key(fk_group)}",
                     )
 
-        for trigger in old_entity.__triggers__:
-            strip_entity.append(self.remove_trigger(trigger))
-
         if strip_entity:
             result.append(compile_alters(strip_entity))
+
+        for trigger in old_entity.__triggers__:
+            result.append(self.remove_trigger(old_entity, trigger))
 
         # rename
         old_qname = self.dialect.table_qname(old_entity)

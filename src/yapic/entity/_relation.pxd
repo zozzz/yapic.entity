@@ -5,6 +5,7 @@ from ._entity cimport EntityType, EntityAttribute, EntityAttributeImpl, EntityAt
 from ._expression cimport Expression, PathExpression
 from ._factory cimport Factory
 from ._field cimport Field
+from ._resolve cimport ResolveContext
 
 
 cdef class Relation(EntityAttribute):
@@ -24,17 +25,19 @@ cdef class RelatedAttributeImpl(EntityAttributeImpl):
 
 cdef class RelationImpl(EntityAttributeImpl):
     cdef object joined_entity_ref
+    cdef object relation_ref
     cdef EntityType joined_alias_ref
-    cdef readonly Expression join_expr
+    cdef Expression _join_expr
 
     cdef readonly ValueStore state_impl
 
     cdef EntityType get_joined_entity(self)
     cdef EntityType get_joined_alias(self)
+    cdef Expression get_join_expr(self)
+    cdef Relation set_relation(self, Relation relation)
+    cdef Relation get_relation(self)
 
-    cdef object resolve_default(self, EntityAttribute relation)
-    cdef object _eval(self, Relation attr, str expr)
-    cdef bint _can_resolve(self, EntityAttribute relation)
+    cdef object resolve_default(self, ResolveContext ctx, EntityAttribute relation)
 
 
 cdef class ManyToOne(RelationImpl):
@@ -48,10 +51,11 @@ cdef class OneToMany(RelationImpl):
 cdef class ManyToMany(RelationImpl):
     cdef object across_entity_ref
     cdef EntityType across_alias_ref
-    cdef readonly Expression across_join_expr
+    cdef Expression _across_join_expr
 
     cdef EntityType get_across_entity(self)
     cdef EntityType get_across_alias(self)
+    cdef Expression get_across_join_expr(self)
 
     cdef tuple _determine_join_expr(self, EntityAttribute relation)
 
@@ -77,6 +81,9 @@ cdef class RelatedDict(ValueStore):
 cdef class Loading(EntityAttributeExt):
     cdef readonly bint always
     cdef readonly list fields
+
+
+
 
 
 # cdef class RelatedItem(ValueStore):

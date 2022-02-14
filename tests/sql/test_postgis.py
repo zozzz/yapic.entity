@@ -3,10 +3,10 @@
 import pytest
 from datetime import datetime, date, time, tzinfo, timedelta
 from decimal import Decimal
-from yapic.entity.sql import Entity, sync, PostgreDialect
+from yapic.entity.sql import sync, PostgreDialect
 from yapic.entity import (Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool, ForeignKey,
                           PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite, Auto, Numeric,
-                          Float, Point, UUID, virtual)
+                          Float, Point, UUID, virtual, Entity)
 from yapic.entity.sql.pgsql import postgis
 
 pytestmark = pytest.mark.asyncio

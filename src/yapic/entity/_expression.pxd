@@ -85,6 +85,20 @@ cdef class VirtualExpressionDir(Expression):
     cpdef Expression _create_expr_(self, object q)
 
 
+ctypedef enum EPA:
+    GETATTR = 1
+    GETITEM = 2
+    CALL = 3
+
+
+@cython.final
+cdef class ExpressionPlaceholder(Expression):
+    cdef object origin
+    cdef list path
+    cdef str name
+
+    cdef Expression eval(self, object origin)
+
 # cdef class GetAttrExprisson(Expression):
 #     cdef readonly Expression obj
 #     cdef readonly object path

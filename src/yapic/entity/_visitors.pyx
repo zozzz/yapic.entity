@@ -1,4 +1,4 @@
-from ._expression cimport Expression, Visitor, BinaryExpression, UnaryExpression, DirectionExpression, AliasExpression, CastExpression, CallExpression, RawExpression, PathExpression, coerce_expression
+from ._expression cimport Expression, Visitor, BinaryExpression, UnaryExpression, DirectionExpression, AliasExpression, CastExpression, CallExpression, RawExpression, PathExpression, coerce_expression, ExpressionPlaceholder
 from ._entity cimport EntityType, EntityAttribute
 from ._field cimport Field, field_eq
 from ._relation cimport Relation, ManyToMany
@@ -94,6 +94,25 @@ cdef class EntityReplacer(ReplacerBase):
         else:
             return relation
 
+    def visit_expression_placeholder(self, ExpressionPlaceholder placeholder):
+        try:
+            entity = self.placeholder[placeholder.name]
+        except KeyError:
+            raise ValueError(f"Missing placeholder replacement for: {placeholder.name}")
+        result = placeholder.eval(entity)
+        return self.visit(result)
+
+
+cdef class PlaceholderReplacer(ReplacerBase):
+    def __cinit__(self, dict placeholder):
+        self.placeholder = placeholder
+
+    def visit_expression_placeholder(self, ExpressionPlaceholder placeholder):
+        try:
+            origin = self.placeholder[placeholder.name]
+        except KeyError:
+            raise ValueError(f"Missing placeholder replacement for: {placeholder.name}")
+        return placeholder.eval(origin)
 
 cdef class FieldAssigner(ReplacerBase):
     def __cinit__(self, EntityType where_t, EntityBase where_o, dict data):

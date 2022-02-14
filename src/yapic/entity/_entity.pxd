@@ -3,6 +3,7 @@ from cpython.object cimport PyObject
 
 from ._expression cimport AliasExpression, Expression
 from ._registry cimport Registry
+from ._resolve cimport ResolveContext
 
 
 cdef class NOTSET:
@@ -17,11 +18,12 @@ cdef class EntityType(type):
     cdef readonly list __deferred__
     cdef public list __fix_entries__
     cdef public list __triggers__
-    cdef public dict __extgroups__
+    cdef readonly dict __extgroups__
+    cdef readonly EntityDependency __deps__
+    cdef ResolveContext resolve_ctx
     cdef PyObject* registry_ref
     # cdef Registry __registry__
     cdef PyObject* meta
-    cdef readonly EntityDependency __deps__
 
     cdef EntityType get_base_entity(self)
     cdef Registry get_registry(self)
@@ -31,6 +33,7 @@ cdef class EntityType(type):
     cdef object _stage_resolving(self)
     cdef object _stage_resolved(self)
     cdef bint is_deferred(self)
+    cdef bint is_resolved(self)
     cdef bint is_empty(self)
 
     cpdef object __entity_ready__(self)
@@ -77,7 +80,7 @@ cdef class EntityAttribute(Expression):
 
     cdef object _bind(self, object entity_ref, object registry_ref)
     cdef EntityAttribute _rebind(self, EntityType entity)
-    cdef object _resolve_deferred(self)
+    cdef object _resolve_deferred(self, ResolveContext ctx)
     cpdef object init(self)
 
     # cdef object init(self, EntityType entity)
@@ -95,7 +98,7 @@ cdef class EntityAttributeExt:
     cdef object attr_ref
 
     cdef object _bind(self, object attr_ref)
-    cdef object _resolve_deferred(self)
+    cdef object _resolve_deferred(self, ResolveContext ctx)
 
     cdef EntityAttribute get_attr(self)
     cdef EntityType get_entity(self)
@@ -126,7 +129,7 @@ cdef class EntityAttributeImpl:
 
     # cdef EntityAttribute get_attr(self)
     # cdef object _bind(self, object attr_ref)
-    cdef object _resolve_deferred(self, EntityAttribute attr)
+    cdef object _resolve_deferred(self, ResolveContext ctx, EntityAttribute attr)
 
     # returns true when successfully bind, otherwise the system can try bind in the later time
     cpdef object init(self, EntityAttribute attr)

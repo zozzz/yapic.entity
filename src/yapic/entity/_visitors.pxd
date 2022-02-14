@@ -19,6 +19,14 @@ cdef inline replace_entity(Expression expr, EntityType what, EntityType to):
     return EntityReplacer(what, to).visit(expr)
 
 
+cdef class PlaceholderReplacer(ReplacerBase):
+    cdef dict placeholder
+
+
+cdef inline replace_placeholder(Expression expr, dict placeholder):
+    return PlaceholderReplacer(placeholder).visit(expr)
+
+
 cdef class FieldAssigner(ReplacerBase):
     cdef EntityType where_t
     cdef EntityBase where_o
