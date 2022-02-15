@@ -305,6 +305,7 @@ cdef class PostgreDDLReflect(DDLReflect):
         return result
 
     async def get_triggers(self, conn, registry, str schema, str table, typeid):
+        # TODO: event_object_table ala database
         triggers = await conn.fetch(f"""
             SELECT
                 "pg_trigger"."tgname",
@@ -316,7 +317,8 @@ cdef class PostgreDDLReflect(DDLReflect):
                 INNER JOIN "pg_proc" ON "pg_proc"."oid" = "pg_trigger"."tgfoid"
                 INNER JOIN "information_schema"."triggers" "it"
                     ON "it"."trigger_schema" = '{schema}'
-                    AND it."trigger_name" = "pg_trigger"."tgname"
+                    AND "it"."event_object_table" = '{table}'
+                    AND "it"."trigger_name" = "pg_trigger"."tgname"
             WHERE "pg_trigger"."tgrelid" = {typeid}
                 AND "pg_proc"."proname" LIKE 'YT-%'
         """)
