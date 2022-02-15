@@ -133,46 +133,12 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
         return UUIDType(f"UUID")
 
     cdef StorageType __choice_type(self, Field field, ChoiceImpl impl):
+        print(field, imp._ref_impl)
         cdef StorageType value_type = self._create(field, impl._ref_impl)
         cdef ChoiceType t = ChoiceType(value_type.name, value_type.pre_sql, value_type.post_sql)
         t.value_type = value_type
         t.enum = impl._enum
         return t
-
-        # hashid = Hashids(min_length=5, salt=impl.enum.__qualname__)
-        # uid = f"{impl.enum.__name__}_{hashid.encode(1)}"
-
-        # return PostgreType(uid, f"/* ENUM {uid} SQL WORK IN PROGRESS */")
-
-        # type = int
-        # str_max_len = 0
-        # int_max_size = 0
-
-        # for entry in impl._enum:
-        #     value = entry.value
-        #     if isinstance(value, int):
-        #         int_max_size = max(int_max_size, value)
-        #     elif isinstance(value, str) :
-        #         type = str
-        #         str_max_len = max(str_max_len, len(value))
-
-        # if impl.is_multi:
-        #     if type is not int:
-        #         raise TypeError("Choice of Flags must be only contains int values")
-
-        #     return PostgreType(f"BIT({len(impl._enum)})")
-        # else:
-        #     if type is int:
-        #         if int_max_size < 32767:
-        #             return PostgreType("INT2")
-        #         elif int_max_size < 2147483647:
-        #             return PostgreType("INT4")
-        #         else:
-        #             return PostgreType("INT8")
-        #     elif type is str:
-        #         values = [self.dialect.quote_value(entry.value) for entry in impl._enum]
-
-        #         return PostgreType(f"VARCHAR({str_max_len}) CHECK(\"{field._name_}\" IN ({', '.join(values)}))")
 
     cdef StorageType __auto_type(self, Field field, AutoImpl impl):
         return self._create(field, impl._ref_impl)

@@ -289,10 +289,10 @@ cdef class ForeignKey(FieldExtension):
 
         self.add_to_group(self.name)
 
-        if isinstance(field._impl_, AutoImpl):
-            (<AutoImpl>field._impl_)._ref_impl = self.ref._impl_
-            field.min_size = self.ref.min_size
-            field.max_size = self.ref.max_size
+        # if isinstance(field._impl_, AutoImpl):
+        #     (<AutoImpl>field._impl_)._ref_impl = self.ref._impl_
+        #     field.min_size = self.ref.min_size
+        #     field.max_size = self.ref.max_size
 
         return True
 

@@ -8,7 +8,7 @@ from distutils.extension import Extension
 from Cython.Build import cythonize
 from Cython.Build.Dependencies import parse_dependencies
 
-RECOMPILE = False
+RECOMPILE = True
 
 subcommand_args = []
 if "--" in sys.argv:

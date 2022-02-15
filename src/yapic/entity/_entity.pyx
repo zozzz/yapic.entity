@@ -348,6 +348,10 @@ cdef class EntityAlias(EntityType):
         self.set_entity(alias_target)
         super().__init__(*args, **kwargs)
 
+    @property
+    def __origin__(self):
+        return self.get_entity()
+
     cdef EntityType get_entity(self):
         if self.entity_ref is not None:
             return <EntityType>PyWeakref_GetObject(self.entity_ref)
@@ -428,33 +432,6 @@ cpdef EntityType get_alias_target(EntityType o):
         return (<EntityAlias>o).get_entity()
     else:
         return o
-
-
-# TODO: optimize tuple creation
-# cdef tuple group_extensions(EntityType entity):
-#     cdef dict ext_groups = {}
-#     cdef EntityAttributeExt ext
-#     cdef list ext_group_list = []
-#     cdef EntityAttributeExtGroup group
-
-#     for attr in entity.__attrs__:
-#         if not isinstance(attr, Field):
-#             continue
-
-#         for ext in (<Field>attr)._exts_:
-#             if not isinstance(ext, PrimaryKey) and ext.group_by:
-#                 key = (ext.group_by, type(ext))
-#                 try:
-#                     ext_groups[key].append(ext)
-#                 except KeyError:
-#                     ext_groups[key] = [ext]
-
-#     for exts in ext_groups.values():
-#         group = EntityAttributeExtGroup(exts[0].name, type(exts[0]))
-#         group.items = tuple(exts)
-#         ext_group_list.append(group)
-
-#     return tuple(ext_group_list)
 
 
 cdef EntityAttribute create_attribute(EntityAttribute by_type, object value):
@@ -1485,7 +1462,7 @@ cdef class PolymorphMeta:
         self.id_fields = PolymorphMeta.normalize_id(id_fields)
         self._decls = []
 
-    def _each_decls(self):
+    def items(self):
         for ref, id, relation in self._decls:
             yield (<object>PyWeakref_GetObject(ref), id, relation)
 
@@ -1500,7 +1477,7 @@ cdef class PolymorphMeta:
 
     def get_id(self, EntityType entity):
         entity = get_alias_target(entity)
-        for ent, id, relation in self._each_decls():
+        for ent, id, relation in self.items():
             if ent is entity:
                 return id
 
@@ -1515,7 +1492,7 @@ cdef class PolymorphMeta:
             raise TypeError("Relation expected, but got: %r" % relation)
 
 
-        for value in self._each_decls():
+        for value in self.items():
             if (<tuple>value)[0] is entity:
                 raise ValueError(f"{(<tuple>value)[0]} is already in polymorph")
 
