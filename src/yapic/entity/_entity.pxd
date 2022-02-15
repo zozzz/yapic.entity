@@ -11,6 +11,15 @@ cdef class NOTSET:
 
 
 # TODO: _stage_resolving call resolve only when not resolved
+# ezt használni ahelyett, hogy van-e deferred field
+
+ctypedef enum EntityStage:
+    UNRESOLVED = 1
+    RESOLVING = 2
+    RESOLVED = 3
+
+
+# TODO: remove __deferred__ list, but provide abality, to query deferred fields
 
 
 cdef class EntityType(type):

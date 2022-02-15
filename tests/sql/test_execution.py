@@ -1017,15 +1017,14 @@ CREATE TABLE "execution"."UT" (
   "updated_time" TIMESTAMPTZ,
   PRIMARY KEY("id")
 );
-CREATE OR REPLACE FUNCTION "execution"."YT-UT-update-updated_time-386fb5-c1c14d"() RETURNS TRIGGER AS $$ BEGIN
-  NEW."updated_time" = CURRENT_TIMESTAMP;
-  RETURN NEW;
+CREATE OR REPLACE FUNCTION "execution"."YT-UT-update-updated_time-386fb5-c18e88"() RETURNS TRIGGER AS $$ BEGIN
+  NEW."updated_time" = CURRENT_TIMESTAMP; RETURN NEW;
 END; $$ language 'plpgsql' ;
 CREATE TRIGGER "update-updated_time"
   BEFORE UPDATE ON "execution"."UT"
   FOR EACH ROW
   WHEN (OLD.* IS DISTINCT FROM NEW.* AND (NEW."updated_time" IS NULL OR OLD."updated_time" = NEW."updated_time"))
-  EXECUTE FUNCTION "execution"."YT-UT-update-updated_time-386fb5-c1c14d"();"""
+  EXECUTE FUNCTION "execution"."YT-UT-update-updated_time-386fb5-c18e88"();"""
 
     await conn.execute(result)
     result = await sync(conn, R)
@@ -1343,15 +1342,14 @@ CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_
 CREATE UNIQUE INDEX "unique_email" ON "execution"."User" USING btree ("email");
 ALTER TABLE "execution"."User"
   ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
-CREATE OR REPLACE FUNCTION "execution"."YT-User-update-updated_time-386fb5-c1c14d"() RETURNS TRIGGER AS $$ BEGIN
-  NEW."updated_time" = CURRENT_TIMESTAMP;
-  RETURN NEW;
+CREATE OR REPLACE FUNCTION "execution"."YT-User-update-updated_time-386fb5-c18e88"() RETURNS TRIGGER AS $$ BEGIN
+  NEW."updated_time" = CURRENT_TIMESTAMP; RETURN NEW;
 END; $$ language 'plpgsql' ;
 CREATE TRIGGER "update-updated_time"
   BEFORE UPDATE ON "execution"."User"
   FOR EACH ROW
   WHEN (OLD.* IS DISTINCT FROM NEW.* AND (NEW."updated_time" IS NULL OR OLD."updated_time" = NEW."updated_time"))
-  EXECUTE FUNCTION "execution"."YT-User-update-updated_time-386fb5-c1c14d"();
+  EXECUTE FUNCTION "execution"."YT-User-update-updated_time-386fb5-c18e88"();
 CREATE INDEX "idx_Article__author_id" ON "execution"."Article" USING btree ("author_id");
 ALTER TABLE "execution"."Article"
   ADD CONSTRAINT "fk_Article__author_id-User__id" FOREIGN KEY ("author_id") REFERENCES "execution"."User" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
@@ -1387,7 +1385,7 @@ ALTER TABLE "execution"."Article"
     assert result == """ALTER TABLE "execution"."Article"
   DROP CONSTRAINT IF EXISTS "fk_Article__author_id-User__id";
 DROP TRIGGER IF EXISTS "update-updated_time" ON "execution"."User";
-DROP FUNCTION IF EXISTS "execution"."YT-User-update-updated_time-386fb5-c1c14d";
+DROP FUNCTION IF EXISTS "execution"."YT-User-update-updated_time-386fb5-c18e88";
 ALTER TABLE "execution"."User" RENAME TO "_User";
 CREATE TABLE "execution"."User" (
   "id" INT4 NOT NULL DEFAULT nextval('"execution"."User_id_seq"'::regclass),
@@ -1411,15 +1409,14 @@ CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_
 CREATE UNIQUE INDEX "unique_email" ON "execution"."User" USING btree ("email");
 ALTER TABLE "execution"."User"
   ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE CASCADE;
-CREATE OR REPLACE FUNCTION "execution"."YT-User-update-updated_time-386fb5-c1c14d"() RETURNS TRIGGER AS $$ BEGIN
-  NEW."updated_time" = CURRENT_TIMESTAMP;
-  RETURN NEW;
+CREATE OR REPLACE FUNCTION "execution"."YT-User-update-updated_time-386fb5-c18e88"() RETURNS TRIGGER AS $$ BEGIN
+  NEW."updated_time" = CURRENT_TIMESTAMP; RETURN NEW;
 END; $$ language 'plpgsql' ;
 CREATE TRIGGER "update-updated_time"
   BEFORE UPDATE ON "execution"."User"
   FOR EACH ROW
   WHEN (OLD.* IS DISTINCT FROM NEW.* AND (NEW."updated_time" IS NULL OR OLD."updated_time" = NEW."updated_time"))
-  EXECUTE FUNCTION "execution"."YT-User-update-updated_time-386fb5-c1c14d"();"""
+  EXECUTE FUNCTION "execution"."YT-User-update-updated_time-386fb5-c18e88"();"""
     await conn.execute(result)
 
     address = await conn.select(Query(Address).where(Address.id == address.id)).first()

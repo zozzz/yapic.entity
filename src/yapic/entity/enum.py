@@ -6,11 +6,13 @@ from ._entity import Entity, EntityType
 
 _EnumMeta = type(_Enum)
 
+REQUIRED_CLSDICT_FIELDS = frozenset(("__annotations__", "__module__", "__qualname__"))
+
 
 class EntityEnumMeta(_EnumMeta):
 
     def __new__(cls, name, bases, clsdict, *, _entity=Entity, _root=False, **kwargs):
-        new_ent = new_entity(name, bases, clsdict, _entity=_entity, **kwargs)
+        new_ent = new_entity(name, bases, clsdict, _root=_root, _entity=_entity, **kwargs)
 
         ignore = set()
         for field in new_ent.__attrs__:
@@ -34,7 +36,7 @@ class EntityEnumMeta(_EnumMeta):
         return _EnumMeta.__prepare__(cls, *args)
 
 
-def new_entity(name, bases, clsdict, *, _entity=Entity, **kwargs):
+def new_entity(name, bases, clsdict, *, _root, _entity=Entity, **kwargs):
     base_entity = _entity
     for base in bases:
         try:
@@ -44,16 +46,16 @@ def new_entity(name, bases, clsdict, *, _entity=Entity, **kwargs):
         else:
             break
 
-    for attr in base_entity.__attrs__:
-        if attr._key_ not in clsdict:
-            clsdict[attr._key_] = attr.clone()
+    # for attr in base_entity.__attrs__:
+    #     if attr._key_ not in clsdict:
+    #         clsdict[attr._key_] = attr.clone()
 
     temp_removed = {}
     for k in list(clsdict.keys()):
-        if k.startswith("_") and k != "__annotations__":
+        if k.startswith("_") and k not in REQUIRED_CLSDICT_FIELDS:
             temp_removed[k] = clsdict.pop(k)
 
-    new_ent = EntityType(name, (base_entity, ), clsdict, **kwargs)
+    new_ent = EntityType(name, (base_entity, ), clsdict, _root=_root, **kwargs)
     new_ent.__fix_entries__ = []
 
     for k, v in temp_removed.items():

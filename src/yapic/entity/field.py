@@ -179,23 +179,30 @@ class CreatedTime(Field[DateTimeTzImpl, datetime, datetime]):
 class _UpdatedTimeExt(EntityAttributeExt):
 
     def init(self):
+        # fontos a circular import miatt
         from .sql.pgsql._trigger import PostgreTrigger
 
         attr = self.attr
         entity = attr._entity_
-        trigger = PostgreTrigger(
-            name=f"update-{attr._name_}",
-            before="UPDATE",
-            for_each="ROW",
-            when=
-            f"""OLD.* IS DISTINCT FROM NEW.* AND (NEW."{attr._name_}" IS NULL OR OLD."{attr._name_}" = NEW."{attr._name_}")""",
-            body=f"""
-                NEW."{attr._name_}" = CURRENT_TIMESTAMP;
-                RETURN NEW;
-            """,
-        )
+        name = f"update-{attr._name_}"
 
-        entity.__triggers__.append(trigger)
+        # TODO: entity.add_trigger() and check is already registered
+        for trigger in entity.__triggers__:
+            if trigger.name == name:
+                # trigger already registered
+                return
+
+        when = f'OLD.* IS DISTINCT FROM NEW.* ' \
+               f'AND (NEW."{attr._name_}" IS NULL OR OLD."{attr._name_}" = NEW."{attr._name_}")'
+
+        entity.__triggers__.append(
+            PostgreTrigger(
+                name=name,
+                before="UPDATE",
+                for_each="ROW",
+                when=when,
+                body=f'NEW."{attr._name_}" = CURRENT_TIMESTAMP; RETURN NEW;',
+            ))
 
 
 class UpdatedTime(Field[DateTimeTzImpl, datetime, datetime]):
