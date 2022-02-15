@@ -1397,8 +1397,8 @@ CREATE TABLE "execution"."User" (
   "updated_time" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY("id")
 );
-INSERT INTO "execution"."User" (id,address_id,name,email,age,updated_time)
-  SELECT id,address_id,name,email,age,updated_time FROM "execution"."_User";
+INSERT INTO "execution"."User" ("id", "address_id", "name", "email", "age", "updated_time")
+  SELECT "id", "address_id", "name", "email", "age", "updated_time" FROM "execution"."_User";
 DROP TABLE "execution"."_User" CASCADE;
 ALTER TABLE "execution"."Article"
   ADD CONSTRAINT "fk_Article__author_id-User__id" FOREIGN KEY ("author_id") REFERENCES "execution"."User" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;

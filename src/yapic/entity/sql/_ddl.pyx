@@ -395,11 +395,13 @@ cdef class DDLCompiler:
         old_fields = {field._name_ for field in old_entity.__fields__ if not field._virtual_}
         new_fields = {field._name_ for field in new_entity.__fields__ if not field._virtual_}
         field_indexes = {field._name_: field._index_ for field in new_entity.__fields__ if not field._virtual_}
-        field_names = list(sorted(old_fields & new_fields, key=field_indexes.get))
+        field_names = []
+        for name in sorted(old_fields & new_fields, key=field_indexes.get):
+            field_names.append(self.dialect.quote_ident(name))
 
         if field_names:
-            result.append(f"INSERT INTO {self.dialect.table_qname(new_entity)} ({','.join(field_names)})")
-            result.append(f"  SELECT {','.join(field_names)} FROM {self.dialect.table_qname(old_entity)};")
+            result.append(f"INSERT INTO {self.dialect.table_qname(new_entity)} ({', '.join(field_names)})")
+            result.append(f"  SELECT {', '.join(field_names)} FROM {self.dialect.table_qname(old_entity)};")
 
         # delete renamed
         result.append(f"DROP TABLE {self.dialect.table_qname(old_entity)} CASCADE;")
