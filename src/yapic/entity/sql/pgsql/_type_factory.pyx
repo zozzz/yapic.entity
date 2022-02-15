@@ -133,7 +133,6 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
         return UUIDType(f"UUID")
 
     cdef StorageType __choice_type(self, Field field, ChoiceImpl impl):
-        print(field, imp._ref_impl)
         cdef StorageType value_type = self._create(field, impl._ref_impl)
         cdef ChoiceType t = ChoiceType(value_type.name, value_type.pre_sql, value_type.post_sql)
         t.value_type = value_type

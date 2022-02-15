@@ -10,6 +10,9 @@ cdef class NOTSET:
     pass
 
 
+# TODO: _stage_resolving call resolve only when not resolved
+
+
 cdef class EntityType(type):
     cdef readonly tuple __attrs__
     cdef readonly tuple __fields__
@@ -79,7 +82,6 @@ cdef class EntityAttribute(Expression):
     # cdef EntityType set_entity(self, EntityType entity)
 
     cdef object _bind(self, object entity_ref, object registry_ref)
-    cdef EntityAttribute _rebind(self, EntityType entity)
     cdef object _resolve_deferred(self, ResolveContext ctx)
     cpdef object init(self)
 

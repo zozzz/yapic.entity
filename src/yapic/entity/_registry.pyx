@@ -17,7 +17,7 @@ cdef class Registry:
         self.resolved = []
         # self.resolving = set()
         self.is_draft = False
-        self.in_resolving = 0
+        self.in_resolving = False
 
     cdef object register(self, EntityType entity):
         cdef str name = entity.__qname__

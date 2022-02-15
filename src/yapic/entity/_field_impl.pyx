@@ -312,27 +312,28 @@ cdef class AutoImpl(FieldImpl):
     cdef bint _is_eq(self, object other):
         return self._ref_impl == other
 
-    cdef object _resolve_deferred(self, ResolveContext ctx, EntityAttribute attr):
-        if FieldImpl._resolve_deferred(self, ctx, attr) is False:
-            return False
+    # TODO:
+    # cdef object _resolve_deferred(self, ResolveContext ctx, EntityAttribute attr):
+    #     if FieldImpl._resolve_deferred(self, ctx, attr) is False:
+    #         return False
 
-        cdef ForeignKey fk = attr.get_ext(ForeignKey)
-        if fk is None:
-            raise ValueError("Can't use 'Auto' type without 'ForeignKey'")
+    #     cdef ForeignKey fk = attr.get_ext(ForeignKey)
+    #     if fk is None:
+    #         raise ValueError("Can't use 'Auto' type without 'ForeignKey'")
 
-        if fk._resolve_deferred(ctx) is False:
-            return False
+    #     if fk._resolve_deferred(ctx) is False:
+    #         return False
 
-        # fk not resolved yet
-        if fk.ref is None:
-            return False
+    #     # fk not resolved yet
+    #     if fk.ref is None:
+    #         return False
 
-        self._ref_impl = fk.ref._impl_
+    #     self._ref_impl = fk.ref._impl_
 
-        if isinstance(attr, Field):
-            (<Field>attr).min_size = fk.ref.min_size
-            (<Field>attr).max_size = fk.ref.max_size
-        return True
+    #     if isinstance(attr, Field):
+    #         (<Field>attr).min_size = fk.ref.min_size
+    #         (<Field>attr).max_size = fk.ref.max_size
+    #     return True
 
 
 cdef class ChoiceImpl(AutoImpl):

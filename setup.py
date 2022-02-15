@@ -178,7 +178,8 @@ almafa = setup(
     package_dir={"yapic.entity": "src/yapic/entity"},
     package_data={
         "yapic.entity.sql": ["_connection.pyi", "_query_context.pyi", "_query.pyi"],
-        "yapic.entity.sql.pgsql": ["_connection.pyi"]
+        "yapic.entity.sql.pgsql": ["_connection.pyi"],
+        "": ["*.pyx", "*.pxd", "*.pxi"],
     },
     python_requires=">=3.7",
     ext_modules=cythonize(
@@ -193,5 +194,6 @@ almafa = setup(
         },
     ),
     install_requires=Path(__file__).parent.joinpath("requirements.txt").read_text().splitlines(),
-    tests_require=["pytest", "docker", "pytest-asyncio", "pytest-leaks", "yapic.json"],
-    cmdclass={"test": PyTest})
+    tests_require=["pytest", "docker", "pytest-asyncio", "pytest-leaks"],
+    cmdclass={"test": PyTest},
+)

@@ -3,17 +3,12 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
-        "define_macros": [
-            [
-                "_DEBUG",
-                1
-            ]
-        ],
         "depends": [
             "libs/yapic.core/src/yapic/core/include/yapic/typing.hpp"
         ],
         "extra_compile_args": [
-            "-std=c++11"
+            "-std=c++11",
+            "-O3"
         ],
         "include_dirs": [
             "./libs/yapic.core/src/yapic/core/include"
@@ -22,9 +17,6 @@
         "name": "yapic.entity._factory",
         "sources": [
             "src/yapic/entity/_factory.pyx"
-        ],
-        "undef_macros": [
-            "NDEBUG"
         ]
     },
     "module_name": "yapic.entity._factory"
@@ -1098,28 +1090,6 @@ static CYTHON_INLINE void __Pyx_RaiseNeedMoreValuesError(Py_ssize_t index);
 /* RaiseNoneIterError.proto */
 static CYTHON_INLINE void __Pyx_RaiseNoneNotIterableError(void);
 
-/* GetItemInt.proto */
-#define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_Fast(o, (Py_ssize_t)i, is_list, wraparound, boundscheck) :\
-    (is_list ? (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL) :\
-               __Pyx_GetItemInt_Generic(o, to_py_func(i))))
-#define __Pyx_GetItemInt_List(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_List_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
-    (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL))
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
-                                                              int wraparound, int boundscheck);
-#define __Pyx_GetItemInt_Tuple(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_Tuple_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
-    (PyErr_SetString(PyExc_IndexError, "tuple index out of range"), (PyObject*)NULL))
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
-                                                              int wraparound, int boundscheck);
-static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
-                                                     int is_list, int wraparound, int boundscheck);
-
 /* ListAppend.proto */
 #if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
 static CYTHON_INLINE int __Pyx_PyList_Append(PyObject* list, PyObject* x) {
@@ -1189,6 +1159,28 @@ static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_ve
 #define __Pyx_GetModuleGlobalNameUncached(var, name)  (var) = __Pyx__GetModuleGlobalName(name)
 static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name);
 #endif
+
+/* GetItemInt.proto */
+#define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Fast(o, (Py_ssize_t)i, is_list, wraparound, boundscheck) :\
+    (is_list ? (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL) :\
+               __Pyx_GetItemInt_Generic(o, to_py_func(i))))
+#define __Pyx_GetItemInt_List(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_List_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+#define __Pyx_GetItemInt_Tuple(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Tuple_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "tuple index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
+                                                     int is_list, int wraparound, int boundscheck);
 
 /* PyCFunctionFastCall.proto */
 #if CYTHON_FAST_PYCCALL
@@ -2049,10 +2041,7 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(0, 58, __pyx_L1_error)
   }
-  __pyx_t_3 = __Pyx_GetItemInt_Tuple(__pyx_v_init, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 58, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = (__pyx_t_3 != Py_None);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_6 = (PyTuple_GET_ITEM(__pyx_v_init, 0) != Py_None);
   __pyx_t_5 = (__pyx_t_6 != 0);
   __pyx_t_4 = __pyx_t_5;
   __pyx_L4_bool_binop_done:;
@@ -2069,39 +2058,36 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
       __PYX_ERR(0, 60, __pyx_L1_error)
     }
-    __pyx_t_3 = __Pyx_GetItemInt_Tuple(__pyx_v_init, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
-      __pyx_t_2 = __pyx_t_3; __Pyx_INCREF(__pyx_t_2); __pyx_t_7 = 0;
+    if (likely(PyList_CheckExact(PyTuple_GET_ITEM(__pyx_v_init, 0))) || PyTuple_CheckExact(PyTuple_GET_ITEM(__pyx_v_init, 0))) {
+      __pyx_t_3 = PyTuple_GET_ITEM(__pyx_v_init, 0); __Pyx_INCREF(__pyx_t_3); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
     } else {
-      __pyx_t_7 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_8 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 60, __pyx_L1_error)
+      __pyx_t_7 = -1; __pyx_t_3 = PyObject_GetIter(PyTuple_GET_ITEM(__pyx_v_init, 0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_8 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 60, __pyx_L1_error)
     }
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     for (;;) {
       if (likely(!__pyx_t_8)) {
-        if (likely(PyList_CheckExact(__pyx_t_2))) {
-          if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_2)) break;
+        if (likely(PyList_CheckExact(__pyx_t_3))) {
+          if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_3)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_3 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 60, __pyx_L1_error)
+          __pyx_t_2 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_2); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 60, __pyx_L1_error)
           #else
-          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
           #endif
         } else {
-          if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
+          if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 60, __pyx_L1_error)
+          __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_2); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 60, __pyx_L1_error)
           #else
-          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
           #endif
         }
       } else {
-        __pyx_t_3 = __pyx_t_8(__pyx_t_2);
-        if (unlikely(!__pyx_t_3)) {
+        __pyx_t_2 = __pyx_t_8(__pyx_t_3);
+        if (unlikely(!__pyx_t_2)) {
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
@@ -2109,11 +2095,11 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
           }
           break;
         }
-        __Pyx_GOTREF(__pyx_t_3);
+        __Pyx_GOTREF(__pyx_t_2);
       }
-      if (!(likely(PyTuple_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 60, __pyx_L1_error)
-      __Pyx_XDECREF_SET(__pyx_v_arg, ((PyObject*)__pyx_t_3));
-      __pyx_t_3 = 0;
+      if (!(likely(PyTuple_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 60, __pyx_L1_error)
+      __Pyx_XDECREF_SET(__pyx_v_arg, ((PyObject*)__pyx_t_2));
+      __pyx_t_2 = 0;
 
       /* "yapic/entity/_factory.pyx":61
  *         # print(init[0])
@@ -2126,10 +2112,10 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
         __PYX_ERR(0, 61, __pyx_L1_error)
       }
-      __pyx_t_3 = __Pyx_GetItemInt_Tuple(__pyx_v_arg, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 61, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_XDECREF_SET(__pyx_v_argName, __pyx_t_3);
-      __pyx_t_3 = 0;
+      __pyx_t_2 = PyTuple_GET_ITEM(__pyx_v_arg, 0);
+      __Pyx_INCREF(__pyx_t_2);
+      __Pyx_XDECREF_SET(__pyx_v_argName, __pyx_t_2);
+      __pyx_t_2 = 0;
 
       /* "yapic/entity/_factory.pyx":62
  *         for arg in init[0]:
@@ -2142,10 +2128,10 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
         __PYX_ERR(0, 62, __pyx_L1_error)
       }
-      __pyx_t_3 = __Pyx_GetItemInt_Tuple(__pyx_v_arg, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 62, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_XDECREF_SET(__pyx_v_argType, __pyx_t_3);
-      __pyx_t_3 = 0;
+      __pyx_t_2 = PyTuple_GET_ITEM(__pyx_v_arg, 1);
+      __Pyx_INCREF(__pyx_t_2);
+      __Pyx_XDECREF_SET(__pyx_v_argType, __pyx_t_2);
+      __pyx_t_2 = 0;
 
       /* "yapic/entity/_factory.pyx":63
  *             argName = arg[0]
@@ -2185,10 +2171,10 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
  *                     else:
  *                         args.append(argType)
  */
-            __pyx_t_3 = __pyx_f_5yapic_6entity_8_factory_new_instance_from_forward(__pyx_v_argType, __pyx_v_locals); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 66, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_3);
-            __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_args, __pyx_t_3); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 66, __pyx_L1_error)
-            __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+            __pyx_t_2 = __pyx_f_5yapic_6entity_8_factory_new_instance_from_forward(__pyx_v_argType, __pyx_v_locals); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 66, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_2);
+            __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_args, __pyx_t_2); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 66, __pyx_L1_error)
+            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
             /* "yapic/entity/_factory.pyx":65
  *             if argType is not None:
@@ -2237,15 +2223,15 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
             __pyx_t_5 = __pyx_t_6;
             goto __pyx_L12_bool_binop_done;
           }
-          __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_argType, __pyx_n_s_origin); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 70, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_argType, __pyx_n_s_origin); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 70, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
           __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_typing); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
           __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_Type); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 70, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_10);
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-          __pyx_t_6 = PyObject_IsSubclass(__pyx_t_3, __pyx_t_10); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 70, __pyx_L1_error)
-          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+          __pyx_t_6 = PyObject_IsSubclass(__pyx_t_2, __pyx_t_10); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 70, __pyx_L1_error)
+          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
           __pyx_t_4 = (__pyx_t_6 != 0);
           __pyx_t_5 = __pyx_t_4;
@@ -2261,11 +2247,11 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
  */
             __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_argType, __pyx_n_s_args); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 71, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_10);
-            __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_10, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_3);
+            __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_10, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 71, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_2);
             __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-            __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_args, __pyx_t_3); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 71, __pyx_L1_error)
-            __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+            __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_args, __pyx_t_2); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 71, __pyx_L1_error)
+            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
             /* "yapic/entity/_factory.pyx":70
  *                         args.append(argType)
@@ -2285,10 +2271,10 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
  *             else:
  */
           /*else*/ {
-            __pyx_t_3 = __pyx_v_5yapic_6entity_8_factory_typing_->TypeHints(__pyx_v_argType); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 73, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_3);
-            __Pyx_DECREF_SET(__pyx_v_hints, ((PyObject*)__pyx_t_3));
-            __pyx_t_3 = 0;
+            __pyx_t_2 = __pyx_v_5yapic_6entity_8_factory_typing_->TypeHints(__pyx_v_argType); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_2);
+            __Pyx_DECREF_SET(__pyx_v_hints, ((PyObject*)__pyx_t_2));
+            __pyx_t_2 = 0;
 
             /* "yapic/entity/_factory.pyx":74
  *                     else:
@@ -2297,10 +2283,10 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
  *             else:
  *                 raise TypeError("Positional arguments must have a type hint: %r" % type)
  */
-            __pyx_t_3 = __pyx_f_5yapic_6entity_8_factory_new_instance(__pyx_v_argType, __pyx_v_hints, __pyx_v_resolve_forward, __pyx_v_locals); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 74, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_3);
-            __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_args, __pyx_t_3); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 74, __pyx_L1_error)
-            __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+            __pyx_t_2 = __pyx_f_5yapic_6entity_8_factory_new_instance(__pyx_v_argType, __pyx_v_hints, __pyx_v_resolve_forward, __pyx_v_locals); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 74, __pyx_L1_error)
+            __Pyx_GOTREF(__pyx_t_2);
+            __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_args, __pyx_t_2); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 74, __pyx_L1_error)
+            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           }
           __pyx_L11:;
         }
@@ -2324,11 +2310,11 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
  *     return type(*args)
  */
       /*else*/ {
-        __pyx_t_3 = __Pyx_PyUnicode_FormatSafe(__pyx_kp_u_Positional_arguments_must_have_a, __pyx_v_type); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 76, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_10 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_3); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 76, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyUnicode_FormatSafe(__pyx_kp_u_Positional_arguments_must_have_a, __pyx_v_type); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 76, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        __pyx_t_10 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 76, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_10);
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __Pyx_Raise(__pyx_t_10, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
         __PYX_ERR(0, 76, __pyx_L1_error)
@@ -2343,7 +2329,7 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
  *             argType = arg[1]
  */
     }
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
     /* "yapic/entity/_factory.pyx":58
  *     args = []
@@ -2362,11 +2348,11 @@ static PyObject *__pyx_f_5yapic_6entity_8_factory_new_instance(PyObject *__pyx_v
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = PySequence_Tuple(__pyx_v_args); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_10 = __Pyx_PyObject_Call(__pyx_v_type, __pyx_t_2, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __pyx_t_3 = PySequence_Tuple(__pyx_v_args); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_10 = __Pyx_PyObject_Call(__pyx_v_type, __pyx_t_3, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_r = __pyx_t_10;
   __pyx_t_10 = 0;
   goto __pyx_L0;
@@ -3361,93 +3347,6 @@ static CYTHON_INLINE void __Pyx_RaiseNoneNotIterableError(void) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
 }
 
-/* GetItemInt */
-static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j) {
-    PyObject *r;
-    if (!j) return NULL;
-    r = PyObject_GetItem(o, j);
-    Py_DECREF(j);
-    return r;
-}
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
-                                                              CYTHON_NCP_UNUSED int wraparound,
-                                                              CYTHON_NCP_UNUSED int boundscheck) {
-#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    Py_ssize_t wrapped_i = i;
-    if (wraparound & unlikely(i < 0)) {
-        wrapped_i += PyList_GET_SIZE(o);
-    }
-    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyList_GET_SIZE(o)))) {
-        PyObject *r = PyList_GET_ITEM(o, wrapped_i);
-        Py_INCREF(r);
-        return r;
-    }
-    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
-#else
-    return PySequence_GetItem(o, i);
-#endif
-}
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
-                                                              CYTHON_NCP_UNUSED int wraparound,
-                                                              CYTHON_NCP_UNUSED int boundscheck) {
-#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    Py_ssize_t wrapped_i = i;
-    if (wraparound & unlikely(i < 0)) {
-        wrapped_i += PyTuple_GET_SIZE(o);
-    }
-    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyTuple_GET_SIZE(o)))) {
-        PyObject *r = PyTuple_GET_ITEM(o, wrapped_i);
-        Py_INCREF(r);
-        return r;
-    }
-    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
-#else
-    return PySequence_GetItem(o, i);
-#endif
-}
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i, int is_list,
-                                                     CYTHON_NCP_UNUSED int wraparound,
-                                                     CYTHON_NCP_UNUSED int boundscheck) {
-#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS && CYTHON_USE_TYPE_SLOTS
-    if (is_list || PyList_CheckExact(o)) {
-        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyList_GET_SIZE(o);
-        if ((!boundscheck) || (likely(__Pyx_is_valid_index(n, PyList_GET_SIZE(o))))) {
-            PyObject *r = PyList_GET_ITEM(o, n);
-            Py_INCREF(r);
-            return r;
-        }
-    }
-    else if (PyTuple_CheckExact(o)) {
-        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyTuple_GET_SIZE(o);
-        if ((!boundscheck) || likely(__Pyx_is_valid_index(n, PyTuple_GET_SIZE(o)))) {
-            PyObject *r = PyTuple_GET_ITEM(o, n);
-            Py_INCREF(r);
-            return r;
-        }
-    } else {
-        PySequenceMethods *m = Py_TYPE(o)->tp_as_sequence;
-        if (likely(m && m->sq_item)) {
-            if (wraparound && unlikely(i < 0) && likely(m->sq_length)) {
-                Py_ssize_t l = m->sq_length(o);
-                if (likely(l >= 0)) {
-                    i += l;
-                } else {
-                    if (!PyErr_ExceptionMatches(PyExc_OverflowError))
-                        return NULL;
-                    PyErr_Clear();
-                }
-            }
-            return m->sq_item(o, i);
-        }
-    }
-#else
-    if (is_list || PySequence_Check(o)) {
-        return PySequence_GetItem(o, i);
-    }
-#endif
-    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
-}
-
 /* GetAttr */
 static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *o, PyObject *n) {
 #if CYTHON_USE_TYPE_SLOTS
@@ -3538,6 +3437,93 @@ static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name)
     PyErr_Clear();
 #endif
     return __Pyx_GetBuiltinName(name);
+}
+
+/* GetItemInt */
+static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j) {
+    PyObject *r;
+    if (!j) return NULL;
+    r = PyObject_GetItem(o, j);
+    Py_DECREF(j);
+    return r;
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    Py_ssize_t wrapped_i = i;
+    if (wraparound & unlikely(i < 0)) {
+        wrapped_i += PyList_GET_SIZE(o);
+    }
+    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyList_GET_SIZE(o)))) {
+        PyObject *r = PyList_GET_ITEM(o, wrapped_i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+#else
+    return PySequence_GetItem(o, i);
+#endif
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    Py_ssize_t wrapped_i = i;
+    if (wraparound & unlikely(i < 0)) {
+        wrapped_i += PyTuple_GET_SIZE(o);
+    }
+    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyTuple_GET_SIZE(o)))) {
+        PyObject *r = PyTuple_GET_ITEM(o, wrapped_i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+#else
+    return PySequence_GetItem(o, i);
+#endif
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i, int is_list,
+                                                     CYTHON_NCP_UNUSED int wraparound,
+                                                     CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS && CYTHON_USE_TYPE_SLOTS
+    if (is_list || PyList_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyList_GET_SIZE(o);
+        if ((!boundscheck) || (likely(__Pyx_is_valid_index(n, PyList_GET_SIZE(o))))) {
+            PyObject *r = PyList_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
+        }
+    }
+    else if (PyTuple_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyTuple_GET_SIZE(o);
+        if ((!boundscheck) || likely(__Pyx_is_valid_index(n, PyTuple_GET_SIZE(o)))) {
+            PyObject *r = PyTuple_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
+        }
+    } else {
+        PySequenceMethods *m = Py_TYPE(o)->tp_as_sequence;
+        if (likely(m && m->sq_item)) {
+            if (wraparound && unlikely(i < 0) && likely(m->sq_length)) {
+                Py_ssize_t l = m->sq_length(o);
+                if (likely(l >= 0)) {
+                    i += l;
+                } else {
+                    if (!PyErr_ExceptionMatches(PyExc_OverflowError))
+                        return NULL;
+                    PyErr_Clear();
+                }
+            }
+            return m->sq_item(o, i);
+        }
+    }
+#else
+    if (is_list || PySequence_Check(o)) {
+        return PySequence_GetItem(o, i);
+    }
+#endif
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
 }
 
 /* PyCFunctionFastCall */

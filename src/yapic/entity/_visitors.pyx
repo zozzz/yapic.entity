@@ -89,10 +89,11 @@ cdef class EntityReplacer(ReplacerBase):
             return expr
 
     def visit_relation(self, Relation relation):
-        if relation.get_entity() is self.what:
-            return relation._rebind(self.to)
-        else:
-            return relation
+        raise RuntimeError(f"Not implemented entity replace in relation: {relation}")
+        # if relation.get_entity() is self.what:
+        #     return relation._rebind(self.to)
+        # else:
+        #     return relation
 
     def visit_expression_placeholder(self, ExpressionPlaceholder placeholder):
         try:
@@ -179,11 +180,12 @@ cdef class FieldReplacer(ReplacerBase):
 
         return expr
 
-    def visit_relation(self, Relation relation):
-        cdef Relation clone = relation._rebind(relation.get_entity())
+    # TODO:
+    # def visit_relation(self, Relation relation):
+    #     cdef Relation clone = relation._rebind(relation.get_entity())
 
-        if isinstance(clone._impl_, ManyToMany):
-            clone._impl_.join_expr = self.visit(clone._impl_.join_expr)
-            clone._impl_.across_join_expr = self.visit(clone._impl_.across_join_expr)
-        else:
-            clone._impl_.join_expr = self.visit(clone._impl_.join_expr)
+    #     if isinstance(clone._impl_, ManyToMany):
+    #         clone._impl_.join_expr = self.visit(clone._impl_.join_expr)
+    #         clone._impl_.across_join_expr = self.visit(clone._impl_.across_join_expr)
+    #     else:
+    #         clone._impl_.join_expr = self.visit(clone._impl_.join_expr)

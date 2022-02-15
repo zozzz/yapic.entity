@@ -12,6 +12,9 @@ from ._record_converter cimport RCState
 from ._record_converter import convert_record
 
 
+# TODO: ne kérdezze le egyszerre az összes rekordot, hanem csak X-enként
+# https://github.com/MagicStack/asyncpg/issues/738
+
 cdef class QueryContext:
     def __cinit__(self, conn, cursor_factory, list rcos_list):
         self.conn = conn

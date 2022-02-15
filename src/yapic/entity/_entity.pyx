@@ -188,6 +188,8 @@ cdef class EntityType(type):
 
             (<Relation>poly_relation)._default_ = poly_join
 
+        # TODO: hints in mro order
+
         if hints[1] is not None:
             for name, type in (<dict>hints[1]).items():
                 if polymorph and hasattr(base_entity, name):
@@ -568,21 +570,6 @@ cdef class EntityAttribute(Expression):
         for ext in self._exts_:
             ext.init()
 
-    cdef EntityAttribute _rebind(self, EntityType entity):
-        raise RuntimeError(f"Can't rebind attribute {self}")
-
-        # TODO: ...
-        # cdef EntityAttribute new_attr = self.clone()
-        # cdef object entity_ref = <object>PyWeakref_NewRef(entity, None)
-        # cdef object registry_ref = <object>entity.registry_ref
-
-        # if new_attr._bind(entity_ref, registry_ref) \
-        #         and new_attr._resolve_deferred() \
-        #         and new_attr.init():
-        #     return new_attr
-
-        # raise RuntimeError(f"Can't rebind attribute {self}")
-
     cpdef clone(self):
         raise NotImplementedError()
 
@@ -606,7 +593,7 @@ cdef class EntityAttribute(Expression):
                 return ext
 
     cpdef copy_into(self, EntityAttribute other):
-        other._exts_ = self.clone_exts(other)
+        other._exts_.extend(self.clone_exts(other))
         other._default_ = self._default_
 
     cpdef _entity_repr(self):

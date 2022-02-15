@@ -1102,14 +1102,45 @@ async def test_enum(conn, pgclean):
 
         ORIGO = dict(point=Point(x=0, y=0))
 
+    class ChoiceInEnum(Enum, registry=R, schema="execution"):
+        int_enum: Choice[IntEnum] = Field(nullable=False)
+
+        VALUE1 = dict(int_enum=IntEnum.PAUSED)
+
+    class Currency(Enum, registry=R, schema="execution"):
+        value: String = Field(size=(3, 3), nullable=False) \
+            // PrimaryKey()
+        label: String
+
+        EUR = dict(label="€")
+        USD = dict(label="$")
+
     class EnumTest(Entity, registry=R, schema="execution"):
         id: Serial
         str_enum: Choice[StringEnum]
         int_enum: Choice[IntEnum]
+        currency: Choice[Currency]
+        choice_in_enum: Choice[ChoiceInEnum]
         point: Choice[CompositeEnum]
 
     result = await sync(conn, R)
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE TABLE "execution"."IntEnum" (
+  "value" INT4 NOT NULL,
+  "label" TEXT,
+  "index" INT4,
+  PRIMARY KEY("value")
+);
+INSERT INTO "execution"."IntEnum" ("value", "label", "index") VALUES (1, 'Paused', 0) ON CONFLICT ("value") DO UPDATE SET "label"='Paused', "index"=0;
+INSERT INTO "execution"."IntEnum" ("value", "label", "index") VALUES (2, 'Running', 1) ON CONFLICT ("value") DO UPDATE SET "label"='Running', "index"=1;
+CREATE TABLE "execution"."ChoiceInEnum" (
+  "int_enum" INT4 NOT NULL,
+  "value" TEXT NOT NULL,
+  "label" TEXT,
+  "index" INT4,
+  PRIMARY KEY("value")
+);
+INSERT INTO "execution"."ChoiceInEnum" ("int_enum", "value", "index") VALUES (1, 'VALUE1', 0) ON CONFLICT ("value") DO UPDATE SET "int_enum"=1, "index"=0;
 CREATE TYPE "execution"."Point" AS (
   "x" INT4,
   "y" INT4
@@ -1122,15 +1153,15 @@ CREATE TABLE "execution"."CompositeEnum" (
   PRIMARY KEY("value")
 );
 INSERT INTO "execution"."CompositeEnum" ("point"."x", "point"."y", "value", "index") VALUES (0, 0, 'ORIGO', 0) ON CONFLICT ("value") DO UPDATE SET "point"."x"=0, "point"."y"=0, "index"=0;
-CREATE SEQUENCE "execution"."EnumTest_id_seq";
-CREATE TABLE "execution"."IntEnum" (
-  "value" INT4 NOT NULL,
+CREATE TABLE "execution"."Currency" (
+  "value" CHAR(3) NOT NULL,
   "label" TEXT,
   "index" INT4,
   PRIMARY KEY("value")
 );
-INSERT INTO "execution"."IntEnum" ("value", "label", "index") VALUES (1, 'Paused', 0) ON CONFLICT ("value") DO UPDATE SET "label"='Paused', "index"=0;
-INSERT INTO "execution"."IntEnum" ("value", "label", "index") VALUES (2, 'Running', 1) ON CONFLICT ("value") DO UPDATE SET "label"='Running', "index"=1;
+INSERT INTO "execution"."Currency" ("value", "label", "index") VALUES ('EUR', '€', 0) ON CONFLICT ("value") DO UPDATE SET "label"='€', "index"=0;
+INSERT INTO "execution"."Currency" ("value", "label", "index") VALUES ('USD', '$', 1) ON CONFLICT ("value") DO UPDATE SET "label"='$', "index"=1;
+CREATE SEQUENCE "execution"."EnumTest_id_seq";
 CREATE TABLE "execution"."StringEnum" (
   "value" TEXT NOT NULL,
   "label" TEXT,
@@ -1143,15 +1174,24 @@ CREATE TABLE "execution"."EnumTest" (
   "id" INT4 NOT NULL DEFAULT nextval('"execution"."EnumTest_id_seq"'::regclass),
   "str_enum" TEXT,
   "int_enum" INT4,
+  "currency" CHAR(3),
+  "choice_in_enum" TEXT,
   "point" TEXT,
   PRIMARY KEY("id")
 );
+CREATE INDEX "idx_ChoiceInEnum__int_enum" ON "execution"."ChoiceInEnum" USING btree ("int_enum");
+ALTER TABLE "execution"."ChoiceInEnum"
+  ADD CONSTRAINT "fk_ChoiceInEnum__int_enum-IntEnum__value" FOREIGN KEY ("int_enum") REFERENCES "execution"."IntEnum" ("value") ON UPDATE RESTRICT ON DELETE RESTRICT;
 CREATE INDEX "idx_EnumTest__str_enum" ON "execution"."EnumTest" USING btree ("str_enum");
 CREATE INDEX "idx_EnumTest__int_enum" ON "execution"."EnumTest" USING btree ("int_enum");
+CREATE INDEX "idx_EnumTest__currency" ON "execution"."EnumTest" USING btree ("currency");
+CREATE INDEX "idx_EnumTest__choice_in_enum" ON "execution"."EnumTest" USING btree ("choice_in_enum");
 CREATE INDEX "idx_EnumTest__point" ON "execution"."EnumTest" USING btree ("point");
 ALTER TABLE "execution"."EnumTest"
   ADD CONSTRAINT "fk_EnumTest__str_enum-StringEnum__value" FOREIGN KEY ("str_enum") REFERENCES "execution"."StringEnum" ("value") ON UPDATE RESTRICT ON DELETE RESTRICT,
   ADD CONSTRAINT "fk_EnumTest__int_enum-IntEnum__value" FOREIGN KEY ("int_enum") REFERENCES "execution"."IntEnum" ("value") ON UPDATE RESTRICT ON DELETE RESTRICT,
+  ADD CONSTRAINT "fk_EnumTest__currency-Currency__value" FOREIGN KEY ("currency") REFERENCES "execution"."Currency" ("value") ON UPDATE RESTRICT ON DELETE RESTRICT,
+  ADD CONSTRAINT "fk_EnumTest__choice_in_enum-ChoiceInEnum__value" FOREIGN KEY ("choice_in_enum") REFERENCES "execution"."ChoiceInEnum" ("value") ON UPDATE RESTRICT ON DELETE RESTRICT,
   ADD CONSTRAINT "fk_EnumTest__point-CompositeEnum__value" FOREIGN KEY ("point") REFERENCES "execution"."CompositeEnum" ("value") ON UPDATE RESTRICT ON DELETE RESTRICT;"""
 
     await conn.execute(result)

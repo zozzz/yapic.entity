@@ -30,6 +30,18 @@ async def connect():
 
 
 @profile
+async def pool():
+    pg_pool = await asyncpg.create_pool(
+        host="127.0.0.1",
+        user="root",
+        password="root",
+        database="root",
+    )
+    conn = await pg_pool.acquire()
+    await pg_pool.release(conn)
+
+
+@profile
 def test_entity_state():
     registry = Registry()
 
@@ -55,17 +67,5 @@ def test_entity_state():
     gc.collect()
 
 
-@profile
-def call():
-    print(sys.gettotalrefcount())
-    x = func.now()
-    x = func.now()
-    x = func.now()
-    x = func.now()
-    # gc.collect()
-    print(sys.gettotalrefcount())
-
-
 if __name__ == "__main__":
-    # asyncio.run(connect())
-    call()
+    asyncio.run(pool())
