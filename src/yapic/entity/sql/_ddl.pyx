@@ -151,8 +151,20 @@ cdef class DDLCompiler:
     def compile_registry_diff(self, RegistryDiff diff):
         lines = []
         deferred = []
+        entities_recrated = set()
         schemas_created = {ent.get_meta("schema", "public") for ent in diff.a.values()}
         schemas_created.add("public")
+
+        # TODO: better method to determine which entities need to recreate
+        for kind, param in diff:
+            if kind is RegistryDiffKind.CHANGED:
+                if param.b.get_meta("is_type", False) is False:
+                    for ek, ep in param:
+                        if ek is EntityDiffKind.CHANGED:
+                            if "_index_" in ep[2]:
+                                entities_recrated.add(self.dialect.table_qname(param.b))
+                                break
+
 
         for kind, param in diff:
             if kind is RegistryDiffKind.REMOVED:
@@ -170,7 +182,7 @@ cdef class DDLCompiler:
                 if param.b.get_meta("is_type", False) is True:
                     lines.append(self.compile_type_diff(param))
                 else:
-                    _updates, _deferred = self.compile_entity_diff(param)
+                    _updates, _deferred = self.compile_entity_diff(param, entities_recrated)
                     lines.append(_updates)
                     deferred.extend(_deferred)
             elif kind is RegistryDiffKind.INSERT_ENTITY:
@@ -194,7 +206,7 @@ cdef class DDLCompiler:
             res += "\n" + "\n".join(deferred)
         return res
 
-    def compile_entity_diff(self, EntityDiff diff):
+    def compile_entity_diff(self, EntityDiff diff, set entities_recrated):
         cdef EntityAttributeExtGroup group
         requirements = []
         alter = []
@@ -209,7 +221,7 @@ cdef class DDLCompiler:
                 alter.append(f"ADD COLUMN {self.compile_field(param, requirements)}")
             elif kind == EntityDiffKind.CHANGED:
                 if "_index_" in param[2]:
-                    return self.recreate_entity(param[0]._entity_, param[1]._entity_)
+                    return self.recreate_entity(param[0]._entity_, param[1]._entity_, entities_recrated)
                 alter.extend(self.compile_field_diff(param[1], param[2]))
             elif kind == EntityDiffKind.REMOVE_PK:
                 alter.append(f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(param.__name__ + '_pkey')}")
@@ -349,7 +361,7 @@ cdef class DDLCompiler:
     def remove_trigger(self, EntityType entity, Trigger trigger):
         raise NotImplementedError()
 
-    def recreate_entity(self, EntityType old_entity, EntityType new_entity):
+    def recreate_entity(self, EntityType old_entity, EntityType new_entity, set entities_recrated):
         cdef list result = []
         cdef EntityType entity
         cdef Field field
@@ -371,10 +383,12 @@ cdef class DDLCompiler:
                         f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(fk_group.name)}"
                     )
 
-                    fix_entity.setdefault(entity_qname, [])
-                    fix_entity[entity_qname].append(
-                        f"ADD {self.compile_foreign_key(fk_group)}",
-                    )
+                    # if entity recreated, dont need to restore foreign key, because recrate keys at the end of script
+                    if entity_qname not in entities_recrated:
+                        fix_entity.setdefault(entity_qname, [])
+                        fix_entity[entity_qname].append(
+                            f"ADD {self.compile_foreign_key(fk_group)}",
+                        )
 
         if strip_entity:
             result.append(compile_alters(strip_entity))
@@ -383,6 +397,7 @@ cdef class DDLCompiler:
             result.append(self.remove_trigger(old_entity, trigger))
 
         # rename
+        old_entity_original_name = old_entity.__name__
         old_qname = self.dialect.table_qname(old_entity)
         old_entity.__name__ = f"_{old_entity.__name__}"
         result.append(f"ALTER TABLE {old_qname} RENAME TO {self.dialect.quote_ident(old_entity.__name__)};")
@@ -410,12 +425,8 @@ cdef class DDLCompiler:
         if fix_entity:
             result.append(compile_alters(fix_entity))
 
-        # complete table, trigger, index, fks, ...
-        # TODO: lehet úgy kéne menie mint a create table-nek, hogy csak az egész módosítás után fut le
-        # if entity_deferred:
-        #     result.extend(entity_deferred)
-
-        # result.append(f"-- RECREATE END {self.dialect.table_qname(new_entity)} --")
+        # restore old entity original name
+        old_entity.__name__ = old_entity_original_name
         return "\n".join(result), entity_deferred
 
 

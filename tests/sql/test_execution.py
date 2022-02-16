@@ -1306,6 +1306,7 @@ async def test_change_field_position(conn, pgclean):
         name: String
         age: Int
         email: String = Index(name="unique_email", unique=True)
+        article_id: Auto = ForeignKey("execution.Article.id")
         updated_time: UpdatedTime = func.CURRENT_TIMESTAMP
         for_delete: Int
 
@@ -1329,6 +1330,7 @@ CREATE TABLE "execution"."User" (
   "name" TEXT,
   "age" INT4,
   "email" TEXT,
+  "article_id" INT4,
   "updated_time" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "for_delete" INT4,
   PRIMARY KEY("id")
@@ -1340,8 +1342,10 @@ CREATE TABLE "execution"."Article" (
 );
 CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_id");
 CREATE UNIQUE INDEX "unique_email" ON "execution"."User" USING btree ("email");
+CREATE INDEX "idx_User__article_id" ON "execution"."User" USING btree ("article_id");
 ALTER TABLE "execution"."User"
-  ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+  ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT,
+  ADD CONSTRAINT "fk_User__article_id-Article__id" FOREIGN KEY ("article_id") REFERENCES "execution"."Article" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
 CREATE OR REPLACE FUNCTION "execution"."YT-User-update-updated_time-386fb5-c18e88"() RETURNS TRIGGER AS $$ BEGIN
   NEW."updated_time" = CURRENT_TIMESTAMP; RETURN NEW;
 END; $$ language 'plpgsql' ;
@@ -1375,10 +1379,12 @@ ALTER TABLE "execution"."Article"
         email: String = Index(name="unique_email", unique=True)
         age: Int
         new_field: String
+        article_id: Auto = ForeignKey("execution.Article.id")
         updated_time: UpdatedTime = func.CURRENT_TIMESTAMP
 
     class Article(Entity, registry=R2, schema="execution"):
         id: Serial
+        title: String
         author_id: Auto = ForeignKey(User.id, on_delete="CASCADE")
 
     result = await _sync(conn, R2, compare_field_position=True)
@@ -1394,21 +1400,31 @@ CREATE TABLE "execution"."User" (
   "email" TEXT,
   "age" INT4,
   "new_field" TEXT,
+  "article_id" INT4,
   "updated_time" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY("id")
 );
-INSERT INTO "execution"."User" ("id", "address_id", "name", "email", "age", "updated_time")
-  SELECT "id", "address_id", "name", "email", "age", "updated_time" FROM "execution"."_User";
+INSERT INTO "execution"."User" ("id", "address_id", "name", "email", "age", "article_id", "updated_time")
+  SELECT "id", "address_id", "name", "email", "age", "article_id", "updated_time" FROM "execution"."_User";
 DROP TABLE "execution"."_User" CASCADE;
-ALTER TABLE "execution"."Article"
-  ADD CONSTRAINT "fk_Article__author_id-User__id" FOREIGN KEY ("author_id") REFERENCES "execution"."User" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
-ALTER TABLE "execution"."Article"
-  DROP CONSTRAINT IF EXISTS "fk_Article__author_id-User__id",
-  ADD CONSTRAINT "fk_Article__author_id-User__id" FOREIGN KEY ("author_id") REFERENCES "execution"."User" ("id") ON UPDATE RESTRICT ON DELETE CASCADE;
+ALTER TABLE "execution"."User"
+  DROP CONSTRAINT IF EXISTS "fk_User__article_id-Article__id";
+ALTER TABLE "execution"."Article" RENAME TO "_Article";
+CREATE TABLE "execution"."Article" (
+  "id" INT4 NOT NULL DEFAULT nextval('"execution"."Article_id_seq"'::regclass),
+  "title" TEXT,
+  "author_id" INT4,
+  PRIMARY KEY("id")
+);
+INSERT INTO "execution"."Article" ("id", "author_id")
+  SELECT "id", "author_id" FROM "execution"."_Article";
+DROP TABLE "execution"."_Article" CASCADE;
 CREATE INDEX "idx_User__address_id" ON "execution"."User" USING btree ("address_id");
 CREATE UNIQUE INDEX "unique_email" ON "execution"."User" USING btree ("email");
+CREATE INDEX "idx_User__article_id" ON "execution"."User" USING btree ("article_id");
 ALTER TABLE "execution"."User"
-  ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE CASCADE;
+  ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE CASCADE,
+  ADD CONSTRAINT "fk_User__article_id-Article__id" FOREIGN KEY ("article_id") REFERENCES "execution"."Article" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
 CREATE OR REPLACE FUNCTION "execution"."YT-User-update-updated_time-386fb5-c18e88"() RETURNS TRIGGER AS $$ BEGIN
   NEW."updated_time" = CURRENT_TIMESTAMP; RETURN NEW;
 END; $$ language 'plpgsql' ;
@@ -1416,8 +1432,14 @@ CREATE TRIGGER "update-updated_time"
   BEFORE UPDATE ON "execution"."User"
   FOR EACH ROW
   WHEN (OLD.* IS DISTINCT FROM NEW.* AND (NEW."updated_time" IS NULL OR OLD."updated_time" = NEW."updated_time"))
-  EXECUTE FUNCTION "execution"."YT-User-update-updated_time-386fb5-c18e88"();"""
+  EXECUTE FUNCTION "execution"."YT-User-update-updated_time-386fb5-c18e88"();
+CREATE INDEX "idx_Article__author_id" ON "execution"."Article" USING btree ("author_id");
+ALTER TABLE "execution"."Article"
+  ADD CONSTRAINT "fk_Article__author_id-User__id" FOREIGN KEY ("author_id") REFERENCES "execution"."User" ("id") ON UPDATE RESTRICT ON DELETE CASCADE;"""
     await conn.execute(result)
+
+    result = await _sync(conn, R2, compare_field_position=True)
+    assert bool(result) is False
 
     address = await conn.select(Query(Address).where(Address.id == address.id)).first()
     assert address is not None
