@@ -22,6 +22,7 @@ class FullName(Entity):
     given: String
     xyz: Json[XYZ]
 
+    # TODO: @virtual(String, store=True) if store is true this function must return an expression
     @virtual
     def formatted(self):
         return " ".join(filter(bool, (self.title, self.family, self.given)))
@@ -509,6 +510,12 @@ def test_virtual():
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == """SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE "t0"."name" ILIKE ('%' || $1 || '%') OR "t0"."name" ILIKE ('%' || $2 || '%') OR "t0"."name" ILIKE ('%' || $3 || '%') OR "t0"."name" ILIKE ('%' || $4 || '%')"""
     assert params == ("Jane", "Doe", "Jhon", "Smith")
+
+    UserA = User.alias("UserA")
+    q = Query(UserA).where(UserA.name_q.contains("Jane Doe"))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "UserA"."id", "UserA"."name", "UserA"."email", "UserA"."created_time", "UserA"."address_id" FROM "User" "UserA" WHERE "UserA"."name" ILIKE ('%' || $1 || '%') OR "UserA"."name" ILIKE ('%' || $2 || '%')"""
+    assert params == ("Jane", "Doe")
 
 
 class UserComp3(Entity):

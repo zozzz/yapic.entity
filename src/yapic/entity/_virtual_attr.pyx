@@ -57,7 +57,7 @@ cdef class VirtualAttribute(EntityAttribute):
         return self
 
     def __repr__(self):
-        return "<%s: Virtual>" % self._key_
+        return f"<Virtual {self._key_} {self._entity_repr()}>"
 
     cpdef visit(self, Visitor visitor):
         return visitor.visit_virtual_attr(self)

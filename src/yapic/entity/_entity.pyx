@@ -83,21 +83,18 @@ cdef class EntityType(type):
             self_ref = <object>PyWeakref_NewRef(self, None)
             for attr in __attrs__:
                 attr._bind(self_ref, <object>self.registry_ref)
-                if isinstance(attr, VirtualAttribute):
-                    non_fields.append(attr)
-                else:
-                    if attr._key_ is not None:
-                        setattr(self, attr._key_, attr)
-                    elif attr._name_ is not None:
-                        attr._key_ = attr._name_
-                        setattr(self, attr._key_, attr)
 
-                    if isinstance(attr, Field):
-                        __fields__.append(attr)
-                        if attr.get_ext(PrimaryKey):
-                            __pk__.append(attr)
-                    else:
-                        non_fields.append(attr)
+                if attr._name_ is not None and attr._key_ is None:
+                    attr._key_ = attr._name_
+                if attr._key_ is not None:
+                    setattr(self, attr._key_, attr)
+
+                if isinstance(attr, Field):
+                    __fields__.append(attr)
+                    if attr.get_ext(PrimaryKey):
+                        __pk__.append(attr)
+                else:
+                    non_fields.append(attr)
 
             # finalizing
             self.__pk__ = tuple(__pk__)
@@ -381,6 +378,8 @@ cdef class EntityAlias(EntityType):
 
                 if isinstance(attr, Relation):
                     relations[id(v)] = attr
+            else:
+                raise RuntimeError(f"Not implemented attr aliasing: {v}")
 
         for i, relatad_attr in relatad_attrs:
             attr = RelatedAttribute(relations[id((<RelatedAttribute>relatad_attr).__relation__)], name=(<RelatedAttribute>relatad_attr)._name_)
