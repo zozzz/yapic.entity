@@ -4,14 +4,14 @@ import cython
 from yapic.entity._entity cimport EntityType, EntityAttribute, PolymorphMeta, get_alias_target, is_entity_alias
 from yapic.entity._field cimport Field, field_eq
 from yapic.entity._field_impl cimport CompositeImpl
-from yapic.entity._expression cimport (Expression, AliasExpression, ColumnRefExpression, DirectionExpression, Visitor,
+from yapic.entity._expression cimport (Expression, AliasExpression, ColumnRefExpression, OrderExpression, Visitor,
     BinaryExpression, UnaryExpression, CastExpression, CallExpression, RawExpression, PathExpression,
-    VirtualExpressionVal, VirtualExpressionBinary, VirtualExpressionDir, ConstExpression, raw)
+    ConstExpression, raw)
 from yapic.entity._expression import and_
 from yapic.entity._relation cimport Relation, RelationImpl, ManyToOne, ManyToMany, RelatedAttribute, determine_join_expr, Loading
 from yapic.entity._error cimport JoinError
 from yapic.entity._visitors cimport extract_fields, replace_fields, replace_entity, ReplacerBase
-from yapic.entity._virtual_attr cimport VirtualAttribute
+from yapic.entity._virtual_attr cimport VirtualAttribute, VirtualOrderExpression, VirtualBinaryExpression
 
 from ._dialect cimport Dialect
 
@@ -56,7 +56,7 @@ cdef class Query(Expression):
                     or isinstance(col, PathExpression) \
                     or isinstance(col, RawExpression) \
                     or isinstance(col, CallExpression) \
-                    or isinstance(col, VirtualExpressionVal) \
+                    or isinstance(col, VirtualAttribute) \
                     or isinstance(col, Query):
                 self._columns.append(col)
             else:
@@ -79,7 +79,7 @@ cdef class Query(Expression):
             self._order = []
 
         for item in expr:
-            if isinstance(item, (DirectionExpression, RawExpression, VirtualExpressionDir)):
+            if isinstance(item, (OrderExpression, RawExpression)):
                 self._order.append(item)
             elif isinstance(item, Expression):
                 self._order.append((<Expression>item).asc())
@@ -181,40 +181,39 @@ cdef class Query(Expression):
                 type = "INNER"
 
             condition = impl.join_expr
-            entity = impl.get_joined_alias()
+            joined = impl.get_joined_alias()
 
-            if entity is None:
+            if joined is None:
                 raise RuntimeError("Relation is deferred: %r" % what)
 
             if condition is None:
                 raise RuntimeError("Missing join expression from relation: %r" % what)
 
-            if entity in self._entities:
+            if joined in self._entities:
                 return self
 
         elif isinstance(what, EntityType):
-            entity = <EntityType>what
+            joined = <EntityType>what
 
-            if entity in self._entities:
+            if joined in self._entities:
                 return self
 
             if condition is None:
-                condition = determine_join(self, entity)
-
+                condition = determine_join(self, joined)
         else:
             raise ValueError(f"Want to join uexpected entity: {what}")
 
-        self._entities.add(entity)
+        self._entities.add(joined)
 
         # TODO: Nem biztos, hogy ezt így kéne...
-        aliased = get_alias_target(entity)
+        aliased = get_alias_target(joined)
         self._entities.add(aliased)
 
-        entity_id = id(entity)
+        joined_id = id(joined)
         try:
-            existing = self._joins[entity_id]
+            existing = self._joins[joined_id]
         except KeyError:
-            self._joins[entity_id] = [entity, condition, type]
+            self._joins[joined_id] = [joined, condition, type]
         else:
             if type.upper().startswith("INNER"):
                 existing[2] = type
@@ -270,10 +269,6 @@ cdef class Query(Expression):
         return self
 
     def load(self, *load):
-        # for entry in load:
-        #     if isinstance(entry, VirtualExpressionVal) and (<VirtualExpressionVal>entry)._virtual_._val:
-        #         self._load[(<VirtualExpressionVal>entry)._virtual_._uid_] = (<VirtualExpressionVal>entry)._create_expr_(self)
-
         load_options(self._load, load)
         return self
 
@@ -319,6 +314,7 @@ cdef class Query(Expression):
         QueryFinalizer(compiler, res).finalize()
         return res, res._rcos
 
+    # TODO: ha nem alias és nem található akkor meg kell nézni a self entites ben alias nélkül, ha egy van ok, ellenkező esetben ambigous error
     cdef str get_expr_alias(Query self, object expr):
         if isinstance(expr, EntityType):
             try:
@@ -364,7 +360,7 @@ cdef class Query(Expression):
             parts.append(f"columns = {self._columns}")
 
         if self._joins:
-            parts.append(f"joins = {self._joins}")
+            parts.append(f"joins = {self._joins.values()}")
             # parts.append(f"joins = {tuple(self._joins.values())}")
 
         if self._where:
@@ -394,9 +390,6 @@ cdef object load_options(dict target, tuple input):
             target[(<RelationImpl>(<Relation>inp)._impl_).get_joined_alias()] = inp
         elif isinstance(inp, EntityAttribute):
             target[(<EntityAttribute>inp)._uid_] = inp
-        elif isinstance(inp, VirtualExpressionVal):
-            if (<VirtualExpressionVal>inp)._virtual_._val:
-                target[(<VirtualExpressionVal>inp)._virtual_._uid_] = inp
         elif isinstance(inp, PathExpression):
             pl = len((<PathExpression>inp)._path_)
             for i, entry in enumerate((<PathExpression>inp)._path_):
@@ -413,6 +406,8 @@ cdef object load_options(dict target, tuple input):
                     target[(<Field>entry)._uid_] = entry
                 elif isinstance(entry, RelatedAttribute):
                     target[(<RelatedAttribute>entry)._uid_] = entry
+                elif isinstance(entry, VirtualAttribute):
+                    target[(<VirtualAttribute>entry)._uid_] = entry
                 else:
                     raise NotImplementedError(repr(entry))
         else:
@@ -448,6 +443,11 @@ _RCO_PUSH = RowConvertOp(RCO.PUSH)
 _RCO_POP = RowConvertOp(RCO.POP)
 
 
+class VirtualFallback(Exception):
+    def __init__(self, VirtualAttribute attr):
+        self.attr = attr
+
+
 cdef class QueryFinalizer(Visitor):
     def __cinit__(self, QueryCompiler compiler, Query q):
         self.q = q
@@ -461,13 +461,28 @@ cdef class QueryFinalizer(Visitor):
             self.in_or += 1
 
         try:
+            try:
+                left = self.visit(expr.left)
+            except VirtualFallback as vf:
+                new_expr = VirtualBinaryExpression(vf.attr, expr.right, expr.op)
+                new_expr.negated = expr.negated
+                return self.visit(new_expr)
+
+            try:
+                right = self.visit(expr.right)
+            except VirtualFallback as vf:
+                new_expr = VirtualBinaryExpression(left, vf.attr, expr.op)
+                new_expr.negated = expr.negated
+                return self.visit(new_expr)
+
             if expr.negated:
-                return ~expr.op(self.visit(expr.left), self.visit(expr.right))
+                return ~expr.op(left, right)
             else:
-                return expr.op(self.visit(expr.left), self.visit(expr.right))
+                return expr.op(left, right)
         finally:
             if expr.op == operator.__or__:
                 self.in_or -= 1
+
 
     def visit_unary(self, UnaryExpression expr):
         return expr.op(self.visit(expr.expr))
@@ -475,8 +490,13 @@ cdef class QueryFinalizer(Visitor):
     def visit_cast(self, CastExpression expr):
         return CastExpression(self.visit(expr.expr), expr.to)
 
-    def visit_direction(self, DirectionExpression expr):
-        cdef Expression res = self.visit(expr.expr)
+    def visit_order(self, OrderExpression expr):
+        try:
+            res = self.visit(expr.expr)
+        except VirtualFallback as vf:
+            new_expr = VirtualOrderExpression(vf.attr, expr.is_asc)
+            return self.visit(new_expr)
+
         if expr.is_asc:
             return res.asc()
         else:
@@ -507,6 +527,14 @@ cdef class QueryFinalizer(Visitor):
         return self.visit(expr.expr).alias(expr.value)
 
     def visit_path(self, PathExpression expr):
+        for i, entry in enumerate(expr._path_):
+            if isinstance(entry, VirtualAttribute):
+                if len(expr._path_) - 1 != i:
+                    raise RuntimeError("Not implemented, more path entries after virtual expression")
+
+                new_attr = (<VirtualAttribute>entry).with_path(PathExpression(expr._path_[0:i]))
+                raise VirtualFallback(new_attr)
+
         if isinstance(expr._path_[0], Relation):
             for p in expr._path_:
                 if isinstance(p, Relation):
@@ -515,22 +543,28 @@ cdef class QueryFinalizer(Visitor):
                     break
         return PathExpression(list(expr._path_))
 
-    def visit_vexpr_val(self, VirtualExpressionVal expr):
+    def visit_virtual_attr(self, VirtualAttribute expr):
+        return self.visit(expr.get_value_expr(self.q))
+
+    def visit_virtual_binary(self, VirtualBinaryExpression expr):
         return self.visit(expr._create_expr_(self.q))
 
-    def visit_vexpr_binary(self, VirtualExpressionBinary expr):
-        return self.visit(expr._create_expr_(self.q))
+    def visit_virtual_order(self, VirtualOrderExpression expr):
+        cdef VirtualAttribute attr = expr.expr
 
-    def visit_vexpr_dir(self, VirtualExpressionDir expr):
-        cdef VirtualAttribute attr = expr.expr._virtual_
         if attr._order:
             return self.visit(expr._create_expr_(self.q))
         else:
             try:
                 idx = self._find_column_index(attr)
-                return expr.op(ColumnRefExpression(expr.expr, idx))
-            except:
+            except ValueError:
                 return self.visit(expr._create_expr_(self.q))
+            else:
+                col_ref = ColumnRefExpression(expr.expr, idx)
+                if expr.is_asc:
+                    return col_ref.asc()
+                else:
+                    return col_ref.desc()
 
     def visit_relation(self, expr):
         return expr
@@ -544,15 +578,6 @@ cdef class QueryFinalizer(Visitor):
                 else:
                     new_from.append(self.visit(f))
             self.q._select_from = new_from
-
-        # if self.q._load:
-        #     load = {}
-        #     for k, v in self.q._load.items():
-        #         if isinstance(v, (VirtualExpressionVal, VirtualExpressionBinary)):
-        #             load[k] = self.visit(v)
-        #         else:
-        #             load[k] = v
-        #     self.q._load = load
 
         if self.q._columns:
             if not self.q._load:
@@ -579,7 +604,6 @@ cdef class QueryFinalizer(Visitor):
             self.q._distinct = self._visit_iterable(self.q._distinct)
 
         self.q._rcos = self.rcos
-
 
         # print("="*40)
         # from pprint import pprint
@@ -616,6 +640,11 @@ cdef class QueryFinalizer(Visitor):
                     else:
                         self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
                         self.q._columns.append(self.visit(expr))
+                elif isinstance(last_entry, VirtualAttribute):
+                    new_vattr = (<VirtualAttribute>last_entry).with_path(PathExpression(path._path_[0:len(path._path_) - 1]))
+                    self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
+                    self.virtual_indexes[(<VirtualAttribute>new_vattr)._uid_] = len(self.q._columns)
+                    self.q._columns.append(self.visit(new_vattr))
             elif isinstance(expr, Field):
                 if isinstance((<Field>expr)._impl_, CompositeImpl):
                     self.rcos.append(self._rco_for_composite((<Field>expr), (<CompositeImpl>(<Field>expr)._impl_)._entity_, []))
@@ -623,9 +652,9 @@ cdef class QueryFinalizer(Visitor):
                 else:
                     self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
                     self.q._columns.append(self.visit(expr))
-            elif isinstance(expr, VirtualExpressionVal):
+            elif isinstance(expr, VirtualAttribute):
                 self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
-                self.virtual_indexes[(<VirtualExpressionVal>expr)._virtual_._uid_] = len(self.q._columns)
+                self.virtual_indexes[(<VirtualAttribute>expr)._uid_] = len(self.q._columns)
                 self.q._columns.append(self.visit(expr))
             else:
                 self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
@@ -740,10 +769,6 @@ cdef class QueryFinalizer(Visitor):
         cdef dict create_poly = {}
         cdef tuple pk_fields
         cdef list poly_id_fields = []
-
-        # cdef str parent_join_type = "INNER"
-        # if self.q._joins and entity in self.q._joins:
-        #     parent_join_type = self.q._joins[entity][2]
 
         if len(parents) != 0:
             # TODO: Szerintem ez nem kell ide

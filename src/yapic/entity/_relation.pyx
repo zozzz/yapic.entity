@@ -7,7 +7,7 @@ from cpython.module cimport PyImport_Import, PyModule_GetDict
 from cpython.weakref cimport PyWeakref_NewRef, PyWeakref_GetObject
 
 from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeImpl, EntityAttributeExt, EntityAttributeExtGroup, get_alias_target, NOTSET
-from ._expression cimport Expression, Visitor, PathExpression, VirtualExpressionVal, ExpressionPlaceholder
+from ._expression cimport Expression, Visitor, PathExpression, ExpressionPlaceholder
 from ._field cimport Field, ForeignKey
 from ._factory cimport Factory, ForwardDecl, new_instance_from_forward, is_forward_decl
 from ._visitors cimport replace_entity, replace_placeholder
@@ -35,9 +35,6 @@ cdef class Relation(EntityAttribute):
         cdef RelationImpl impl = self._impl_
         cdef EntityType joined = impl.get_joined_alias()
         cdef Expression expr = getattr(joined, name)
-
-        if isinstance(expr, VirtualExpressionVal):
-            return expr
 
         return PathExpression([self, expr])
 

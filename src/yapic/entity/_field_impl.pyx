@@ -4,7 +4,7 @@ from inspect import iscoroutine
 from typing import List
 
 from ._entity cimport EntityType, EntityBase, EntityAttributeImpl, EntityAttribute, NOTSET
-from ._expression cimport PathExpression, VirtualExpressionVal, CallExpression, RawExpression
+from ._expression cimport PathExpression, CallExpression, RawExpression
 from ._field cimport StorageType, ForeignKey
 from ._resolve cimport ResolveContext
 
@@ -87,10 +87,7 @@ cdef class EntityTypeImpl(FieldImpl):
 
     cpdef getattr(self, EntityAttribute attr, object key):
         obj = getattr(self._entity_, key)
-        if isinstance(obj, VirtualExpressionVal):
-            return VirtualExpressionVal((<VirtualExpressionVal>obj)._virtual_, PathExpression([attr]))
-        else:
-            return PathExpression([attr, obj])
+        return PathExpression([attr, obj])
 
     cdef object state_init(self, object initial):
         if initial is NOTSET:
@@ -154,10 +151,7 @@ cdef class JsonImpl(FieldImpl):
     cpdef getattr(self, EntityAttribute attr, object key):
         if self._object_:
             obj = getattr(self._object_, key)
-            if isinstance(obj, VirtualExpressionVal):
-                return VirtualExpressionVal((<VirtualExpressionVal>obj)._virtual_, PathExpression([attr]))
-            else:
-                return PathExpression([attr, obj])
+            return PathExpression([attr, obj])
         else:
             return PathExpression([attr, key])
 

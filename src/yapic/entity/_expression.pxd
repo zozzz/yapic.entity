@@ -49,7 +49,7 @@ cdef class ColumnRefExpression(Expression):
 cdef Expression coerce_expression(object expr)
 
 
-cdef class DirectionExpression(Expression):
+cdef class OrderExpression(Expression):
     cdef readonly Expression expr
     cdef readonly bint is_asc
 
@@ -67,22 +67,14 @@ cdef class PathExpression(Expression):
     cdef readonly list _path_
 
 
-cdef class VirtualExpressionVal(Expression):
-    cdef readonly object _virtual_
-    cdef readonly object _source_
+# cdef class VirtualExpressionVal(Expression):
+#     cdef readonly object _virtual_
+#     cdef readonly object _source_
 
-    cpdef Expression _create_expr_(self, object q)
-
-
-cdef class VirtualExpressionBinary(BinaryExpression):
-    cpdef Expression _create_expr_(self, object q)
+#     cpdef Expression _create_expr_(self, object q)
 
 
-cdef class VirtualExpressionDir(Expression):
-    cdef readonly VirtualExpressionVal expr
-    cdef readonly object op
 
-    cpdef Expression _create_expr_(self, object q)
 
 
 ctypedef enum EPA:

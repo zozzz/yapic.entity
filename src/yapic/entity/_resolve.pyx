@@ -46,6 +46,7 @@ cdef class ResolveContext:
     cdef object forward_ref(self, object forward_ref):
         cdef dict extra = ScopeDict(self.forward_def)
         extra.update(self.registry.locals)
+        extra[self.entity.__name__] = self.entity
         return new_instance_from_forward(forward_ref, extra)
 
     cdef object add_forward(self, EntityType entity):

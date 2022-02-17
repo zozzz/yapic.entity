@@ -1,7 +1,7 @@
 import pytest
 from yapic.entity.sql import sync
 from yapic.entity import (Entity, Serial, Int, String, ForeignKey, PrimaryKey, One, Many, ManyAcross, Registry,
-                          DependencyList, Json, Composite, save_operations, Auto, Query)
+                          DependencyList, Json, Composite, save_operations, Auto, Query, virtual, func)
 
 pytestmark = pytest.mark.asyncio  # type: ignore
 REGISTRY = Registry()
@@ -317,3 +317,91 @@ async def test_ambiguous_load(conn, pgclean):
 
 # async def test_end(conn):
 #     await conn.execute("""DROP SCHEMA IF EXISTS "poly" CASCADE""")
+
+
+async def test_virtual(conn, pgclean):
+    registry = Registry()
+
+    class Node(Entity, registry=registry, schema="poly", polymorph="type"):
+        id: Serial
+        parent_id: Auto = ForeignKey("Node.id")
+        type: String
+        name: String
+        parent: One["Node"] = "_joined_.id == _self_.parent_id"
+
+        @virtual
+        def path(cls):
+            return None
+
+        # TODO:
+        # @path.value
+        # def path(cls, q):
+        #     max_depth = 5
+        #     parts = [cls.name]
+        #     parent = cls.parent
+
+        #     for i in range(max_depth):
+        #         parts.append(parent.name)
+        #         parent = parent.parent
+
+        #     # # TODO: recursive query
+        #     # dir = Node.alias("_dir_")
+        #     # q.join(dir, dir.id == cls.parent_id, "INNER")
+        #     return func.CONCAT_WS("/", *reversed(parts))
+
+        @path.value
+        def path(cls, q):
+            dir = Node.alias("_dir_")
+            q.join(dir, dir.id == cls.parent_id, "INNER")
+            return func.CONCAT_WS("/", dir.name, cls.name)
+
+    class File(Node, polymorph_id="file"):
+        size: Int
+
+        @virtual
+        def with_dir(cls):
+            return None
+
+        @with_dir.value
+        def with_dir(cls, q):
+            return func.CONCAT_WS("/", cls.parent.name, cls.name)
+
+    class Dir(Node, polymorph_id="dir"):
+        count: Int
+
+    result = await sync(conn, registry)
+    await conn.execute(result)
+
+    async def _create_node(t, name, parent_id):
+        node = t()
+        node.name = name
+        node.parent_id = parent_id
+        await conn.save(node)
+        return node
+
+    root = await _create_node(Dir, "root", None)
+    home = await _create_node(Dir, "home", root.id)
+    zozzz = await _create_node(Dir, "zozzz", home.id)
+    some_file = await _create_node(File, "test.py", zozzz.id)
+    var = await _create_node(Dir, "var", root.id)
+    log = await _create_node(Dir, "log", var.id)
+
+    q = Query().select_from(Node).columns(Node.path).where(Node.id == some_file.id)
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT CONCAT_WS($1, "_dir_"."name", "t0"."name") FROM "poly"."Node" "t0" INNER JOIN "poly"."Node" "_dir_" ON "_dir_"."id" = "t0"."parent_id" WHERE "t0"."id" = $2'
+    assert params == ("/", some_file.id)
+    result = await conn.select(q).first()
+    assert result == 'zozzz/test.py'
+
+    q = Query().select_from(File).columns(File.with_dir).where(Node.id == some_file.id)
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    print(sql)
+    assert sql == 'SELECT CONCAT_WS($1, "t1"."name", "t2"."name") FROM "poly"."File" "t0" INNER JOIN "poly"."Node" "t1" ON "t1"."id" = "t2"."parent_id" INNER JOIN "poly"."Node" "t2" ON "t0"."id" = "t2"."id" WHERE "t2"."id" = $2'
+    assert params == ("/", some_file.id)
+    result = await conn.select(q).first()
+    assert result == 'zozzz/test.py'
+
+    q = Query().select_from(Node).load(Node.id, Node.path)
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "t0"."id", "t0"."type", CONCAT_WS($1, "_dir_"."name", "t0"."name"), "t1"."size", "t2"."count" FROM "poly"."Node" "t0" INNER JOIN "poly"."Node" "_dir_" ON "_dir_"."id" = "t0"."parent_id" LEFT JOIN "poly"."File" "t1" ON "t1"."id" = "t0"."id" LEFT JOIN "poly"."Dir" "t2" ON "t2"."id" = "t0"."id"'
+    assert params == ("/", )

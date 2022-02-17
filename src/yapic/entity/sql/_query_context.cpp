@@ -954,13 +954,10 @@ struct __pyx_obj_5yapic_6entity_11_expression_CastExpression;
 struct __pyx_obj_5yapic_6entity_11_expression_ConstExpression;
 struct __pyx_obj_5yapic_6entity_11_expression_AliasExpression;
 struct __pyx_obj_5yapic_6entity_11_expression_ColumnRefExpression;
-struct __pyx_obj_5yapic_6entity_11_expression_DirectionExpression;
+struct __pyx_obj_5yapic_6entity_11_expression_OrderExpression;
 struct __pyx_obj_5yapic_6entity_11_expression_CallExpression;
 struct __pyx_obj_5yapic_6entity_11_expression_RawExpression;
 struct __pyx_obj_5yapic_6entity_11_expression_PathExpression;
-struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionVal;
-struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionBinary;
-struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionDir;
 struct __pyx_obj_5yapic_6entity_11_expression_ExpressionPlaceholder;
 struct __pyx_obj_5yapic_6entity_9_registry_Registry;
 struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff;
@@ -1026,7 +1023,7 @@ struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_3_fetch
 struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_4_first;
 struct __pyx_obj_5yapic_6entity_3sql_14_query_context___pyx_scope_struct_5___aiter__;
 
-/* "_expression.pxd":88
+/* "_expression.pxd":80
  * 
  * 
  * ctypedef enum EPA:             # <<<<<<<<<<<<<<
@@ -1269,11 +1266,11 @@ struct __pyx_obj_5yapic_6entity_11_expression_ColumnRefExpression {
 /* "_expression.pxd":52
  * 
  * 
- * cdef class DirectionExpression(Expression):             # <<<<<<<<<<<<<<
+ * cdef class OrderExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly Expression expr
  *     cdef readonly bint is_asc
  */
-struct __pyx_obj_5yapic_6entity_11_expression_DirectionExpression {
+struct __pyx_obj_5yapic_6entity_11_expression_OrderExpression {
   struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
   struct __pyx_obj_5yapic_6entity_11_expression_Expression *expr;
   int is_asc;
@@ -1320,47 +1317,7 @@ struct __pyx_obj_5yapic_6entity_11_expression_PathExpression {
 };
 
 
-/* "_expression.pxd":70
- * 
- * 
- * cdef class VirtualExpressionVal(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly object _virtual_
- *     cdef readonly object _source_
- */
-struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionVal {
-  struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
-  PyObject *_virtual_;
-  PyObject *_source_;
-};
-
-
-/* "_expression.pxd":77
- * 
- * 
- * cdef class VirtualExpressionBinary(BinaryExpression):             # <<<<<<<<<<<<<<
- *     cpdef Expression _create_expr_(self, object q)
- * 
- */
-struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionBinary {
-  struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression __pyx_base;
-};
-
-
-/* "_expression.pxd":81
- * 
- * 
- * cdef class VirtualExpressionDir(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly VirtualExpressionVal expr
- *     cdef readonly object op
- */
-struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionDir {
-  struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
-  struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionVal *expr;
-  PyObject *op;
-};
-
-
-/* "_expression.pxd":95
+/* "_expression.pxd":87
  * 
  * @cython.final
  * cdef class ExpressionPlaceholder(Expression):             # <<<<<<<<<<<<<<
@@ -2467,15 +2424,15 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_ColumnRefExpression 
 /* "_expression.pxd":52
  * 
  * 
- * cdef class DirectionExpression(Expression):             # <<<<<<<<<<<<<<
+ * cdef class OrderExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly Expression expr
  *     cdef readonly bint is_asc
  */
 
-struct __pyx_vtabstruct_5yapic_6entity_11_expression_DirectionExpression {
+struct __pyx_vtabstruct_5yapic_6entity_11_expression_OrderExpression {
   struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression __pyx_base;
 };
-static struct __pyx_vtabstruct_5yapic_6entity_11_expression_DirectionExpression *__pyx_vtabptr_5yapic_6entity_11_expression_DirectionExpression;
+static struct __pyx_vtabstruct_5yapic_6entity_11_expression_OrderExpression *__pyx_vtabptr_5yapic_6entity_11_expression_OrderExpression;
 
 
 /* "_expression.pxd":57
@@ -2520,52 +2477,7 @@ struct __pyx_vtabstruct_5yapic_6entity_11_expression_PathExpression {
 static struct __pyx_vtabstruct_5yapic_6entity_11_expression_PathExpression *__pyx_vtabptr_5yapic_6entity_11_expression_PathExpression;
 
 
-/* "_expression.pxd":70
- * 
- * 
- * cdef class VirtualExpressionVal(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly object _virtual_
- *     cdef readonly object _source_
- */
-
-struct __pyx_vtabstruct_5yapic_6entity_11_expression_VirtualExpressionVal {
-  struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression __pyx_base;
-  struct __pyx_obj_5yapic_6entity_11_expression_Expression *(*_create_expr_)(struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionVal *, PyObject *, int __pyx_skip_dispatch);
-};
-static struct __pyx_vtabstruct_5yapic_6entity_11_expression_VirtualExpressionVal *__pyx_vtabptr_5yapic_6entity_11_expression_VirtualExpressionVal;
-
-
-/* "_expression.pxd":77
- * 
- * 
- * cdef class VirtualExpressionBinary(BinaryExpression):             # <<<<<<<<<<<<<<
- *     cpdef Expression _create_expr_(self, object q)
- * 
- */
-
-struct __pyx_vtabstruct_5yapic_6entity_11_expression_VirtualExpressionBinary {
-  struct __pyx_vtabstruct_5yapic_6entity_11_expression_BinaryExpression __pyx_base;
-  struct __pyx_obj_5yapic_6entity_11_expression_Expression *(*_create_expr_)(struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionBinary *, PyObject *, int __pyx_skip_dispatch);
-};
-static struct __pyx_vtabstruct_5yapic_6entity_11_expression_VirtualExpressionBinary *__pyx_vtabptr_5yapic_6entity_11_expression_VirtualExpressionBinary;
-
-
-/* "_expression.pxd":81
- * 
- * 
- * cdef class VirtualExpressionDir(Expression):             # <<<<<<<<<<<<<<
- *     cdef readonly VirtualExpressionVal expr
- *     cdef readonly object op
- */
-
-struct __pyx_vtabstruct_5yapic_6entity_11_expression_VirtualExpressionDir {
-  struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression __pyx_base;
-  struct __pyx_obj_5yapic_6entity_11_expression_Expression *(*_create_expr_)(struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionDir *, PyObject *, int __pyx_skip_dispatch);
-};
-static struct __pyx_vtabstruct_5yapic_6entity_11_expression_VirtualExpressionDir *__pyx_vtabptr_5yapic_6entity_11_expression_VirtualExpressionDir;
-
-
-/* "_expression.pxd":95
+/* "_expression.pxd":87
  * 
  * @cython.final
  * cdef class ExpressionPlaceholder(Expression):             # <<<<<<<<<<<<<<
@@ -3978,13 +3890,10 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_CastExpression = 0
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_ConstExpression = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_AliasExpression = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_ColumnRefExpression = 0;
-static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_DirectionExpression = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_OrderExpression = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_CallExpression = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_RawExpression = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_PathExpression = 0;
-static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_VirtualExpressionVal = 0;
-static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_VirtualExpressionBinary = 0;
-static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_VirtualExpressionDir = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_11_expression_ExpressionPlaceholder = 0;
 
 /* Module declarations from 'yapic.entity._registry' */
@@ -10018,9 +9927,9 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_5yapic_6entity_11_expression_ColumnRefExpression = __Pyx_ImportType(__pyx_t_1, "yapic.entity._expression", "ColumnRefExpression", sizeof(struct __pyx_obj_5yapic_6entity_11_expression_ColumnRefExpression), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_6entity_11_expression_ColumnRefExpression) __PYX_ERR(3, 44, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_11_expression_ColumnRefExpression = (struct __pyx_vtabstruct_5yapic_6entity_11_expression_ColumnRefExpression*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_expression_ColumnRefExpression->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_expression_ColumnRefExpression)) __PYX_ERR(3, 44, __pyx_L1_error)
-  __pyx_ptype_5yapic_6entity_11_expression_DirectionExpression = __Pyx_ImportType(__pyx_t_1, "yapic.entity._expression", "DirectionExpression", sizeof(struct __pyx_obj_5yapic_6entity_11_expression_DirectionExpression), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_expression_DirectionExpression) __PYX_ERR(3, 52, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_expression_DirectionExpression = (struct __pyx_vtabstruct_5yapic_6entity_11_expression_DirectionExpression*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_expression_DirectionExpression->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_expression_DirectionExpression)) __PYX_ERR(3, 52, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_11_expression_OrderExpression = __Pyx_ImportType(__pyx_t_1, "yapic.entity._expression", "OrderExpression", sizeof(struct __pyx_obj_5yapic_6entity_11_expression_OrderExpression), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5yapic_6entity_11_expression_OrderExpression) __PYX_ERR(3, 52, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_expression_OrderExpression = (struct __pyx_vtabstruct_5yapic_6entity_11_expression_OrderExpression*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_expression_OrderExpression->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_expression_OrderExpression)) __PYX_ERR(3, 52, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_expression_CallExpression = __Pyx_ImportType(__pyx_t_1, "yapic.entity._expression", "CallExpression", sizeof(struct __pyx_obj_5yapic_6entity_11_expression_CallExpression), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_6entity_11_expression_CallExpression) __PYX_ERR(3, 57, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_11_expression_CallExpression = (struct __pyx_vtabstruct_5yapic_6entity_11_expression_CallExpression*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_expression_CallExpression->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_expression_CallExpression)) __PYX_ERR(3, 57, __pyx_L1_error)
@@ -10030,18 +9939,9 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_ptype_5yapic_6entity_11_expression_PathExpression = __Pyx_ImportType(__pyx_t_1, "yapic.entity._expression", "PathExpression", sizeof(struct __pyx_obj_5yapic_6entity_11_expression_PathExpression), __Pyx_ImportType_CheckSize_Warn);
    if (!__pyx_ptype_5yapic_6entity_11_expression_PathExpression) __PYX_ERR(3, 66, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_11_expression_PathExpression = (struct __pyx_vtabstruct_5yapic_6entity_11_expression_PathExpression*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_expression_PathExpression->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_expression_PathExpression)) __PYX_ERR(3, 66, __pyx_L1_error)
-  __pyx_ptype_5yapic_6entity_11_expression_VirtualExpressionVal = __Pyx_ImportType(__pyx_t_1, "yapic.entity._expression", "VirtualExpressionVal", sizeof(struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionVal), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_expression_VirtualExpressionVal) __PYX_ERR(3, 70, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_expression_VirtualExpressionVal = (struct __pyx_vtabstruct_5yapic_6entity_11_expression_VirtualExpressionVal*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_expression_VirtualExpressionVal->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_expression_VirtualExpressionVal)) __PYX_ERR(3, 70, __pyx_L1_error)
-  __pyx_ptype_5yapic_6entity_11_expression_VirtualExpressionBinary = __Pyx_ImportType(__pyx_t_1, "yapic.entity._expression", "VirtualExpressionBinary", sizeof(struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionBinary), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_expression_VirtualExpressionBinary) __PYX_ERR(3, 77, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_expression_VirtualExpressionBinary = (struct __pyx_vtabstruct_5yapic_6entity_11_expression_VirtualExpressionBinary*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_expression_VirtualExpressionBinary->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_expression_VirtualExpressionBinary)) __PYX_ERR(3, 77, __pyx_L1_error)
-  __pyx_ptype_5yapic_6entity_11_expression_VirtualExpressionDir = __Pyx_ImportType(__pyx_t_1, "yapic.entity._expression", "VirtualExpressionDir", sizeof(struct __pyx_obj_5yapic_6entity_11_expression_VirtualExpressionDir), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_expression_VirtualExpressionDir) __PYX_ERR(3, 81, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_expression_VirtualExpressionDir = (struct __pyx_vtabstruct_5yapic_6entity_11_expression_VirtualExpressionDir*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_expression_VirtualExpressionDir->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_expression_VirtualExpressionDir)) __PYX_ERR(3, 81, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_expression_ExpressionPlaceholder = __Pyx_ImportType(__pyx_t_1, "yapic.entity._expression", "ExpressionPlaceholder", sizeof(struct __pyx_obj_5yapic_6entity_11_expression_ExpressionPlaceholder), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_11_expression_ExpressionPlaceholder) __PYX_ERR(3, 95, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_expression_ExpressionPlaceholder = (struct __pyx_vtabstruct_5yapic_6entity_11_expression_ExpressionPlaceholder*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_expression_ExpressionPlaceholder->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_expression_ExpressionPlaceholder)) __PYX_ERR(3, 95, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_11_expression_ExpressionPlaceholder) __PYX_ERR(3, 87, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_expression_ExpressionPlaceholder = (struct __pyx_vtabstruct_5yapic_6entity_11_expression_ExpressionPlaceholder*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_expression_ExpressionPlaceholder->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_expression_ExpressionPlaceholder)) __PYX_ERR(3, 87, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("yapic.entity._registry"); if (unlikely(!__pyx_t_1)) __PYX_ERR(4, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);

@@ -1,4 +1,5 @@
 import operator
+# from functools import cmp_to_key
 
 from yapic.entity._entity cimport EntityType, EntityAttribute, get_alias_target
 from yapic.entity._expression cimport (
@@ -8,7 +9,7 @@ from yapic.entity._expression cimport (
     UnaryExpression,
     ConstExpression,
     CastExpression,
-    DirectionExpression,
+    OrderExpression,
     AliasExpression,
     CallExpression,
     RawExpression,
@@ -266,14 +267,14 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         e = (<CastExpression>expr).expr
         t = (<CastExpression>expr).to
 
-        if isinstance(e, BinaryExpression):
+        if isinstance(e, (BinaryExpression, PathExpression, VirtualAttribute)):
             return f"({self.visit(e)})::{t}"
         else:
             return f"{self.visit(e)}::{t}"
 
-    def visit_direction(self, expr):
-        e = (<DirectionExpression>expr).expr
-        return f"{self.visit(e)} {'ASC' if (<DirectionExpression>expr).is_asc else 'DESC'}"
+    def visit_order(self, OrderExpression expr):
+        e = expr.expr
+        return f"{self.visit(e)} {'ASC' if expr.is_asc else 'DESC'}"
 
     def visit_alias(self, expr):
         if self.skip_alias > 0:
@@ -589,3 +590,14 @@ cdef compile_unary(PostgreQueryCompiler qc, expr, str op):
         return f"{op}({qc.visit(expr)})"
     else:
         return f"{op}{qc.visit(expr)}"
+
+
+# @cmp_to_key
+# def order_joins_by_deps(list a, list b):
+#     print("CMP", a[1], b[0], "|||", b[1], a[0])
+#     if a[1] is b[0]:
+#         return 1
+#     elif b[1] is a[0]:
+#         return -1
+#     else:
+#         return 0

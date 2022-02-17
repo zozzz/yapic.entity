@@ -58,8 +58,8 @@ cdef class Expression:
     def contains(Expression self, other): return self._new_binary_expr(other, contains)
     def find(Expression self, other): return self._new_binary_expr(other, find)
 
-    cpdef asc(Expression self): return DirectionExpression(self, True)
-    cpdef desc(Expression self): return DirectionExpression(self, False)
+    cpdef asc(Expression self): return OrderExpression(self, True)
+    cpdef desc(Expression self): return OrderExpression(self, False)
     cpdef cast(Expression self, str to): return CastExpression(self, to)
     cpdef alias(Expression self, str alias): return AliasExpression(self, alias)
 
@@ -104,7 +104,7 @@ cdef class BinaryExpression(Expression):
         return self
 
     cdef BinaryExpression _new_binary_expr(self, object other, object op):
-        return BinaryExpression(self, other, op)
+        return type(self)(self, other, op)
 
     cpdef visit(self, Visitor visitor):
         return visitor.visit_binary(self)
@@ -152,7 +152,7 @@ cdef class ConstExpression(Expression):
         return self
 
 
-cdef class DirectionExpression(Expression):
+cdef class OrderExpression(Expression):
     def __cinit__(self, Expression expr, bint is_asc):
         self.expr = expr
         self.is_asc = is_asc
@@ -161,13 +161,13 @@ cdef class DirectionExpression(Expression):
         return "<Direction %s %s>" % (self.expr, "ASC" if self.is_asc else "DESC")
 
     cpdef visit(self, Visitor visitor):
-        return visitor.visit_direction(self)
+        return visitor.visit_order(self)
 
     cpdef asc(self):
-        return DirectionExpression(self.expr, True)
+        return type(self)(self.expr, True)
 
     cpdef desc(self):
-        return DirectionExpression(self.expr, False)
+        return type(self)(self.expr, False)
 
 
 cdef class CallExpression(Expression):
@@ -233,9 +233,7 @@ cdef class PathExpression(Expression):
         new_path = list(self._path_)
         if isinstance(last_item, Expression):
             obj = getattr(last_item, key)
-            if isinstance(obj, VirtualExpressionVal):
-                return VirtualExpressionVal((<VirtualExpressionVal>obj)._virtual_, self)
-            elif isinstance(obj, PathExpression) and last_item is (<PathExpression>obj)._path_[0]:
+            if isinstance(obj, PathExpression) and last_item is (<PathExpression>obj)._path_[0]:
                 new_path.extend((<PathExpression>obj)._path_[1:])
             else:
                 new_path.append(obj)
@@ -262,104 +260,6 @@ cdef class PathExpression(Expression):
 
     def __repr__(self):
         return "<Path %r>" % self._path_
-
-
-cdef class VirtualExpressionVal(Expression):
-    def __cinit__(self, object virtual, object src):
-        self._virtual_ = virtual
-        self._source_ = src
-
-    cpdef Expression _create_expr_(self, object q):
-        if self._virtual_._val:
-            return self._virtual_._val(self._source_, q)
-        else:
-            raise ValueError("Virtual attribute is not define value expression: %r" % self._virtual_)
-
-    cdef BinaryExpression _new_binary_expr(self, object right, object op):
-        return VirtualExpressionBinary(self, right, op)
-
-    cpdef asc(VirtualExpressionVal self):
-        return VirtualExpressionDir(self, asc)
-
-    cpdef desc(VirtualExpressionVal self):
-        return VirtualExpressionDir(self, desc)
-
-    cpdef visit(self, Visitor visitor):
-        return visitor.visit_vexpr_val(self)
-
-    def __getattr__(self, key):
-        return getattr(self._virtual_, key)
-
-    def __repr__(self):
-        return "<VirtualVal %r :: %r>" % (self._source_, self._virtual_)
-
-
-cdef class VirtualExpressionBinary(BinaryExpression):
-    def __init__(self, Expression left, object right, object op):
-        super().__init__(left, right, op)
-
-    @property
-    def _virtual_(self):
-        if isinstance(self.left, VirtualExpressionVal):
-            return (<VirtualExpressionVal>self.left)._virtual_
-        elif isinstance(self.left, VirtualExpressionBinary):
-            return (<VirtualExpressionBinary>self.left)._virtual_
-        else:
-            raise TypeError("Something went wrong...")
-
-    cpdef Expression _create_expr_(self, object q):
-        if self.op in (operator.__and__, operator.__or__):
-            return BinaryExpression(self.left, self.right, self.op)
-
-        if self._virtual_._cmp:
-            if isinstance(self.right, ConstExpression):
-                value = (<ConstExpression>self.right).value
-            else:
-                value = self.right
-
-            return self._virtual_._cmp(self.left._source_, q, self.op, value)
-        elif self._virtual_._val:
-            return self.op(self._virtual_._val(self.left._source_, q), self.right)
-        else:
-            raise ValueError("Virtual attribute is not define value expression: %r" % self._virtual_)
-
-    cdef BinaryExpression _new_binary_expr(self, object right, object op):
-        return VirtualExpressionBinary(self, right, op)
-
-    cpdef visit(self, Visitor visitor):
-        return visitor.visit_vexpr_binary(self)
-
-    def __getattr__(self, key):
-        return getattr(self.left, key)
-
-    def __repr__(self):
-        return "<VirtualBinaryExpr %r %r %r>" % (self.left, self.op, self.right)
-
-
-cdef class VirtualExpressionDir(Expression):
-    def __cinit__(self, object expr, object op):
-        self.expr = expr
-        self.op = op
-
-    cpdef Expression _create_expr_(self, object q):
-        if self.expr._virtual_._order:
-            return self.expr._virtual_._order(self.expr._source_, q, self.op)
-        elif self.expr._virtual_._val:
-            return self.op(self.expr._virtual_._val(self.expr._source_, q))
-        else:
-            raise ValueError("Virtual attribute is not define order or value expression: %r" % self.expr._virtual_)
-
-    cpdef visit(self, Visitor visitor):
-        return visitor.visit_vexpr_dir(self)
-
-    cpdef asc(VirtualExpressionDir self):
-        return VirtualExpressionDir(self.expr, asc)
-
-    cpdef desc(VirtualExpressionDir self):
-        return VirtualExpressionDir(self.expr, desc)
-
-    def __repr__(self):
-        return "<VirtualDir %r %r>" % (self.expr, self.op)
 
 
 @cython.final
@@ -466,7 +366,6 @@ cdef class Visitor:
         for expr in expr:
             res.append(self.visit(expr))
         return res
-
 
 
 cdef Expression coerce_expression(object expr):
