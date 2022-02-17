@@ -913,6 +913,10 @@ async def test_virtual_load(conn):
         def data_concat_val(cls, q):
             return func.CONCAT_WS(" / ", cls.data_1, cls.data_2)
 
+        @virtual
+        def plain(self):
+            return self.data_1
+
     result = await sync(conn, registry)
     if result:
         await conn.execute(result)
@@ -939,6 +943,10 @@ async def test_virtual_load(conn):
     query = Query(VirtualLoad).load(VirtualLoad.data_concat).order(VirtualLoad.data_concat.asc())
     sql, params = dialect.create_query_compiler().compile_select(query)
     assert sql == 'SELECT CONCAT_WS($1, "t0"."data_1", "t0"."data_2") FROM "execution"."VirtualLoad" "t0" ORDER BY 1 ASC'
+
+    query = Query(VirtualLoad).load(VirtualLoad.data_1, VirtualLoad.plain)
+    sql, params = dialect.create_query_compiler().compile_select(query)
+    assert sql == 'SELECT "t0"."data_1" FROM "execution"."VirtualLoad" "t0"'
 
 
 async def test_array(conn, pgclean):

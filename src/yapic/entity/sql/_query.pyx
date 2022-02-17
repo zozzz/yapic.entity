@@ -653,9 +653,10 @@ cdef class QueryFinalizer(Visitor):
                     self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
                     self.q._columns.append(self.visit(expr))
             elif isinstance(expr, VirtualAttribute):
-                self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
-                self.virtual_indexes[(<VirtualAttribute>expr)._uid_] = len(self.q._columns)
-                self.q._columns.append(self.visit(expr))
+                if (<VirtualAttribute>expr)._val:
+                    self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
+                    self.virtual_indexes[(<VirtualAttribute>expr)._uid_] = len(self.q._columns)
+                    self.q._columns.append(self.visit(expr))
             else:
                 self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
                 self.q._columns.append(self.visit(expr))
@@ -725,7 +726,7 @@ cdef class QueryFinalizer(Visitor):
                         relation_rco.append((relation, self._rco_for_one_relation(relation, existing)))
                     else:
                         relation_rco.append((relation, self._rco_for_many_relation(relation)))
-            elif isinstance(attr, VirtualAttribute) and attr._uid_ in self.q._load:
+            elif isinstance(attr, VirtualAttribute) and attr._uid_ in self.q._load and (<VirtualAttribute>attr)._val:
                 try:
                     idx = existing[attr._uid_]
                 except KeyError:
