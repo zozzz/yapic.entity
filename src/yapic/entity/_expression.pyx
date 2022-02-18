@@ -227,7 +227,6 @@ cdef class PathExpression(Expression):
     def __cinit__(self, list path):
         self._path_ = path
 
-    # @cython.wraparound(True)
     def __getattr__(self, object key):
         last_item = self._path_[len(self._path_) - 1]
         new_path = list(self._path_)
@@ -238,7 +237,10 @@ cdef class PathExpression(Expression):
             else:
                 new_path.append(obj)
         else:
-            new_path.append(key)
+            if hasattr(last_item, key):
+                new_path.append(key)
+            else:
+                raise AttributeError(f"{last_item} has no attribute '{key}'")
         return PathExpression(new_path)
 
     # @cython.wraparound(True)
