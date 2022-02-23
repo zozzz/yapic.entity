@@ -1943,6 +1943,7 @@ static const char __pyx_k_desc[] = "desc";
 static const char __pyx_k_expr[] = "expr";
 static const char __pyx_k_find[] = "find";
 static const char __pyx_k_func[] = "func";
+static const char __pyx_k_in_2[] = " in ";
 static const char __pyx_k_left[] = "left";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
@@ -1981,7 +1982,7 @@ static const char __pyx_k_isspace[] = "isspace";
 static const char __pyx_k_s_visit[] = "%s::visit";
 static const char __pyx_k_truediv[] = "__truediv__";
 static const char __pyx_k_visit_2[] = "visit_";
-static const char __pyx_k_visit_3[] = "visit ";
+static const char __pyx_k_visitor[] = " visitor";
 static const char __pyx_k_callable[] = "callable";
 static const char __pyx_k_contains[] = "contains";
 static const char __pyx_k_endswith[] = "endswith";
@@ -2025,6 +2026,7 @@ static const char __pyx_k_Uknown_operation[] = "Uknown operation: ";
 static const char __pyx_k_has_no_attribute[] = " has no attribute '";
 static const char __pyx_k_visit_binary_and[] = "visit_binary_and";
 static const char __pyx_k_visit_column_ref[] = "visit_column_ref";
+static const char __pyx_k_visit_expression[] = "visit expression ";
 static const char __pyx_k_visit_placeholder[] = "visit_placeholder";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_visit_any_iterable[] = "_visit_any_iterable";
@@ -2108,6 +2110,7 @@ static PyObject *__pyx_n_s_i;
 static PyObject *__pyx_kp_u_idx;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_in;
+static PyObject *__pyx_kp_u_in_2;
 static PyObject *__pyx_n_s_index;
 static PyObject *__pyx_n_s_invert;
 static PyObject *__pyx_n_s_is_asc;
@@ -2151,7 +2154,6 @@ static PyObject *__pyx_kp_u_typeof;
 static PyObject *__pyx_n_s_value;
 static PyObject *__pyx_n_s_visit;
 static PyObject *__pyx_n_u_visit_2;
-static PyObject *__pyx_kp_u_visit_3;
 static PyObject *__pyx_n_s_visit_alias;
 static PyObject *__pyx_n_s_visit_any_iterable;
 static PyObject *__pyx_n_s_visit_binary;
@@ -2163,6 +2165,7 @@ static PyObject *__pyx_n_s_visit_call;
 static PyObject *__pyx_n_s_visit_cast;
 static PyObject *__pyx_n_s_visit_column_ref;
 static PyObject *__pyx_n_s_visit_const;
+static PyObject *__pyx_kp_u_visit_expression;
 static PyObject *__pyx_n_s_visit_list;
 static PyObject *__pyx_n_s_visit_order;
 static PyObject *__pyx_n_s_visit_path;
@@ -2171,6 +2174,7 @@ static PyObject *__pyx_n_s_visit_raw;
 static PyObject *__pyx_n_s_visit_tuple;
 static PyObject *__pyx_n_s_visit_unary;
 static PyObject *__pyx_n_u_visit_unary_2;
+static PyObject *__pyx_kp_u_visitor;
 static PyObject *__pyx_n_s_xor;
 static PyObject *__pyx_n_s_yapic_entity__expression;
 static PyObject *__pyx_pf_5yapic_6entity_11_expression_10Expression_visit(struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_v_self, struct __pyx_obj_5yapic_6entity_11_expression_Visitor *__pyx_v_visitor); /* proto */
@@ -2283,7 +2287,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_8_visit_list(str
 static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_10_visit_tuple(struct __pyx_obj_5yapic_6entity_11_expression_Visitor *__pyx_v_self, PyObject *__pyx_v_expr); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_12_visit_any_iterable(struct __pyx_obj_5yapic_6entity_11_expression_Visitor *__pyx_v_self, PyObject *__pyx_v_expr); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_14__getattr__(struct __pyx_obj_5yapic_6entity_11_expression_Visitor *__pyx_v_self, PyObject *__pyx_v_key); /* proto */
-static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_16__default__(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_11_expression_Visitor *__pyx_v_self, PyObject *__pyx_v_expr); /* proto */
+static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_16__default__(struct __pyx_obj_5yapic_6entity_11_expression_Visitor *__pyx_v_self, PyObject *__pyx_v_expr); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_11_expression_and_(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_expr); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_11_expression_2or_(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_expr); /* proto */
 static PyObject *__pyx_pf_5yapic_6entity_11_expression_4in_(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_expr, PyObject *__pyx_v_value); /* proto */
@@ -13898,7 +13902,7 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_14__getattr__(st
  *             raise AttributeError(key)
  * 
  *     def __default__(self, object expr):             # <<<<<<<<<<<<<<
- *         raise NotImplementedError(f"visit {expr}")
+ *         raise NotImplementedError(f"visit expression {expr} in {self} visitor")
  * 
  */
 
@@ -13915,11 +13919,13 @@ static PyObject *__pyx_pw_5yapic_6entity_11_expression_7Visitor_17__default__(Py
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_16__default__(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_11_expression_Visitor *__pyx_v_self, PyObject *__pyx_v_expr) {
+static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_16__default__(struct __pyx_obj_5yapic_6entity_11_expression_Visitor *__pyx_v_self, PyObject *__pyx_v_expr) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
+  Py_ssize_t __pyx_t_2;
+  Py_UCS4 __pyx_t_3;
+  PyObject *__pyx_t_4 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -13928,18 +13934,46 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_16__default__(CY
   /* "yapic/entity/_expression.pyx":379
  * 
  *     def __default__(self, object expr):
- *         raise NotImplementedError(f"visit {expr}")             # <<<<<<<<<<<<<<
+ *         raise NotImplementedError(f"visit expression {expr} in {self} visitor")             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_v_expr, __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 379, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 379, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyUnicode_Concat(__pyx_kp_u_visit_3, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 379, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_2 = 0;
+  __pyx_t_3 = 127;
+  __Pyx_INCREF(__pyx_kp_u_visit_expression);
+  __pyx_t_2 += 17;
+  __Pyx_GIVEREF(__pyx_kp_u_visit_expression);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_visit_expression);
+  __pyx_t_4 = __Pyx_PyObject_FormatSimple(__pyx_v_expr, __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 379, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
+  __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_4);
+  __pyx_t_4 = 0;
+  __Pyx_INCREF(__pyx_kp_u_in_2);
+  __pyx_t_2 += 4;
+  __Pyx_GIVEREF(__pyx_kp_u_in_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_in_2);
+  __pyx_t_4 = __Pyx_PyObject_FormatSimple(((PyObject *)__pyx_v_self), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 379, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
+  __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_1, 3, __pyx_t_4);
+  __pyx_t_4 = 0;
+  __Pyx_INCREF(__pyx_kp_u_visitor);
+  __pyx_t_2 += 8;
+  __Pyx_GIVEREF(__pyx_kp_u_visitor);
+  PyTuple_SET_ITEM(__pyx_t_1, 4, __pyx_kp_u_visitor);
+  __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_1, 5, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 379, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_NotImplementedError, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 379, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_NotImplementedError, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 379, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 379, __pyx_L1_error)
@@ -13948,14 +13982,14 @@ static PyObject *__pyx_pf_5yapic_6entity_11_expression_7Visitor_16__default__(CY
  *             raise AttributeError(key)
  * 
  *     def __default__(self, object expr):             # <<<<<<<<<<<<<<
- *         raise NotImplementedError(f"visit {expr}")
+ *         raise NotImplementedError(f"visit expression {expr} in {self} visitor")
  * 
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_4);
   __Pyx_AddTraceback("yapic.entity._expression.Visitor.__default__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __Pyx_XGIVEREF(__pyx_r);
@@ -18329,6 +18363,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_idx, __pyx_k_idx, sizeof(__pyx_k_idx), 0, 1, 0, 0},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_in, __pyx_k_in, sizeof(__pyx_k_in), 0, 0, 1, 1},
+  {&__pyx_kp_u_in_2, __pyx_k_in_2, sizeof(__pyx_k_in_2), 0, 1, 0, 0},
   {&__pyx_n_s_index, __pyx_k_index, sizeof(__pyx_k_index), 0, 0, 1, 1},
   {&__pyx_n_s_invert, __pyx_k_invert, sizeof(__pyx_k_invert), 0, 0, 1, 1},
   {&__pyx_n_s_is_asc, __pyx_k_is_asc, sizeof(__pyx_k_is_asc), 0, 0, 1, 1},
@@ -18372,7 +18407,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_value, __pyx_k_value, sizeof(__pyx_k_value), 0, 0, 1, 1},
   {&__pyx_n_s_visit, __pyx_k_visit, sizeof(__pyx_k_visit), 0, 0, 1, 1},
   {&__pyx_n_u_visit_2, __pyx_k_visit_2, sizeof(__pyx_k_visit_2), 0, 1, 0, 1},
-  {&__pyx_kp_u_visit_3, __pyx_k_visit_3, sizeof(__pyx_k_visit_3), 0, 1, 0, 0},
   {&__pyx_n_s_visit_alias, __pyx_k_visit_alias, sizeof(__pyx_k_visit_alias), 0, 0, 1, 1},
   {&__pyx_n_s_visit_any_iterable, __pyx_k_visit_any_iterable, sizeof(__pyx_k_visit_any_iterable), 0, 0, 1, 1},
   {&__pyx_n_s_visit_binary, __pyx_k_visit_binary, sizeof(__pyx_k_visit_binary), 0, 0, 1, 1},
@@ -18384,6 +18418,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_visit_cast, __pyx_k_visit_cast, sizeof(__pyx_k_visit_cast), 0, 0, 1, 1},
   {&__pyx_n_s_visit_column_ref, __pyx_k_visit_column_ref, sizeof(__pyx_k_visit_column_ref), 0, 0, 1, 1},
   {&__pyx_n_s_visit_const, __pyx_k_visit_const, sizeof(__pyx_k_visit_const), 0, 0, 1, 1},
+  {&__pyx_kp_u_visit_expression, __pyx_k_visit_expression, sizeof(__pyx_k_visit_expression), 0, 1, 0, 0},
   {&__pyx_n_s_visit_list, __pyx_k_visit_list, sizeof(__pyx_k_visit_list), 0, 0, 1, 1},
   {&__pyx_n_s_visit_order, __pyx_k_visit_order, sizeof(__pyx_k_visit_order), 0, 0, 1, 1},
   {&__pyx_n_s_visit_path, __pyx_k_visit_path, sizeof(__pyx_k_visit_path), 0, 0, 1, 1},
@@ -18392,6 +18427,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_visit_tuple, __pyx_k_visit_tuple, sizeof(__pyx_k_visit_tuple), 0, 0, 1, 1},
   {&__pyx_n_s_visit_unary, __pyx_k_visit_unary, sizeof(__pyx_k_visit_unary), 0, 0, 1, 1},
   {&__pyx_n_u_visit_unary_2, __pyx_k_visit_unary_2, sizeof(__pyx_k_visit_unary_2), 0, 1, 0, 1},
+  {&__pyx_kp_u_visitor, __pyx_k_visitor, sizeof(__pyx_k_visitor), 0, 1, 0, 0},
   {&__pyx_n_s_xor, __pyx_k_xor, sizeof(__pyx_k_xor), 0, 0, 1, 1},
   {&__pyx_n_s_yapic_entity__expression, __pyx_k_yapic_entity__expression, sizeof(__pyx_k_yapic_entity__expression), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}

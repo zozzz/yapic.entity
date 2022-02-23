@@ -658,6 +658,19 @@ cdef class EntityAttribute(Expression):
             for ext in self._exts_:
                 ext._bind(attr_ref)
 
+    cdef EntityAttribute _rebind(self, EntityType entity):
+        if self.stage != EntityStage.RESOLVED:
+            raise RuntimeError("Can't rebind unresolved attribute")
+
+        cdef EntityAttribute result = self.clone()
+        result._bind(<object>PyWeakref_NewRef(entity, None), <object>entity.registry_ref)
+        if result._stage_resolving(ResolveContext(entity, None)) is True:
+            result._stage_resolved()
+        else:
+            raise RuntimeError(f"Can't resolve attribute: {result}")
+
+        return result
+
     cdef object _stage_resolving(self, ResolveContext ctx):
         if self.stage == EntityStage.UNRESOLVED:
             if self._resolve_deferred(ctx) is True:

@@ -98,6 +98,7 @@ cdef class EntityAttribute(Expression):
     # cdef EntityType set_entity(self, EntityType entity)
 
     cdef object _bind(self, object entity_ref, object registry_ref)
+    cdef EntityAttribute _rebind(self, EntityType entity)
     cdef object _stage_resolving(self, ResolveContext ctx)
     cdef object _resolve_deferred(self, ResolveContext ctx)
     cdef object _stage_resolved(self)

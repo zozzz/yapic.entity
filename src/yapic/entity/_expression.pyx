@@ -376,7 +376,7 @@ cdef class Visitor:
             raise AttributeError(key)
 
     def __default__(self, object expr):
-        raise NotImplementedError(f"visit {expr}")
+        raise NotImplementedError(f"visit expression {expr} in {self} visitor")
 
 
 

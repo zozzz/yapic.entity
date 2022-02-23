@@ -1,7 +1,7 @@
 from ._expression cimport Expression, Visitor, BinaryExpression, UnaryExpression, OrderExpression, AliasExpression, CastExpression, CallExpression, RawExpression, PathExpression, coerce_expression, ExpressionPlaceholder
 from ._entity cimport EntityType, EntityAttribute
 from ._field cimport Field, field_eq
-from ._relation cimport Relation, ManyToMany
+from ._relation cimport Relation, ManyToMany, RelationImpl, RelatedAttribute
 
 
 cdef class ReplacerBase(Visitor):
@@ -90,10 +90,23 @@ cdef class EntityReplacer(ReplacerBase):
 
     def visit_relation(self, Relation relation):
         raise RuntimeError(f"Not implemented entity replace in relation: {relation}")
+        # cdef Relation result
         # if relation.get_entity() is self.what:
-        #     return relation._rebind(self.to)
+        #     result = relation._rebind(self.to)
+        #     (<RelationImpl>result._impl_).set_joined_alias((<RelationImpl>relation._impl_).get_joined_alias())
+        #     if isinstance(relation._impl_, ManyToMany):
+        #         (<ManyToMany>result._impl_).set_across_alias((<ManyToMany>relation._impl_).get_across_alias())
+
+        #     print(relation, ">>>", result)
+        #     return result
         # else:
         #     return relation
+
+    def visit_related_attribute(self, RelatedAttribute expr):
+        if expr.get_entity() is self.what:
+            return getattr(self.to, expr._key_)
+        else:
+            return expr
 
 
 cdef class PlaceholderReplacer(ReplacerBase):
@@ -106,6 +119,9 @@ cdef class PlaceholderReplacer(ReplacerBase):
         except KeyError:
             raise ValueError(f"Missing placeholder replacement for: {placeholder.name}")
         return placeholder.eval(origin)
+
+    def __default__(self, object expr):
+        return expr
 
 
 cdef class FieldAssigner(ReplacerBase):

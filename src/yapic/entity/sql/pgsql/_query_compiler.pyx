@@ -18,7 +18,7 @@ from yapic.entity._expression cimport (
 from yapic.entity._expression import and_
 from yapic.entity._field cimport Field, PrimaryKey
 from yapic.entity._field_impl cimport JsonImpl, CompositeImpl, ArrayImpl
-from yapic.entity._relation cimport Relation
+from yapic.entity._relation cimport Relation, RelatedAttribute
 from yapic.entity._virtual_attr cimport VirtualAttribute
 
 from .._query cimport Query, QueryCompiler
@@ -352,6 +352,9 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                         compiled = self.visit(item)
 
         return path_expr(self.dialect, state, compiled, attrs)
+
+    def visit_related_attribute(self, RelatedAttribute expr):
+        return self.visit(expr.__rpath__)
 
     def visit_call(self, CallExpression expr):
         cdef tuple args = self._visit_iterable(expr.args)

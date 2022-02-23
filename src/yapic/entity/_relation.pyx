@@ -569,7 +569,8 @@ cdef class RelatedAttribute(EntityAttribute):
         return EntityAttribute.init(self)
 
     cpdef visit(self, Visitor visitor):
-        return self.__rpath__.visit(visitor)
+        return visitor.visit_related_attribute(self)
+        # return self.__rpath__.visit(visitor)
 
 
 cdef class RelatedAttributeImpl(EntityAttributeImpl):

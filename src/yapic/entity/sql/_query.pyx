@@ -548,6 +548,9 @@ cdef class QueryFinalizer(Visitor):
                     break
         return PathExpression(list(expr._path_))
 
+    def visit_related_attribute(self, RelatedAttribute expr):
+        return self.visit(expr.__rpath__)
+
     def visit_virtual_attr(self, VirtualAttribute expr):
         return self.visit(expr.get_value_expr(self.q))
 

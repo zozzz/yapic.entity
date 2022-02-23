@@ -432,6 +432,8 @@ async def test_virtual(conn, pgclean):
     class Dir(Node, polymorph_id="dir"):
         count: Int
 
+        files: Many[File] = "poly.Dir.id == poly.File.parent_id"
+
     result = await sync(conn, registry)
     await conn.execute(result)
 
@@ -482,3 +484,12 @@ async def test_virtual(conn, pgclean):
     assert params == ("/", some_file.id)
     result = await conn.select(q).first()
     assert result == 'root/home/zozzz/test.py'
+
+    q = Query().select_from(Dir).load(Dir, Dir.files, Dir.files.with_dir).where(Dir.id == zozzz.id)
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "t3"."id", "t3"."parent_id", "t3"."type", "t3"."name", "t2"."count", (SELECT ARRAY_AGG("t1") FROM (SELECT "t5"."id", "t5"."parent_id", "t5"."type", "t5"."name", "t4"."size", CONCAT_WS($1, "t6"."name", "t5"."name") FROM "poly"."File" "t4" INNER JOIN "poly"."Node" "t5" ON "t4"."id" = "t5"."id" INNER JOIN "poly"."Node" "t6" ON "t6"."id" = "t5"."parent_id" WHERE "t2"."id" = "t5"."parent_id") as "t1") as "t0" FROM "poly"."Dir" "t2" INNER JOIN "poly"."Node" "t3" ON "t2"."id" = "t3"."id" WHERE "t2"."id" = $2'
+    assert params == ("/", zozzz.id)
+    result = await conn.select(q).first()
+    assert result.name == "zozzz"
+    assert result.files[0].id == some_file.id
+    assert result.files[0].with_dir == "zozzz/test.py"
