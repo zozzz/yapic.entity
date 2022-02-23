@@ -1,3 +1,5 @@
+# flake8: noqa: E501
+
 import pytest
 from yapic.entity.sql import sync
 from yapic.entity import (Serial, Int, String, ForeignKey, PrimaryKey, One, Many, ManyAcross, Registry, DependencyList,

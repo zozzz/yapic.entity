@@ -4,6 +4,7 @@ from cpython.object cimport PyObject
 from ._expression cimport AliasExpression, Expression
 from ._registry cimport Registry
 from ._resolve cimport ResolveContext
+# from ._relation cimport Relation
 
 
 cdef class NOTSET:
@@ -17,6 +18,7 @@ ctypedef enum EntityStage:
     UNRESOLVED = 1
     RESOLVING = 2
     RESOLVED = 3
+    # INITED = 4
 
 
 # TODO: remove __deferred__ list, but provide abality, to query deferred fields
@@ -27,19 +29,21 @@ cdef class EntityType(type):
     cdef readonly tuple __fields__
     cdef readonly tuple __props__
     cdef readonly tuple __pk__
-    cdef readonly list __deferred__
+    # cdef readonly list __deferred__
     cdef public list __fix_entries__
     cdef public list __triggers__
     cdef readonly dict __extgroups__
     cdef readonly EntityDependency __deps__
+    cdef readonly Polymorph __polymorph__
+
     cdef ResolveContext resolve_ctx
+    cdef EntityStage stage
     cdef PyObject* registry_ref
-    # cdef Registry __registry__
     cdef PyObject* meta
 
     cdef EntityType get_base_entity(self)
     cdef Registry get_registry(self)
-    cdef list _compute_attrs(self, EntityType base_entity, PolymorphMeta polymorph, object cls_dict)
+    cdef list _compute_attrs(self, EntityType base_entity, PolymorphDict polymorph_dict, object cls_dict)
     cdef list _compute_triggers(self)
     # cdef object _finalize(self)
     cdef object _stage_resolving(self)
@@ -61,6 +65,7 @@ cdef class EntityAlias(EntityType):
     cdef EntityType get_entity(self)
     cdef EntityType set_entity(self, EntityType entity)
     cdef void _copy_meta(self, keys)
+    cdef EntityType _clone_poly_parents(self, Polymorph poly, EntityType aliased)
 
 
 cpdef bint is_entity_alias(object o)
@@ -76,6 +81,8 @@ cdef class EntityAttribute(Expression):
     cdef object __weakref__
     cdef object _impl
     cdef object entity_ref
+    cdef EntityStage stage
+
     cdef readonly str _key_
     cdef readonly int _index_
     cdef readonly str _name_
@@ -91,13 +98,11 @@ cdef class EntityAttribute(Expression):
     # cdef EntityType set_entity(self, EntityType entity)
 
     cdef object _bind(self, object entity_ref, object registry_ref)
+    cdef object _stage_resolving(self, ResolveContext ctx)
     cdef object _resolve_deferred(self, ResolveContext ctx)
-    cpdef object init(self)
+    cdef object _stage_resolved(self)
 
-    # cdef object init(self, EntityType entity)
-    # returns true when successfully bind, otherwise the system can try bind in the later time
-    # cdef object bind(self)
-    # cdef object entity_ready(self, EntityType entity)
+    cpdef object init(self)
     cpdef clone(self)
     cpdef get_ext(self, ext_type)
     cpdef clone_exts(self, EntityAttribute attr)
@@ -107,19 +112,19 @@ cdef class EntityAttribute(Expression):
 
 cdef class EntityAttributeExt:
     cdef object attr_ref
+    cdef EntityStage stage
 
     cdef object _bind(self, object attr_ref)
+    cdef object _stage_resolving(self, ResolveContext ctx)
     cdef object _resolve_deferred(self, ResolveContext ctx)
+    cdef object _stage_resolved(self)
 
     cdef EntityAttribute get_attr(self)
     cdef EntityType get_entity(self)
     # cdef object set_attr(self, EntityAttribute val)
 
     cpdef object init(self)
-    # returns true when successfully bind, otherwise the system can try bind in the later time
-    # cpdef object bind(self)
     cpdef object clone(self)
-    # cpdef object entity_ready(self, EntityType entity)
     cpdef object add_to_group(self, str key)
 
 
@@ -135,12 +140,12 @@ cdef class EntityAttributeExtGroup:
 
 
 cdef class EntityAttributeImpl:
-    # cdef object attr_ref
-    cdef bint inited
+    cdef EntityStage stage
 
-    # cdef EntityAttribute get_attr(self)
-    # cdef object _bind(self, object attr_ref)
+
+    cdef object _stage_resolving(self, ResolveContext ctx, EntityAttribute attr)
     cdef object _resolve_deferred(self, ResolveContext ctx, EntityAttribute attr)
+    cdef object _stage_resolved(self, EntityAttribute attr)
 
     # returns true when successfully bind, otherwise the system can try bind in the later time
     cpdef object init(self, EntityAttribute attr)
@@ -215,17 +220,31 @@ cdef class DependencyList(list):
 
 
 @cython.final
-cdef class PolymorphMeta:
+cdef class PolymorphDict(dict):
     cdef readonly tuple id_fields
-    cdef list _decls
 
     @staticmethod
     cdef tuple normalize_id(object id)
 
-    cdef object add(self, object id, EntityType entity, object relation)
-    cpdef list parents(self, EntityType entity)
-    cpdef list children(self, EntityType entity)
-    cdef object _parents(self, EntityType entity, list result)
+    cdef object add_entity(self, object poly_id, EntityType entity)
+    cdef EntityType get_entity(self, object poly_id)
+    cdef tuple get_id(self, EntityType entity)
+
+
+@cython.final
+cdef class Polymorph:
+    # TODO: Relation type
+    cdef readonly object parent
+    cdef readonly PolymorphDict info
+    cdef readonly tuple id_values
+    cdef list _children
+    cdef dict poly_ids
+
+    cdef object add_child(self, object relation)
+    cdef list parents(self)
+    cdef list children(self)
+    cdef EntityType get_entity(self, object id)
+    cdef tuple get_id(self, EntityType entity)
 
 
 cdef inline entity_is_builtin(EntityType entity):

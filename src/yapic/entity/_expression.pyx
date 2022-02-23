@@ -158,7 +158,7 @@ cdef class OrderExpression(Expression):
         self.is_asc = is_asc
 
     def __repr__(self):
-        return "<Direction %s %s>" % (self.expr, "ASC" if self.is_asc else "DESC")
+        return "<Order %s %s>" % (self.expr, "ASC" if self.is_asc else "DESC")
 
     cpdef visit(self, Visitor visitor):
         return visitor.visit_order(self)
@@ -287,7 +287,7 @@ cdef class ExpressionPlaceholder(Expression):
         return self
 
     cpdef visit(self, Visitor visitor):
-        return visitor.visit_expression_placeholder(self)
+        return visitor.visit_placeholder(self)
 
     def __repr__(self):
         return f"<Placeholder {self.name} {self.path}>"
@@ -368,6 +368,16 @@ cdef class Visitor:
         for expr in expr:
             res.append(self.visit(expr))
         return res
+
+    def __getattr__(self, key):
+        if key.startswith("visit_"):
+            return self.__default__
+        else:
+            raise AttributeError(key)
+
+    def __default__(self, object expr):
+        raise NotImplementedError(f"visit {expr}")
+
 
 
 cdef Expression coerce_expression(object expr):

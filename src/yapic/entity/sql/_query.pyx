@@ -1,7 +1,7 @@
 import operator
 import cython
 
-from yapic.entity._entity cimport EntityType, EntityAttribute, PolymorphMeta, get_alias_target, is_entity_alias
+from yapic.entity._entity cimport EntityType, EntityAttribute, Polymorph, get_alias_target, is_entity_alias
 from yapic.entity._field cimport Field, field_eq
 from yapic.entity._field_impl cimport CompositeImpl
 from yapic.entity._expression cimport (Expression, AliasExpression, ColumnRefExpression, OrderExpression, Visitor,
@@ -25,6 +25,7 @@ cdef class Query(Expression):
         self._allow_clone = True
         self.__expr_alias = {}
         self.__alias_c = 0
+        self._pending_joins = []
 
     def __init__(self, from_ = None):
         if from_ is not None:
@@ -163,6 +164,15 @@ cdef class Query(Expression):
 
         if isinstance(what, Relation):
             impl = (<Relation>what)._impl_
+            condition = impl.join_expr
+            joined = impl.get_joined_alias()
+
+            if joined in self._entities:
+                return self
+
+            if (<Relation>what).get_entity() not in self._entities:
+                self._pending_joins.append((what, condition, type))
+                return self
 
             if isinstance(impl, ManyToMany):
                 cross_condition = (<ManyToMany>impl).across_join_expr
@@ -180,17 +190,11 @@ cdef class Query(Expression):
                         existing[2] = type
                 type = "INNER"
 
-            condition = impl.join_expr
-            joined = impl.get_joined_alias()
-
             if joined is None:
                 raise RuntimeError("Relation is deferred: %r" % what)
 
             if condition is None:
                 raise RuntimeError("Missing join expression from relation: %r" % what)
-
-            if joined in self._entities:
-                return self
 
         elif isinstance(what, EntityType):
             joined = <EntityType>what
@@ -206,8 +210,8 @@ cdef class Query(Expression):
         self._entities.add(joined)
 
         # TODO: Nem biztos, hogy ezt így kéne...
-        aliased = get_alias_target(joined)
-        self._entities.add(aliased)
+        # aliased = get_alias_target(joined)
+        # self._entities.add(aliased)
 
         joined_id = id(joined)
         try:
@@ -282,21 +286,22 @@ cdef class Query(Expression):
 
         cdef Query q = type(self)()
 
-        if self._select_from: q._select_from = list(self._select_from)
-        if self._columns:     q._columns = list(self._columns)
-        if self._where:       q._where = list(self._where)
-        if self._order:       q._order = list(self._order)
-        if self._group:       q._group = list(self._group)
-        if self._having:      q._having = list(self._having)
-        if self._distinct:    q._distinct = list(self._distinct)
-        if self._prefix:      q._prefix = list(self._prefix)
-        if self._suffix:      q._suffix = list(self._suffix)
-        if self._joins:       q._joins = dict(self._joins)
-        if self._range:       q._range = slice(self._range.start, self._range.stop, self._range.step)
-        if self._entities:    q._entities = set(self._entities)
-        if self._load:        q._load = dict(self._load)
-        if self._exclude:     q._exclude = dict(self._exclude)
-        if self._parent:      q._parent = self._parent.clone()
+        if self._select_from:   q._select_from = list(self._select_from)
+        if self._columns:       q._columns = list(self._columns)
+        if self._where:         q._where = list(self._where)
+        if self._order:         q._order = list(self._order)
+        if self._group:         q._group = list(self._group)
+        if self._having:        q._having = list(self._having)
+        if self._distinct:      q._distinct = list(self._distinct)
+        if self._prefix:        q._prefix = list(self._prefix)
+        if self._suffix:        q._suffix = list(self._suffix)
+        if self._joins:         q._joins = dict(self._joins)
+        if self._range:         q._range = slice(self._range.start, self._range.stop, self._range.step)
+        if self._entities:      q._entities = set(self._entities)
+        if self._load:          q._load = dict(self._load)
+        if self._exclude:       q._exclude = dict(self._exclude)
+        if self._parent:        q._parent = self._parent.clone()
+        if self._pending_joins: q._pending_joins = list(self._pending_joins)
         q._as_row = self._as_row
         q._as_json = self._as_json
 
@@ -314,33 +319,41 @@ cdef class Query(Expression):
         QueryFinalizer(compiler, res).finalize()
         return res, res._rcos
 
-    # TODO: ha nem alias és nem található akkor meg kell nézni a self entites ben alias nélkül, ha egy van ok, ellenkező esetben ambigous error
     cdef str get_expr_alias(Query self, object expr):
         if isinstance(expr, EntityType):
             try:
                 return self.__expr_alias[expr]
             except KeyError:
-                if self._entity_reachable(expr, False):
-                    original = get_alias_target(expr)
-                    if original is not expr and expr.__name__:
-                        alias = expr.__name__
+                entity = self._find_entity(expr, False)
+                if entity is not None:
+                    if is_entity_alias(entity) and entity.__name__:
+                        alias = entity.__name__
                     else:
                         alias = self._get_next_alias()
 
                     self.__expr_alias[expr] = alias
-                    # TODO: Nem biztos, hogy ezt így kéne...
-                    self.__expr_alias[original] = alias
                     return alias
-                elif self._parent:
+                elif self._parent is not None:
                     return self._parent.get_expr_alias(expr)
                 else:
                     raise ValueError(f"Can't find this entity in query: {expr}")
         else:
             raise NotImplementedError()
 
-    cdef bint _entity_reachable(self, EntityType entity, bint allow_parent):
-        return entity in self._entities \
-            or (allow_parent and self._parent is not None and self._parent._entity_reachable(entity, allow_parent))
+    cdef EntityType _find_entity(self, EntityType entity, bint allow_parent):
+        if entity in self._entities:
+            return entity
+
+        # TODO: ambigous error
+        # if is_entity_alias(entity) is False:
+        #     for ent in self._entities:
+        #         if entity is get_alias_target(ent):
+        #             return ent
+
+        if allow_parent is True and self._parent is not None:
+            return self._parent._find_entity(entity, True)
+
+        return None
 
     cdef str _get_next_alias(self):
         if self._parent is not None:
@@ -350,37 +363,26 @@ cdef class Query(Expression):
             self.__alias_c += 1
             return alias
 
+    cdef object _resolve_pending_joins(self):
+        cdef int lenght = 0
+        cdef int last_length = 0
+
+        while True:
+            pending_joins = self._pending_joins
+            self._pending_joins = []
+            for pending_joins in reversed(pending_joins):
+                self.join(*(<tuple>pending_joins))
+
+            length = len(self._pending_joins)
+            if length == 0:
+                break
+            elif last_length == length:
+                raise RuntimeError(f"Can't join the followings: {self._pending_joins}")
+            last_length = lenght
+
+
     def __repr__(self):
-        cdef list parts = []
-
-        if self._select_from:
-            parts.append(f"from = {self._select_from}")
-
-        if self._columns:
-            parts.append(f"columns = {self._columns}")
-
-        if self._joins:
-            parts.append(f"joins = {self._joins.values()}")
-            # parts.append(f"joins = {tuple(self._joins.values())}")
-
-        if self._where:
-            parts.append(f"where = {self._where}")
-
-        if self._order:
-            parts.append(f"order = {self._order}")
-
-        if self._group:
-            parts.append(f"group = {self._group}")
-
-        if self._having:
-            parts.append(f"having = {self._having}")
-
-        if self._range:
-            parts.append(f"range = {self._range}")
-
-        sep = ",\n\t"
-        return f"<{'Sub' if self._parent else ''}Query \n\t{sep.join(parts)}\n>"
-
+        return QueryRepr().visit(self)
 
 # TODO: beautify
 cdef object load_options(dict target, tuple input):
@@ -510,7 +512,7 @@ cdef class QueryFinalizer(Visitor):
 
     def visit_field(self, Field expr):
         cdef EntityType expr_entity = expr.get_entity()
-        if not self.q._entity_reachable(expr_entity, True):
+        if self.q._find_entity(expr_entity, True) is None:
             self.q.join(expr_entity, type="LEFT" if self.in_or > 0 else "INNER")
         return expr
 
@@ -539,6 +541,9 @@ cdef class QueryFinalizer(Visitor):
             for p in expr._path_:
                 if isinstance(p, Relation):
                     self.q.join(p, type="LEFT" if self.in_or > 0 else "INNER")
+                elif isinstance(p, RelatedAttribute):
+                    # TODO: not join poly child if next path entry is in base entity
+                    self.q.join((<RelatedAttribute>p).__relation__, type="LEFT" if self.in_or > 0 else "INNER")
                 else:
                     break
         return PathExpression(list(expr._path_))
@@ -603,6 +608,8 @@ cdef class QueryFinalizer(Visitor):
         if self.q._distinct:
             self.q._distinct = self._visit_iterable(self.q._distinct)
 
+        self.q._resolve_pending_joins()
+
         self.q._rcos = self.rcos
 
         # print("="*40)
@@ -663,12 +670,12 @@ cdef class QueryFinalizer(Visitor):
 
 
     def _rco_for_entity(self, EntityType entity_type, dict existing=None, list before_create=[]):
-        cdef PolymorphMeta polymorph = entity_type.get_meta("polymorph", None)
+        cdef Polymorph polymorph = entity_type.__polymorph__
 
         if existing is None:
             existing = {}
 
-        if polymorph:
+        if polymorph is not None:
             return self._rco_for_poly_entity(entity_type, polymorph, existing, before_create)
         else:
             return self._rco_for_normal_entity(entity_type, existing, before_create)
@@ -759,10 +766,11 @@ cdef class QueryFinalizer(Visitor):
         rco.append(RowConvertOp(RCO.CREATE_ENTITY, aliased))
         return rco
 
-    def _rco_for_poly_entity(self, EntityType entity, PolymorphMeta poly, dict fields, list before_create=None):
-        cdef list parents = poly.parents(entity)
+    def _rco_for_poly_entity(self, EntityType entity, Polymorph poly, dict fields, list before_create=None):
+        cdef list parents = poly.parents()
         # cdef EntityType ent
-        cdef EntityType entity_tmp
+        cdef EntityType root_entity
+        cdef EntityType parent_entity
         cdef Relation relation
         cdef Relation parent_relation = None
         cdef Field field
@@ -772,24 +780,21 @@ cdef class QueryFinalizer(Visitor):
         cdef list poly_id_fields = []
 
         if len(parents) != 0:
-            # TODO: Szerintem ez nem kell ide
             for relation in parents:
                 self.q.join(relation, None, "INNER")
 
             relation = parents[len(parents) - 1]
-            entity_tmp = (<RelationImpl>relation._impl_).get_joined_alias()
+            root_entity = (<RelationImpl>relation._impl_).get_joined_alias()
         else:
-            entity_tmp = entity
+            root_entity = entity
 
-        pk_fields = entity_tmp.__pk__
-        for ent_id in poly.id_fields:
-            poly_id_fields.append(getattr(entity_tmp, ent_id))
+        pk_fields = root_entity.__pk__
+        for ent_id in poly.info.id_fields:
+            poly_id_fields.append(getattr(root_entity, ent_id))
             self.q.load(*poly_id_fields)
 
         for relation in reversed(parents):
-            self.q.join(relation, None, "INNER")
-
-            if parent_relation:
+            if parent_relation is not None:
                 before_create = [
                     _RCO_POP,
                     RowConvertOp(RCO.SET_ATTR, parent_relation),
@@ -798,7 +803,7 @@ cdef class QueryFinalizer(Visitor):
                 before_create = []
             parent_relation = relation
 
-            entity_tmp = (<RelationImpl>relation._impl_).get_joined_alias()
+            parent_entity = (<RelationImpl>relation._impl_).get_joined_alias()
 
             for i, field in enumerate(pk_fields):
                 try:
@@ -806,13 +811,13 @@ cdef class QueryFinalizer(Visitor):
                 except KeyError:
                     pass
                 else:
-                    fields[entity_tmp.__pk__[i]._uid_] = pkidx
+                    fields[parent_entity.__pk__[i]._uid_] = pkidx
 
-            self.q.load(entity_tmp)
-            rco.extend(self._rco_for_normal_entity(entity_tmp, fields, before_create))
+            self.q.load(parent_entity)
+            rco.extend(self._rco_for_normal_entity(parent_entity, fields, before_create))
             rco.append(_RCO_PUSH)
 
-        if parent_relation:
+        if parent_relation is not None:
             before_create = [
                 _RCO_POP,
                 RowConvertOp(RCO.SET_ATTR, parent_relation),
@@ -833,8 +838,7 @@ cdef class QueryFinalizer(Visitor):
 
         rco.extend(self._rco_for_normal_entity(entity, fields, before_create))
 
-        entity_tmp = get_alias_target(entity)
-        pc = self._add_poly_child(create_poly, entity_tmp, poly, fields, pk_fields)
+        pc = self._add_poly_child(create_poly, entity, fields, pk_fields)
         if pc is True:
             rco.append(_RCO_PUSH)
 
@@ -846,16 +850,17 @@ cdef class QueryFinalizer(Visitor):
 
         return rco
 
-    def _add_poly_child(self, dict create_poly, EntityType entity, PolymorphMeta poly, dict fields, tuple pk_fields):
+    def _add_poly_child(self, dict create_poly, EntityType entity, dict fields, tuple pk_fields):
+        cdef Polymorph poly = entity.__polymorph__
         cdef Relation relation
         cdef EntityType child
         cdef bint has_poly_child = False
         cdef dict child_rcos = {}
         cdef Field field
 
-        for relation in poly.children(entity):
-            child = relation.get_entity()
-            self.q.join(child, relation._default_, type="LEFT")
+        for relation in poly.children():
+            child = (<RelationImpl>relation._impl_).get_joined_alias()
+            self.q.join(relation, None, type="LEFT")
 
             for i, field in enumerate(pk_fields):
                 try:
@@ -868,10 +873,10 @@ cdef class QueryFinalizer(Visitor):
             self.q.load(child)
             rcos = self._rco_for_normal_entity(child, fields, [
                 _RCO_POP,
-                RowConvertOp(RCO.SET_ATTR, relation),
+                RowConvertOp(RCO.SET_ATTR, child.__polymorph__.parent),
             ])
 
-            pc = self._add_poly_child(child_rcos, child, poly, fields, pk_fields)
+            pc = self._add_poly_child(child_rcos, child, fields, pk_fields)
             if pc:
                 for k, v in child_rcos.items():
                     v[0][0:0] = rcos + [_RCO_PUSH]
@@ -1031,3 +1036,119 @@ cdef class QueryCompiler:
 
     cpdef compile_delete(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
         raise NotImplementedError()
+
+
+
+#  if self._columns:
+#             parts.append(f"{indent}SELECT:")
+#             for col in self._columns:
+#                 parts.append(f"{indent}{indent_char}{col}")
+
+#         if self._select_from:
+#             parts.append(f"{indent}FROM:")
+#             parts.append(f"{indent}{indent_char}{self._select_from}")
+
+#         if self._joins:
+#             parts.append(f"{indent}JOINS:")
+#             for what, cond, type in self._joins.values():
+#                 parts.append(f"{indent}{indent_char}{type} {what} ON {cond}")
+
+#         if self._where:
+#             parts.append(f"{indent}WHERE:")
+#             for value in self._where:
+#                 parts.append(f"{indent}{indent_char}{value}")
+
+#         if self._order:
+#             parts.append(f"{indent}ORDER:")
+#             for value in self._order:
+#                 parts.append(f"{indent}{indent_char}{value}")
+
+#         if self._group:
+#             parts.append(f"{indent}GROUP:")
+#             for value in self._group:
+#                 parts.append(f"{indent}{indent_char}{value}")
+
+#         if self._having:
+#             parts.append(f"{indent}HAVING:")
+#             for value in self._having:
+#                 parts.append(f"{indent}{indent_char}{value}")
+
+#         if self._range:
+#             parts.append(f"{indent}RANGE: {self._range}")
+
+
+class QueryRepr(Visitor):
+    def __init__(self, int level=0):
+        self.level = level
+        self.indent_char = "    "
+
+    def visit_query(self, Query query):
+        self.level += 1
+        if self.level > 1:
+            begin = self.__indent("(\n")
+            end = self.__indent("\n)")
+        else:
+            begin = ""
+            end = ""
+
+        cdef list parts = []
+
+        if query._columns:
+            parts.append(self.__indent("SELECT"))
+            parts.append(self.__visit_iterable(query._columns, 1))
+
+        if query._select_from:
+            parts.append(self.__indent(f"FROM: {query._select_from}"))
+
+        if query._joins:
+            parts.append(self.__indent("JOINS"))
+            parts.append(self.__visit_joins(query._joins.values(), 1))
+
+        if query._where:
+            parts.append(self.__indent("WHERE"))
+            parts.append(self.__visit_iterable(query._where, 1))
+
+        if query._order:
+            parts.append(self.__indent("ORDER"))
+            parts.append(self.__visit_iterable(query._order, 1))
+
+        if query._group:
+            parts.append(self.__indent("GROUP"))
+            parts.append(self.__visit_iterable(query._order, 1))
+
+        if query._having:
+            parts.append(self.__indent("HAVING"))
+            parts.append(self.__visit_iterable(query._having, 1))
+
+        if query._range:
+            parts.append(self.__indent(f"RANGE {query._range}"))
+
+        self.level -= 1
+
+        return begin + "\n".join(parts) + end
+
+    def visit_alias(self, expr):
+        return f"{self.visit((<AliasExpression>expr).expr)} AS {(<AliasExpression>expr).value}"
+
+    def __visit_joins(self, joins, extra_level=0):
+        self.level += extra_level
+        cdef list result = []
+        for what, cond, type in joins:
+            result.append(self.__indent(f"{type} {what} ON {self.visit(cond)}"))
+        self.level -= extra_level
+        return "\n".join(result)
+
+    def __visit_iterable(self, expr, extra_level=0):
+        self.level += extra_level
+        result = self._visit_iterable(expr)
+        indent = self.indent_char * self.level
+        self.level -= extra_level
+        sep = f"{indent}\n"
+        return f"{indent}{sep.join(result)}"
+
+    def __default__(self, expr):
+        return repr(expr)
+
+    def __indent(self, value):
+        return f"{self.indent_char * self.level}{value}"
+

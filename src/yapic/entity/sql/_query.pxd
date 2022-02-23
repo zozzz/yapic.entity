@@ -28,12 +28,14 @@ cdef class Query(Expression):
     cdef int __alias_c
     cdef bint _allow_clone
     cdef list _rcos
+    cdef list _pending_joins
 
     cpdef Query clone(self)
     cdef tuple finalize(self, QueryCompiler compiler)
     cdef str get_expr_alias(self, object expr)
-    cdef bint _entity_reachable(self, EntityType entity, bint allow_parent)
+    cdef EntityType _find_entity(self, EntityType entity, bint allow_parent)
     cdef str _get_next_alias(self)
+    cdef object _resolve_pending_joins(self)
     # cdef _add_entity(self, EntityType ent)
 
 

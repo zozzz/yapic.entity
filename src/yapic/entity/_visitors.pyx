@@ -24,7 +24,7 @@ cdef class ReplacerBase(Visitor):
         return self.visit(expr.expr).cast(expr.type)
 
     def visit_call(self, CallExpression expr):
-        return self.visit(expr.callable)(*[self.visit(a) for a in expr.args])
+        return self.visit(expr.callable)(*self._visit_iterable(expr.args))
 
     def visit_raw(self, RawExpression expr):
         return expr
@@ -36,10 +36,10 @@ cdef class ReplacerBase(Visitor):
         return expr
 
     def visit_path(self, PathExpression expr):
-        cdef list path = []
-        for p in expr._path_:
-            path.append(self.visit(p))
-        return PathExpression(path)
+        return PathExpression(self._visit_iterable(expr._path_))
+
+    def visit_placeholder(self, placeholder):
+        return placeholder
 
 
 cdef class Walk(Visitor):
@@ -95,25 +95,18 @@ cdef class EntityReplacer(ReplacerBase):
         # else:
         #     return relation
 
-    def visit_expression_placeholder(self, ExpressionPlaceholder placeholder):
-        try:
-            entity = self.placeholder[placeholder.name]
-        except KeyError:
-            raise ValueError(f"Missing placeholder replacement for: {placeholder.name}")
-        result = placeholder.eval(entity)
-        return self.visit(result)
-
 
 cdef class PlaceholderReplacer(ReplacerBase):
     def __cinit__(self, dict placeholder):
         self.placeholder = placeholder
 
-    def visit_expression_placeholder(self, ExpressionPlaceholder placeholder):
+    def visit_placeholder(self, ExpressionPlaceholder placeholder):
         try:
             origin = self.placeholder[placeholder.name]
         except KeyError:
             raise ValueError(f"Missing placeholder replacement for: {placeholder.name}")
         return placeholder.eval(origin)
+
 
 cdef class FieldAssigner(ReplacerBase):
     def __cinit__(self, EntityType where_t, EntityBase where_o, dict data):

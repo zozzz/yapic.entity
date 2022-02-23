@@ -31,6 +31,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
     cpdef compile_select(self, Query query):
         query, self.rcos_list = query.finalize(self)
+        # print(query)
         self.query = query
         self.parts = ["SELECT"]
         self.table_alias = {}

@@ -4,10 +4,9 @@ from operator import __and__, __eq__, __neg__, __pos__
 
 import cython
 
-from ._entity cimport EntityBase, EntityType, EntityState, EntityAttribute, NOTSET, DependencyList, get_alias_target
+from ._entity cimport EntityBase, EntityType, EntityState, EntityAttribute, NOTSET, DependencyList, get_alias_target, Polymorph
 from ._relation cimport Relation, ManyToMany, OneToMany
 from ._expression cimport Visitor, Expression, ConstExpression, RawExpression, UnaryExpression, BinaryExpression
-from ._entity cimport get_alias_target
 
 
 class EntityOperation(IntFlag):
@@ -99,18 +98,14 @@ cdef _collect_entities(EntityBase entity, DependencyList order, list ops, object
 
 cdef set_poly_id(EntityBase main):
     cdef EntityType main_t = type(main)
-    try:
-        poly = main_t.get_meta("polymorph")
-    except KeyError:
-        return
-
+    cdef Polymorph poly = main_t.__polymorph__
     cdef tuple pk = main.__pk__
     cdef EntityBase parent_entity
     cdef Relation parent
 
-    if pk:
+    if pk and poly is not None:
         parent_entity = main
-        for parent in poly.parents(main_t):
+        for parent in poly.parents():
             parent_entity = parent_entity.__state__.get_value(parent)
             parent_entity.__pk__ = pk
 
@@ -219,9 +214,9 @@ cdef class FieldUpdater(Visitor):
 
 
 cdef bint test_entity_type_eq(EntityType a, EntityType b):
-    if b.has_meta("polymorph") and issubclass(b, a):
+    if b.__polymorph__ is not None and issubclass(b, a):
         return True
-    elif a.has_meta("polymorph") and issubclass(a, b):
+    elif a.__polymorph__ is not None and issubclass(a, b):
         return True
     else:
         return a is b

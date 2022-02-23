@@ -1,3 +1,5 @@
+# flake8: noqa: E501
+
 import pytest
 from yapic.entity.sql import sync
 from yapic.entity import (Entity, Serial, Int, String, ForeignKey, PrimaryKey, One, Many, ManyAcross, Registry,
@@ -25,10 +27,12 @@ class Worker(Employee, polymorph_id="worker", registry=REGISTRY):
 
 class WorkerX(Worker, polymorph_id="workerx", registry=REGISTRY):
     workerx_field: String
+    ambigouse_field: String
 
 
 class WorkerY(Worker, polymorph_id="workery", registry=REGISTRY):
     workery_field: String
+    ambigouse_field: String
 
 
 class Organization(Entity, schema="poly", registry=REGISTRY):
@@ -66,11 +70,13 @@ CREATE TABLE "poly"."Worker" (
 CREATE TABLE "poly"."WorkerX" (
   "id" INT4 NOT NULL,
   "workerx_field" TEXT,
+  "ambigouse_field" TEXT,
   PRIMARY KEY("id")
 );
 CREATE TABLE "poly"."WorkerY" (
   "id" INT4 NOT NULL,
   "workery_field" TEXT,
+  "ambigouse_field" TEXT,
   PRIMARY KEY("id")
 );
 ALTER TABLE "poly"."Manager"
@@ -122,11 +128,13 @@ CREATE TRIGGER "polyd_Worker"
     result = await sync(conn, Worker.__registry__)
     assert bool(result) is False
 
+    assert Employee.__polymorph__["workery"] is WorkerY
+
 
 async def test_query_from_worker(conn):
     q = Query().select_from(Worker).where(Worker.employee_field == "Nice")
     sql, params = conn.dialect.create_query_compiler().compile_select(q)
-    assert sql == """SELECT "t1"."id", "t1"."variant", "t1"."employee_field", "t0"."worker_field", "t2"."workerx_field", "t3"."workery_field" FROM "poly"."Worker" "t0" INNER JOIN "poly"."Employee" "t1" ON "t0"."id" = "t1"."id" LEFT JOIN "poly"."WorkerX" "t2" ON "t2"."id" = "t0"."id" LEFT JOIN "poly"."WorkerY" "t3" ON "t3"."id" = "t0"."id" WHERE "t1"."employee_field" = $1"""
+    assert sql == """SELECT "t1"."id", "t1"."variant", "t1"."employee_field", "t0"."worker_field", "t2"."workerx_field", "t2"."ambigouse_field", "t3"."workery_field", "t3"."ambigouse_field" FROM "poly"."Worker" "t0" INNER JOIN "poly"."Employee" "t1" ON "t0"."id" = "t1"."id" LEFT JOIN "poly"."WorkerX" "t2" ON "t2"."id" = "t0"."id" LEFT JOIN "poly"."WorkerY" "t3" ON "t3"."id" = "t0"."id" WHERE "t1"."employee_field" = $1"""
     assert params == ("Nice", )
 
 
@@ -135,7 +143,7 @@ async def test_query_from_employee(conn):
         .where(Employee.employee_field == "Nice") \
         .where(Worker.worker_field == "WF")
     sql, params = conn.dialect.create_query_compiler().compile_select(q)
-    assert sql == """SELECT "t0"."id", "t0"."variant", "t0"."employee_field", "t1"."manager_field", "t2"."worker_field", "t3"."workerx_field", "t4"."workery_field" FROM "poly"."Employee" "t0" LEFT JOIN "poly"."Manager" "t1" ON "t1"."id" = "t0"."id" LEFT JOIN "poly"."Worker" "t2" ON "t2"."id" = "t0"."id" LEFT JOIN "poly"."WorkerX" "t3" ON "t3"."id" = "t2"."id" LEFT JOIN "poly"."WorkerY" "t4" ON "t4"."id" = "t2"."id" WHERE "t0"."employee_field" = $1 AND "t2"."worker_field" = $2"""
+    assert sql == """SELECT "t0"."id", "t0"."variant", "t0"."employee_field", "t1"."manager_field", "t2"."worker_field", "t3"."workerx_field", "t3"."ambigouse_field", "t4"."workery_field", "t4"."ambigouse_field" FROM "poly"."Employee" "t0" LEFT JOIN "poly"."Manager" "t1" ON "t1"."id" = "t0"."id" LEFT JOIN "poly"."Worker" "t2" ON "t2"."id" = "t0"."id" LEFT JOIN "poly"."WorkerX" "t3" ON "t3"."id" = "t2"."id" LEFT JOIN "poly"."WorkerY" "t4" ON "t4"."id" = "t2"."id" WHERE "t0"."employee_field" = $1 AND "t2"."worker_field" = $2"""
     assert params == ("Nice", "WF")
 
 
@@ -151,24 +159,22 @@ async def test_query_org(conn):
 async def test_query_from_workerx(conn):
     q = Query().select_from(WorkerX).where(Employee.employee_field == "OK")
     sql, params = conn.dialect.create_query_compiler().compile_select(q)
-    assert sql == """SELECT "t2"."id", "t2"."variant", "t2"."employee_field", "t1"."worker_field", "t0"."workerx_field" FROM "poly"."WorkerX" "t0" INNER JOIN "poly"."Worker" "t1" ON "t0"."id" = "t1"."id" INNER JOIN "poly"."Employee" "t2" ON "t1"."id" = "t2"."id" WHERE "t2"."employee_field" = $1"""
+    assert sql == """SELECT "t2"."id", "t2"."variant", "t2"."employee_field", "t1"."worker_field", "t0"."workerx_field", "t0"."ambigouse_field" FROM "poly"."WorkerX" "t0" INNER JOIN "poly"."Worker" "t1" ON "t0"."id" = "t1"."id" INNER JOIN "poly"."Employee" "t2" ON "t1"."id" = "t2"."id" WHERE "t2"."employee_field" = $1"""
     assert params == ("OK", )
 
 
-@pytest.mark.skip("TODO")
 async def test_query_from_workerx_alias(conn):
     POLY = WorkerX.alias("POLY")
     q = Query().select_from(POLY).where(POLY.employee_field == "OK")
     sql, params = conn.dialect.create_query_compiler().compile_select(q)
-    print(sql)
-    assert sql == ""
+    assert sql == 'SELECT "t1"."id", "t1"."variant", "t1"."employee_field", "t0"."worker_field", "POLY"."workerx_field", "POLY"."ambigouse_field" FROM "poly"."WorkerX" "POLY" INNER JOIN "poly"."Worker" "t0" ON "POLY"."id" = "t0"."id" INNER JOIN "poly"."Employee" "t1" ON "t0"."id" = "t1"."id" WHERE "t1"."employee_field" = $1'
     assert params == ("OK", )
 
 
 async def test_load_one(conn):
     q = Query().select_from(Organization).load(Organization.employee).where(Organization.id == 1)
     sql, params = conn.dialect.create_query_compiler().compile_select(q)
-    assert sql == """SELECT (SELECT ROW("t2"."id", "t2"."variant", "t2"."employee_field", "t3"."manager_field", "t4"."worker_field", "t5"."workerx_field", "t6"."workery_field") FROM "poly"."Employee" "t2" LEFT JOIN "poly"."Manager" "t3" ON "t3"."id" = "t2"."id" LEFT JOIN "poly"."Worker" "t4" ON "t4"."id" = "t2"."id" LEFT JOIN "poly"."WorkerX" "t5" ON "t5"."id" = "t4"."id" LEFT JOIN "poly"."WorkerY" "t6" ON "t6"."id" = "t4"."id" WHERE "t1"."employee_id" = "t2"."id") as "t0" FROM "poly"."Organization" "t1" WHERE "t1"."id" = $1"""
+    assert sql == """SELECT (SELECT ROW("t2"."id", "t2"."variant", "t2"."employee_field", "t3"."manager_field", "t4"."worker_field", "t5"."workerx_field", "t5"."ambigouse_field", "t6"."workery_field", "t6"."ambigouse_field") FROM "poly"."Employee" "t2" LEFT JOIN "poly"."Manager" "t3" ON "t3"."id" = "t2"."id" LEFT JOIN "poly"."Worker" "t4" ON "t4"."id" = "t2"."id" LEFT JOIN "poly"."WorkerX" "t5" ON "t5"."id" = "t4"."id" LEFT JOIN "poly"."WorkerY" "t6" ON "t6"."id" = "t4"."id" WHERE "t1"."employee_id" = "t2"."id") as "t0" FROM "poly"."Organization" "t1" WHERE "t1"."id" = $1"""
     assert params == (1, )
 
 
@@ -267,7 +273,7 @@ async def test_delete(conn):
     assert not w
 
 
-async def test_ambiguous_load(conn, pgclean):
+async def test_ambiguous(conn, pgclean):
     registry = Registry()
 
     class PolyBase(Entity, schema="poly", registry=registry, polymorph="type"):
@@ -303,7 +309,7 @@ async def test_ambiguous_load(conn, pgclean):
 
     q = Query().select_from(Something).load(Something, Something.p1, Something.p2).where(Something.id == s.id)
     sql, params = conn.dialect.create_query_compiler().compile_select(q)
-    # print(sql)
+    assert sql == 'SELECT "t2"."id", "t2"."pid1", "t2"."pid2", (SELECT ROW("t4"."id", "t4"."type", "t4"."base_field", "t3"."child_field") FROM "poly"."PolyChild" "t3" INNER JOIN "poly"."PolyBase" "t4" ON "t3"."id" = "t4"."id" WHERE "t2"."pid1" = "t3"."id") as "t0", (SELECT ROW("t6"."id", "t6"."type", "t6"."base_field", "t5"."child_field") FROM "poly"."PolyChild" "t5" INNER JOIN "poly"."PolyBase" "t6" ON "t5"."id" = "t6"."id" WHERE "t2"."pid2" = "t5"."id") as "t1" FROM "poly"."Something" "t2" WHERE "t2"."id" = $1'
 
     s = await conn.select(q).first()
     assert s.p1.id == p1.id
@@ -314,11 +320,51 @@ async def test_ambiguous_load(conn, pgclean):
     assert s.p2.base_field == "base field 2"
     assert s.p2.child_field == "child field 2"
 
+    # TODO: dont join PolyChild when not required (Something.p2.base_field == 2)
+    q = Query().select_from(Something).where(Something.p1.child_field == 1, Something.p2.base_field == 2)
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "t0"."id", "t0"."pid1", "t0"."pid2" FROM "poly"."Something" "t0" INNER JOIN "poly"."PolyChild" "t1" ON "t0"."pid1" = "t1"."id" INNER JOIN "poly"."PolyChild" "t2" ON "t0"."pid2" = "t2"."id" INNER JOIN "poly"."PolyBase" "t3" ON "t2"."id" = "t3"."id" WHERE "t1"."child_field" = $1 AND "t3"."base_field" = $2'
+    assert params == (1, 2)
 
-# async def test_end(conn):
-#     await conn.execute("""DROP SCHEMA IF EXISTS "poly" CASCADE""")
+
+async def test_order_by(conn):
+    q = Query(Worker).order(Worker.employee_field.asc())
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "t1"."id", "t1"."variant", "t1"."employee_field", "t0"."worker_field", "t2"."workerx_field", "t2"."ambigouse_field", "t3"."workery_field", "t3"."ambigouse_field" FROM "poly"."Worker" "t0" INNER JOIN "poly"."Employee" "t1" ON "t0"."id" = "t1"."id" LEFT JOIN "poly"."WorkerX" "t2" ON "t2"."id" = "t0"."id" LEFT JOIN "poly"."WorkerY" "t3" ON "t3"."id" = "t0"."id" ORDER BY "t1"."employee_field" ASC'
+
+    q = Query(Worker).load(Worker.worker_field).order(Worker.employee_field.asc())
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "t1"."id", "t1"."variant", "t1"."employee_field", "t0"."worker_field", "t2"."workerx_field", "t2"."ambigouse_field", "t3"."workery_field", "t3"."ambigouse_field" FROM "poly"."Worker" "t0" INNER JOIN "poly"."Employee" "t1" ON "t0"."id" = "t1"."id" LEFT JOIN "poly"."WorkerX" "t2" ON "t2"."id" = "t0"."id" LEFT JOIN "poly"."WorkerY" "t3" ON "t3"."id" = "t0"."id" ORDER BY "t1"."employee_field" ASC'
+
+    wa = Worker.alias("wa")
+    q = Query(wa).order(wa.employee_field.asc())
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "t0"."id", "t0"."variant", "t0"."employee_field", "wa"."worker_field", "t1"."workerx_field", "t1"."ambigouse_field", "t2"."workery_field", "t2"."ambigouse_field" FROM "poly"."Worker" "wa" INNER JOIN "poly"."Employee" "t0" ON "wa"."id" = "t0"."id" LEFT JOIN "poly"."WorkerX" "t1" ON "t1"."id" = "wa"."id" LEFT JOIN "poly"."WorkerY" "t2" ON "t2"."id" = "wa"."id" ORDER BY "t0"."employee_field" ASC'
+
+    q = Query(wa).load(wa.worker_field).order(wa.employee_field.asc())
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "t0"."id", "t0"."variant", "t0"."employee_field", "wa"."worker_field", "t1"."workerx_field", "t1"."ambigouse_field", "t2"."workery_field", "t2"."ambigouse_field" FROM "poly"."Worker" "wa" INNER JOIN "poly"."Employee" "t0" ON "wa"."id" = "t0"."id" LEFT JOIN "poly"."WorkerX" "t1" ON "t1"."id" = "wa"."id" LEFT JOIN "poly"."WorkerY" "t2" ON "t2"."id" = "wa"."id" ORDER BY "t0"."employee_field" ASC'
 
 
+@pytest.mark.skip("TODO")
+async def test_child_field_from_parent(conn):
+    q = Query(Employee).where(Employee.worker_field == 1)
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    print(sql)
+    assert sql == ''
+
+    q = Query(Organization).where(Organization.employee.worker_field == 2)
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    print(sql)
+    assert sql == ''
+
+    q = Query(Organization).where(Organization.employee.ambigouse_field == 3)
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    print(sql)
+    assert sql == ''
+
+
+# @pytest.mark.skip("TODO")
 async def test_virtual(conn, pgclean):
     registry = Registry()
 
@@ -355,6 +401,23 @@ async def test_virtual(conn, pgclean):
             q.join(dir, dir.id == cls.parent_id, "INNER")
             return func.CONCAT_WS("/", dir.name, cls.name)
 
+        @virtual
+        def full_path(cls):
+            return None
+
+        # TODO: find a way to define join type, in this case LEFT is required
+        @full_path.value
+        def full_path(cls, q):
+            max_depth = 3
+            parts = [cls.name]
+            parent = cls.parent
+
+            for i in range(max_depth):
+                parts.append(parent.name)
+                parent = parent.parent
+
+            return func.CONCAT_WS("/", *reversed(parts))
+
     class File(Node, polymorph_id="file"):
         size: Int
 
@@ -373,9 +436,7 @@ async def test_virtual(conn, pgclean):
     await conn.execute(result)
 
     async def _create_node(t, name, parent_id):
-        node = t()
-        node.name = name
-        node.parent_id = parent_id
+        node = t(name=name, parent_id=parent_id)
         await conn.save(node)
         return node
 
@@ -395,8 +456,7 @@ async def test_virtual(conn, pgclean):
 
     q = Query().select_from(File).columns(File.with_dir).where(Node.id == some_file.id)
     sql, params = conn.dialect.create_query_compiler().compile_select(q)
-    print(sql)
-    assert sql == 'SELECT CONCAT_WS($1, "t1"."name", "t2"."name") FROM "poly"."File" "t0" INNER JOIN "poly"."Node" "t1" ON "t1"."id" = "t2"."parent_id" INNER JOIN "poly"."Node" "t2" ON "t0"."id" = "t2"."id" WHERE "t2"."id" = $2'
+    assert sql == 'SELECT CONCAT_WS($1, "t2"."name", "t1"."name") FROM "poly"."File" "t0" INNER JOIN "poly"."Node" "t1" ON "t0"."id" = "t1"."id" INNER JOIN "poly"."Node" "t2" ON "t2"."id" = "t1"."parent_id" WHERE "t1"."id" = $2'
     assert params == ("/", some_file.id)
     result = await conn.select(q).first()
     assert result == 'zozzz/test.py'
@@ -405,3 +465,20 @@ async def test_virtual(conn, pgclean):
     sql, params = conn.dialect.create_query_compiler().compile_select(q)
     assert sql == 'SELECT "t0"."id", "t0"."type", CONCAT_WS($1, "_dir_"."name", "t0"."name"), "t1"."size", "t2"."count" FROM "poly"."Node" "t0" INNER JOIN "poly"."Node" "_dir_" ON "_dir_"."id" = "t0"."parent_id" LEFT JOIN "poly"."File" "t1" ON "t1"."id" = "t0"."id" LEFT JOIN "poly"."Dir" "t2" ON "t2"."id" = "t0"."id"'
     assert params == ("/", )
+    result = await conn.select(q)
+    expected = {
+        home.id: "root/home",
+        zozzz.id: "home/zozzz",
+        some_file.id: "zozzz/test.py",
+        var.id: "root/var",
+        log.id: "var/log",
+    }
+    for x in result:
+        assert x.path == expected[x.id]
+
+    q = Query().select_from(Node).columns(Node.full_path).where(Node.id == some_file.id)
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT CONCAT_WS($1, "t3"."name", "t2"."name", "t1"."name", "t0"."name") FROM "poly"."Node" "t0" INNER JOIN "poly"."Node" "t1" ON "t1"."id" = "t0"."parent_id" INNER JOIN "poly"."Node" "t2" ON "t2"."id" = "t1"."parent_id" INNER JOIN "poly"."Node" "t3" ON "t3"."id" = "t2"."parent_id" WHERE "t0"."id" = $2'
+    assert params == ("/", some_file.id)
+    result = await conn.select(q).first()
+    assert result == 'root/home/zozzz/test.py'

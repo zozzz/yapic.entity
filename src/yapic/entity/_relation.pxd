@@ -15,8 +15,8 @@ cdef class Relation(EntityAttribute):
 @cython.final
 cdef class RelatedAttribute(EntityAttribute):
     cdef readonly Relation __relation__
-    cdef readonly EntityAttribute __rattr__
-    cdef readonly PathExpression __rpath__
+    cdef EntityAttribute rattr
+    cdef PathExpression rpath
 
 
 cdef class RelatedAttributeImpl(EntityAttributeImpl):
@@ -33,6 +33,7 @@ cdef class RelationImpl(EntityAttributeImpl):
 
     cdef EntityType get_joined_entity(self)
     cdef EntityType get_joined_alias(self)
+    cdef object set_joined_alias(self, EntityType entity)
     cdef Expression get_join_expr(self)
     cdef Relation set_relation(self, Relation relation)
     cdef Relation get_relation(self)
@@ -55,6 +56,7 @@ cdef class ManyToMany(RelationImpl):
 
     cdef EntityType get_across_entity(self)
     cdef EntityType get_across_alias(self)
+    cdef object set_across_alias(self, EntityType entity)
     cdef Expression get_across_join_expr(self)
 
     cdef tuple _determine_join_expr(self, EntityAttribute relation)

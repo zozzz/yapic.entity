@@ -1,3 +1,5 @@
+# flake8: noqa: E501
+
 import operator
 import pytest
 from typing import Any
@@ -396,8 +398,14 @@ def test_unary_operators(op, left, expected):
     assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE ' + expected
 
 
-invert_operators = [(operator.__lt__, "<", ">="), (operator.__le__, "<=", ">"), (operator.__gt__, ">", "<="),
-                    (operator.__ge__, ">=", "<"), (operator.__eq__, "=", "!="), (operator.__ne__, "!=", "=")]
+invert_operators = [
+    (operator.__lt__, "<", ">="),
+    (operator.__le__, "<=", ">"),
+    (operator.__gt__, ">", "<="),
+    (operator.__ge__, ">=", "<"),
+    (operator.__eq__, "=", "!="),
+    (operator.__ne__, "!=", "="),
+]
 
 
 @pytest.mark.parametrize("op,original,inverted", invert_operators, ids=[f"{x[1]} NOT {x[2]}" for x in invert_operators])

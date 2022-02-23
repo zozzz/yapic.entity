@@ -1,3 +1,5 @@
+# flake8: noqa: E501
+
 import asyncio
 import pytest
 import pytest_asyncio
@@ -131,6 +133,25 @@ def test_entity_state():
 
     if user.__state__ == user2.__state__:
         pass
+
+
+def test_polymorph():
+    registry = Registry()
+
+    class Node(Entity, registry=registry, polymorph="type"):
+        id: Serial
+        type: String
+        title: String
+
+    class File(Node, polymorph="type"):
+        size: Int
+
+    class Pdf(File, polymorph="pdf"):
+        page_count: Int
+
+    pdf_alias = Pdf.alias("pdf")
+    q = Query(pdf_alias).where(pdf_alias.title == "file.pdf")
+    dialect.create_query_compiler().compile_select(q)
 
 
 # region: memleak kiderítés

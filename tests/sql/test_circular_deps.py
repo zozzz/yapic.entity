@@ -1,3 +1,5 @@
+# flake8: noqa: E501
+
 import pytest
 
 from yapic.entity import (Entity, Field, Serial, Int, String, ForeignKey, One, Query, Registry, Auto, Many, Bool)

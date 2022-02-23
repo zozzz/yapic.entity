@@ -40,26 +40,32 @@ cdef class EntityType(type):
 
     def __cinit__(self, *args, **kwargs):
         self.__fix_entries__ = None
-        self.__deferred__ = []
         self.__triggers__ = []
         self.__extgroups__ = {}
+        self.stage = EntityStage.UNRESOLVED
 
     def __init__(self, *args, _root=False, **kwargs):
         super().__init__(*args)
         (name, bases, attrs) = args
 
+        cdef EntityType base_entity = None
+        for base in bases:
+            if isinstance(base, EntityType):
+                if base_entity is not None:
+                    raise ValueError("Only one base entity is allowed")
+                else:
+                    base_entity = base
+
         self.__deps__ = EntityDependency(<object>self.registry_ref)
 
-        cdef EntityType base_entity = self.get_base_entity()
-
         # determine polymorph
-        cdef object poly_meta = self.get_meta("polymorph", None)
-        cdef PolymorphMeta polymorph = None
-        if poly_meta:
-            if isinstance(poly_meta, PolymorphMeta):
-                polymorph = <PolymorphMeta>poly_meta
+        cdef object poly_dict = self.get_meta("polymorph", None)
+        cdef PolymorphDict polymorph = None
+        if poly_dict is not None:
+            if isinstance(poly_dict, PolymorphDict):
+                polymorph = <PolymorphDict>poly_dict
             else:
-                polymorph = PolymorphMeta(poly_meta)
+                polymorph = PolymorphDict(poly_dict)
                 self.set_meta("polymorph", polymorph)
 
         # determine attributes
@@ -101,9 +107,11 @@ cdef class EntityType(type):
             self.__fields__ = tuple(__fields__)
             self.__attrs__ = tuple(__fields__ + non_fields)
 
+            # print("*" * 10, self, "*" * 10)
+            # print("\t" + "\n\t".join(map(repr, self.__attrs__)))
+
             for index, attr in enumerate(self.__attrs__):
                 attr._index_ = index
-                self.__deferred__.append(attr)
         else:
             self.__pk__ = tuple()
             self.__fields__ = tuple()
@@ -130,7 +138,7 @@ cdef class EntityType(type):
 
     cdef list _compute_triggers(self):
         cdef EntityType base_entity = self.get_base_entity()
-        cdef PolymorphMeta polymorph = self.get_meta("polymorph", None)
+        cdef PolymorphDict polymorph = self.get_meta("polymorph", None)
         cdef list result = []
 
         if polymorph and base_entity and base_entity.__pk__:
@@ -148,7 +156,7 @@ cdef class EntityType(type):
         return result
 
 
-    cdef list _compute_attrs(self, EntityType base_entity, PolymorphMeta polymorph, object cls_dict):
+    cdef list _compute_attrs(self, EntityType base_entity, PolymorphDict polymorph_dict, object cls_dict):
         if not isinstance(cls_dict, dict):
             raise ValueError("cls_dict must be dict")
 
@@ -157,39 +165,56 @@ cdef class EntityType(type):
         cdef EntityAttribute attr
         cdef list result = []
 
-        if polymorph and base_entity.__fields__:
-            polymoph_id = self.get_meta("polymorph_id")
-            poly_join = None
-            poly_relation = Relation(ManyToOne(base_entity, RelatedItem()))
+        if polymorph_dict is not None:
+            polymorph_id = self.get_meta("polymorph_id", None)
+            if polymorph_id is not None:
+                polymorph_id = PolymorphDict.normalize_id(polymorph_id)
+                polymorph_dict.add_entity(polymorph_id, self)
 
-            result.append(poly_relation)
-            polymorph.add(polymoph_id, self, poly_relation)
+            if base_entity:
+                if base_entity.__fields__:
+                    parent_rel = new_poly_parent_relation(base_entity, self)
+                else:
+                    parent_rel = None
+            else:
+                parent_rel = None
 
-            for attr in base_entity.__attrs__:
-                if attr.get_ext(PrimaryKey):
-                    self_pk = Field(AutoImpl(), name=attr._name_) \
-                        // ForeignKey(attr, on_delete="CASCADE", on_update="CASCADE") \
-                        // PrimaryKey()
-                    (<EntityAttribute>self_pk)._key_ = attr._key_
-                    result.append(self_pk)
+            self.__polymorph__ = Polymorph(polymorph_dict, parent_rel, polymorph_id)
 
-                    if poly_join is None:
-                        poly_join = self_pk == attr
-                    else:
-                        poly_join &= self_pk == attr
-                elif attr._key_:
-                    # TODO: stateless
-                    parent_attr = RelatedAttribute(poly_relation, name=attr._key_)
-                    result.append(parent_attr)
-                    (<EntityAttribute>parent_attr)._key_ = attr._key_
+            if parent_rel is not None:
+                result.append(parent_rel)
 
-            (<Relation>poly_relation)._default_ = poly_join
+                poly_join = None
+                for attr in base_entity.__attrs__:
+                    if attr.get_ext(PrimaryKey):
+                        self_pk = Field(AutoImpl(), name=attr._name_) \
+                            // ForeignKey(attr, on_delete="CASCADE", on_update="CASCADE") \
+                            // PrimaryKey()
+                        (<EntityAttribute>self_pk)._key_ = attr._key_
+                        result.append(self_pk)
+
+                        if poly_join is None:
+                            poly_join = self_pk == attr
+                        else:
+                            poly_join &= self_pk == attr
+                    elif attr._key_:
+                        # TODO: stateless
+                        parent_attr = RelatedAttribute(parent_rel, name=attr._key_)
+                        result.append(parent_attr)
+                        (<EntityAttribute>parent_attr)._key_ = attr._key_
+
+                (<Relation>parent_rel)._default_ = poly_join
+                if base_entity.__polymorph__ is not None:
+                    child_rel = new_poly_child_relation(base_entity, self)
+                    (<Relation>child_rel)._default_ = poly_join
+                    base_entity.__polymorph__.add_child(child_rel)
+
 
         # TODO: hints in mro order
 
         if hints[1] is not None:
             for name, type in (<dict>hints[1]).items():
-                if polymorph and hasattr(base_entity, name):
+                if polymorph_dict is not None and hasattr(base_entity, name):
                     continue
 
                 factory = Factory.create(type)
@@ -228,6 +253,17 @@ cdef class EntityType(type):
     @property
     def __meta__(self):
         return <object>self.meta
+
+    @property
+    def __deferred__(self):
+        cdef list result = []
+        cdef EntityAttribute attr
+
+        for attr in self.__attrs__:
+            if attr.stage == EntityStage.UNRESOLVED:
+                result.append(attr)
+
+        return result
 
     cpdef object get_meta(self, str key=None, default=NOTSET):
         if isinstance(<object>self.meta, dict):
@@ -277,38 +313,56 @@ cdef class EntityType(type):
 
 
     def alias(self, str alias = None):
-        cdef EntityType original = get_alias_target(self)
-        cdef dict clsdict = {"__new__": _no_alias_instance, "__init__": _no_alias_instance}
-        return EntityAlias(alias or "", (EntityBase,), clsdict, alias_target=original, registry=<object>original.registry_ref)
+        return new_entity_alias(self, alias, None, None)
 
     cdef object _stage_resolving(self):
+        if self.stage != EntityStage.UNRESOLVED:
+            return True
+
+        # if self.stage == EntityStage.RESOLVING:
+        #     raise RuntimeError("Recursive resolve cycle")
+        # self.stage = EntityStage.RESOLVING
+
         cdef EntityAttribute attr
-        cdef list deferred = self.__deferred__
-        cdef list unresolved
+        cdef Relation poly_rel
+        cdef int unresolved_count = 0
+        cdef int last_unresoved_count = 0
 
         while True:
-            unresolved = []
-            for attr in deferred:
-                if attr._resolve_deferred(self.resolve_ctx) is False:
-                    unresolved.append(attr)
+            unresolved_count = 0
+            for attr in self.__attrs__:
+                if attr._stage_resolving(self.resolve_ctx) is False:
+                    unresolved_count += 1
 
-            # cant resolve any new attr
-            if len(deferred) == len(unresolved):
+            # if self.__polymorph__ is not None:
+            #     for poly_rel in self.__polymorph__:
+            #         if poly_rel._stage_resolving(self.resolve_ctx) is False:
+            #             unresolved_count += 1
+
+            if unresolved_count == last_unresoved_count:
                 break
-            deferred = unresolved
+            last_unresoved_count = unresolved_count
 
-        self.__deferred__ = deferred
-        return len(deferred) == 0
+        if unresolved_count == 0:
+            self.stage = EntityStage.RESOLVING
+            return True
+        else:
+            self.stage = EntityStage.UNRESOLVED
+            return False
 
     cdef object _stage_resolved(self):
+        if self.stage == EntityStage.RESOLVED:
+            return None
+        elif self.stage == EntityStage.UNRESOLVED:
+            raise RuntimeError("Wrong call of _stage_resolved")
+
         cdef EntityAttributeExtGroup group
-        cdef PolymorphMeta polymorph
         cdef EntityAttribute attr
 
         self.resolve_ctx = None
 
         for attr in self.__attrs__:
-            attr.init()
+            attr._stage_resolved()
             self.__deps__ = self.__deps__.merge(attr._deps_)
 
         for group in self.__extgroups__.values():
@@ -317,12 +371,13 @@ cdef class EntityType(type):
 
         self.__triggers__.extend(self._compute_triggers())
         self.__entity_ready__()
+        self.stage = EntityStage.RESOLVED
 
     cdef bint is_deferred(self):
-        return len(self.__deferred__) != 0
+        return self.stage < EntityStage.RESOLVING
 
     cdef bint is_resolved(self):
-        return len(self.__deferred__) == 0
+        return self.stage >= EntityStage.RESOLVING
 
     cdef bint is_empty(self):
         return len(self.__attrs__) == 0
@@ -336,6 +391,12 @@ cdef class EntityType(type):
     def __dealloc__(self):
         Py_XDECREF(self.meta)
         Py_XDECREF(self.registry_ref)
+
+
+cdef EntityAlias new_entity_alias(EntityType entity, str alias, EntityType poly_base, EntityType poly_skip):
+    entity = get_alias_target(entity)
+    cdef dict clsdict = {"__new__": _no_alias_instance, "__init__": _no_alias_instance}
+    return EntityAlias(alias or "", (EntityBase,), clsdict, alias_target=entity, registry=<object>entity.registry_ref, poly_base=poly_base, poly_skip=poly_skip)
 
 
 @cython.final
@@ -360,7 +421,7 @@ cdef class EntityAlias(EntityType):
             raise ValueError("Can't set entity on alias")
         self.entity_ref = <object>PyWeakref_NewRef(entity, None)
 
-    cdef list _compute_attrs(self, EntityType base_entity, PolymorphMeta polymorph, object attrs):
+    cdef list _compute_attrs(self, EntityType base_entity, PolymorphDict polymorph_dict, object attrs):
         cdef EntityType aliased = self.get_entity()
         cdef EntityAttribute attr
         cdef list result = []
@@ -386,11 +447,51 @@ cdef class EntityAlias(EntityType):
             attr._key_ = (<RelatedAttribute>relatad_attr)._key_
             result[i] = attr
 
-        # TODO: clone PolymorphMeta
-        # self.set_meta("polymorph", self.get_meta("polymorph", None))
-        self._copy_meta(("polymorph",))
+        cdef Polymorph poly = aliased.__polymorph__
+        cdef EntityAlias poly_base
+        cdef EntityType poly_skip
+        cdef Relation parent_rel
+        cdef Relation child_rel
+
+        if poly is not None:
+            poly_base = self.__meta__.pop("poly_base", None)
+            poly_skip = self.__meta__.pop("poly_skip", None)
+
+            if poly_base is None:
+                poly_base = self._clone_poly_parents(poly, aliased)
+
+            if poly_base is not None:
+                parent_rel = relations[id(poly.parent)]
+                (<RelationImpl>parent_rel._impl_).set_joined_alias(poly_base)
+
+                child_rel = new_poly_child_relation(poly_base, self)
+                child_rel._default_ = parent_rel._default_
+                poly_base.__polymorph__.add_child(child_rel)
+            else:
+                parent_rel = None
+
+            self.__polymorph__ = Polymorph(poly.info, parent_rel, poly.id_values, poly.poly_ids)
+
+            for child_rel in poly.children():
+                child_ent = (<RelationImpl>child_rel._impl_).get_joined_alias()
+                if poly_skip is not child_ent:
+                    child_alias = new_entity_alias(child_ent, None, self, None)
 
         return result
+
+    cdef EntityType _clone_poly_parents(self, Polymorph poly, EntityType aliased):
+        cdef list parents = poly.parents()
+        cdef Relation relation
+        cdef EntityType entity
+        cdef EntityAlias poly_base = None
+
+        for relation in reversed(parents):
+            entity = (<RelationImpl>relation._impl_).get_joined_alias()
+            poly_base = new_entity_alias(entity, None, poly_base, aliased)
+
+        return poly_base
+
+
 
     cdef list _compute_triggers(self):
         return []
@@ -451,6 +552,31 @@ cdef EntityAttribute create_attribute(EntityAttribute by_type, object value):
         return by_type
 
 
+cdef Relation new_poly_parent_relation(EntityType base, EntityType child):
+    cdef ManyToOne rimp
+
+    rimp = ManyToOne(base, RelatedItem())
+    rimp.set_joined_alias(base)
+    return Relation(rimp)
+
+
+cdef Relation new_poly_child_relation(EntityType base, EntityType child):
+    cdef ManyToOne rimp
+    cdef Relation result
+
+    rimp = ManyToOne(child, RelatedItem())
+    rimp.set_joined_alias(child)
+    result = Relation(rimp)
+    result._bind(<object>PyWeakref_NewRef(base, None), <object>base.registry_ref)
+
+    if result._stage_resolving(ResolveContext(base, None)) is True:
+        result._stage_resolved()
+    else:
+        raise RuntimeError("Cant resolve child relation")
+
+    return result
+
+
 cdef int ENTITY_ATTRIBUTE_UID_COUNTER = 1
 
 
@@ -472,6 +598,7 @@ cdef class EntityAttribute(Expression):
             self._impl = None
 
         self._exts_ = []
+        self.stage = EntityStage.UNRESOLVED
 
     @property
     def _entity_(self):
@@ -531,6 +658,16 @@ cdef class EntityAttribute(Expression):
             for ext in self._exts_:
                 ext._bind(attr_ref)
 
+    cdef object _stage_resolving(self, ResolveContext ctx):
+        if self.stage == EntityStage.UNRESOLVED:
+            if self._resolve_deferred(ctx) is True:
+                self.stage = EntityStage.RESOLVING
+                return True
+            else:
+                return False
+        else:
+            return True
+
     cdef object _resolve_deferred(self, ResolveContext ctx):
         cdef EntityAttributeExt ext
 
@@ -547,27 +684,28 @@ cdef class EntityAttribute(Expression):
                 raise ValueError(f"Unexpected attribute implementation: {self._impl}")
             self._impl = None
 
-        if self._impl_._resolve_deferred(ctx, self) is False:
+        if self._impl_._stage_resolving(ctx, self) is False:
             return False
 
         for ext in self._exts_:
-            if not ext._resolve_deferred(ctx):
+            if ext._stage_resolving(ctx) is False:
                 return False
 
         return True
 
-
-    cpdef object init(self):
+    cdef object _stage_resolved(self):
         cdef EntityAttributeExt ext
 
-        if not self._impl_.inited:
-            if self._impl_.init(self) is False:
-                return False
-            else:
-                self._impl_.inited = True
+        if self.stage == EntityStage.RESOLVING:
+            self._impl_._stage_resolved(self)
+            for ext in self._exts_:
+                ext._stage_resolved()
 
-        for ext in self._exts_:
-            ext.init()
+            self.init()
+            self.stage = EntityStage.RESOLVED
+
+    cpdef object init(self):
+        pass
 
     cpdef clone(self):
         raise NotImplementedError()
@@ -607,6 +745,9 @@ cdef class EntityAttributeExt:
     def validate_group(self, EntityAttributeExtGroup group):
         pass
 
+    def __cinit__(self, *args, **kwargs):
+        self.stage = EntityStage.UNRESOLVED
+
     @property
     def attr(self):
         return self.get_attr()
@@ -630,11 +771,26 @@ cdef class EntityAttributeExt:
                 raise RuntimeError(f"Can't rebind attribute extension {current} -> {new}")
         return True
 
+    cdef object _stage_resolving(self, ResolveContext ctx):
+        if self.stage == EntityStage.UNRESOLVED:
+            if self._resolve_deferred(ctx) is True:
+                self.stage = EntityStage.RESOLVING
+                return True
+            else:
+                return False
+        else:
+            return True
+
     cdef object _resolve_deferred(self, ResolveContext ctx):
         return True
 
     def __floordiv__(EntityAttributeExt self, EntityAttributeExt other):
         return EntityAttributeExtList((self, other))
+
+    cdef object _stage_resolved(self):
+        if self.stage == EntityStage.RESOLVING:
+            self.init()
+            self.stage = EntityStage.RESOLVED
 
     cpdef object init(self):
         pass
@@ -704,10 +860,25 @@ cdef class EntityAttributeExtGroup:
 
 cdef class EntityAttributeImpl:
     def __cinit__(self, *args, **kwargs):
-        self.inited = False
+        self.stage = EntityStage.UNRESOLVED
+
+    cdef object _stage_resolving(self, ResolveContext ctx, EntityAttribute attr):
+        if self.stage == EntityStage.UNRESOLVED:
+            if self._resolve_deferred(ctx, attr) is True:
+                self.stage = EntityStage.RESOLVING
+                return True
+            else:
+                return False
+        else:
+            return True
 
     cdef object _resolve_deferred(self, ResolveContext ctx, EntityAttribute attr):
         return True
+
+    cdef object _stage_resolved(self, EntityAttribute attr):
+        if self.stage == EntityStage.RESOLVING:
+            self.init(attr)
+            self.stage = EntityStage.RESOLVED
 
     cpdef object init(self, EntityAttribute attr):
         return True
@@ -793,7 +964,7 @@ cdef class EntityState:
         cdef EntityAttribute attr
         cdef EntityType entity = self.entity
 
-        if is_initial:
+        if is_initial is True:
             for k, v in data.items():
                 attr = getattr(entity, k)
                 self.set_initial_value(attr, v)
@@ -1080,25 +1251,25 @@ cdef class EntityBase:
             self.__state__ = EntityState(model)
 
     def __init__(self, data = None, **kw):
-        cdef PolymorphMeta poly
+        cdef Polymorph poly
         cdef EntityType model
 
         if not isinstance(data, EntityState):
             self.__state__.init()
 
             if isinstance(data, dict):
-                self.__state__.update(data, False)
+                for k, v in (<dict>data).items():
+                    setattr(self, k, v)
+
             if len(kw) != 0:
-                self.__state__.update(kw, False)
+                for k, v in (<dict>kw).items():
+                    setattr(self, k, v)
 
             model = type(self)
-            poly = model.get_meta("polymorph", None)
-            if poly is not None:
-                poly_id = model.get_meta("polymorph_id", None)
-                if poly_id is not None:
-                    poly_id = PolymorphMeta.normalize_id(poly_id)
-                    for i, idf in enumerate(poly.id_fields):
-                        setattr(self, idf, poly_id[i])
+            poly = model.__polymorph__
+            if poly is not None and poly.poly_ids is not None:
+                for k, v in poly.poly_ids.items():
+                    setattr(self, k, v)
         else:
             self.__state__.init()
 
@@ -1434,9 +1605,11 @@ cdef bint _is_dependency(EntityType a, EntityType b):
 
 
 @cython.final
-cdef class PolymorphMeta:
+cdef class PolymorphDict(dict):
     @staticmethod
     cdef tuple normalize_id(object id):
+        if id is None:
+            return None
         if not isinstance(id, tuple):
             if isinstance(id, list):
                 return tuple(id)
@@ -1444,76 +1617,110 @@ cdef class PolymorphMeta:
                 return (id,)
         return id
 
-    def __cinit__(self, object id_fields):
-        self.id_fields = PolymorphMeta.normalize_id(id_fields)
-        self._decls = []
+    def __init__(self, object id_fields):
+        self.id_fields = PolymorphDict.normalize_id(id_fields)
+        dict.__init__(self)
 
     def items(self):
-        for ref, id, relation in self._decls:
-            yield (<object>PyWeakref_GetObject(ref), id, relation)
+        for id, ref in (<dict>self).items():
+            yield (id, <object>PyWeakref_GetObject(ref))
 
-    def get_entity(self, poly_id):
-        poly_id = PolymorphMeta.normalize_id(poly_id)
+    cdef object add_entity(self, object poly_id, EntityType entity):
+        poly_id = PolymorphDict.normalize_id(poly_id)
 
-        for value in self._decls:
-            if (<tuple>value)[1] == poly_id:
-                return <object>PyWeakref_GetObject((<tuple>value)[0])
+        if is_entity_alias(entity):
+            raise RuntimeError("Can't add entity alias to polymorph")
 
-        raise ValueError(f"Not found entity with this id: {poly_id}")
+        if poly_id in self:
+            raise ValueError(f"{poly_id} is already in polymorph")
 
-    def get_id(self, EntityType entity):
+        for value in self.items():
+            if (<tuple>value)[1] is entity:
+                raise ValueError(f"{(<tuple>value)[1]} is already in polymorph")
+
+        (<dict>self)[poly_id] = <object>PyWeakref_NewRef(entity, self.__on_entity_freed)
+
+    cdef EntityType get_entity(self, object poly_id):
+        poly_id = PolymorphDict.normalize_id(poly_id)
+        entity_ref = (<dict>self)[poly_id]
+        return <object>PyWeakref_GetObject(entity_ref)
+
+    cdef tuple get_id(self, EntityType entity):
         entity = get_alias_target(entity)
-        for ent, id, relation in self.items():
-            if ent is entity:
-                return id
+        for entry in self.items():
+            if (<tuple>entry)[1] is entity:
+                return (<tuple>entry)[0]
 
         raise ValueError(f"Not found id for this entity: {entity}")
 
-    def new_instance(self, poly_id):
-        cdef EntityType entity = self.get_entity(poly_id)
-        return entity()
+    def __getitem__(self, object key):
+        if isinstance(key, EntityType):
+            return self.get_id(<EntityType>key)
+        else:
+            return self.get_entity(key)
 
-    cdef object add(self, object poly_id, EntityType entity, object relation):
-        if not isinstance(relation, Relation):
-            raise TypeError("Relation expected, but got: %r" % relation)
-
-
-        for value in self.items():
-            if (<tuple>value)[0] is entity:
-                raise ValueError(f"{(<tuple>value)[0]} is already in polymorph")
-
-        poly_id = PolymorphMeta.normalize_id(poly_id)
-        self._decls.append((<object>PyWeakref_NewRef(entity, self.__on_entity_freed), poly_id, relation))
-
-    cpdef list parents(self, EntityType entity):
-        entity = get_alias_target(entity)
-        cdef list result = []
-        self._parents(entity, result)
-        return result
-
-    cdef object _parents(self, EntityType entity, list result):
-        cdef Relation relation
-
-        for value in self._decls:
-            relation = <Relation>((<tuple>value)[2])
-            if relation.get_entity() is entity:
-                result.append(relation)
-                self._parents((<RelationImpl>relation._impl_).get_joined_entity(), result)
-
-    cpdef list children(self, EntityType entity):
-        cdef Relation relation
-        entity = get_alias_target(entity)
-        cdef list result = []
-
-        for value in self._decls:
-            relation = <Relation>((<tuple>value)[2])
-            if get_alias_target((<RelationImpl>relation._impl_).get_joined_entity()) is entity:
-                result.append(relation)
-
-        return result
+    def __setitem__(self, object key, EntityType value):
+        self.add_entity(key, value)
 
     def __on_entity_freed(self, ref):
-        for i in reversed(range(0, len(self._decls))):
-            ent_ref = (<tuple>self._decls[i])[0]
+        for id, ent_ref in (<dict>self).items():
             if ent_ref is ref:
-                del self._decls[i]
+                del (<dict>self)[id]
+                break
+
+    def __repr__(self):
+        return f"<PolymorphDict {dict(self.items())}>"
+
+
+@cython.final
+cdef class Polymorph:
+    def __init__(self, PolymorphDict info, Relation parent, tuple id_values, dict poly_ids=None):
+        super().__init__()
+
+        self.info = info
+        self.parent = parent
+        self.id_values = id_values
+        self._children = []
+
+        if poly_ids is None and info.id_fields is not None and id_values is not None:
+            poly_ids = {}
+            for i, f in enumerate(info.id_fields):
+                poly_ids[f] = id_values[i]
+        self.poly_ids = poly_ids
+
+
+
+    cdef object add_child(self, object relation):
+        if not isinstance(relation, Relation):
+            raise ValueError(f"{relation} is must be Relation")
+        self._children.append(relation)
+
+    cdef list parents(self):
+        cdef list result = []
+        cdef Relation parent = self.parent
+        cdef EntityType parent_entity
+
+        while parent is not None:
+            result.append(parent)
+            parent_entity = (<RelationImpl>parent._impl_).get_joined_alias()
+            if parent_entity.__polymorph__ is not None:
+                parent = parent_entity.__polymorph__.parent
+            else:
+                break
+
+        return result
+
+    cdef list children(self):
+        return <list>self._children
+
+    cdef EntityType get_entity(self, object id):
+        return self.info.get_entity(id)
+
+    cdef tuple get_id(self, EntityType entity):
+        return self.info.get_id(entity)
+
+    def __getitem__(self, key):
+        return self.info[key]
+
+    # def __repr__(self):
+    #     return "<Polymorph>"
