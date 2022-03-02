@@ -4,6 +4,7 @@ from typing import Generic, NoReturn, TypeVar, Union, Optional, List, Tuple, Typ
 from datetime import date, datetime, time
 from decimal import Decimal
 from enum import Enum
+from inspect import isfunction
 import uuid
 
 from ._entity import EntityAttribute, EntityAttributeExt, Entity
@@ -212,5 +213,17 @@ class UpdatedTime(Field[DateTimeTzImpl, datetime, datetime]):
         return field // _UpdatedTimeExt()
 
 
-def virtual(fn) -> VirtualAttribute:
-    return VirtualAttribute(VirtualAttributeImpl(), get=fn)
+def virtual(fn=None, *, depends: Optional[Union[list, tuple, str]] = None) -> VirtualAttribute:
+    if fn is not None:
+        return VirtualAttribute(VirtualAttributeImpl(), get=fn)
+    else:
+        if depends is not None:
+            if isinstance(depends, str):
+                depends = (depends, )
+            elif not isinstance(depends, tuple):
+                depends = tuple(depends)
+
+        def factory(fn):
+            return VirtualAttribute(VirtualAttributeImpl(), get=fn, depends=depends)
+
+        return factory

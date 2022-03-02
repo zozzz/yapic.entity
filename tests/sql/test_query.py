@@ -68,7 +68,7 @@ class User(Entity):
     tags: ManyAcross["UserTags", "Tag"]
     # birth_date:
 
-    @virtual
+    @virtual(depends="name")
     def name_q(self):
         return self.name
 
@@ -524,6 +524,14 @@ def test_virtual():
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == """SELECT "UserA"."id", "UserA"."name", "UserA"."email", "UserA"."created_time", "UserA"."address_id" FROM "User" "UserA" WHERE "UserA"."name" ILIKE ('%' || $1 || '%') OR "UserA"."name" ILIKE ('%' || $2 || '%')"""
     assert params == ("Jane", "Doe")
+
+    q = Query(User).load(User.name_q)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "t0"."name" FROM "User" "t0"'
+
+    q = Query(UserA).load(UserA.name_q)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "UserA"."name" FROM "User" "UserA"'
 
 
 class UserComp3(Entity):

@@ -388,16 +388,14 @@ cdef class Query(Expression):
 cdef object load_options(dict target, tuple input):
     for inp in input:
         if isinstance(inp, Relation):
-            target[(<Relation>inp)._uid_] = inp
+            add_relation_to_load(target, <Relation>inp)
             target[(<RelationImpl>(<Relation>inp)._impl_).get_joined_alias()] = inp
-        elif isinstance(inp, EntityAttribute):
-            target[(<EntityAttribute>inp)._uid_] = inp
         elif isinstance(inp, PathExpression):
             pl = len((<PathExpression>inp)._path_)
             for i, entry in enumerate((<PathExpression>inp)._path_):
                 is_last = pl - 1 == i
                 if isinstance(entry, Relation):
-                    target[(<Relation>entry)._uid_] = entry
+                    add_relation_to_load(target, <Relation>entry)
                     if is_last:
                         target[(<RelationImpl>(<Relation>entry)._impl_).get_joined_alias()] = entry
                 elif isinstance(entry, Field):
@@ -409,11 +407,37 @@ cdef object load_options(dict target, tuple input):
                 elif isinstance(entry, RelatedAttribute):
                     target[(<RelatedAttribute>entry)._uid_] = entry
                 elif isinstance(entry, VirtualAttribute):
-                    target[(<VirtualAttribute>entry)._uid_] = entry
+                    add_virtual_attr_to_load(target, (<VirtualAttribute>entry))
                 else:
                     raise NotImplementedError(repr(entry))
+        elif isinstance(inp, VirtualAttribute):
+            add_virtual_attr_to_load(target, (<VirtualAttribute>inp))
+        elif isinstance(inp, EntityAttribute):
+            target[(<EntityAttribute>inp)._uid_] = inp
         else:
             target[inp] = inp
+
+
+cdef object add_relation_to_load(dict target, Relation relation):
+    cdef Loading loading = relation.get_ext(Loading)
+
+    target[relation._uid_] = relation
+
+    if loading is not None and loading.fields:
+        entity = (<RelationImpl>relation._impl_).get_joined_alias()
+        for field in loading.fields:
+            load_options(target, (getattr(entity, field),))
+
+
+cdef object add_virtual_attr_to_load(dict target, VirtualAttribute attr):
+    if attr._val is not None:
+        target[attr._uid_] = attr
+
+    elif attr._deps is not None:
+        # if has value expression, we dont need to load dependencies
+        entity = attr.get_entity()
+        for field in attr._deps:
+            load_options(target, (getattr(entity, field),))
 
 
 @cython.final
@@ -689,54 +713,71 @@ cdef class QueryFinalizer(Visitor):
         cdef list rco = [RowConvertOp(RCO.CREATE_STATE, aliased)]
         cdef EntityAttribute attr
         cdef Field field
-        cdef Relation relation
         cdef relation_rco = []
         cdef Loading loading
 
+        cdef dict load_attrs = self.q._load
+        cdef dict exclude_attrs = self.q._exclude
+        cdef int attr_uid
+
         for attr in entity_type.__attrs__:
+            attr_uid = attr._uid_
+            loading = attr.get_ext(Loading)
+            if attr_uid not in load_attrs and entity_type not in load_attrs \
+                and (not exclude_attrs or attr_uid in exclude_attrs or entity_type in exclude_attrs) \
+                and (loading is None or loading.always is False):
+                # skip this attribute
+                continue
+
+
             if isinstance(attr, Field):
                 field = <Field>attr
-                # attr_entity = field.get_entity()
 
-                if ((field._uid_ in self.q._load or entity_type in self.q._load)
-                        and (not self.q._exclude
-                            or field._uid_ not in self.q._exclude
-                            or entity_type not in self.q._exclude)):
-
-                    if isinstance(field._impl_, CompositeImpl):
-                        rco[0:0] = self._rco_for_composite(field, (<CompositeImpl>field._impl_)._entity_)
-                        rco.append(_RCO_POP)
-                        rco.append(RowConvertOp(RCO.SET_ATTR, aliased.__fields__[field._index_]))
-                    else:
+                if isinstance(field._impl_, CompositeImpl):
+                    rco[0:0] = self._rco_for_composite(field, (<CompositeImpl>field._impl_)._entity_)
+                    rco.append(_RCO_POP)
+                    rco.append(RowConvertOp(RCO.SET_ATTR, aliased.__fields__[field._index_]))
+                else:
+                    try:
+                        idx = existing[field._uid_]
+                    except KeyError:
                         try:
-                            idx = existing[field._uid_]
-                        except KeyError:
-                            try:
-                                idx = self._find_column_index(field)
-                            except ValueError:
-                                idx = len(self.q._columns)
-                                self.q._columns.append(field)
-                                existing[field._uid_] = idx
+                            idx = self._find_column_index(field)
+                        except ValueError:
+                            idx = len(self.q._columns)
+                            self.q._columns.append(field)
+                            existing[field._uid_] = idx
 
-                        rco.append(RowConvertOp(RCO.SET_ATTR_RECORD, aliased.__fields__[field._index_], idx))
+                    rco.append(RowConvertOp(RCO.SET_ATTR_RECORD, aliased.__fields__[field._index_], idx))
             elif isinstance(attr, Relation):
-                loading = <Loading>attr.get_ext(Loading)
-                if attr._uid_ in self.q._load or (loading is not None and loading.always):
-                    relation = <Relation>attr
+                # must have explicit load for relations
+                if attr_uid not in load_attrs and (loading is None or loading.always is False):
+                    continue
 
-                    if loading is not None and loading.always:
-                        if loading.fields:
-                            joined_entity = (<RelationImpl>relation._impl_).get_joined_alias()
-                            for fname in loading.fields:
-                                self.q.load(getattr(joined_entity, fname))
-                        else:
-                            self.q.load((<RelationImpl>relation._impl_).get_joined_alias())
+                if isinstance((<Relation>attr)._impl_, ManyToOne):
+                    relation_rco.append((<Relation>attr, self._rco_for_one_relation(<Relation>attr, existing)))
+                else:
+                    relation_rco.append((<Relation>attr, self._rco_for_many_relation(<Relation>attr)))
+                # loading = <Loading>attr.get_ext(Loading)
+                # if attr._uid_ in self.q._load or (loading is not None and loading.always):
+                #     relation = <Relation>attr
 
-                    if isinstance(relation._impl_, ManyToOne):
-                        relation_rco.append((relation, self._rco_for_one_relation(relation, existing)))
-                    else:
-                        relation_rco.append((relation, self._rco_for_many_relation(relation)))
-            elif isinstance(attr, VirtualAttribute) and attr._uid_ in self.q._load and (<VirtualAttribute>attr)._val:
+                #     if loading is not None and loading.always:
+                #         if loading.fields:
+                #             joined_entity = (<RelationImpl>relation._impl_).get_joined_alias()
+                #             for fname in loading.fields:
+                #                 self.q.load(getattr(joined_entity, fname))
+                #         else:
+                #             self.q.load((<RelationImpl>relation._impl_).get_joined_alias())
+
+                #     if isinstance(relation._impl_, ManyToOne):
+                #         relation_rco.append((relation, self._rco_for_one_relation(relation, existing)))
+                #     else:
+                #         relation_rco.append((relation, self._rco_for_many_relation(relation)))
+            elif isinstance(attr, VirtualAttribute):
+                if not (<VirtualAttribute>attr)._val:
+                    continue
+
                 try:
                     idx = existing[attr._uid_]
                 except KeyError:
@@ -744,7 +785,7 @@ cdef class QueryFinalizer(Visitor):
                         idx = self._find_column_index(attr)
                     except ValueError:
                         idx = len(self.q._columns)
-                        self.q._columns.append(self.visit(self.q._load[attr._uid_]))
+                        self.q._columns.append(self.visit(attr))
                         existing[attr._uid_] = idx
 
                 self.virtual_indexes[attr._uid_] = idx

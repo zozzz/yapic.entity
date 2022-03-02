@@ -1958,11 +1958,12 @@ struct __pyx_obj_5yapic_6entity_13_virtual_attr_VirtualAttribute {
   PyObject *_cmp;
   PyObject *_val;
   PyObject *_order;
+  PyObject *_deps;
   PyObject *_source;
 };
 
 
-/* "_virtual_attr.pxd":21
+/* "_virtual_attr.pxd":22
  * 
  * 
  * cdef class VirtualAttributeImpl(EntityAttributeImpl):             # <<<<<<<<<<<<<<
@@ -1974,7 +1975,7 @@ struct __pyx_obj_5yapic_6entity_13_virtual_attr_VirtualAttributeImpl {
 };
 
 
-/* "_virtual_attr.pxd":25
+/* "_virtual_attr.pxd":26
  * 
  * 
  * cdef class VirtualBinaryExpression(BinaryExpression):             # <<<<<<<<<<<<<<
@@ -1986,7 +1987,7 @@ struct __pyx_obj_5yapic_6entity_13_virtual_attr_VirtualBinaryExpression {
 };
 
 
-/* "_virtual_attr.pxd":29
+/* "_virtual_attr.pxd":30
  * 
  * 
  * cdef class VirtualOrderExpression(OrderExpression):             # <<<<<<<<<<<<<<
@@ -3211,7 +3212,7 @@ struct __pyx_vtabstruct_5yapic_6entity_13_virtual_attr_VirtualAttribute {
 static struct __pyx_vtabstruct_5yapic_6entity_13_virtual_attr_VirtualAttribute *__pyx_vtabptr_5yapic_6entity_13_virtual_attr_VirtualAttribute;
 
 
-/* "_virtual_attr.pxd":21
+/* "_virtual_attr.pxd":22
  * 
  * 
  * cdef class VirtualAttributeImpl(EntityAttributeImpl):             # <<<<<<<<<<<<<<
@@ -3225,7 +3226,7 @@ struct __pyx_vtabstruct_5yapic_6entity_13_virtual_attr_VirtualAttributeImpl {
 static struct __pyx_vtabstruct_5yapic_6entity_13_virtual_attr_VirtualAttributeImpl *__pyx_vtabptr_5yapic_6entity_13_virtual_attr_VirtualAttributeImpl;
 
 
-/* "_virtual_attr.pxd":25
+/* "_virtual_attr.pxd":26
  * 
  * 
  * cdef class VirtualBinaryExpression(BinaryExpression):             # <<<<<<<<<<<<<<
@@ -3240,7 +3241,7 @@ struct __pyx_vtabstruct_5yapic_6entity_13_virtual_attr_VirtualBinaryExpression {
 static struct __pyx_vtabstruct_5yapic_6entity_13_virtual_attr_VirtualBinaryExpression *__pyx_vtabptr_5yapic_6entity_13_virtual_attr_VirtualBinaryExpression;
 
 
-/* "_virtual_attr.pxd":29
+/* "_virtual_attr.pxd":30
  * 
  * 
  * cdef class VirtualOrderExpression(OrderExpression):             # <<<<<<<<<<<<<<
@@ -39270,14 +39271,14 @@ static int __Pyx_modinit_type_import_code(void) {
    if (!__pyx_ptype_5yapic_6entity_13_virtual_attr_VirtualAttribute) __PYX_ERR(10, 5, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_13_virtual_attr_VirtualAttribute = (struct __pyx_vtabstruct_5yapic_6entity_13_virtual_attr_VirtualAttribute*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_13_virtual_attr_VirtualAttribute->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_13_virtual_attr_VirtualAttribute)) __PYX_ERR(10, 5, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_13_virtual_attr_VirtualAttributeImpl = __Pyx_ImportType(__pyx_t_1, "yapic.entity._virtual_attr", "VirtualAttributeImpl", sizeof(struct __pyx_obj_5yapic_6entity_13_virtual_attr_VirtualAttributeImpl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_13_virtual_attr_VirtualAttributeImpl) __PYX_ERR(10, 21, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_13_virtual_attr_VirtualAttributeImpl = (struct __pyx_vtabstruct_5yapic_6entity_13_virtual_attr_VirtualAttributeImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_13_virtual_attr_VirtualAttributeImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_13_virtual_attr_VirtualAttributeImpl)) __PYX_ERR(10, 21, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_13_virtual_attr_VirtualAttributeImpl) __PYX_ERR(10, 22, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_13_virtual_attr_VirtualAttributeImpl = (struct __pyx_vtabstruct_5yapic_6entity_13_virtual_attr_VirtualAttributeImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_13_virtual_attr_VirtualAttributeImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_13_virtual_attr_VirtualAttributeImpl)) __PYX_ERR(10, 22, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_13_virtual_attr_VirtualBinaryExpression = __Pyx_ImportType(__pyx_t_1, "yapic.entity._virtual_attr", "VirtualBinaryExpression", sizeof(struct __pyx_obj_5yapic_6entity_13_virtual_attr_VirtualBinaryExpression), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_13_virtual_attr_VirtualBinaryExpression) __PYX_ERR(10, 25, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_13_virtual_attr_VirtualBinaryExpression = (struct __pyx_vtabstruct_5yapic_6entity_13_virtual_attr_VirtualBinaryExpression*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_13_virtual_attr_VirtualBinaryExpression->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_13_virtual_attr_VirtualBinaryExpression)) __PYX_ERR(10, 25, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_13_virtual_attr_VirtualBinaryExpression) __PYX_ERR(10, 26, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_13_virtual_attr_VirtualBinaryExpression = (struct __pyx_vtabstruct_5yapic_6entity_13_virtual_attr_VirtualBinaryExpression*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_13_virtual_attr_VirtualBinaryExpression->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_13_virtual_attr_VirtualBinaryExpression)) __PYX_ERR(10, 26, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_13_virtual_attr_VirtualOrderExpression = __Pyx_ImportType(__pyx_t_1, "yapic.entity._virtual_attr", "VirtualOrderExpression", sizeof(struct __pyx_obj_5yapic_6entity_13_virtual_attr_VirtualOrderExpression), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5yapic_6entity_13_virtual_attr_VirtualOrderExpression) __PYX_ERR(10, 29, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_13_virtual_attr_VirtualOrderExpression = (struct __pyx_vtabstruct_5yapic_6entity_13_virtual_attr_VirtualOrderExpression*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_13_virtual_attr_VirtualOrderExpression->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_13_virtual_attr_VirtualOrderExpression)) __PYX_ERR(10, 29, __pyx_L1_error)
+   if (!__pyx_ptype_5yapic_6entity_13_virtual_attr_VirtualOrderExpression) __PYX_ERR(10, 30, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_13_virtual_attr_VirtualOrderExpression = (struct __pyx_vtabstruct_5yapic_6entity_13_virtual_attr_VirtualOrderExpression*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_13_virtual_attr_VirtualOrderExpression->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_13_virtual_attr_VirtualOrderExpression)) __PYX_ERR(10, 30, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("yapic.entity._trigger"); if (unlikely(!__pyx_t_1)) __PYX_ERR(11, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);

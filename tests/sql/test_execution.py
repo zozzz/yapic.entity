@@ -905,15 +905,15 @@ async def test_virtual_load(conn):
         data_1: String
         data_2: String
 
-        @virtual
+        @virtual(depends=("data_1", "data_2"))
         def data_concat(cls):
-            return "NotLoaded"
+            return "python value"
 
         @data_concat.value
         def data_concat_val(cls, q):
             return func.CONCAT_WS(" / ", cls.data_1, cls.data_2)
 
-        @virtual
+        @virtual(depends="data_1")
         def plain(self):
             return self.data_1
 
@@ -934,17 +934,17 @@ async def test_virtual_load(conn):
 
     query = Query(VirtualLoad)
     sql, params = dialect.create_query_compiler().compile_select(query)
-    assert sql == 'SELECT "t0"."id", "t0"."data_1", "t0"."data_2" FROM "execution"."VirtualLoad" "t0"'
-    assert len(params) == 0
+    assert sql == 'SELECT "t0"."id", "t0"."data_1", "t0"."data_2", CONCAT_WS($1, "t0"."data_1", "t0"."data_2") FROM "execution"."VirtualLoad" "t0"'
+    assert params == (" / ", )
 
     obj = await conn.select(query).first()
-    assert obj.data_concat == "NotLoaded"
+    assert obj.data_concat == "Hello / World"
 
     query = Query(VirtualLoad).load(VirtualLoad.data_concat).order(VirtualLoad.data_concat.asc())
     sql, params = dialect.create_query_compiler().compile_select(query)
     assert sql == 'SELECT CONCAT_WS($1, "t0"."data_1", "t0"."data_2") FROM "execution"."VirtualLoad" "t0" ORDER BY 1 ASC'
 
-    query = Query(VirtualLoad).load(VirtualLoad.data_1, VirtualLoad.plain)
+    query = Query(VirtualLoad).load(VirtualLoad.plain)
     sql, params = dialect.create_query_compiler().compile_select(query)
     assert sql == 'SELECT "t0"."data_1" FROM "execution"."VirtualLoad" "t0"'
 

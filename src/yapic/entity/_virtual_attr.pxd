@@ -9,6 +9,7 @@ cdef class VirtualAttribute(EntityAttribute):
     cdef readonly object _cmp
     cdef readonly object _val
     cdef readonly object _order
+    cdef readonly tuple _deps
     cdef object _source
 
     cdef Expression get_value_expr(self, object query)

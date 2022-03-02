@@ -6,13 +6,14 @@ from ._expression import asc, desc
 
 
 cdef class VirtualAttribute(EntityAttribute):
-    def __cinit__(self, *args, get, set=None, delete=None, compare=None, value=None, order=None):
+    def __cinit__(self, *args, get, set=None, delete=None, compare=None, value=None, order=None, depends=None):
         self._get = get
         self._set = set
         self._del = delete
         self._cmp = compare
         self._val = value
         self._order = order
+        self._deps = depends
         self._virtual_ = True
 
     def __get__(self, instance, owner):
@@ -46,7 +47,8 @@ cdef class VirtualAttribute(EntityAttribute):
             delete=self._del,
             compare=self._cmp,
             value=self._val,
-            order=self._order)
+            order=self._order,
+            depends=self._deps)
 
     def compare(self, fn):
         self._cmp = fn
