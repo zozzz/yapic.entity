@@ -289,9 +289,6 @@ cdef class ExpressionPlaceholder(Expression):
     cpdef visit(self, Visitor visitor):
         return visitor.visit_placeholder(self)
 
-    def __repr__(self):
-        return f"<Placeholder {self.name} {self.path}>"
-
     cdef Expression eval(self, object origion):
         cdef list path = self.path
         cdef object result = origion
@@ -310,6 +307,38 @@ cdef class ExpressionPlaceholder(Expression):
                 raise RuntimeError(f"Uknown operation: {op}")
 
         return coerce_expression(result)
+
+    def __repr__(self):
+        return f"<Placeholder {self.name} {self.path}>"
+
+
+# TODO: invert
+@cython.final
+cdef class MultiExpression(Expression):
+    def __cinit__(self, tuple expressions, object combinator):
+        self.expressions = expressions
+        self.combinator = combinator
+
+    cpdef visit(self, Visitor visitor):
+        return visitor.visit_multi(self)
+
+    cdef BinaryExpression _new_binary_expr(MultiExpression self, object other, object op):
+        cdef list parts = []
+
+        if isinstance(other, tuple):
+            if len(<tuple>other) != len(self.expressions):
+                raise ValueError(f"Wrong count of paramaters ({other}) for multi expression {self}")
+            else:
+                for i, expr in enumerate(self.expressions):
+                    parts.append(op(expr, (<tuple>other)[i]))
+        else:
+            for i, expr in enumerate(self.expressions):
+                parts.append(op(expr, other))
+
+        return self.combinator(*parts)
+
+    def __repr__(self):
+        return f"<Multi {self.combinator} {self.expressions}>"
 
 
 cdef class Visitor:

@@ -36,7 +36,10 @@ cdef class Relation(EntityAttribute):
         cdef EntityType joined = impl.get_joined_alias()
         cdef Expression expr = getattr(joined, name)
 
-        return PathExpression([self, expr])
+        if isinstance(expr, PathExpression):
+            return PathExpression([self] + (<PathExpression>expr)._path_)
+        else:
+            return PathExpression([self, expr])
 
     cpdef visit(self, Visitor visitor):
         return visitor.visit_relation(self)

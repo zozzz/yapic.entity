@@ -18,7 +18,8 @@ from ._field cimport Field, PrimaryKey, ForeignKey
 from ._field_impl cimport AutoImpl
 from ._relation cimport Relation, ManyToOne, RelatedItem, RelatedAttribute, RelationImpl
 from ._factory cimport Factory, get_type_hints, new_instance_from_forward, is_forward_decl
-from ._expression cimport Visitor, Expression
+from ._expression cimport Visitor, Expression, MultiExpression
+from ._expression import or_
 from ._registry cimport Registry
 from ._entity_serializer import EntitySerializer, SerializerCtx
 from ._virtual_attr cimport VirtualAttribute
@@ -84,6 +85,9 @@ cdef class EntityType(type):
             __attrs__ = fields
         else:
             __attrs__ = self._compute_attrs(base_entity, polymorph, attrs)
+
+        # print("*" * 10, self, "*" * 10)
+        # print("\t" + "\n\t".join(map(repr, __attrs__)))
 
         if len(__attrs__) > 0:
             self_ref = <object>PyWeakref_NewRef(self, None)
@@ -214,7 +218,8 @@ cdef class EntityType(type):
 
         if hints[1] is not None:
             for name, type in (<dict>hints[1]).items():
-                if polymorph_dict is not None and hasattr(base_entity, name):
+                if polymorph_dict is not None and base_entity._has_attr(name) is True:
+                    # raise ValueError(f"Can't overwrite polymorph base field: {name}")
                     continue
 
                 factory = Factory.create(type)
@@ -225,10 +230,6 @@ cdef class EntityType(type):
                     value = (<dict>cls_dict)[name]
                 except KeyError:
                     value = getattr(self, name, NOTSET)
-
-                # az öröklődés miatt van itt
-                # if isinstance(value, EntityAttribute):
-                #     value = (<EntityAttribute>value).clone()
 
                 attr_type = factory.hints[0]
 
@@ -311,6 +312,38 @@ cdef class EntityType(type):
             else:
                 return f"{schema}.{self.__name__}"
 
+    # TODO: need to correctly handle MultiExpression
+    # def __getattr__(self, str key):
+    #     cdef Polymorph polymorph = self.__polymorph__
+    #     cdef Relation child_rel
+
+    #     if polymorph is not None:
+    #         fields = []
+
+    #         for child_rel in polymorph.children():
+    #             try:
+    #                 child_field = getattr(child_rel, key)
+    #             except AttributeError:
+    #                 pass
+    #             else:
+    #                 fields.append(child_field)
+
+    #         if len(fields) == 0:
+    #             raise AttributeError(f"entity object {self} has no attribute '{key}'")
+    #         elif len(fields) == 1:
+    #             return fields[0]
+    #         else:
+    #             return MultiExpression(tuple(fields), or_)
+    #     else:
+    #         raise AttributeError(f"entity object '{self}' has no attribute '{key}'")
+
+    # need for poly inheritance
+    cdef object _has_attr(self, str key):
+        cdef EntityAttribute attr
+        for attr in self.__attrs__:
+            if attr._key_ == key:
+                return True
+        return False
 
     def alias(self, str alias = None):
         return new_entity_alias(self, alias, None, None)

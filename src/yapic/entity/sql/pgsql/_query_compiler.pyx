@@ -159,8 +159,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
     def visit_unary_pos(self, expr): return compile_unary(self, (<UnaryExpression>expr).expr, "+")
     def visit_unary_abs(self, expr): return compile_unary(self, (<UnaryExpression>expr).expr, "@")
 
-    def visit_binary_and(self, expr):
-        cdef BinaryExpression e = <BinaryExpression> expr
+    def visit_binary_and(self, BinaryExpression expr):
         parts = []
 
         if isinstance(expr.left, BinaryExpression) and (<BinaryExpression>expr.left).op is operator.__or__:
@@ -175,8 +174,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
         return " AND ".join(parts)
 
-    def visit_binary_or(self, expr):
-        cdef BinaryExpression e = <BinaryExpression> expr
+    def visit_binary_or(self, BinaryExpression expr):
         parts = []
 
         if isinstance(expr.left, BinaryExpression) and (<BinaryExpression>expr.left).op is operator.__and__:

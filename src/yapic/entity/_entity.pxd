@@ -51,6 +51,7 @@ cdef class EntityType(type):
     cdef bint is_deferred(self)
     cdef bint is_resolved(self)
     cdef bint is_empty(self)
+    cdef object _has_attr(self, str key)
 
     cpdef object __entity_ready__(self)
     cpdef object get_meta(self, str key=*, default=*)

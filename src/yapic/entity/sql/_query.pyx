@@ -19,8 +19,7 @@ from ._dialect cimport Dialect
 cdef class Query(Expression):
     def __cinit__(self):
         self._entities = set()
-        self._load = {}
-        self._exclude = {}
+        self._load = QueryLoad()
         self._parent = None
         self._allow_clone = True
         self.__expr_alias = {}
@@ -265,19 +264,11 @@ cdef class Query(Expression):
         return self
 
     def reset_load(self):
-        self._load = {}
-        return self
-
-    def reset_exclude(self):
-        self._exclude = {}
+        self._load = QueryLoad()
         return self
 
     def load(self, *load):
-        load_options(self._load, load)
-        return self
-
-    def exclude(self, *exclude):
-        load_options(self._exclude, exclude)
+        self._load.add(load)
         return self
 
     cpdef Query clone(self):
@@ -298,8 +289,7 @@ cdef class Query(Expression):
         if self._joins:         q._joins = dict(self._joins)
         if self._range:         q._range = slice(self._range.start, self._range.stop, self._range.step)
         if self._entities:      q._entities = set(self._entities)
-        if self._load:          q._load = dict(self._load)
-        if self._exclude:       q._exclude = dict(self._exclude)
+        if self._load:          q._load = self._load.clone()
         if self._parent:        q._parent = self._parent.clone()
         if self._pending_joins: q._pending_joins = list(self._pending_joins)
         q._as_row = self._as_row
@@ -384,60 +374,165 @@ cdef class Query(Expression):
     def __repr__(self):
         return QueryRepr().visit(self)
 
-# TODO: beautify
-cdef object load_options(dict target, tuple input):
-    for inp in input:
-        if isinstance(inp, Relation):
-            add_relation_to_load(target, <Relation>inp)
-            target[(<RelationImpl>(<Relation>inp)._impl_).get_joined_alias()] = inp
-        elif isinstance(inp, PathExpression):
-            pl = len((<PathExpression>inp)._path_)
-            for i, entry in enumerate((<PathExpression>inp)._path_):
-                is_last = pl - 1 == i
-                if isinstance(entry, Relation):
-                    add_relation_to_load(target, <Relation>entry)
-                    if is_last:
-                        target[(<RelationImpl>(<Relation>entry)._impl_).get_joined_alias()] = entry
-                elif isinstance(entry, Field):
-                    if isinstance((<Field>entry)._impl_, CompositeImpl):
-                        if is_last:
-                            target[(<CompositeImpl>(<Field>entry)._impl_)._entity_] = entry
 
-                    target[(<Field>entry)._uid_] = entry
-                elif isinstance(entry, RelatedAttribute):
-                    target[(<RelatedAttribute>entry)._uid_] = entry
-                elif isinstance(entry, VirtualAttribute):
-                    add_virtual_attr_to_load(target, (<VirtualAttribute>entry))
-                else:
-                    raise NotImplementedError(repr(entry))
-        elif isinstance(inp, VirtualAttribute):
-            add_virtual_attr_to_load(target, (<VirtualAttribute>inp))
-        elif isinstance(inp, EntityAttribute):
-            target[(<EntityAttribute>inp)._uid_] = inp
+@cython.final
+cdef class QueryLoad(Visitor):
+    def __init__(self):
+        self.entries = set()
+        self.in_explicit = 0
+
+    cdef object add(self, tuple input):
+        self.in_explicit += 1
+        for entry in input:
+            if isinstance(entry, EntityType):
+                self.entries.add(entry)
+            else:
+                self.visit(entry)
+        self.in_explicit -= 1
+
+    cdef QLS get(self, EntityAttribute attr):
+        cdef QLS result = QLS.SKIP
+
+        if attr._uid_ in self.entries:
+            result = <QLS>(result | QLS.EXPLICIT)
+
+        cdef EntityType entity = attr.get_entity()
+        if entity in self.entries:
+            result = <QLS>(result | QLS.IMPLICIT)
+
+        cdef Loading loading = attr.get_ext(Loading)
+        if loading is not None and loading.always is True:
+            result = <QLS>(result | QLS.ALWAYS)
+
+        return result
+
+
+    def visit_field(self, Field field):
+        self._add_entity_attr(field)
+
+        if self.in_explicit > 0:
+            if isinstance(field._impl_, CompositeImpl):
+                self.entries.add((<CompositeImpl>field._impl_)._entity_)
+
+    def visit_relation(self, Relation relation):
+        cdef EntityType joined_ent = (<RelationImpl>relation._impl_).get_joined_alias()
+        cdef Loading loading = relation.get_ext(Loading)
+
+        self._add_entity_attr(relation)
+
+        if loading is not None and loading.fields:
+            for field in loading.fields:
+                self.visit(getattr(joined_ent, field))
+
+        if self.in_explicit > 0:
+            self.entries.add(joined_ent)
+
+    def visit_path(self, PathExpression path):
+        cdef int last_index = len(path._path_) - 1
+        cdef bint is_last
+
+        for i in range(0, last_index):
+            self.in_explicit -= 1
+            self.visit(path._path_[i])
+            self.in_explicit += 1
+
+        self.visit(path._path_[last_index])
+
+    def visit_related_attribute(self, RelatedAttribute related):
+        self._add_entity_attr(related)
+        self.visit(related.__rattr__)
+
+    def visit_virtual_attr(self, VirtualAttribute vattr):
+        if vattr._val is not None:
+            self._add_entity_attr(vattr)
+
+        elif vattr._deps is not None:
+            # if has value expression, we dont need to load dependencies
+            entity = vattr.get_entity()
+            for field in vattr._deps:
+                self.visit(getattr(entity, field))
+
+    def visit_raw(self, expr):
+        pass
+
+    def visit_alias(self, expr):
+        pass
+
+    def __default__(self, expr):
+        if isinstance(expr, EntityAttribute):
+            self._add_entity_attr(<EntityAttribute>expr)
         else:
-            target[inp] = inp
+            return super().__default__(expr)
+
+    def __bool__(self):
+        return bool(self.entries)
+
+    def __len__(self):
+        return len(self.entries)
+
+    cdef _add_entity_attr(self, EntityAttribute attr):
+        self.entries.add(attr._uid_)
+
+    cdef QueryLoad clone(self):
+        cdef QueryLoad result = QueryLoad()
+        result.entries = set(self.entries)
+        return result
 
 
-cdef object add_relation_to_load(dict target, Relation relation):
-    cdef Loading loading = relation.get_ext(Loading)
+# TODO: beautify
+# cdef object load_options(dict target, tuple input):
+#     for inp in input:
+#         if isinstance(inp, Relation):
+#             add_relation_to_load(target, <Relation>inp)
+#             target[(<RelationImpl>(<Relation>inp)._impl_).get_joined_alias()] = inp
+#         elif isinstance(inp, PathExpression):
+#             pl = len((<PathExpression>inp)._path_)
+#             for i, entry in enumerate((<PathExpression>inp)._path_):
+#                 is_last = pl - 1 == i
+#                 if isinstance(entry, Relation):
+#                     add_relation_to_load(target, <Relation>entry)
+#                     if is_last:
+#                         target[(<RelationImpl>(<Relation>entry)._impl_).get_joined_alias()] = entry
+#                 elif isinstance(entry, Field):
+#                     if isinstance((<Field>entry)._impl_, CompositeImpl):
+#                         if is_last:
+#                             target[(<CompositeImpl>(<Field>entry)._impl_)._entity_] = entry
 
-    target[relation._uid_] = relation
+#                     target[(<Field>entry)._uid_] = entry
+#                 elif isinstance(entry, RelatedAttribute):
+#                     target[(<RelatedAttribute>entry)._uid_] = entry
+#                 elif isinstance(entry, VirtualAttribute):
+#                     add_virtual_attr_to_load(target, (<VirtualAttribute>entry))
+#                 else:
+#                     raise NotImplementedError(repr(entry))
+#         elif isinstance(inp, VirtualAttribute):
+#             add_virtual_attr_to_load(target, (<VirtualAttribute>inp))
+#         elif isinstance(inp, EntityAttribute):
+#             target[(<EntityAttribute>inp)._uid_] = inp
+#         else:
+#             target[inp] = inp
 
-    if loading is not None and loading.fields:
-        entity = (<RelationImpl>relation._impl_).get_joined_alias()
-        for field in loading.fields:
-            load_options(target, (getattr(entity, field),))
+
+# cdef object add_relation_to_load(dict target, Relation relation):
+#     cdef Loading loading = relation.get_ext(Loading)
+
+#     target[relation._uid_] = relation
+
+#     if loading is not None and loading.fields:
+#         entity = (<RelationImpl>relation._impl_).get_joined_alias()
+#         for field in loading.fields:
+#             load_options(target, (getattr(entity, field),))
 
 
-cdef object add_virtual_attr_to_load(dict target, VirtualAttribute attr):
-    if attr._val is not None:
-        target[attr._uid_] = attr
+# cdef object add_virtual_attr_to_load(dict target, VirtualAttribute attr):
+#     if attr._val is not None:
+#         target[attr._uid_] = attr
 
-    elif attr._deps is not None:
-        # if has value expression, we dont need to load dependencies
-        entity = attr.get_entity()
-        for field in attr._deps:
-            load_options(target, (getattr(entity, field),))
+#     elif attr._deps is not None:
+#         # if has value expression, we dont need to load dependencies
+#         entity = attr.get_entity()
+#         for field in attr._deps:
+#             load_options(target, (getattr(entity, field),))
 
 
 @cython.final
@@ -716,19 +811,13 @@ cdef class QueryFinalizer(Visitor):
         cdef relation_rco = []
         cdef Loading loading
 
-        cdef dict load_attrs = self.q._load
-        cdef dict exclude_attrs = self.q._exclude
-        cdef int attr_uid
+        cdef QueryLoad load_attrs = self.q._load
+        cdef QLS load_source
 
         for attr in entity_type.__attrs__:
-            attr_uid = attr._uid_
-            loading = attr.get_ext(Loading)
-            if attr_uid not in load_attrs and entity_type not in load_attrs \
-                and (not exclude_attrs or attr_uid in exclude_attrs or entity_type in exclude_attrs) \
-                and (loading is None or loading.always is False):
-                # skip this attribute
+            load_source = load_attrs.get(attr)
+            if load_source == QLS.SKIP:
                 continue
-
 
             if isinstance(attr, Field):
                 field = <Field>attr
@@ -751,29 +840,11 @@ cdef class QueryFinalizer(Visitor):
                     rco.append(RowConvertOp(RCO.SET_ATTR_RECORD, aliased.__fields__[field._index_], idx))
             elif isinstance(attr, Relation):
                 # must have explicit load for relations
-                if attr_uid not in load_attrs and (loading is None or loading.always is False):
-                    continue
-
-                if isinstance((<Relation>attr)._impl_, ManyToOne):
-                    relation_rco.append((<Relation>attr, self._rco_for_one_relation(<Relation>attr, existing)))
-                else:
-                    relation_rco.append((<Relation>attr, self._rco_for_many_relation(<Relation>attr)))
-                # loading = <Loading>attr.get_ext(Loading)
-                # if attr._uid_ in self.q._load or (loading is not None and loading.always):
-                #     relation = <Relation>attr
-
-                #     if loading is not None and loading.always:
-                #         if loading.fields:
-                #             joined_entity = (<RelationImpl>relation._impl_).get_joined_alias()
-                #             for fname in loading.fields:
-                #                 self.q.load(getattr(joined_entity, fname))
-                #         else:
-                #             self.q.load((<RelationImpl>relation._impl_).get_joined_alias())
-
-                #     if isinstance(relation._impl_, ManyToOne):
-                #         relation_rco.append((relation, self._rco_for_one_relation(relation, existing)))
-                #     else:
-                #         relation_rco.append((relation, self._rco_for_many_relation(relation)))
+                if load_source & (QLS.EXPLICIT | QLS.ALWAYS):
+                    if isinstance((<Relation>attr)._impl_, ManyToOne):
+                        relation_rco.append((<Relation>attr, self._rco_for_one_relation(<Relation>attr, existing)))
+                    else:
+                        relation_rco.append((<Relation>attr, self._rco_for_many_relation(<Relation>attr)))
             elif isinstance(attr, VirtualAttribute):
                 if not (<VirtualAttribute>attr)._val:
                     continue
@@ -963,7 +1034,7 @@ cdef class QueryFinalizer(Visitor):
         cdef Query col_query = Query(load).where((<RelationImpl>relation._impl_).join_expr).as_row()
 
         if self.q._load:
-            col_query._load = dict(self.q._load)
+            col_query._load = self.q._load.clone()
 
         column_name = self.q._get_next_alias()
         cdef AliasExpression column_alias = self.visit(col_query.alias(column_name))
@@ -989,7 +1060,7 @@ cdef class QueryFinalizer(Visitor):
             q = Query(load).where((<RelationImpl>relation._impl_).join_expr)
 
         if self.q._load:
-            q._load = dict(self.q._load)
+            q._load = self.q._load.clone()
 
         column_name = self.q._get_next_alias()
         alias_name = self.q._get_next_alias()

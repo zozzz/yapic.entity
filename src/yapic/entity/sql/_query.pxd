@@ -1,6 +1,6 @@
 import cython
 from .._expression cimport Expression, Visitor
-from .._entity cimport EntityType
+from .._entity cimport EntityType, EntityAttribute
 from ._dialect cimport Dialect
 
 
@@ -19,8 +19,7 @@ cdef class Query(Expression):
     cdef readonly dict _aliases
     cdef readonly slice _range
     cdef readonly set _entities
-    cdef readonly dict _load
-    cdef readonly dict _exclude
+    cdef readonly QueryLoad _load
     cdef readonly bint _as_row
     cdef readonly bint _as_json
     cdef readonly Query _parent
@@ -37,6 +36,24 @@ cdef class Query(Expression):
     cdef str _get_next_alias(self)
     cdef object _resolve_pending_joins(self)
     # cdef _add_entity(self, EntityType ent)
+
+
+ctypedef enum QLS:
+    SKIP = 0
+    EXPLICIT = 1
+    IMPLICIT = 2
+    ALWAYS = 4
+
+
+@cython.final
+cdef class QueryLoad(Visitor):
+    cdef set entries
+    cdef int in_explicit
+
+    cdef object add(self, tuple input)
+    cdef QLS get(self, EntityAttribute attr)
+    cdef _add_entity_attr(self, EntityAttribute attr)
+    cdef QueryLoad clone(self)
 
 
 cdef class QueryFinalizer(Visitor):

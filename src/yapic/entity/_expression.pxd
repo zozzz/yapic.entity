@@ -91,6 +91,12 @@ cdef class ExpressionPlaceholder(Expression):
 
     cdef Expression eval(self, object origin)
 
+
+@cython.final
+cdef class MultiExpression(Expression):
+    cdef readonly tuple expressions
+    cdef readonly object combinator
+
 # cdef class GetAttrExprisson(Expression):
 #     cdef readonly Expression obj
 #     cdef readonly object path
