@@ -239,12 +239,11 @@ cdef class Polymorph:
     cdef readonly object parent
     cdef readonly PolymorphDict info
     cdef readonly tuple id_values
-    cdef list _children
+    cdef readonly list children
     cdef dict poly_ids
 
     cdef object add_child(self, object relation)
-    cdef list parents(self)
-    cdef list children(self)
+    cpdef list parents(self)
     cdef EntityType get_entity(self, object id)
     cdef tuple get_id(self, EntityType entity)
 

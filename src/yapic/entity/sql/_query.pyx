@@ -974,7 +974,7 @@ cdef class QueryFinalizer(Visitor):
         cdef dict child_rcos = {}
         cdef Field field
 
-        for relation in poly.children():
+        for relation in poly.children:
             child = (<RelationImpl>relation._impl_).get_joined_alias()
             self.q.join(relation, None, type="LEFT")
 

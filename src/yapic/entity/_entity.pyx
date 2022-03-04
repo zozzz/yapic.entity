@@ -320,7 +320,7 @@ cdef class EntityType(type):
     #     if polymorph is not None:
     #         fields = []
 
-    #         for child_rel in polymorph.children():
+    #         for child_rel in polymorph.children:
     #             try:
     #                 child_field = getattr(child_rel, key)
     #             except AttributeError:
@@ -505,7 +505,7 @@ cdef class EntityAlias(EntityType):
 
             self.__polymorph__ = Polymorph(poly.info, parent_rel, poly.id_values, poly.poly_ids)
 
-            for child_rel in poly.children():
+            for child_rel in poly.children:
                 child_ent = (<RelationImpl>child_rel._impl_).get_joined_alias()
                 if poly_skip is not child_ent:
                     child_alias = new_entity_alias(child_ent, None, self, None)
@@ -1726,7 +1726,7 @@ cdef class Polymorph:
         self.info = info
         self.parent = parent
         self.id_values = id_values
-        self._children = []
+        self.children = []
 
         if poly_ids is None and info.id_fields is not None and id_values is not None:
             poly_ids = {}
@@ -1739,9 +1739,9 @@ cdef class Polymorph:
     cdef object add_child(self, object relation):
         if not isinstance(relation, Relation):
             raise ValueError(f"{relation} is must be Relation")
-        self._children.append(relation)
+        self.children.append(relation)
 
-    cdef list parents(self):
+    cpdef list parents(self):
         cdef list result = []
         cdef Relation parent = self.parent
         cdef EntityType parent_entity
@@ -1755,9 +1755,6 @@ cdef class Polymorph:
                 break
 
         return result
-
-    cdef list children(self):
-        return <list>self._children
 
     cdef EntityType get_entity(self, object id):
         return self.info.get_entity(id)
