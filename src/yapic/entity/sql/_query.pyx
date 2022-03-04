@@ -849,23 +849,24 @@ cdef class QueryFinalizer(Visitor):
                 if not (<VirtualAttribute>attr)._val:
                     continue
 
-                try:
-                    idx = existing[attr._uid_]
-                except KeyError:
+                if load_source & (QLS.EXPLICIT | QLS.ALWAYS):
                     try:
-                        idx = self._find_column_index(attr)
-                    except ValueError:
-                        idx = len(self.q._columns)
-                        self.q._columns.append(self.visit(attr))
-                        existing[attr._uid_] = idx
+                        idx = existing[attr._uid_]
+                    except KeyError:
+                        try:
+                            idx = self._find_column_index(attr)
+                        except ValueError:
+                            idx = len(self.q._columns)
+                            self.q._columns.append(self.visit(attr))
+                            existing[attr._uid_] = idx
 
-                self.virtual_indexes[attr._uid_] = idx
+                    self.virtual_indexes[attr._uid_] = idx
 
-                # not optimal, but working
-                rco.append(RowConvertOp(RCO.GET_RECORD, idx))
-                rco.append(_RCO_PUSH)
-                rco.append(_RCO_POP)
-                rco.append(RowConvertOp(RCO.SET_ATTR, aliased.__attrs__[attr._index_]))
+                    # not optimal, but working
+                    rco.append(RowConvertOp(RCO.GET_RECORD, idx))
+                    rco.append(_RCO_PUSH)
+                    rco.append(_RCO_POP)
+                    rco.append(RowConvertOp(RCO.SET_ATTR, aliased.__attrs__[attr._index_]))
 
         for rel, relco in relation_rco:
             if relco is not None:

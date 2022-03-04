@@ -934,11 +934,11 @@ async def test_virtual_load(conn):
 
     query = Query(VirtualLoad)
     sql, params = dialect.create_query_compiler().compile_select(query)
-    assert sql == 'SELECT "t0"."id", "t0"."data_1", "t0"."data_2", CONCAT_WS($1, "t0"."data_1", "t0"."data_2") FROM "execution"."VirtualLoad" "t0"'
-    assert params == (" / ", )
+    assert sql == 'SELECT "t0"."id", "t0"."data_1", "t0"."data_2" FROM "execution"."VirtualLoad" "t0"'
+    assert len(params) == 0
 
     obj = await conn.select(query).first()
-    assert obj.data_concat == "Hello / World"
+    assert obj.data_concat == "python value"
 
     query = Query(VirtualLoad).load(VirtualLoad.data_concat).order(VirtualLoad.data_concat.asc())
     sql, params = dialect.create_query_compiler().compile_select(query)
