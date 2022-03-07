@@ -102,9 +102,12 @@ def test_query_basics():
     q.where(User.id == 42)
 
     sql, params = dialect.create_query_compiler().compile_select(q)
-
     assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE "t0"."id" = $1'
     assert params == (42, )
+
+    q = Query(User).columns(func.min(User.created_time))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT min("t0"."created_time") FROM "User" "t0"'
 
 
 def test_query_and_or():

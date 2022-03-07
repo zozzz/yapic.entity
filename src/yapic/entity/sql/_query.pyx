@@ -458,6 +458,9 @@ cdef class QueryLoad(Visitor):
     def visit_alias(self, expr):
         pass
 
+    def visit_call(self, expr):
+        pass
+
     def __default__(self, expr):
         if isinstance(expr, EntityAttribute):
             self._add_entity_attr(<EntityAttribute>expr)
