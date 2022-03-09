@@ -61,11 +61,7 @@ cdef class EntityType(type):
 
 @cython.final
 cdef class EntityAlias(EntityType):
-    cdef object entity_ref
-
     cdef EntityType get_entity(self)
-    cdef EntityType set_entity(self, EntityType entity)
-    cdef void _copy_meta(self, keys)
     cdef EntityType _clone_poly_parents(self, Polymorph poly, EntityType aliased)
 
 

@@ -143,10 +143,10 @@ def test_polymorph():
         type: String
         title: String
 
-    class File(Node, polymorph="type"):
+    class File(Node, polymorph_id="file"):
         size: Int
 
-    class Pdf(File, polymorph="pdf"):
+    class Pdf(File, polymorph_id="pdf"):
         page_count: Int
 
     pdf_alias = Pdf.alias("pdf")

@@ -85,6 +85,10 @@ class User(Entity):
         else:
             return op(cls.name, value)
 
+    @classmethod
+    def query_by_email(cls, email: str) -> Query:
+        return Query(cls).where(cls.email == email)
+
 
 class Tag(Entity):
     id: Serial
@@ -108,6 +112,11 @@ def test_query_basics():
     q = Query(User).columns(func.min(User.created_time))
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == 'SELECT min("t0"."created_time") FROM "User" "t0"'
+
+    q = User.query_by_email("email@example.com")
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE "t0"."email" = $1'
+    assert params == ("email@example.com", )
 
 
 def test_query_and_or():
@@ -280,6 +289,12 @@ def test_entity_alias():
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == 'SELECT "TEST"."id", "TEST"."name", "TEST"."email", "TEST"."created_time", "TEST"."address_id" FROM "User" "TEST" INNER JOIN "UserTags" "t0" ON "t0"."user_id" = "TEST"."id" INNER JOIN "Tag" "t1" ON "t0"."tag_id" = "t1"."id" WHERE "t1"."value" = $1'
     assert params == (42, )
+
+    q = TEST.query_by_email("email@example.com")
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    print(sql)
+    assert sql == 'SELECT "TEST"."id", "TEST"."name", "TEST"."email", "TEST"."created_time", "TEST"."address_id" FROM "User" "TEST" WHERE "TEST"."email" = $1'
+    assert params == ("email@example.com", )
 
 
 def test_entity_alias_mixin():

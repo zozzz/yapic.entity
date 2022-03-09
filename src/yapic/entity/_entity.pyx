@@ -428,31 +428,22 @@ cdef class EntityType(type):
 
 cdef EntityAlias new_entity_alias(EntityType entity, str alias, EntityType poly_base, EntityType poly_skip):
     entity = get_alias_target(entity)
+
+    if entity.is_deferred() is True:
+        raise RuntimeError(f"Can't alias deferred entity: {entity} ({entity.__deferred__})")
+
     cdef dict clsdict = {"__new__": _no_alias_instance, "__init__": _no_alias_instance}
-    return EntityAlias(alias or "", (EntityBase,), clsdict, alias_target=entity, registry=<object>entity.registry_ref, poly_base=poly_base, poly_skip=poly_skip)
+    return EntityAlias(alias or "", (entity,), clsdict, poly_base=poly_base, poly_skip=poly_skip)
 
 
 @cython.final
 cdef class EntityAlias(EntityType):
-    def __init__(self, *args, EntityType alias_target, **kwargs):
-        if alias_target.is_deferred() is True:
-            raise RuntimeError(f"Can't alias deferred entity: {alias_target} ({alias_target.__deferred__})")
-
-        self.set_entity(alias_target)
-        super().__init__(*args, **kwargs)
-
     @property
     def __origin__(self):
         return self.get_entity()
 
     cdef EntityType get_entity(self):
-        if self.entity_ref is not None:
-            return <EntityType>PyWeakref_GetObject(self.entity_ref)
-
-    cdef EntityType set_entity(self, EntityType entity):
-        if self.entity_ref is not None:
-            raise ValueError("Can't set entity on alias")
-        self.entity_ref = <object>PyWeakref_NewRef(entity, None)
+        return self.__mro__[1]
 
     cdef list _compute_attrs(self, EntityType base_entity, PolymorphDict polymorph_dict, object attrs):
         cdef EntityType aliased = self.get_entity()
@@ -528,23 +519,6 @@ cdef class EntityAlias(EntityType):
 
     cdef list _compute_triggers(self):
         return []
-
-    cdef void _copy_meta(self, keys):
-        cdef dict entity_meta = <dict>self.get_entity().__meta__
-        cdef dict self_meta = <dict>self.__meta__
-        for k in keys:
-            try:
-                v = entity_meta[k]
-            except KeyError:
-                pass
-            else:
-                self_meta[k] = v
-
-    # def __instancecheck__(self, instance):
-    #     return isinstance(instance, self.get_entity())
-
-    # def __subclasscheck__(self, subclass):
-    #     return issubclass(subclass, self.get_entity())
 
     def __repr__(self):
         entity = self.get_entity()
@@ -1218,13 +1192,16 @@ cdef class EntityState:
 
     def changed_realtions(self):
         cdef EntityAttribute attr
+        cdef list result = []
 
         for i in range(self.field_count, len(self.entity.__attrs__)):
             attr = self.entity.__attrs__[i]
             if isinstance(attr, Relation):
                 val = self.attr_changes(attr)
                 if val is not NOTSET:
-                    yield (attr, val)
+                    result.append((attr, val))
+
+        return result
 
     def __eq__(EntityState self, other):
         if not isinstance(other, EntityState):
