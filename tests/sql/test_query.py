@@ -7,7 +7,7 @@ from typing import Any
 from yapic.entity.sql import PostgreDialect
 from yapic.entity import (Query, Entity, Serial, String, DateTimeTz, Json, Composite, and_, or_, Int, ForeignKey, One,
                           ManyAcross, Field, func, Registry, Auto, startswith, endswith, contains, find, virtual, in_,
-                          IntArray, PrimaryKey)
+                          IntArray, PrimaryKey, Loading)
 
 dialect = PostgreDialect()
 
@@ -574,6 +574,10 @@ class ArticleVR(Entity):
     user_id: Auto = ForeignKey(UserCompVR.id)
     user: One[UserCompVR]
 
+    @virtual(depends=("user.name", ))
+    def user_name(self):
+        return self.user.name.formatted
+
 
 def test_virtual_relation():
     q = Query(ArticleVR) \
@@ -583,6 +587,52 @@ def test_virtual_relation():
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == """SELECT CONCAT_WS(' ', ("t1"."name")."title", ("t1"."name")."family", ("t1"."name")."given") FROM "ArticleVR" "t0" INNER JOIN "UserCompVR" "t1" ON "t0"."user_id" = "t1"."id" WHERE ("t1"."name")."family" ILIKE ('%' || $1 || '%') OR ("t1"."name")."family" ILIKE ('%' || $2 || '%') OR ("t1"."name")."given" ILIKE ('%' || $1 || '%') OR ("t1"."name")."given" ILIKE ('%' || $2 || '%') ORDER BY CONCAT_WS(' ', ("t1"."name")."family", ("t1"."name")."given") DESC"""
     assert params == ("Jane", "Doe")
+
+    q = Query(ArticleVR).load(ArticleVR.user_name)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT (SELECT ROW(("t2"."name")."title", ("t2"."name")."family", ("t2"."name")."given", ("t2"."name")."xyz") FROM "UserCompVR" "t2" WHERE "t1"."user_id" = "t2"."id") as "t0" FROM "ArticleVR" "t1"'
+
+
+class AlwaysLoad1(Entity):
+    id: Int
+    user_id: Auto = ForeignKey(UserCompVR.id)
+    user: One[UserCompVR] = Loading(always=True)
+
+
+class AlwaysLoad2(Entity):
+    id: Int
+    user_id: Auto = ForeignKey(UserCompVR.id)
+    user: One[UserCompVR] = Loading(always=True, fields=["name"])
+
+
+class AlwaysLoad3(Entity):
+    id: Int
+    article_id: Auto = ForeignKey(ArticleVR.id)
+    article: One[ArticleVR] = Loading(always=True, fields=["user.name"])
+
+
+class AlwaysLoad4(Entity):
+    id: Int
+    article_id: Auto = ForeignKey(ArticleVR.id)
+    article: One[ArticleVR] = Loading(always=True, fields=["user_name"])
+
+
+def test_always_load():
+    q = Query(AlwaysLoad1)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "t1"."id", "t1"."user_id", (SELECT ROW("t2"."id", ("t2"."name")."title", ("t2"."name")."family", ("t2"."name")."given", ("t2"."name")."xyz") FROM "UserCompVR" "t2" WHERE "t1"."user_id" = "t2"."id") as "t0" FROM "AlwaysLoad1" "t1"'
+
+    q = Query(AlwaysLoad2)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "t1"."id", "t1"."user_id", (SELECT ROW(("t2"."name")."title", ("t2"."name")."family", ("t2"."name")."given", ("t2"."name")."xyz") FROM "UserCompVR" "t2" WHERE "t1"."user_id" = "t2"."id") as "t0" FROM "AlwaysLoad2" "t1"'
+
+    q = Query(AlwaysLoad3)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "t2"."id", "t2"."article_id", (SELECT ROW((SELECT ROW(("t4"."name")."title", ("t4"."name")."family", ("t4"."name")."given", ("t4"."name")."xyz") FROM "UserCompVR" "t4" WHERE "t3"."user_id" = "t4"."id")) FROM "ArticleVR" "t3" WHERE "t2"."article_id" = "t3"."id") as "t0" FROM "AlwaysLoad3" "t2"'
+
+    q = Query(AlwaysLoad4)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "t2"."id", "t2"."article_id", (SELECT ROW((SELECT ROW(("t4"."name")."title", ("t4"."name")."family", ("t4"."name")."given", ("t4"."name")."xyz") FROM "UserCompVR" "t4" WHERE "t3"."user_id" = "t4"."id")) FROM "ArticleVR" "t3" WHERE "t2"."article_id" = "t3"."id") as "t0" FROM "AlwaysLoad4" "t2"'
 
 
 class Deep(Entity):

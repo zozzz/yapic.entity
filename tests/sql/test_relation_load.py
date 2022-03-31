@@ -61,7 +61,8 @@ class Article(Entity, registry=_registry, schema="ent_load"):
 class Something(Entity, registry=_registry, schema="ent_load"):
     id: Serial
     article_id: Auto = ForeignKey("Article.id")
-    article: One[Article] = Relation(join="Article.id == Something.article_id") // Loading(always=True)
+    article: One[Article] = Relation(join="Article.id == Something.article_id") \
+        // Loading(always=True)
 
 
 class Something2(Entity, registry=_registry, schema="ent_load"):

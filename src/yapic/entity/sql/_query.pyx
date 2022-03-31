@@ -385,7 +385,7 @@ cdef class QueryLoad(Visitor):
         self.in_explicit += 1
         for entry in input:
             if isinstance(entry, EntityType):
-                self.entries.add(entry)
+                self.visit_entity(<EntityType>entry)
             else:
                 self.visit(entry)
         self.in_explicit -= 1
@@ -406,30 +406,49 @@ cdef class QueryLoad(Visitor):
 
         return result
 
+    def visit_entity(self, EntityType entity):
+        self.entries.add(entity)
+        self._entity_load_always(entity)
+
+    def _entity_load_always(self, EntityType entity):
+        cdef EntityAttribute attr
+        cdef Loading loading
+
+        self.in_explicit -= 1
+        for attr in entity.__attrs__:
+            loading = attr.get_ext(Loading)
+            if loading is not None and loading.always is True:
+                self.visit(attr)
+        self.in_explicit += 1
 
     def visit_field(self, Field field):
         self._add_entity_attr(field)
 
-        if self.in_explicit > 0:
-            if isinstance(field._impl_, CompositeImpl):
-                self.entries.add((<CompositeImpl>field._impl_)._entity_)
+        if isinstance(field._impl_, CompositeImpl):
+            self.visit_entity((<CompositeImpl>field._impl_)._entity_)
 
     def visit_relation(self, Relation relation):
         cdef EntityType joined_ent = (<RelationImpl>relation._impl_).get_joined_alias()
         cdef Loading loading = relation.get_ext(Loading)
 
         self._add_entity_attr(relation)
+        self._entity_load_always(joined_ent)
 
-        if loading is not None and loading.fields:
-            for field in loading.fields:
-                self.visit(getattr(joined_ent, field))
+        if loading is not None and (loading.always is True or self.in_explicit > 0):
+            if loading.fields is not None:
+                for field in loading.fields:
+                    load = joined_ent
+                    for part in field.split("."):
+                        load = getattr(load, part)
+                    self.visit(load)
+            else:
+                self.visit_entity(joined_ent)
 
         if self.in_explicit > 0:
             self.entries.add(joined_ent)
 
     def visit_path(self, PathExpression path):
         cdef int last_index = len(path._path_) - 1
-        cdef bint is_last
 
         for i in range(0, last_index):
             self.in_explicit -= 1
@@ -450,7 +469,10 @@ cdef class QueryLoad(Visitor):
             # if has value expression, we dont need to load dependencies
             entity = vattr.get_entity()
             for field in vattr._deps:
-                self.visit(getattr(entity, field))
+                load = entity
+                for part in field.split("."):
+                    load = getattr(load, part)
+                self.visit(load)
 
     def visit_raw(self, expr):
         pass
