@@ -504,62 +504,6 @@ cdef class QueryLoad(Visitor):
         return result
 
 
-# TODO: beautify
-# cdef object load_options(dict target, tuple input):
-#     for inp in input:
-#         if isinstance(inp, Relation):
-#             add_relation_to_load(target, <Relation>inp)
-#             target[(<RelationImpl>(<Relation>inp)._impl_).get_joined_alias()] = inp
-#         elif isinstance(inp, PathExpression):
-#             pl = len((<PathExpression>inp)._path_)
-#             for i, entry in enumerate((<PathExpression>inp)._path_):
-#                 is_last = pl - 1 == i
-#                 if isinstance(entry, Relation):
-#                     add_relation_to_load(target, <Relation>entry)
-#                     if is_last:
-#                         target[(<RelationImpl>(<Relation>entry)._impl_).get_joined_alias()] = entry
-#                 elif isinstance(entry, Field):
-#                     if isinstance((<Field>entry)._impl_, CompositeImpl):
-#                         if is_last:
-#                             target[(<CompositeImpl>(<Field>entry)._impl_)._entity_] = entry
-
-#                     target[(<Field>entry)._uid_] = entry
-#                 elif isinstance(entry, RelatedAttribute):
-#                     target[(<RelatedAttribute>entry)._uid_] = entry
-#                 elif isinstance(entry, VirtualAttribute):
-#                     add_virtual_attr_to_load(target, (<VirtualAttribute>entry))
-#                 else:
-#                     raise NotImplementedError(repr(entry))
-#         elif isinstance(inp, VirtualAttribute):
-#             add_virtual_attr_to_load(target, (<VirtualAttribute>inp))
-#         elif isinstance(inp, EntityAttribute):
-#             target[(<EntityAttribute>inp)._uid_] = inp
-#         else:
-#             target[inp] = inp
-
-
-# cdef object add_relation_to_load(dict target, Relation relation):
-#     cdef Loading loading = relation.get_ext(Loading)
-
-#     target[relation._uid_] = relation
-
-#     if loading is not None and loading.fields:
-#         entity = (<RelationImpl>relation._impl_).get_joined_alias()
-#         for field in loading.fields:
-#             load_options(target, (getattr(entity, field),))
-
-
-# cdef object add_virtual_attr_to_load(dict target, VirtualAttribute attr):
-#     if attr._val is not None:
-#         target[attr._uid_] = attr
-
-#     elif attr._deps is not None:
-#         # if has value expression, we dont need to load dependencies
-#         entity = attr.get_entity()
-#         for field in attr._deps:
-#             load_options(target, (getattr(entity, field),))
-
-
 @cython.final
 @cython.freelist(1000)
 cdef class RowConvertOp:
