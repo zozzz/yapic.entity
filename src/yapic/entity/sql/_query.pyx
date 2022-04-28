@@ -1199,7 +1199,7 @@ class QueryRepr(Visitor):
 
         if query._group:
             parts.append(self.__indent("GROUP"))
-            parts.append(self.__visit_iterable(query._order, 1))
+            parts.append(self.__visit_iterable(query._group, 1))
 
         if query._having:
             parts.append(self.__indent("HAVING"))
