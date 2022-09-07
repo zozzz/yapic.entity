@@ -743,6 +743,11 @@ cdef class QueryFinalizer(Visitor):
                     self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
                     self.virtual_indexes[(<VirtualAttribute>new_vattr)._uid_] = len(self.q._columns)
                     self.q._columns.append(self.visit(new_vattr))
+                elif isinstance(last_entry, RelatedAttribute):
+                    self.rcos.append([RowConvertOp(RCO.GET_RECORD, len(self.q._columns))])
+                    self.q._columns.append(self.visit(last_entry))
+                else:
+                    raise NotImplementedError(f"Not implemented path expression in columns: {last_entry}")
             elif isinstance(expr, Field):
                 if isinstance((<Field>expr)._impl_, CompositeImpl):
                     self.rcos.append(self._rco_for_composite((<Field>expr), (<CompositeImpl>(<Field>expr)._impl_)._entity_, []))
