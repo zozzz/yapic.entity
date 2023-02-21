@@ -77,7 +77,7 @@ def pgsql_docker():
 async def pgsql(pgsql_docker):
     for i in range(30):
         try:
-            connection = await asyncpg.connect(user="root",
+            connection = await asyncpg.connect(user="postgres",
                                                password="root",
                                                database="root",
                                                host="127.0.0.1",

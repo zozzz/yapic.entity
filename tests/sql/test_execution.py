@@ -761,6 +761,38 @@ ALTER TABLE "execution"."Address"
     await conn.execute(result)
 
 
+async def test_auto_increment(conn, pgclean):
+    reg = Registry()
+    class DefaultAutoIncrement(Entity, registry=reg, schema="execution"):
+        id: Serial
+
+    result = await sync(conn, reg)
+    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
+CREATE SEQUENCE "execution"."DefaultAutoIncrement_id_seq";
+CREATE TABLE "execution"."DefaultAutoIncrement" (
+  "id" INT4 NOT NULL DEFAULT nextval('"execution"."DefaultAutoIncrement_id_seq"'::regclass),
+  PRIMARY KEY("id")
+);"""
+    await conn.execute(result)
+    result = await sync(conn, reg)
+    assert bool(result) is False
+
+
+    reg = Registry()
+    class DefaultAutoIncrement(Entity, registry=reg, schema="execution"):
+        id: Int = Field(nullable=False) // PrimaryKey() // AutoIncrement(("execution", "category_seq"))
+
+    result = await sync(conn, reg)
+    assert result == """DROP SEQUENCE "execution"."DefaultAutoIncrement_id_seq" CASCADE;
+CREATE SEQUENCE "execution"."category_seq";
+ALTER TABLE "execution"."DefaultAutoIncrement"
+  ALTER COLUMN "id" SET DEFAULT nextval('"execution"."category_seq"'::regclass);"""
+    await conn.execute(result)
+    result = await sync(conn, reg)
+    assert bool(result) is False
+
+
+
 async def test_fk_change(conn):
     await conn.execute("DROP SCHEMA IF EXISTS _private CASCADE")
     await conn.execute("DROP SCHEMA IF EXISTS execution CASCADE")

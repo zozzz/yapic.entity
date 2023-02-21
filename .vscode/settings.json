@@ -21,6 +21,15 @@
             "username": "root"
         }
     ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.insertSpaces": true,
+        "editor.formatOnType": false,
+        "editor.formatOnSave": false,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        }
+    },
     "restructuredtext.confPath": "${workspaceFolder}\\docs",
     "esbonio.sphinx.confDir": "${workspaceFolder}\\docs"
 }

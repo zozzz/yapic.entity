@@ -125,6 +125,7 @@ cdef class PostgreDDLReflect(DDLReflect):
     async def get_entities(self, conn, Registry registry):
         cdef EntityType entity
 
+        # "pg_class"."relkind" IN('r', 'c', 'S')
         types = await conn.fetch("""
             SELECT
                 "pg_type"."typrelid" as "id",
@@ -134,7 +135,7 @@ cdef class PostgreDDLReflect(DDLReflect):
             FROM pg_type
                 INNER JOIN pg_namespace ON pg_namespace.oid=pg_type.typnamespace
                 INNER JOIN pg_class ON pg_class.oid=pg_type.typrelid
-            WHERE "pg_class"."relkind" IN('r', 'c', 'S')
+            WHERE "pg_class"."relkind" IN('r', 'c')
                 AND pg_namespace.nspname != 'information_schema'
                 AND pg_namespace.nspname NOT LIKE 'pg_%'
             ORDER BY "pg_class"."relkind" = 'r' ASC, pg_type.typrelid ASC""")
@@ -153,6 +154,16 @@ cdef class PostgreDDLReflect(DDLReflect):
                 not_sync_names.append("valid_detail")
 
         types = [v for v in types if v[0] not in not_sync_ids and v[2] not in not_sync_names]
+
+        sequences = await conn.fetch("""
+            SELECT
+                0 as "id",
+                sequence_schema as "schema",
+                sequence_name as "name",
+                'S'::bytea as "kind"
+            FROM information_schema.sequences
+        """)
+        types = sequences + types
 
         for id, schema, table, kind in types:
             if kind == b"S":
