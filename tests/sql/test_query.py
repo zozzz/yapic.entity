@@ -708,8 +708,23 @@ def test_over():
     assert sql == 'SELECT row_number() OVER(ORDER BY "t0"."id" DESC) FROM "A" "t0"'
     assert len(params) == 0
 
+    q = Query(A).columns(func.row_number().over().partition(A.id))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT row_number() OVER(PARTITION BY "t0"."id") FROM "A" "t0"'
+    assert len(params) == 0
+
     q = Query(B).columns(func.row_number().over().order(B.a.id.desc()))
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == 'SELECT row_number() OVER(ORDER BY "t1"."id" DESC) FROM "B" "t0" INNER JOIN "A" "t1" ON "t0"."a_id" = "t1"."id"'
+    assert len(params) == 0
+
+    q = Query(B).columns(func.row_number().over().partition(B.a.id))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT row_number() OVER(PARTITION BY "t1"."id") FROM "B" "t0" INNER JOIN "A" "t1" ON "t0"."a_id" = "t1"."id"'
+    assert len(params) == 0
+
+    q = Query(A).columns(func.row_number().over().partition(A.id).order(A.id))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT row_number() OVER(PARTITION BY "t0"."id" ORDER BY "t0"."id" ASC) FROM "A" "t0"'
     assert len(params) == 0
 
