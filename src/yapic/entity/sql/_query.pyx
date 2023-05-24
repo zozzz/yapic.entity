@@ -6,7 +6,7 @@ from yapic.entity._field cimport Field, field_eq
 from yapic.entity._field_impl cimport CompositeImpl
 from yapic.entity._expression cimport (Expression, AliasExpression, ColumnRefExpression, OrderExpression, Visitor,
     BinaryExpression, UnaryExpression, CastExpression, CallExpression, RawExpression, PathExpression,
-    ConstExpression, raw)
+    ConstExpression, raw, OverExpression)
 from yapic.entity._expression import and_
 from yapic.entity._relation cimport Relation, RelationImpl, ManyToOne, ManyToMany, RelatedAttribute, determine_join_expr, Loading
 from yapic.entity._error cimport JoinError
@@ -57,6 +57,7 @@ cdef class Query(Expression):
                     or isinstance(col, RawExpression) \
                     or isinstance(col, CallExpression) \
                     or isinstance(col, VirtualAttribute) \
+                    or isinstance(col, OverExpression) \
                     or isinstance(col, Query):
                 self._columns.append(col)
             else:
@@ -483,6 +484,9 @@ cdef class QueryLoad(Visitor):
     def visit_call(self, expr):
         pass
 
+    def visit_over(self, expr):
+        pass
+
     def __default__(self, expr):
         if isinstance(expr, EntityAttribute):
             self._add_entity_attr(<EntityAttribute>expr)
@@ -603,6 +607,14 @@ cdef class QueryFinalizer(Visitor):
         if self.q._find_entity(expr_entity, True) is None:
             self.q.join(expr_entity, type="LEFT" if self.in_or > 0 else "INNER")
         return expr
+
+    def visit_over(self, OverExpression expr):
+        over = self.visit(expr.expr).over()
+        for order in expr._order:
+            over.order(self.visit(order))
+        for partition in expr._partition:
+            over.partition(self.visit(partition))
+        return over
 
     def visit_const(self, expr):
         return expr

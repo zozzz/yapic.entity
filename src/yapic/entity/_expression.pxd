@@ -11,6 +11,7 @@ cdef class Expression:
     cpdef desc(self)
     cpdef cast(self, str to)
     cpdef alias(self, str alias)
+    cpdef over(self)
 
     cdef BinaryExpression _new_binary_expr(self, object other, object op)
 
@@ -66,6 +67,11 @@ cdef class RawExpression(Expression):
 cdef class PathExpression(Expression):
     cdef readonly list _path_
 
+
+cdef class OverExpression(Expression):
+    cdef readonly Expression expr
+    cdef readonly list _order
+    cdef readonly list _partition
 
 # cdef class VirtualExpressionVal(Expression):
 #     cdef readonly object _virtual_

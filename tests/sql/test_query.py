@@ -690,3 +690,26 @@ def test_array():
     q = Query(A).where(~A.ints.contains(1))
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == """SELECT "t0"."id", "t0"."ints" FROM "A" "t0" WHERE NOT($1=ANY("t0"."ints"))"""
+
+
+def test_over():
+    R = Registry()
+
+    class A(Entity, registry=R):
+        id: Serial
+
+    class B(Entity, registry=R):
+        id: Serial
+        a_id: Auto = ForeignKey(A.id)
+        a: One[A]
+
+    q = Query(A).columns(func.row_number().over().order(A.id.desc()))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT row_number() OVER(ORDER BY "t0"."id" DESC) FROM "A" "t0"'
+    assert len(params) == 0
+
+    q = Query(B).columns(func.row_number().over().order(B.a.id.desc()))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT row_number() OVER(ORDER BY "t1"."id" DESC) FROM "B" "t0" INNER JOIN "A" "t1" ON "t0"."a_id" = "t1"."id"'
+    assert len(params) == 0
+

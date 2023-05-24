@@ -1,4 +1,4 @@
-from ._expression cimport Expression, Visitor, BinaryExpression, UnaryExpression, OrderExpression, AliasExpression, CastExpression, CallExpression, RawExpression, PathExpression, coerce_expression, ExpressionPlaceholder
+from ._expression cimport Expression, Visitor, BinaryExpression, UnaryExpression, OrderExpression, AliasExpression, CastExpression, CallExpression, RawExpression, PathExpression, coerce_expression, ExpressionPlaceholder, OverExpression
 from ._entity cimport EntityType, EntityAttribute
 from ._field cimport Field, field_eq
 from ._relation cimport Relation, ManyToMany, RelationImpl, RelatedAttribute
@@ -31,6 +31,14 @@ cdef class ReplacerBase(Visitor):
 
     def visit_field(self, expr):
         return expr
+
+    def visit_over(self, OverExpression expr):
+        over = self.visit(expr.expr).over()
+        for order in expr._order:
+            over.order(self.visit(order))
+        for partition in expr._partition:
+            over.partition(self.visit(partition))
+        return over
 
     def visit_const(self, expr):
         return expr
@@ -68,6 +76,13 @@ cdef class Walk(Visitor):
 
     def visit_field(self, expr):
         pass
+
+    def visit_over(self, OverExpression expr):
+        over = self.visit(expr.expr)
+        for order in over._order:
+            self.visit(order)
+        for partition in over._partition:
+            self.visit(partition)
 
     def visit_const(self, expr):
         pass

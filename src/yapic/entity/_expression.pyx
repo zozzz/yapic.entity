@@ -62,6 +62,7 @@ cdef class Expression:
     cpdef desc(Expression self): return OrderExpression(self, False)
     cpdef cast(Expression self, str to): return CastExpression(self, to)
     cpdef alias(Expression self, str alias): return AliasExpression(self, alias)
+    cpdef over(Expression self): return OverExpression(self)
 
     cdef BinaryExpression _new_binary_expr(Expression self, object other, object op):
         return BinaryExpression(self, other, op)
@@ -262,6 +263,34 @@ cdef class PathExpression(Expression):
 
     def __repr__(self):
         return "<Path %r>" % self._path_
+
+
+cdef class OverExpression(Expression):
+    def __cinit__(self, Expression expr):
+        self.expr = expr
+        self._order = []
+        self._partition = []
+
+    def order(self, *expr):
+        for item in expr:
+            if isinstance(item, (OrderExpression, RawExpression)):
+                self._order.append(item)
+            elif isinstance(item, Expression):
+                self._order.append((<Expression>item).asc())
+            else:
+                raise ValueError("Invalid value for order: %r" % item)
+        return self
+
+    def partition(self, *expr):
+        for item in expr:
+            self._partition.append(item)
+        return self
+
+    cpdef visit(self, Visitor visitor):
+        return visitor.visit_over(self)
+
+    def __repr__(self):
+        return "<%r Over ORDER: %r, PARTITION: %r>" % (self.expr, self._order, self._partition)
 
 
 @cython.final

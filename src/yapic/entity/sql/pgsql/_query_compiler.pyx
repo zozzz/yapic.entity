@@ -14,7 +14,8 @@ from yapic.entity._expression cimport (
     CallExpression,
     RawExpression,
     PathExpression,
-    ColumnRefExpression)
+    ColumnRefExpression,
+    OverExpression)
 from yapic.entity._expression import and_
 from yapic.entity._field cimport Field, PrimaryKey
 from yapic.entity._field_impl cimport JsonImpl, CompositeImpl, ArrayImpl
@@ -357,6 +358,14 @@ cdef class PostgreQueryCompiler(QueryCompiler):
     def visit_call(self, CallExpression expr):
         cdef tuple args = self._visit_iterable(expr.args)
         return f"{self.visit(expr.callable)}({', '.join(args)})"
+
+    def visit_over(self, OverExpression expr):
+        args = []
+        if expr._partition:
+            args.append(f"PARTITION BY {', '.join(self._visit_iterable(expr._partition))}")
+        if expr._order:
+            args.append(f"ORDER BY {', '.join(self._visit_iterable(expr._order))}")
+        return f"{self.visit(expr.expr)} OVER({' '.join(args)})"
 
     def visit_raw(self, RawExpression expr):
         return expr.expr
