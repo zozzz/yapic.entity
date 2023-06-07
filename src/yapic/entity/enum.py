@@ -1,8 +1,8 @@
 from enum import Enum as _Enum
 from typing import Dict
 
-from .field import String, Int, PrimaryKey
 from ._entity import Entity, EntityType
+from .field import Int, PrimaryKey, String
 
 _EnumMeta = type(_Enum)
 
@@ -10,21 +10,39 @@ REQUIRED_CLSDICT_FIELDS = frozenset(("__annotations__", "__module__", "__qualnam
 
 
 class EntityEnumMeta(_EnumMeta):
-
     def __new__(cls, name, bases, clsdict, *, _entity=Entity, _root=False, **kwargs):
         new_ent = new_entity(name, bases, clsdict, _root=_root, _entity=_entity, **kwargs)
+
+        if isinstance(clsdict._member_names, dict):
+            member_names = tuple(clsdict._member_names.keys())
+
+            def remove_member(key):
+                try:
+                    idx = member_names.index(key)
+                except ValueError:
+                    pass
+                else:
+                    del clsdict._member_names[key]
+                    clsdict._last_values.pop(idx)
+
+        else:
+            # Python <= 3.10
+            def remove_member(key):
+                try:
+                    idx = clsdict._member_names.index(key)
+                except ValueError:
+                    pass
+                else:
+                    clsdict._member_names.pop(idx)
+                    clsdict._last_values.pop(idx)
 
         ignore = set()
         for field in new_ent.__attrs__:
             key = field._key_
             ignore.add(key)
-            try:
-                idx = clsdict._member_names.index(key)
-            except ValueError:
-                continue
-            else:
-                clsdict._member_names.pop(idx)
-                clsdict._last_values.pop(idx)
+
+            # azért kell eltávolítani, mert az _ignore_-nál gondot okozhat
+            remove_member(key)
 
         clsdict["_ignore_"] = list(set(clsdict.get("_ignore_", [])) | ignore)
         dict.__setitem__(clsdict, "_entity_", new_ent)
@@ -55,7 +73,7 @@ def new_entity(name, bases, clsdict, *, _root, _entity=Entity, **kwargs):
         if k.startswith("_") and k not in REQUIRED_CLSDICT_FIELDS:
             temp_removed[k] = clsdict.pop(k)
 
-    new_ent = EntityType(name, (base_entity, ), clsdict, _root=_root, **kwargs)
+    new_ent = EntityType(name, (base_entity,), clsdict, _root=_root, **kwargs)
     new_ent.__fix_entries__ = []
 
     for k, v in temp_removed.items():
