@@ -4825,6 +4825,7 @@ static const char __pyx_k_TIMESTAMPTZ[] = "TIMESTAMPTZ";
 static const char __pyx_k_parse_float[] = "parse_float";
 static const char __pyx_k_DEFAULT_SRID[] = "DEFAULT_SRID";
 static const char __pyx_k_DateTimeType[] = "DateTimeType";
+static const char __pyx_k_ensure_ascii[] = "ensure_ascii";
 static const char __pyx_k_CompositeType[] = "CompositeType";
 static const char __pyx_k_Y_m_d_H_M_S_f[] = "%Y-%m-%d %H:%M:%S.%f";
 static const char __pyx_k_fromisoformat[] = "fromisoformat";
@@ -4915,6 +4916,7 @@ static PyObject *__pyx_n_s_decode;
 static PyObject *__pyx_n_s_dialect;
 static PyObject *__pyx_n_s_dumps;
 static PyObject *__pyx_n_s_encode;
+static PyObject *__pyx_n_s_ensure_ascii;
 static PyObject *__pyx_kp_u_expected;
 static PyObject *__pyx_n_s_field;
 static PyObject *__pyx_n_s_fromisoformat;
@@ -13426,10 +13428,9 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
   int __pyx_t_6;
   Py_ssize_t __pyx_t_7;
   Py_UCS4 __pyx_t_8;
-  PyObject *__pyx_t_9 = NULL;
-  PyObject *(*__pyx_t_10)(PyObject *);
+  PyObject *(*__pyx_t_9)(PyObject *);
+  PyObject *__pyx_t_10 = NULL;
   PyObject *__pyx_t_11 = NULL;
-  PyObject *__pyx_t_12 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -13538,7 +13539,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
  *             if isinstance(value, EntityBase):
  *                 if type(value) is not self._object:             # <<<<<<<<<<<<<<
  *                     raise ValueError("Missmatch entity type: %r expected %r" % (type(value), self._object))
- *                 return json.dumps(value.as_dict())
+ *                 return json.dumps(value.as_dict(), ensure_ascii=False)
  */
       __pyx_t_5 = (((PyObject *)Py_TYPE(__pyx_v_value)) != ((PyObject *)__pyx_v_self->_object));
       __pyx_t_6 = (__pyx_t_5 != 0);
@@ -13548,7 +13549,7 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
  *             if isinstance(value, EntityBase):
  *                 if type(value) is not self._object:
  *                     raise ValueError("Missmatch entity type: %r expected %r" % (type(value), self._object))             # <<<<<<<<<<<<<<
- *                 return json.dumps(value.as_dict())
+ *                 return json.dumps(value.as_dict(), ensure_ascii=False)
  *         elif self._list:
  */
         __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 403, __pyx_L1_error)
@@ -13592,42 +13593,27 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
  *             if isinstance(value, EntityBase):
  *                 if type(value) is not self._object:             # <<<<<<<<<<<<<<
  *                     raise ValueError("Missmatch entity type: %r expected %r" % (type(value), self._object))
- *                 return json.dumps(value.as_dict())
+ *                 return json.dumps(value.as_dict(), ensure_ascii=False)
  */
       }
 
       /* "yapic/entity/sql/pgsql/_type_factory.pyx":404
  *                 if type(value) is not self._object:
  *                     raise ValueError("Missmatch entity type: %r expected %r" % (type(value), self._object))
- *                 return json.dumps(value.as_dict())             # <<<<<<<<<<<<<<
+ *                 return json.dumps(value.as_dict(), ensure_ascii=False)             # <<<<<<<<<<<<<<
  *         elif self._list:
  *             if isinstance(value, list):
  */
       __Pyx_XDECREF(__pyx_r);
-      __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_json); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 404, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_json); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 404, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_dumps); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 404, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_dumps); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 404, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_value, __pyx_n_s_as_dict); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 404, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_value, __pyx_n_s_as_dict); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 404, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_9 = NULL;
-      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
-        __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_4);
-        if (likely(__pyx_t_9)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-          __Pyx_INCREF(__pyx_t_9);
-          __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_4, function);
-        }
-      }
-      __pyx_t_2 = (__pyx_t_9) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_9) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
-      __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 404, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_4 = NULL;
-      if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
         __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
         if (likely(__pyx_t_4)) {
           PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
@@ -13636,14 +13622,26 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
           __Pyx_DECREF_SET(__pyx_t_3, function);
         }
       }
-      __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2);
+      __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 404, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_r = __pyx_t_1;
+      __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 404, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_GIVEREF(__pyx_t_1);
+      PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
       __pyx_t_1 = 0;
+      __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 404, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_ensure_ascii, Py_False) < 0) __PYX_ERR(0, 404, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 404, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __pyx_r = __pyx_t_4;
+      __pyx_t_4 = 0;
       goto __pyx_L0;
 
       /* "yapic/entity/sql/pgsql/_type_factory.pyx":401
@@ -13667,19 +13665,19 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
 
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":405
  *                     raise ValueError("Missmatch entity type: %r expected %r" % (type(value), self._object))
- *                 return json.dumps(value.as_dict())
+ *                 return json.dumps(value.as_dict(), ensure_ascii=False)
  *         elif self._list:             # <<<<<<<<<<<<<<
  *             if isinstance(value, list):
- *                 return json.dumps([v.as_dict() for v in value])
+ *                 return json.dumps([v.as_dict() for v in value], ensure_ascii=False)
  */
   __pyx_t_6 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->_list)); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 405, __pyx_L1_error)
   if (__pyx_t_6) {
 
     /* "yapic/entity/sql/pgsql/_type_factory.pyx":406
- *                 return json.dumps(value.as_dict())
+ *                 return json.dumps(value.as_dict(), ensure_ascii=False)
  *         elif self._list:
  *             if isinstance(value, list):             # <<<<<<<<<<<<<<
- *                 return json.dumps([v.as_dict() for v in value])
+ *                 return json.dumps([v.as_dict() for v in value], ensure_ascii=False)
  *         elif self._any:
  */
     __pyx_t_6 = PyList_Check(__pyx_v_value); 
@@ -13689,49 +13687,49 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
       /* "yapic/entity/sql/pgsql/_type_factory.pyx":407
  *         elif self._list:
  *             if isinstance(value, list):
- *                 return json.dumps([v.as_dict() for v in value])             # <<<<<<<<<<<<<<
+ *                 return json.dumps([v.as_dict() for v in value], ensure_ascii=False)             # <<<<<<<<<<<<<<
  *         elif self._any:
- *             return json.dumps(value)
+ *             return json.dumps(value, ensure_ascii=False)
  */
       __Pyx_XDECREF(__pyx_r);
-      __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_json); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 407, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_dumps); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 407, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_json); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 407, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_dumps); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 407, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       { /* enter inner scope */
-        __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 407, __pyx_L9_error)
-        __Pyx_GOTREF(__pyx_t_3);
+        __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 407, __pyx_L9_error)
+        __Pyx_GOTREF(__pyx_t_4);
         if (likely(PyList_CheckExact(__pyx_v_value)) || PyTuple_CheckExact(__pyx_v_value)) {
-          __pyx_t_4 = __pyx_v_value; __Pyx_INCREF(__pyx_t_4); __pyx_t_7 = 0;
-          __pyx_t_10 = NULL;
+          __pyx_t_3 = __pyx_v_value; __Pyx_INCREF(__pyx_t_3); __pyx_t_7 = 0;
+          __pyx_t_9 = NULL;
         } else {
-          __pyx_t_7 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_value); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 407, __pyx_L9_error)
-          __Pyx_GOTREF(__pyx_t_4);
-          __pyx_t_10 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 407, __pyx_L9_error)
+          __pyx_t_7 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_v_value); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 407, __pyx_L9_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_t_9 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 407, __pyx_L9_error)
         }
         for (;;) {
-          if (likely(!__pyx_t_10)) {
-            if (likely(PyList_CheckExact(__pyx_t_4))) {
-              if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_4)) break;
+          if (likely(!__pyx_t_9)) {
+            if (likely(PyList_CheckExact(__pyx_t_3))) {
+              if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_3)) break;
               #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-              __pyx_t_9 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_7); __Pyx_INCREF(__pyx_t_9); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 407, __pyx_L9_error)
+              __pyx_t_2 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_2); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 407, __pyx_L9_error)
               #else
-              __pyx_t_9 = PySequence_ITEM(__pyx_t_4, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 407, __pyx_L9_error)
-              __Pyx_GOTREF(__pyx_t_9);
+              __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 407, __pyx_L9_error)
+              __Pyx_GOTREF(__pyx_t_2);
               #endif
             } else {
-              if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
+              if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
               #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-              __pyx_t_9 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_7); __Pyx_INCREF(__pyx_t_9); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 407, __pyx_L9_error)
+              __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_2); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 407, __pyx_L9_error)
               #else
-              __pyx_t_9 = PySequence_ITEM(__pyx_t_4, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 407, __pyx_L9_error)
-              __Pyx_GOTREF(__pyx_t_9);
+              __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 407, __pyx_L9_error)
+              __Pyx_GOTREF(__pyx_t_2);
               #endif
             }
           } else {
-            __pyx_t_9 = __pyx_t_10(__pyx_t_4);
-            if (unlikely(!__pyx_t_9)) {
+            __pyx_t_2 = __pyx_t_9(__pyx_t_3);
+            if (unlikely(!__pyx_t_2)) {
               PyObject* exc_type = PyErr_Occurred();
               if (exc_type) {
                 if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
@@ -13739,31 +13737,31 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
               }
               break;
             }
-            __Pyx_GOTREF(__pyx_t_9);
+            __Pyx_GOTREF(__pyx_t_2);
           }
-          __Pyx_XDECREF_SET(__pyx_7genexpr__pyx_v_v, __pyx_t_9);
-          __pyx_t_9 = 0;
-          __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_7genexpr__pyx_v_v, __pyx_n_s_as_dict); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 407, __pyx_L9_error)
-          __Pyx_GOTREF(__pyx_t_11);
-          __pyx_t_12 = NULL;
-          if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_11))) {
-            __pyx_t_12 = PyMethod_GET_SELF(__pyx_t_11);
-            if (likely(__pyx_t_12)) {
-              PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_11);
-              __Pyx_INCREF(__pyx_t_12);
+          __Pyx_XDECREF_SET(__pyx_7genexpr__pyx_v_v, __pyx_t_2);
+          __pyx_t_2 = 0;
+          __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_7genexpr__pyx_v_v, __pyx_n_s_as_dict); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 407, __pyx_L9_error)
+          __Pyx_GOTREF(__pyx_t_10);
+          __pyx_t_11 = NULL;
+          if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_10))) {
+            __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_10);
+            if (likely(__pyx_t_11)) {
+              PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_10);
+              __Pyx_INCREF(__pyx_t_11);
               __Pyx_INCREF(function);
-              __Pyx_DECREF_SET(__pyx_t_11, function);
+              __Pyx_DECREF_SET(__pyx_t_10, function);
             }
           }
-          __pyx_t_9 = (__pyx_t_12) ? __Pyx_PyObject_CallOneArg(__pyx_t_11, __pyx_t_12) : __Pyx_PyObject_CallNoArg(__pyx_t_11);
-          __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 407, __pyx_L9_error)
-          __Pyx_GOTREF(__pyx_t_9);
-          __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-          if (unlikely(__Pyx_ListComp_Append(__pyx_t_3, (PyObject*)__pyx_t_9))) __PYX_ERR(0, 407, __pyx_L9_error)
-          __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+          __pyx_t_2 = (__pyx_t_11) ? __Pyx_PyObject_CallOneArg(__pyx_t_10, __pyx_t_11) : __Pyx_PyObject_CallNoArg(__pyx_t_10);
+          __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 407, __pyx_L9_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+          if (unlikely(__Pyx_ListComp_Append(__pyx_t_4, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 407, __pyx_L9_error)
+          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         }
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __Pyx_XDECREF(__pyx_7genexpr__pyx_v_v); __pyx_7genexpr__pyx_v_v = 0;
         goto __pyx_L12_exit_scope;
         __pyx_L9_error:;
@@ -13771,82 +13769,77 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
         goto __pyx_L1_error;
         __pyx_L12_exit_scope:;
       } /* exit inner scope */
-      __pyx_t_4 = NULL;
-      if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
-        __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
-        if (likely(__pyx_t_4)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-          __Pyx_INCREF(__pyx_t_4);
-          __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_2, function);
-        }
-      }
-      __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
-      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 407, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_GIVEREF(__pyx_t_4);
+      PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_4);
+      __pyx_t_4 = 0;
+      __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 407, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_ensure_ascii, Py_False) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 407, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 407, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_r = __pyx_t_1;
-      __pyx_t_1 = 0;
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __pyx_r = __pyx_t_2;
+      __pyx_t_2 = 0;
       goto __pyx_L0;
 
       /* "yapic/entity/sql/pgsql/_type_factory.pyx":406
- *                 return json.dumps(value.as_dict())
+ *                 return json.dumps(value.as_dict(), ensure_ascii=False)
  *         elif self._list:
  *             if isinstance(value, list):             # <<<<<<<<<<<<<<
- *                 return json.dumps([v.as_dict() for v in value])
+ *                 return json.dumps([v.as_dict() for v in value], ensure_ascii=False)
  *         elif self._any:
  */
     }
 
     /* "yapic/entity/sql/pgsql/_type_factory.pyx":405
  *                     raise ValueError("Missmatch entity type: %r expected %r" % (type(value), self._object))
- *                 return json.dumps(value.as_dict())
+ *                 return json.dumps(value.as_dict(), ensure_ascii=False)
  *         elif self._list:             # <<<<<<<<<<<<<<
  *             if isinstance(value, list):
- *                 return json.dumps([v.as_dict() for v in value])
+ *                 return json.dumps([v.as_dict() for v in value], ensure_ascii=False)
  */
     goto __pyx_L3;
   }
 
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":408
  *             if isinstance(value, list):
- *                 return json.dumps([v.as_dict() for v in value])
+ *                 return json.dumps([v.as_dict() for v in value], ensure_ascii=False)
  *         elif self._any:             # <<<<<<<<<<<<<<
- *             return json.dumps(value)
+ *             return json.dumps(value, ensure_ascii=False)
  * 
  */
   __pyx_t_5 = (__pyx_v_self->_any != 0);
   if (__pyx_t_5) {
 
     /* "yapic/entity/sql/pgsql/_type_factory.pyx":409
- *                 return json.dumps([v.as_dict() for v in value])
+ *                 return json.dumps([v.as_dict() for v in value], ensure_ascii=False)
  *         elif self._any:
- *             return json.dumps(value)             # <<<<<<<<<<<<<<
+ *             return json.dumps(value, ensure_ascii=False)             # <<<<<<<<<<<<<<
  * 
  *         raise TypeError("Can't convert value to json: %r" % value)
  */
     __Pyx_XDECREF(__pyx_r);
     __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_json); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 409, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_dumps); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 409, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_dumps); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 409, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
-      __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
-      if (likely(__pyx_t_2)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-        __Pyx_INCREF(__pyx_t_2);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_3, function);
-      }
-    }
-    __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_2, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
-    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 409, __pyx_L1_error)
+    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 409, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_INCREF(__pyx_v_value);
+    __Pyx_GIVEREF(__pyx_v_value);
+    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_value);
+    __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 409, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_ensure_ascii, Py_False) < 0) __PYX_ERR(0, 409, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 409, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
@@ -13854,16 +13847,16 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
 
     /* "yapic/entity/sql/pgsql/_type_factory.pyx":408
  *             if isinstance(value, list):
- *                 return json.dumps([v.as_dict() for v in value])
+ *                 return json.dumps([v.as_dict() for v in value], ensure_ascii=False)
  *         elif self._any:             # <<<<<<<<<<<<<<
- *             return json.dumps(value)
+ *             return json.dumps(value, ensure_ascii=False)
  * 
  */
   }
   __pyx_L3:;
 
   /* "yapic/entity/sql/pgsql/_type_factory.pyx":411
- *             return json.dumps(value)
+ *             return json.dumps(value, ensure_ascii=False)
  * 
  *         raise TypeError("Can't convert value to json: %r" % value)             # <<<<<<<<<<<<<<
  * 
@@ -13892,9 +13885,8 @@ static PyObject *__pyx_f_5yapic_6entity_3sql_5pgsql_13_type_factory_8JsonType_en
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_XDECREF(__pyx_t_10);
   __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_XDECREF(__pyx_t_12);
   __Pyx_AddTraceback("yapic.entity.sql.pgsql._type_factory.JsonType.encode", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
@@ -19291,6 +19283,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_dialect, __pyx_k_dialect, sizeof(__pyx_k_dialect), 0, 0, 1, 1},
   {&__pyx_n_s_dumps, __pyx_k_dumps, sizeof(__pyx_k_dumps), 0, 0, 1, 1},
   {&__pyx_n_s_encode, __pyx_k_encode, sizeof(__pyx_k_encode), 0, 0, 1, 1},
+  {&__pyx_n_s_ensure_ascii, __pyx_k_ensure_ascii, sizeof(__pyx_k_ensure_ascii), 0, 0, 1, 1},
   {&__pyx_kp_u_expected, __pyx_k_expected, sizeof(__pyx_k_expected), 0, 1, 0, 0},
   {&__pyx_n_s_field, __pyx_k_field, sizeof(__pyx_k_field), 0, 0, 1, 1},
   {&__pyx_n_s_fromisoformat, __pyx_k_fromisoformat, sizeof(__pyx_k_fromisoformat), 0, 0, 1, 1},

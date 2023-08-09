@@ -1,4 +1,4 @@
-FROM docker.dev.trigon.hu/docker/pgsql:15
+FROM docker.dev.trigon.hu/docker/postgres:15
 
 ENV PGSQL_ROOT_PASS=root
 ENV PGSQL_DATABASE=root

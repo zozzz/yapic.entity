@@ -401,12 +401,12 @@ cdef class JsonType(PostgreType):
             if isinstance(value, EntityBase):
                 if type(value) is not self._object:
                     raise ValueError("Missmatch entity type: %r expected %r" % (type(value), self._object))
-                return json.dumps(value.as_dict())
+                return json.dumps(value.as_dict(), ensure_ascii=False)
         elif self._list:
             if isinstance(value, list):
-                return json.dumps([v.as_dict() for v in value])
+                return json.dumps([v.as_dict() for v in value], ensure_ascii=False)
         elif self._any:
-            return json.dumps(value)
+            return json.dumps(value, ensure_ascii=False)
 
         raise TypeError("Can't convert value to json: %r" % value)
 
