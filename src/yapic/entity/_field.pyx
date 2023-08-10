@@ -151,6 +151,8 @@ cdef class AutoIncrement(FieldExtension):
         cdef Registry registry
 
         if self.sequence is None:
+            from ._entity import _EntityBase
+
             if self._seq_arg is None:
                 entity = attr.get_entity()
                 aliased = get_alias_target(entity)
@@ -162,7 +164,7 @@ cdef class AutoIncrement(FieldExtension):
                     try:
                         self.sequence = registry[name if schema is None or schema == "public" else f"{schema}.{name}"]
                     except KeyError:
-                        self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=<object>entity.registry_ref, is_sequence=True)
+                        self.sequence = EntityType(name, (_EntityBase,), {}, schema=schema, registry=<object>entity.registry_ref, is_sequence=True)
                 else:
                     self.sequence = getattr(aliased, attr._key_).get_ext(AutoIncrement).sequence
             elif isinstance(self._seq_arg, EntityType):
@@ -182,7 +184,7 @@ cdef class AutoIncrement(FieldExtension):
                 try:
                     self.sequence = registry[name if not schema or schema == "public" else f"{schema}.{name}"]
                 except KeyError:
-                    self.sequence = EntityType(name, (EntityBase,), {}, schema=schema, registry=<object>entity.registry_ref, is_sequence=True)
+                    self.sequence = EntityType(name, (_EntityBase,), {}, schema=schema, registry=<object>entity.registry_ref, is_sequence=True)
 
         attr._deps_.add_entity(self.sequence)
         return self.sequence.is_resolved()

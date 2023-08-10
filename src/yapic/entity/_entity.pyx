@@ -1296,55 +1296,6 @@ cdef class EntityBase:
         else:
             self.__state__.init()
 
-    @classmethod
-    def __init_subclass__(cls, *, str name=None, registry=None, bint _root=False, EntityType alias_target=None, **meta):
-        cdef EntityType ent = cls
-        cdef EntityType parent_entity
-        cdef int mro_length = len(cls.__mro__)
-        cdef dict meta_dict = {}
-
-        if name is not None:
-            ent.__name__ = name
-
-        for i in reversed(range(1, mro_length - 2)):
-            parent = cls.__mro__[i]
-            if isinstance(parent, EntityType):
-                parent_entity = <EntityType>parent
-                if parent_entity.meta is not NULL:
-                    meta_dict.update(<object>parent_entity.meta)
-
-        if registry is None:
-            for i in range(1, mro_length - 2):
-                parent = cls.__mro__[i]
-                if isinstance(parent, EntityType):
-                    parent_entity = <EntityType>parent
-                    if parent_entity.registry_ref is not <PyObject*>None:
-                        registry = <object>parent_entity.registry_ref
-                        break
-
-        meta_dict.update(meta)
-        meta_dict.pop("__fields__", None)
-
-        Py_XINCREF(<PyObject*>(<object>meta_dict))
-        Py_XDECREF(ent.meta)
-        ent.meta = <PyObject*>(<object>meta_dict)
-
-        if registry is not None:
-            if isinstance(registry, ReferenceType):
-                referenced = <object>PyWeakref_GetObject(registry)
-                if not isinstance(referenced, Registry):
-                    raise TypeError(f"Argument 'registry' has incorrect waekref {type(referenced)} expected: {Registry}")
-            elif isinstance(registry, Registry):
-                registry = <object>PyWeakref_NewRef(registry, None)
-            else:
-                raise TypeError(f"Argument 'registry' has incorrect type {type(registry)} expected: {Registry} or weakref")
-        else:
-            raise ValueError("Missing registry")
-
-        Py_XINCREF(<PyObject*>(<object>registry))
-        Py_XDECREF(ent.registry_ref)
-        ent.registry_ref = <PyObject*>(<object>registry)
-
     @property
     def __pk__(self):
         cdef EntityAttribute attr
@@ -1469,8 +1420,59 @@ cdef object as_dict(object o):
     else:
         return o
 
+# XXX: from Cython 3.0: '__init_subclass__' is not supported by extension class
+class _EntityBase(EntityBase):
+    @classmethod
+    def __init_subclass__(cls, *, str name=None, registry=None, bint _root=False, EntityType alias_target=None, **meta):
+        cdef EntityType ent = cls
+        cdef EntityType parent_entity
+        cdef int mro_length = len(cls.__mro__)
+        cdef dict meta_dict = {}
 
-class Entity(EntityBase, metaclass=EntityType, registry=REGISTRY, _root=True):
+        if name is not None:
+            ent.__name__ = name
+
+        for i in reversed(range(1, mro_length - 2)):
+            parent = cls.__mro__[i]
+            if isinstance(parent, EntityType):
+                parent_entity = <EntityType>parent
+                if parent_entity.meta is not NULL:
+                    meta_dict.update(<object>parent_entity.meta)
+
+        if registry is None:
+            for i in range(1, mro_length - 2):
+                parent = cls.__mro__[i]
+                if isinstance(parent, EntityType):
+                    parent_entity = <EntityType>parent
+                    if parent_entity.registry_ref is not <PyObject*>None:
+                        registry = <object>parent_entity.registry_ref
+                        break
+
+        meta_dict.update(meta)
+        meta_dict.pop("__fields__", None)
+
+        Py_XINCREF(<PyObject*>(<object>meta_dict))
+        Py_XDECREF(ent.meta)
+        ent.meta = <PyObject*>(<object>meta_dict)
+
+        if registry is not None:
+            if isinstance(registry, ReferenceType):
+                referenced = <object>PyWeakref_GetObject(registry)
+                if not isinstance(referenced, Registry):
+                    raise TypeError(f"Argument 'registry' has incorrect waekref {type(referenced)} expected: {Registry}")
+            elif isinstance(registry, Registry):
+                registry = <object>PyWeakref_NewRef(registry, None)
+            else:
+                raise TypeError(f"Argument 'registry' has incorrect type {type(registry)} expected: {Registry} or weakref")
+        else:
+            raise ValueError("Missing registry")
+
+        Py_XINCREF(<PyObject*>(<object>registry))
+        Py_XDECREF(ent.registry_ref)
+        ent.registry_ref = <PyObject*>(<object>registry)
+
+
+class Entity(_EntityBase, metaclass=EntityType, registry=REGISTRY, _root=True):
     pass
 
 
