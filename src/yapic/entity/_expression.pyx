@@ -229,12 +229,21 @@ cdef class PathExpression(Expression):
         self._path_ = path
 
     def __getattr__(self, object key):
+        from ._relation import Relation
+
         last_item = self._path_[len(self._path_) - 1]
         new_path = list(self._path_)
         if isinstance(last_item, Expression):
             obj = getattr(last_item, key)
-            if isinstance(obj, PathExpression) and last_item is (<PathExpression>obj)._path_[0]:
-                new_path.extend((<PathExpression>obj)._path_[1:])
+            if isinstance(obj, PathExpression):
+                new_first = (<PathExpression>obj)._path_[0]
+                if last_item is new_first:
+                    new_path.extend((<PathExpression>obj)._path_[1:])
+                elif isinstance(new_first, Relation) and not isinstance(last_item, Relation):
+                    new_path.pop()
+                    new_path.extend((<PathExpression>obj)._path_)
+                else:
+                    raise NotImplementedError(str(obj))
             else:
                 new_path.append(obj)
         else:

@@ -380,9 +380,9 @@ cdef class ChoiceImpl(AutoImpl):
             if self._relation is None:
                 from ._relation import Relation, ManyToOne, RelatedItem
 
-                choice_entity = self._enum._entity_.alias()
-                # relation = Relation(ManyToOne(choice_entity, RelatedItem()), f"_joined_.value == _self_.{attr._key_}")
-                relation = Relation(ManyToOne(choice_entity, RelatedItem()))
+                choice_entity = self._enum._entity_
+                relation = Relation(ManyToOne(choice_entity, RelatedItem()), f"_joined_.value == _self_.{attr._key_}")
+                # relation = Relation(ManyToOne(choice_entity, RelatedItem()))
                 relation._bind(<object>PyWeakref_NewRef(self_entity, None), <object>self_entity.registry_ref)
                 self._relation = relation
 

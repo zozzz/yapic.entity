@@ -767,9 +767,18 @@ def test_enum():
         SUCCESS = dict(label="Success", retryable=False)
         FAILURE = dict(label="Failure", retryable=False)
 
+    class X(Entity, registry=R):
+        id: Serial
+        value: Int
+
     class A(Entity, registry=R):
         id: Serial
         status: Choice[Status]
+        x: One[X]
+
+    class B(Entity, registry=R):
+        id: Serial
+        a: One[A] = "A.id == B.id"
 
     q = Query(A)
     sql, params = dialect.create_query_compiler().compile_select(q)
@@ -786,4 +795,15 @@ def test_enum():
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == 'SELECT "t0"."id", "t0"."status" FROM "A" "t0" INNER JOIN "A" "t1" ON "t1"."id" = "t0"."id" INNER JOIN "Status" "t2" ON "t0"."status" = "t2"."value" INNER JOIN "Status" "t3" ON "t1"."status" = "t3"."value" WHERE "t2"."retryable" IS TRUE AND "t3"."retryable" IS FALSE'
     assert len(params) == 0
+
+    q = Query(A).where(A.status == "PENDING")
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "t0"."id", "t0"."status" FROM "A" "t0" WHERE "t0"."status" = $1'
+    assert params == ("PENDING",)
+
+    q = Query(B).where(B.a.status.retryable.is_true())
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "t0"."id" FROM "B" "t0" INNER JOIN "A" "t1" ON "t1"."id" = "t0"."id" INNER JOIN "Status" "t2" ON "t1"."status" = "t2"."value" WHERE "t2"."retryable" IS TRUE'
+    assert len(params) == 0
+
 
