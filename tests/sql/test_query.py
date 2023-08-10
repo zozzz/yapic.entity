@@ -1,13 +1,42 @@
 # flake8: noqa: E501
 
 import operator
-import pytest
 from typing import Any
 
+import pytest
+
+from yapic.entity import (
+    Auto,
+    Bool,
+    Choice,
+    Composite,
+    DateTimeTz,
+    Entity,
+    Enum,
+    Field,
+    ForeignKey,
+    Int,
+    IntArray,
+    Json,
+    Loading,
+    ManyAcross,
+    One,
+    PrimaryKey,
+    Query,
+    Registry,
+    Serial,
+    String,
+    and_,
+    contains,
+    endswith,
+    find,
+    func,
+    in_,
+    or_,
+    startswith,
+    virtual,
+)
 from yapic.entity.sql import PostgreDialect
-from yapic.entity import (Query, Entity, Serial, String, DateTimeTz, Json, Composite, and_, or_, Int, ForeignKey, One,
-                          ManyAcross, Field, func, Registry, Auto, startswith, endswith, contains, find, virtual, in_,
-                          IntArray, PrimaryKey, Loading)
 
 dialect = PostgreDialect()
 
@@ -726,5 +755,35 @@ def test_over():
     q = Query(A).columns(func.row_number().over().partition(A.id).order(A.id))
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == 'SELECT row_number() OVER(PARTITION BY "t0"."id" ORDER BY "t0"."id" ASC) FROM "A" "t0"'
+    assert len(params) == 0
+
+def test_enum():
+    R = Registry()
+
+    class Status(Enum, registry=R):
+        retryable: Bool = False
+
+        PENDING = dict(label="Pending", retryable=True)
+        SUCCESS = dict(label="Success", retryable=False)
+        FAILURE = dict(label="Failure", retryable=False)
+
+    class A(Entity, registry=R):
+        id: Serial
+        status: Choice[Status]
+
+    q = Query(A)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "t0"."id", "t0"."status" FROM "A" "t0"'
+    assert len(params) == 0
+
+    q = Query(A).where(A.status.retryable.is_true())
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "t0"."id", "t0"."status" FROM "A" "t0" INNER JOIN "Status" "t1" ON "t0"."status" = "t1"."value" WHERE "t1"."retryable" IS TRUE'
+    assert len(params) == 0
+
+    a2 = A.alias()
+    q = Query(A).join(a2, a2.id == A.id).where(A.status.retryable.is_true(), a2.status.retryable.is_false())
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "t0"."id", "t0"."status" FROM "A" "t0" INNER JOIN "A" "t1" ON "t1"."id" = "t0"."id" INNER JOIN "Status" "t2" ON "t0"."status" = "t2"."value" INNER JOIN "Status" "t3" ON "t1"."status" = "t3"."value" WHERE "t2"."retryable" IS TRUE AND "t3"."retryable" IS FALSE'
     assert len(params) == 0
 

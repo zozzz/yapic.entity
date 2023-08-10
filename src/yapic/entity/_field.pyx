@@ -54,7 +54,7 @@ cdef class Field(EntityAttribute):
         return EntityAttribute.init(self)
 
     cpdef clone(self):
-        cdef Field res = type(self)(self._impl_,
+        cdef Field res = type(self)(self._impl_.clone(),
             name=self._name_,
             default=self._default_,
             size=(self.min_size, self.max_size),

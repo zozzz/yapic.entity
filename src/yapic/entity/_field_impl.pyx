@@ -3,6 +3,8 @@ from datetime import date, datetime
 from inspect import iscoroutine
 from typing import List
 
+from cpython.weakref cimport PyWeakref_NewRef
+
 from ._entity cimport EntityType, EntityBase, EntityAttributeImpl, EntityAttribute, NOTSET
 from ._expression cimport PathExpression, CallExpression, RawExpression
 from ._field cimport StorageType, ForeignKey
@@ -14,6 +16,10 @@ cdef class FieldImpl(EntityAttributeImpl):
         while isinstance(other, AutoImpl):
             other = (<AutoImpl>other)._ref_impl
         return super().__eq__(other)
+
+    cpdef object clone(self):
+        # XXX: most of the time cloning is not required
+        return self
 
 
 cdef class StringImpl(FieldImpl):
@@ -365,6 +371,34 @@ cdef class ChoiceImpl(AutoImpl):
             return value
         else:
             return self._enum(value)
+
+    cdef object _resolve_deferred(self, ResolveContext ctx, EntityAttribute attr):
+        cdef EntityAttribute relation
+        cdef EntityType self_entity = attr._entity_
+
+        if AutoImpl._resolve_deferred(self, ctx, attr) is True:
+            if self._relation is None:
+                from ._relation import Relation, ManyToOne, RelatedItem
+
+                choice_entity = self._enum._entity_.alias()
+                # relation = Relation(ManyToOne(choice_entity, RelatedItem()), f"_joined_.value == _self_.{attr._key_}")
+                relation = Relation(ManyToOne(choice_entity, RelatedItem()))
+                relation._bind(<object>PyWeakref_NewRef(self_entity, None), <object>self_entity.registry_ref)
+                self._relation = relation
+
+            if self._relation._stage_resolving(ctx) is True:
+                self._relation._stage_resolved()
+            else:
+                raise RuntimeError(f"Cant create relation between {self} <-> {self._enum._entity_}")
+
+            return True
+        return False
+
+    cpdef getattr(self, EntityAttribute attr, object key):
+        return getattr(self._relation, key)
+
+    cpdef object clone(self):
+        return ChoiceImpl(self._enum)
 
 
 cdef class ArrayImpl(FieldImpl):

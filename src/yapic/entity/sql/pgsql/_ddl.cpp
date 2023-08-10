@@ -2326,15 +2326,16 @@ struct __pyx_obj_5yapic_6entity_11_field_impl_AutoImpl {
  * 
  * cdef class ChoiceImpl(AutoImpl):             # <<<<<<<<<<<<<<
  *     cdef readonly object _enum
- * 
+ *     cdef readonly EntityAttribute _relation
  */
 struct __pyx_obj_5yapic_6entity_11_field_impl_ChoiceImpl {
   struct __pyx_obj_5yapic_6entity_11_field_impl_AutoImpl __pyx_base;
   PyObject *_enum;
+  struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *_relation;
 };
 
 
-/* "yapic/entity/_field_impl.pxd":93
+/* "yapic/entity/_field_impl.pxd":94
  * 
  * 
  * cdef class ArrayImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -3737,7 +3738,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_AutoImpl *__pyx_vtab
  * 
  * cdef class ChoiceImpl(AutoImpl):             # <<<<<<<<<<<<<<
  *     cdef readonly object _enum
- * 
+ *     cdef readonly EntityAttribute _relation
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_ChoiceImpl {
@@ -3747,7 +3748,7 @@ struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_ChoiceImpl {
 static struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_ChoiceImpl *__pyx_vtabptr_5yapic_6entity_11_field_impl_ChoiceImpl;
 
 
-/* "yapic/entity/_field_impl.pxd":93
+/* "yapic/entity/_field_impl.pxd":94
  * 
  * 
  * cdef class ArrayImpl(FieldImpl):             # <<<<<<<<<<<<<<
@@ -18493,8 +18494,8 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_vtabptr_5yapic_6entity_11_field_impl_AutoImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_AutoImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_AutoImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_AutoImpl)) __PYX_ERR(11, 83, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_11_field_impl_ChoiceImpl = __Pyx_ImportType_0_29_35(__pyx_t_1, "yapic.entity._field_impl", "ChoiceImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_ChoiceImpl), __PYX_GET_STRUCT_ALIGNMENT_0_29_35(struct __pyx_obj_5yapic_6entity_11_field_impl_ChoiceImpl),__Pyx_ImportType_CheckSize_Warn_0_29_35); if (!__pyx_ptype_5yapic_6entity_11_field_impl_ChoiceImpl) __PYX_ERR(11, 87, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_11_field_impl_ChoiceImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_ChoiceImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_ChoiceImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_ChoiceImpl)) __PYX_ERR(11, 87, __pyx_L1_error)
-  __pyx_ptype_5yapic_6entity_11_field_impl_ArrayImpl = __Pyx_ImportType_0_29_35(__pyx_t_1, "yapic.entity._field_impl", "ArrayImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_ArrayImpl), __PYX_GET_STRUCT_ALIGNMENT_0_29_35(struct __pyx_obj_5yapic_6entity_11_field_impl_ArrayImpl),__Pyx_ImportType_CheckSize_Warn_0_29_35); if (!__pyx_ptype_5yapic_6entity_11_field_impl_ArrayImpl) __PYX_ERR(11, 93, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_11_field_impl_ArrayImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_ArrayImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_ArrayImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_ArrayImpl)) __PYX_ERR(11, 93, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_11_field_impl_ArrayImpl = __Pyx_ImportType_0_29_35(__pyx_t_1, "yapic.entity._field_impl", "ArrayImpl", sizeof(struct __pyx_obj_5yapic_6entity_11_field_impl_ArrayImpl), __PYX_GET_STRUCT_ALIGNMENT_0_29_35(struct __pyx_obj_5yapic_6entity_11_field_impl_ArrayImpl),__Pyx_ImportType_CheckSize_Warn_0_29_35); if (!__pyx_ptype_5yapic_6entity_11_field_impl_ArrayImpl) __PYX_ERR(11, 94, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_11_field_impl_ArrayImpl = (struct __pyx_vtabstruct_5yapic_6entity_11_field_impl_ArrayImpl*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_11_field_impl_ArrayImpl->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_11_field_impl_ArrayImpl)) __PYX_ERR(11, 94, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("yapic.entity._geom_impl"); if (unlikely(!__pyx_t_1)) __PYX_ERR(12, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);

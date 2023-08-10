@@ -1,4 +1,4 @@
-from ._entity cimport EntityType, EntityBase, EntityAttributeImpl
+from ._entity cimport EntityType, EntityBase, EntityAttributeImpl, EntityAttribute
 from ._field cimport Field
 
 
@@ -86,6 +86,7 @@ cdef class AutoImpl(FieldImpl):
 
 cdef class ChoiceImpl(AutoImpl):
     cdef readonly object _enum
+    cdef readonly EntityAttribute _relation
 
     cdef object _coerce(self, object value)
 
