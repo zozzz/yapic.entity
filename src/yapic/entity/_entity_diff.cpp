@@ -1043,6 +1043,7 @@ struct __pyx_obj_5yapic_6entity_6_field_AutoIncrement;
 struct __pyx_obj_5yapic_6entity_6_field_Index;
 struct __pyx_obj_5yapic_6entity_6_field_Unique;
 struct __pyx_obj_5yapic_6entity_6_field_ForeignKey;
+struct __pyx_obj_5yapic_6entity_6_field_Check;
 struct __pyx_obj_5yapic_6entity_12_entity_diff_EntityDiff;
 struct __pyx_obj_5yapic_6entity_12_entity_diff___pyx_scope_struct____cinit__;
 
@@ -1731,6 +1732,21 @@ struct __pyx_obj_5yapic_6entity_6_field_ForeignKey {
 };
 
 
+/* "_field.pxd":67
+ * # name: chk_table__field
+ * # comment: {expr: hash, table: tablename, field: fieldname}
+ * cdef class Check(FieldExtension):             # <<<<<<<<<<<<<<
+ *     cdef readonly str name
+ *     cdef readonly str expr
+ */
+struct __pyx_obj_5yapic_6entity_6_field_Check {
+  struct __pyx_obj_5yapic_6entity_6_field_FieldExtension __pyx_base;
+  PyObject *name;
+  PyObject *expr;
+  PyObject *props;
+};
+
+
 /* "yapic/entity/_entity_diff.pxd":8
  * 
  * @cython.final
@@ -2382,6 +2398,21 @@ struct __pyx_vtabstruct_5yapic_6entity_6_field_ForeignKey {
   struct __pyx_vtabstruct_5yapic_6entity_6_field_FieldExtension __pyx_base;
 };
 static struct __pyx_vtabstruct_5yapic_6entity_6_field_ForeignKey *__pyx_vtabptr_5yapic_6entity_6_field_ForeignKey;
+
+
+/* "_field.pxd":67
+ * # name: chk_table__field
+ * # comment: {expr: hash, table: tablename, field: fieldname}
+ * cdef class Check(FieldExtension):             # <<<<<<<<<<<<<<
+ *     cdef readonly str name
+ *     cdef readonly str expr
+ */
+
+struct __pyx_vtabstruct_5yapic_6entity_6_field_Check {
+  struct __pyx_vtabstruct_5yapic_6entity_6_field_FieldExtension __pyx_base;
+  PyObject *(*expr_hash)(struct __pyx_obj_5yapic_6entity_6_field_Check *);
+};
+static struct __pyx_vtabstruct_5yapic_6entity_6_field_Check *__pyx_vtabptr_5yapic_6entity_6_field_Check;
 
 /* --- Runtime support code (head) --- */
 /* Refnanny.proto */
@@ -3043,6 +3074,7 @@ static PyTypeObject *__pyx_ptype_5yapic_6entity_6_field_AutoIncrement = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_field_Index = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_field_Unique = 0;
 static PyTypeObject *__pyx_ptype_5yapic_6entity_6_field_ForeignKey = 0;
+static PyTypeObject *__pyx_ptype_5yapic_6entity_6_field_Check = 0;
 
 /* Module declarations from 'yapic.entity._entity_diff' */
 static PyTypeObject *__pyx_ptype_5yapic_6entity_12_entity_diff_EntityDiff = 0;
@@ -8091,6 +8123,8 @@ static int __Pyx_modinit_type_import_code(void) {
   __pyx_vtabptr_5yapic_6entity_6_field_Unique = (struct __pyx_vtabstruct_5yapic_6entity_6_field_Unique*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_6_field_Unique->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_6_field_Unique)) __PYX_ERR(6, 53, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_6_field_ForeignKey = __Pyx_ImportType_0_29_36(__pyx_t_1, "yapic.entity._field", "ForeignKey", sizeof(struct __pyx_obj_5yapic_6entity_6_field_ForeignKey), __PYX_GET_STRUCT_ALIGNMENT_0_29_36(struct __pyx_obj_5yapic_6entity_6_field_ForeignKey),__Pyx_ImportType_CheckSize_Warn_0_29_36); if (!__pyx_ptype_5yapic_6entity_6_field_ForeignKey) __PYX_ERR(6, 57, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_6_field_ForeignKey = (struct __pyx_vtabstruct_5yapic_6entity_6_field_ForeignKey*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_6_field_ForeignKey->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_6_field_ForeignKey)) __PYX_ERR(6, 57, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_6_field_Check = __Pyx_ImportType_0_29_36(__pyx_t_1, "yapic.entity._field", "Check", sizeof(struct __pyx_obj_5yapic_6entity_6_field_Check), __PYX_GET_STRUCT_ALIGNMENT_0_29_36(struct __pyx_obj_5yapic_6entity_6_field_Check),__Pyx_ImportType_CheckSize_Warn_0_29_36); if (!__pyx_ptype_5yapic_6entity_6_field_Check) __PYX_ERR(6, 67, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_6_field_Check = (struct __pyx_vtabstruct_5yapic_6entity_6_field_Check*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_6_field_Check->tp_dict); if (unlikely(!__pyx_vtabptr_5yapic_6entity_6_field_Check)) __PYX_ERR(6, 67, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

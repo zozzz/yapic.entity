@@ -1,9 +1,11 @@
+from yapic import json
+
 from yapic.entity._entity cimport EntityType, EntityAttributeExt, EntityAttributeExtGroup
 from yapic.entity._entity_diff cimport EntityDiff
 from yapic.entity._entity_diff import EntityDiffKind
 from yapic.entity._registry cimport RegistryDiff
 from yapic.entity._registry import RegistryDiffKind
-from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, Index, AutoIncrement, StorageType
+from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, Index, Check, AutoIncrement, StorageType
 from yapic.entity._expression cimport Expression
 from yapic.entity._trigger cimport Trigger
 
@@ -53,18 +55,26 @@ cdef class DDLCompiler:
             requirements.append("")
             table_parts.insert(0, "\n".join(requirements))
 
-        compiled_fks = []
+        compiled_constraint = []
+        comments = []
         for value in entity.__extgroups__.values():
             if value.type is Index:
                 deferred.append(self.compile_create_index(value))
+            elif value.type is Check:
+                check, comment = self.compile_create_check(value)
+                compiled_constraint.append(f"ADD {check}")
+                comments.append(comment)
             elif value.type is ForeignKey:
-                compiled_fks.append(f"ADD {self.compile_foreign_key(value)}")
+                compiled_constraint.append(f"ADD {self.compile_foreign_key(value)}")
 
-        if compiled_fks:
+        if compiled_constraint:
             if is_type:
-                raise ValueError("Foreign keys is not supported on Composite Types")
-            alter = ',\n  '.join(compiled_fks)
+                raise ValueError(f"Constraints {compiled_constraint} is not supported on Composite Types")
+            alter = ',\n  '.join(compiled_constraint)
             deferred.append(f"ALTER TABLE {self.dialect.table_qname(entity)}\n  {alter};")
+
+        if comments:
+            deferred.extend(comments)
 
         for trigger in entity.__triggers__:
             deferred.append(self.create_trigger(entity, trigger))
@@ -147,6 +157,28 @@ cdef class DDLCompiler:
 
         return res + "(" + ", ".join(exprs) + ");"
 
+    def compile_create_check(self, EntityAttributeExtGroup group):
+        cdef Check main = group.items[0]
+        cdef str constraint = f"CONSTRAINT {self.dialect.quote_ident(group.name)} CHECK ("
+        cdef list checks = []
+
+        for item in group.items:
+            checks.append(item.expr)
+
+        if not checks:
+            raise RuntimeError("Something went wrong with chekcs")
+
+        if len(checks) > 1:
+            constraint += f"({') AND ('.join(checks)})"
+        else:
+            constraint += checks[0]
+
+        constraint += ")"
+
+        cdef Check chk
+        comments = json.dumps([chk.props for chk in group.items])
+        cdef str comment = f"COMMENT ON CONSTRAINT {self.dialect.quote_ident(group.name)} ON {self.dialect.table_qname(main.attr._entity_)} IS {self.dialect.quote_value(comments)};"
+        return constraint, comment
 
     def compile_registry_diff(self, RegistryDiff diff):
         lines = []
@@ -232,6 +264,8 @@ cdef class DDLCompiler:
                 group = param
                 if group.type is ForeignKey:
                     alter.append(f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(group.name)}")
+                elif group.type is Check:
+                    alter.append(f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(group.name)}")
                 elif group.type is Index:
                     schema = group.items[0].attr._entity_.__meta__.get("schema", "public")
                     schema = f"{self.dialect.quote_ident(schema)}." if schema != "public" else ""
@@ -242,6 +276,12 @@ cdef class DDLCompiler:
                     alter.append(f"ADD {self.compile_foreign_key(group)}")
                 elif group.type is Index:
                     post.append(self.compile_create_index(group))
+                elif group.type is Check:
+                    check, comment = self.compile_create_check(group)
+                    if check:
+                        alter.append(f"ADD {check}")
+                    if comment:
+                        post.append(comment)
             elif kind == EntityDiffKind.REMOVE_TRIGGER:
                 pre.append(self.remove_trigger(param[0], param[1]))
             elif kind == EntityDiffKind.CREATE_TRIGGER:

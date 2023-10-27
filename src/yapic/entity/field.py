@@ -1,39 +1,26 @@
 # flake8: noqa
 
-from typing import Generic, NoReturn, TypeVar, Union, Optional, List, Tuple, Type, Any, Callable
+import uuid
 from datetime import date, datetime, time
 from decimal import Decimal
 from enum import Enum
 from inspect import isfunction
-import uuid
+from typing import Any, Callable, Generic, List, NoReturn, Optional, Tuple, Type, TypeVar, Union
 
-from ._entity import EntityAttribute, EntityAttributeExt, Entity
-from ._field import Field as _Field, Index, ForeignKey, PrimaryKey, AutoIncrement
-from ._field_impl import (
-    StringImpl,
-    BytesImpl,
-    IntImpl,
-    ChoiceImpl as _ChoiceImpl,
-    BoolImpl,
-    DateImpl,
-    DateTimeImpl,
-    DateTimeTzImpl,
-    TimeImpl,
-    TimeTzImpl,
-    NumericImpl,
-    FloatImpl,
-    UUIDImpl,
-    JsonImpl as _JsonImpl,
-    CompositeImpl as _CompositeImpl,
-    AutoImpl,
-    ArrayImpl as _ArrayImpl,
-)
-from ._geom_impl import (
-    PointType,
-    PointImpl,
-)
-from ._virtual_attr import VirtualAttribute, VirtualAttributeImpl
+from ._entity import Entity, EntityAttribute, EntityAttributeExt
 from ._expression import const
+from ._field import AutoIncrement, Check
+from ._field import Field as _Field
+from ._field import ForeignKey, Index, PrimaryKey
+from ._field_impl import ArrayImpl as _ArrayImpl
+from ._field_impl import AutoImpl, BoolImpl, BytesImpl
+from ._field_impl import ChoiceImpl as _ChoiceImpl
+from ._field_impl import CompositeImpl as _CompositeImpl
+from ._field_impl import DateImpl, DateTimeImpl, DateTimeTzImpl, FloatImpl, IntImpl
+from ._field_impl import JsonImpl as _JsonImpl
+from ._field_impl import NumericImpl, StringImpl, TimeImpl, TimeTzImpl, UUIDImpl
+from ._geom_impl import PointImpl, PointType
+from ._virtual_attr import VirtualAttribute, VirtualAttributeImpl
 
 Impl = TypeVar("Impl")
 PyType = TypeVar("PyType")
@@ -49,14 +36,16 @@ class Field(Generic[Impl, PyType, RawType], _Field):
     def __new__(cls, *args, **kwargs):
         return _Field.__new__(_Field, *args, **kwargs)
 
-    def __init__(self,
-                 impl: Impl = None,
-                 *,
-                 name: Optional[str] = None,
-                 default: Optional[Union[PyType, RawType]] = None,
-                 size: Union[int, Tuple[int, int], None] = None,
-                 nullable: Optional[bool] = None,
-                 on_update: Callable[[Entity], Any] = None):
+    def __init__(
+        self,
+        impl: Impl = None,
+        *,
+        name: Optional[str] = None,
+        default: Optional[Union[PyType, RawType]] = None,
+        size: Union[int, Tuple[int, int], None] = None,
+        nullable: Optional[bool] = None,
+        on_update: Callable[[Entity], Any] = None,
+    ):
         self.__get__ = _Field.__get__  # type: ignore
         self.__set__ = _Field.__set__  # type: ignore
 
@@ -80,28 +69,24 @@ Auto = Field[AutoImpl, Any, Any]
 
 
 class Int(Field[IntImpl, int, int]):
-
     def __new__(cls, *args, **kwargs):
         kwargs.setdefault("size", 4)
         return Field.__new__(cls, *args, **kwargs)
 
 
 class Float(Field[FloatImpl, float, float]):
-
     def __new__(cls, *args, **kwargs):
         kwargs.setdefault("size", 4)
         return Field.__new__(cls, *args, **kwargs)
 
 
 class UUID(Field[UUIDImpl, uuid.UUID, uuid.UUID]):
-
     def __new__(cls, *args, **kwargs):
         kwargs.setdefault("default", uuid.uuid4)
         return Field.__new__(cls, *args, **kwargs)
 
 
 class Serial(Int):
-
     def __new__(cls, *args, **kwargs):
         return Int.__new__(cls, *args, **kwargs) // PrimaryKey() // AutoIncrement()
 
@@ -117,7 +102,6 @@ class ChoiceImpl(Generic[EnumT], _ChoiceImpl):
 
 
 class Choice(Generic[EnumT], Field[ChoiceImpl[EnumT], EnumT, Any]):
-
     def __new__(cls, impl, *args, **kwargs):
         field = Field.__new__(cls, impl, *args, **kwargs)
         return field // ForeignKey(impl.enum._entity_.value)
@@ -171,14 +155,12 @@ IntArray = Array[IntImpl, List[int], List[int]]
 
 
 class CreatedTime(Field[DateTimeTzImpl, datetime, datetime]):
-
     def __new__(cls, *args, **kwargs):
         kwargs.setdefault("default", const.CURRENT_TIMESTAMP)
         return Field.__new__(cls, *args, **kwargs)
 
 
 class _UpdatedTimeExt(EntityAttributeExt):
-
     def init(self):
         # fontos a circular import miatt
         from .sql.pgsql._trigger import PostgreTrigger
@@ -193,8 +175,10 @@ class _UpdatedTimeExt(EntityAttributeExt):
                 # trigger already registered
                 return
 
-        when = f'OLD.* IS DISTINCT FROM NEW.* ' \
-               f'AND (NEW."{attr._name_}" IS NULL OR OLD."{attr._name_}" = NEW."{attr._name_}")'
+        when = (
+            f"OLD.* IS DISTINCT FROM NEW.* "
+            f'AND (NEW."{attr._name_}" IS NULL OR OLD."{attr._name_}" = NEW."{attr._name_}")'
+        )
 
         entity.__triggers__.append(
             PostgreTrigger(
@@ -203,11 +187,11 @@ class _UpdatedTimeExt(EntityAttributeExt):
                 for_each="ROW",
                 when=when,
                 body=f'NEW."{attr._name_}" = CURRENT_TIMESTAMP; RETURN NEW;',
-            ))
+            )
+        )
 
 
 class UpdatedTime(Field[DateTimeTzImpl, datetime, datetime]):
-
     def __new__(cls, *args, **kwargs):
         field = Field.__new__(cls, *args, **kwargs)
         return field // _UpdatedTimeExt()
@@ -219,7 +203,7 @@ def virtual(fn=None, *, depends: Optional[Union[list, tuple, str]] = None) -> Vi
     else:
         if depends is not None:
             if isinstance(depends, str):
-                depends = (depends, )
+                depends = (depends,)
             elif not isinstance(depends, tuple):
                 depends = tuple(depends)
 

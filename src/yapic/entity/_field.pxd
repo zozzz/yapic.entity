@@ -61,3 +61,13 @@ cdef class ForeignKey(FieldExtension):
     cdef readonly str on_update
     cdef readonly str on_delete
 
+
+# name: chk_table__field
+# comment: {expr: hash, table: tablename, field: fieldname}
+cdef class Check(FieldExtension):
+    cdef readonly str name
+    cdef readonly str expr
+    cdef readonly dict props
+
+    cdef str expr_hash(self)
+

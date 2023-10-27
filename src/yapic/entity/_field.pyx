@@ -227,7 +227,6 @@ cdef class Index(FieldExtension):
 cdef class Unique(FieldExtension):
     pass
 
-
 # todo: faster eval, with Py_CompileString(ref, "<string>", Py_eval_input); PyEval_EvalCode
 
 _CodeType = type(compile("1", "<string>", "eval"))
@@ -326,3 +325,45 @@ cdef compute_fk_name(Field field_from, Field field_to):
         return f"fk_{hashlib.md5(name.encode()).hexdigest()}"
     else:
         return name
+
+
+cdef class Check(FieldExtension):
+    @classmethod
+    def validate_group(self, EntityAttributeExtGroup group):
+        cdef list items = group.items
+        cdef Check main = items[0]
+        group.name = main.name
+
+    def __cinit__(self, str expr, *, str name = None):
+        self.expr = expr
+        self.name = name
+        self.props = {}
+
+    cpdef object init(self):
+        cdef EntityAttribute attr = self.get_attr()
+
+        if not self.name:
+            name = f"chk_{attr.get_entity().__name__}__{attr._name_}"
+            if len(name) >= 63:
+                name = f"chk_{hashlib.md5(name.encode()).hexdigest()}"
+            self.name = name
+
+        if "field" not in self.props:
+            self.props["field"] = attr._key_
+
+        if "hash" not in self.props:
+            self.props["hash"] = self.expr_hash()
+
+        self.add_to_group(self.name)
+        return FieldExtension.init(self)
+
+    cdef str expr_hash(self):
+        return hashlib.md5(self.expr.encode()).hexdigest()
+
+    def __repr__(self):
+        if "hash" in self.props:
+            return f"Check(expr_hash={self.props['hash']})"
+        else:
+            return f"Check(name={self.name}, expr={self.expr}, props={self.props})"
+
+
