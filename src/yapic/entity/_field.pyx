@@ -360,9 +360,14 @@ cdef class Check(FieldExtension):
     cdef str expr_hash(self):
         return hashlib.md5(self.expr.encode()).hexdigest()
 
+    cpdef object clone(self):
+        check = Check(self.expr, name=self.name)
+        check.props = dict(self.props)
+        return check
+
     def __repr__(self):
         if "hash" in self.props:
-            return f"Check(expr_hash={self.props['hash']})"
+            return f"Check(name={self.name}, expr_hash={self.props['hash']})"
         else:
             return f"Check(name={self.name}, expr={self.expr}, props={self.props})"
 

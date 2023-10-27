@@ -259,3 +259,45 @@ COMMENT ON CONSTRAINT "chk_CheckT__invoiced" ON "chk"."CheckT" IS '[{"field":"in
     )
     await conn.execute(result)
     assert not await sync(conn, reg2)
+
+
+async def test_update_name(conn, pgclean):
+    reg = Registry()
+
+    class CheckT(Entity, schema="chk", registry=reg):
+        id: Serial
+        qty_ordered: Int = Check("qty_ordered > 0", name="name1")
+
+    result = await sync(conn, reg)
+    assert (
+        result
+        == """CREATE SCHEMA IF NOT EXISTS "chk";
+CREATE SEQUENCE "chk"."CheckT_id_seq";
+CREATE TABLE "chk"."CheckT" (
+  "id" INT4 NOT NULL DEFAULT nextval('"chk"."CheckT_id_seq"'::regclass),
+  "qty_ordered" INT4,
+  PRIMARY KEY("id")
+);
+ALTER TABLE "chk"."CheckT"
+  ADD CONSTRAINT "name1" CHECK (qty_ordered > 0);
+COMMENT ON CONSTRAINT "name1" ON "chk"."CheckT" IS '[{"field":"qty_ordered","hash":"6d995e6a85b1831b28db66f19fd4a679"}]';"""
+    )
+    await conn.execute(result)
+    assert not await sync(conn, reg)
+
+    reg2 = Registry()
+
+    class CheckT(Entity, schema="chk", registry=reg2):
+        id: Serial
+        qty_ordered: Int = Check("qty_ordered > 0", name="name2")
+
+    result = await sync(conn, reg2)
+    assert (
+        result
+        == """ALTER TABLE "chk"."CheckT"
+  DROP CONSTRAINT IF EXISTS "name1",
+  ADD CONSTRAINT "name2" CHECK (qty_ordered > 0);
+COMMENT ON CONSTRAINT "name2" ON "chk"."CheckT" IS '[{"field":"qty_ordered","hash":"6d995e6a85b1831b28db66f19fd4a679"}]';"""
+    )
+    await conn.execute(result)
+    assert not await sync(conn, reg2)
