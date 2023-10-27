@@ -301,3 +301,21 @@ COMMENT ON CONSTRAINT "name2" ON "chk"."CheckT" IS '[{"field":"qty_ordered","has
     )
     await conn.execute(result)
     assert not await sync(conn, reg2)
+
+
+async def test_clone():
+    reg = Registry()
+
+    class CheckT(Entity, schema="chk", registry=reg):
+        id: Serial
+        qty_ordered: Int = Check("qty_ordered > 0", name="name1")
+
+    alias = CheckT.alias()
+    original_check = CheckT.qty_ordered.get_ext(Check)
+    aliased_check = alias.qty_ordered.get_ext(Check)
+    assert isinstance(original_check, Check)
+    assert isinstance(aliased_check, Check)
+    assert original_check is not aliased_check
+    assert original_check.expr == aliased_check.expr
+    assert original_check.name == aliased_check.name
+    assert original_check.props == aliased_check.props
