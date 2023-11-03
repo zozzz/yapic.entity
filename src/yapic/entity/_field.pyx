@@ -203,7 +203,7 @@ cdef class AutoIncrement(FieldExtension):
 
 
 cdef class Index(FieldExtension):
-    def __cinit__(self, *, str expr = None, str name = None, str method = "btree", bint unique = False, str collate = None):
+    def __cinit__(self, *, str expr = None, str name = None, str method = None, bint unique = False, str collate = None):
         self.name = name
         self.method = method
         self.unique = unique
@@ -218,6 +218,16 @@ cdef class Index(FieldExtension):
         if not self.name:
             attr = self.get_attr()
             self.name = f"idx_{attr.get_entity().__name__}__{attr._name_}"
+
+        if not self.method:
+            if isinstance(attr._impl_, ArrayImpl):
+                self.method = "gin"
+            if isinstance(attr._impl_, AutoImpl):
+                if isinstance((<AutoImpl>attr._impl_)._ref_impl, ArrayImpl):
+                    self.method = "gin"
+
+            if not self.method:
+                self.method = "btree"
 
         self.add_to_group(self.name)
         return FieldExtension.init(self)
@@ -364,7 +374,12 @@ cdef class ForeignKeyList(FKBase):
 
     # XXX: Exception https://www.postgresql.org/docs/current/plpgsql-errors-and-messages.html#PLPGSQL-STATEMENTS-RAISE
     cdef _bind(self, object attr_ref):
-        FieldExtension._bind(self, attr_ref)
+        FKBase._bind(self, attr_ref)
+
+        cdef EntityAttribute attr = self.get_attr()
+        cdef Index index = attr.get_ext(Index)
+        if not index:
+            attr // Index()
 
     cdef object _resolve_deferred(self, ResolveContext ctx):
         if FKBase._resolve_deferred(self, ctx) is False:
@@ -434,13 +449,13 @@ cdef class ForeignKeyList(FKBase):
             args["body"] = f"""
             UPDATE {entity_qname_pg(self.get_attr()._entity_)}
                 SET "{self.get_attr()._name_}" = array_replace("{self.get_attr()._name_}", OLD."{self.ref._name_}", NEW."{self.ref._name_}")
-            WHERE OLD."{self.ref._name_}" = ANY("{self.get_attr()._name_}");
+            WHERE "{self.get_attr()._name_}" @> ARRAY[OLD."{self.ref._name_}"];
             RETURN NEW;
             """
         elif on_update == "RESTRICT":
             args["before"] = "UPDATE"
             args["body"] = f"""
-            IF EXISTS(SELECT 1 FROM {entity_qname_pg(self.get_attr()._entity_)} WHERE OLD."{self.ref._name_}" = ANY("{self.get_attr()._name_}")) THEN
+            IF EXISTS(SELECT 1 FROM {entity_qname_pg(self.get_attr()._entity_)} WHERE "{self.get_attr()._name_}" @> ARRAY[OLD."{self.ref._name_}"]) THEN
                 RAISE EXCEPTION 'ForeignKeyList prevent of record update, because has references %', NEW
                     USING ERRCODE = 'foreign_key_violation';
             END IF;
@@ -465,13 +480,13 @@ cdef class ForeignKeyList(FKBase):
             args["body"] = f"""
             UPDATE {entity_qname_pg(self.get_attr()._entity_)}
                 SET "{self.get_attr()._name_}" = array_remove("{self.get_attr()._name_}", OLD."{self.ref._name_}")
-            WHERE OLD."{self.ref._name_}" = ANY("{self.get_attr()._name_}");
+            WHERE "{self.get_attr()._name_}" @> ARRAY[OLD."{self.ref._name_}"];
             RETURN OLD;
             """
         elif on_delete == "RESTRICT":
             args["before"] = "DELETE"
             args["body"] = f"""
-            IF EXISTS(SELECT 1 FROM {entity_qname_pg(self.get_attr()._entity_)} WHERE OLD."{self.ref._name_}" = ANY("{self.get_attr()._name_}")) THEN
+            IF EXISTS(SELECT 1 FROM {entity_qname_pg(self.get_attr()._entity_)} WHERE "{self.get_attr()._name_}" @> ARRAY[OLD."{self.ref._name_}"]) THEN
                 RAISE EXCEPTION 'ForeignKeyList prevent of record delete, because has references %', OLD
                     USING ERRCODE = 'foreign_key_violation';
             END IF;
@@ -482,7 +497,7 @@ cdef class ForeignKeyList(FKBase):
             args["body"] = f"""
             UPDATE {entity_qname_pg(self.get_attr()._entity_)}
                 SET "{self.get_attr()._name_}" = array_replace("{self.get_attr()._name_}", OLD."{self.ref._name_}", NULL)
-            WHERE OLD."{self.ref._name_}" = ANY("{self.get_attr()._name_}");
+            WHERE "{self.get_attr()._name_}" @> ARRAY[OLD."{self.ref._name_}"];
             RETURN OLD;
             """
         else:
