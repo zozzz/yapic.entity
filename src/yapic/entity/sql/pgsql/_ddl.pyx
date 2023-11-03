@@ -53,7 +53,10 @@ cdef class PostgreDDLCompiler(DDLCompiler):
         schema = entity.get_meta("schema", "public")
         schema = f"{self.dialect.quote_ident(schema)}." if schema != "public" else ""
         trigger_name = f"{schema}{self.dialect.quote_ident(trigger.get_unique_name(entity))}"
-        res = [f"CREATE OR REPLACE FUNCTION {trigger_name}() RETURNS TRIGGER AS $$ BEGIN"]
+        res = [f"CREATE OR REPLACE FUNCTION {trigger_name}() RETURNS TRIGGER AS $$"]
+        if trigger.declare:
+            res.append(trigger.declare)
+        res.append("BEGIN")
         res.extend(reident_lines(trigger.body))
         res.append("END; $$ language 'plpgsql' ;")
 
@@ -78,7 +81,7 @@ cdef class PostgreDDLCompiler(DDLCompiler):
         if not isinstance(trigger, PostgreTrigger):
             return
 
-        schema = entity.get_meta("schema", "public")
+        schema = entity.get_meta("schema", "public") or "public"
         schema = f"{self.dialect.quote_ident(schema)}." if schema != "public" else ""
         trigger_name = f"{schema}{self.dialect.quote_ident(trigger.get_unique_name(entity))}"
 

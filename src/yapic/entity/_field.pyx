@@ -7,8 +7,10 @@ from cpython.module cimport PyImport_Import, PyModule_GetDict
 from ._expression cimport Expression, Visitor
 from ._entity cimport EntityType, EntityBase, EntityAttribute, EntityAttributeExt, EntityAttributeExtGroup, EntityAttributeImpl, get_alias_target, Registry
 from ._factory cimport ForwardDecl, get_type_hints, new_instance, new_instance_from_forward, is_forward_decl
-from ._field_impl cimport AutoImpl
+from ._field_impl cimport AutoImpl, ArrayImpl
 from ._resolve cimport ResolveContext
+
+
 
 
 cdef class Field(EntityAttribute):
@@ -231,24 +233,7 @@ cdef class Unique(FieldExtension):
 
 _CodeType = type(compile("1", "<string>", "eval"))
 
-cdef class ForeignKey(FieldExtension):
-    @classmethod
-    def validate_group(self, EntityAttributeExtGroup group):
-        cdef list items = group.items
-        cdef ForeignKey main = items[0]
-        cdef ForeignKey fk
-
-        for i in range(1, len(items)):
-            fk = <ForeignKey>items[i]
-            if fk.ref.get_entity() != main.ref.get_entity():
-                raise ValueError(f"Can't use fields from different entities in the same foreign key: '{main.name}'")
-            elif fk.on_update != main.on_update:
-                raise ValueError(f"Can't use different 'on_update' value in the same foreign key: '{main.name}'")
-            elif fk.on_delete != main.on_delete:
-                raise ValueError(f"Can't use different 'on_update' value in the same foreign key: '{main.name}'")
-
-        group.name = main.name
-
+cdef class FKBase(FieldExtension):
     def __cinit__(self, field, *, str name = None, str on_update = "RESTRICT", str on_delete = "RESTRICT"):
         self.ref = None
 
@@ -262,14 +247,6 @@ cdef class ForeignKey(FieldExtension):
         self.name = name
         self.on_update = on_update
         self.on_delete = on_delete
-
-    cdef _bind(self, object attr_ref):
-        FieldExtension._bind(self, attr_ref)
-
-        cdef EntityAttribute attr = self.get_attr()
-        cdef Index index = attr.get_ext(Index)
-        if not index and not attr.get_ext(PrimaryKey):
-            attr // Index()
 
     cdef object _resolve_deferred(self, ResolveContext ctx):
         if FieldExtension._resolve_deferred(self, ctx) is False:
@@ -288,21 +265,9 @@ cdef class ForeignKey(FieldExtension):
         if self.name is None:
             self.name = compute_fk_name(field, self.ref)
 
-        self.add_to_group(self.name)
-
-        if isinstance(field._impl_, AutoImpl):
-            (<AutoImpl>field._impl_)._ref_impl = self.ref._impl_
-            field.min_size = self.ref.min_size
-            field.max_size = self.ref.max_size
-
         return True
 
     cpdef object clone(self):
-        # XXX: mi ez a tuple?
-        # if isinstance(self._ref, tuple):
-        #     ref = ".".join(self._ref)
-        # else:
-        #     ref = self._ref
         if self.ref is not None:
             ref = self.ref
         else:
@@ -310,7 +275,195 @@ cdef class ForeignKey(FieldExtension):
         return type(self)(ref, name=self.name, on_update=self.on_update, on_delete=self.on_delete)
 
     def __repr__(self):
-        return "@ForeignKey(%s, %r, on_update=%s, on_delete=%s)" % (self.name, self.ref, self.on_update, self.on_delete)
+        return f"@{type(self).__name__}({self.name}, {self.ref}, on_update={self.on_update}, on_delete={self.on_delete})"
+
+
+cdef class ForeignKey(FKBase):
+    @classmethod
+    def validate_group(self, EntityAttributeExtGroup group):
+        cdef list items = group.items
+        cdef ForeignKey main = items[0]
+        cdef ForeignKey fk
+
+        for i in range(1, len(items)):
+            fk = <ForeignKey>items[i]
+            if fk.ref.get_entity() != main.ref.get_entity():
+                raise ValueError(f"Can't use fields from different entities in the same foreign key: '{main.name}'")
+            elif fk.on_update != main.on_update:
+                raise ValueError(f"Can't use different 'on_update' value in the same foreign key: '{main.name}'")
+            elif fk.on_delete != main.on_delete:
+                raise ValueError(f"Can't use different 'on_update' value in the same foreign key: '{main.name}'")
+
+        group.name = main.name
+
+    cdef _bind(self, object attr_ref):
+        FieldExtension._bind(self, attr_ref)
+
+        cdef EntityAttribute attr = self.get_attr()
+        cdef Index index = attr.get_ext(Index)
+        if not index and not attr.get_ext(PrimaryKey):
+            attr // Index()
+
+    cdef object _resolve_deferred(self, ResolveContext ctx):
+        if FKBase._resolve_deferred(self, ctx) is False:
+            return False
+
+        self.add_to_group(self.name)
+
+        cdef Field field = self.get_attr()
+        if isinstance(field._impl_, AutoImpl):
+            (<AutoImpl>field._impl_)._ref_impl = self.ref._impl_
+            field.min_size = self.ref.min_size
+            field.max_size = self.ref.max_size
+
+        return True
+
+
+cdef class ForeignKeyList(FKBase):
+    # @classmethod
+    # def validate_group(self, EntityAttributeExtGroup group):
+    #     cdef list items = group.items
+    #     cdef ForeignKey main = items[0]
+    #     cdef ForeignKey fk
+
+    #     for i in range(1, len(items)):
+    #         fk = <ForeignKey>items[i]
+    #         if fk.ref.get_entity() != main.ref.get_entity():
+    #             raise ValueError(f"Can't use fields from different entities in the same foreign key: '{main.name}'")
+    #         elif fk.on_update != main.on_update:
+    #             raise ValueError(f"Can't use different 'on_update' value in the same foreign key: '{main.name}'")
+    #         elif fk.on_delete != main.on_delete:
+    #             raise ValueError(f"Can't use different 'on_update' value in the same foreign key: '{main.name}'")
+
+    #     group.name = main.name
+
+    # XXX: Exception https://www.postgresql.org/docs/current/plpgsql-errors-and-messages.html#PLPGSQL-STATEMENTS-RAISE
+    cdef _bind(self, object attr_ref):
+        FieldExtension._bind(self, attr_ref)
+
+    cdef object _resolve_deferred(self, ResolveContext ctx):
+        if FKBase._resolve_deferred(self, ctx) is False:
+            return False
+
+        cdef Field field = self.get_attr()
+
+        # ERRCODE fkl-delete-restricted
+        # ERRCODE fkl-update-restricted
+
+        field.get_entity().__triggers__.extend(self.__check_trigger())
+        self.ref.get_entity().__triggers__.extend(self.__update_trigger())
+        self.ref.get_entity().__triggers__.extend(self.__delete_trigger())
+
+        # self.add_to_group(self.name)
+
+
+        if isinstance(field._impl_, AutoImpl):
+            (<AutoImpl>field._impl_)._ref_impl = ArrayImpl(self.ref._impl_)
+            field.min_size = self.ref.min_size
+            field.max_size = self.ref.max_size
+
+        return True
+
+    cdef tuple __check_trigger(self):
+        from .sql.pgsql._trigger import PostgreTrigger
+
+        cdef Field field = self.get_attr()
+        cdef ref_entiy = entity_qname_pg(self.ref.get_entity())
+        cdef when = f'OLD."{field._name_}" IS DISTINCT FROM NEW."{field._name_}"'
+        cdef declare = "DECLARE missing RECORD;"
+        cdef body = f"""
+            IF array_length(array_remove(NEW."{field._name_}", NULL), 1)
+                <> array_length((SELECT array_agg(DISTINCT ref_id) FROM unnest(array_remove(NEW."{field._name_}", NULL)) fkl(ref_id)), 1) THEN
+                RAISE EXCEPTION 'ForeignKeyList items is not unique %', NEW
+                    USING ERRCODE = 'unique_violation';
+            END IF;
+
+            FOR missing IN SELECT ref_id
+                FROM unnest(array_remove(NEW."{field._name_}", NULL)) fkl(ref_id)
+                WHERE NOT EXISTS(SELECT 1 FROM {ref_entiy} WHERE "{self.ref._name_}" = fkl.ref_id)
+            LOOP
+                RAISE EXCEPTION 'ForeignKeyList missing entry {ref_entiy}."{self.ref._name_}"=%" %', missing.ref_id, NEW
+                    USING ERRCODE = 'foreign_key_violation';
+            END LOOP;
+            RETURN NEW;
+        """
+
+        return (
+            PostgreTrigger(name=f"{self.name}-CI", before="INSERT", for_each="ROW", declare=declare, body=body),
+            PostgreTrigger(name=f"{self.name}-CU", before="UPDATE", for_each="ROW", when=when, declare=declare, body=body)
+        )
+
+    # TODO: CONSTRAINT TRIGGER
+    cdef tuple __update_trigger(self):
+        from .sql.pgsql._trigger import PostgreTrigger
+
+        cdef str on_update = self.on_update.upper()
+        if on_update == "NO ACTION":
+            return tuple()
+
+        cdef str when = f'OLD."{self.ref._name_}" IS DISTINCT FROM NEW."{self.ref._name_}"'
+        cdef dict args = {}
+
+        if on_update == "CASCADE":
+            args["after"] = "UPDATE"
+            args["body"] = f"""
+            UPDATE {entity_qname_pg(self.get_attr()._entity_)}
+                SET "{self.get_attr()._name_}" = array_replace("{self.get_attr()._name_}", OLD."{self.ref._name_}", NEW."{self.ref._name_}")
+            WHERE OLD."{self.ref._name_}" = ANY("{self.get_attr()._name_}");
+            RETURN NEW;
+            """
+        elif on_update == "RESTRICT":
+            args["before"] = "UPDATE"
+            args["body"] = f"""
+            IF EXISTS(SELECT 1 FROM {entity_qname_pg(self.get_attr()._entity_)} WHERE OLD."{self.ref._name_}" = ANY("{self.get_attr()._name_}")) THEN
+                RAISE EXCEPTION 'ForeignKeyList prevent of record update, because has references %', NEW
+                    USING ERRCODE = 'foreign_key_violation';
+            END IF;
+            RETURN NEW;
+            """
+        else:
+            raise ValueError(f"Invalid value for on_update = {self.on_update}")
+
+        return (PostgreTrigger(name=f"{self.name}-RU", for_each="ROW", when=when, **args),)
+
+    cdef tuple __delete_trigger(self):
+        from .sql.pgsql._trigger import PostgreTrigger
+
+        cdef str on_delete = self.on_delete.upper()
+        if on_delete == "NO ACTION":
+            return tuple()
+
+        cdef dict args = {}
+
+        if on_delete == "CASCADE":
+            args["after"] = "DELETE"
+            args["body"] = f"""
+            UPDATE {entity_qname_pg(self.get_attr()._entity_)}
+                SET "{self.get_attr()._name_}" = array_remove("{self.get_attr()._name_}", OLD."{self.ref._name_}")
+            WHERE OLD."{self.ref._name_}" = ANY("{self.get_attr()._name_}");
+            RETURN OLD;
+            """
+        elif on_delete == "RESTRICT":
+            args["before"] = "DELETE"
+            args["body"] = f"""
+            IF EXISTS(SELECT 1 FROM {entity_qname_pg(self.get_attr()._entity_)} WHERE OLD."{self.ref._name_}" = ANY("{self.get_attr()._name_}")) THEN
+                RAISE EXCEPTION 'ForeignKeyList prevent of record delete, because has references %', OLD
+                    USING ERRCODE = 'foreign_key_violation';
+            END IF;
+            RETURN OLD;
+            """
+        elif on_delete == "SET NULL":
+            args["after"] = "DELETE"
+            args["body"] = f"""
+            UPDATE {entity_qname_pg(self.get_attr()._entity_)}
+                SET "{self.get_attr()._name_}" = array_replace("{self.get_attr()._name_}", OLD."{self.ref._name_}", NULL)
+            WHERE OLD."{self.ref._name_}" = ANY("{self.get_attr()._name_}");
+            RETURN OLD;
+            """
+        else:
+            raise ValueError(f"Invalid value for on_delete = {self.on_delete}")
+
+        return (PostgreTrigger(name=f"{self.name}-RD", for_each="ROW", **args),)
 
 
 cdef compute_fk_name(Field field_from, Field field_to):
@@ -372,3 +525,9 @@ cdef class Check(FieldExtension):
             return f"Check(name={self.name}, expr={self.expr}, props={self.props})"
 
 
+cdef str entity_qname_pg(EntityType entity):
+    cdef schema = entity.get_meta("schema", "public")
+    if schema == "public":
+        return f'"{entity.__name__}"'
+    else:
+        return f'"{schema}"."{entity.__name__}"'

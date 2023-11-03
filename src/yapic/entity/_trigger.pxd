@@ -9,6 +9,7 @@ cdef class Trigger:
     cdef readonly str when
     cdef readonly list params
     cdef readonly list args
+    cdef readonly str declare
     cdef readonly str body
     cdef str unique_name
     # cdef readonly EntityType entity

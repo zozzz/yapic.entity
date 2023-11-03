@@ -1,12 +1,8 @@
 # flake8: noqa: E501
 
 import pytest
-from datetime import datetime, date, time, tzinfo, timedelta
-from decimal import Decimal
-from yapic.entity.sql import sync, PostgreTrigger
-from yapic.entity import (Entity, Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool,
-                          ForeignKey, PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite,
-                          Auto, Numeric, Float, Point, UUID, virtual)
+from yapic.entity import DateTimeTz, Entity, Registry, Serial
+from yapic.entity.sql import PostgreTrigger, sync
 
 pytestmark = pytest.mark.asyncio
 REGISTRY = Registry()
@@ -40,7 +36,8 @@ CREATE TABLE "_trigger"."TriggerTable" (
   "updated_time" TIMESTAMPTZ,
   PRIMARY KEY("id")
 );
-CREATE OR REPLACE FUNCTION "_trigger"."YT-TriggerTable-update_time-8085b1-18ebfe"() RETURNS TRIGGER AS $$ BEGIN
+CREATE OR REPLACE FUNCTION "_trigger"."YT-TriggerTable-update_time-8085b1-18ebfe"() RETURNS TRIGGER AS $$
+BEGIN
   NEW.updated_time = NOW();
   RETURN NEW;
 END; $$ language 'plpgsql' ;
@@ -70,7 +67,8 @@ CREATE TRIGGER "update_time"
     result = await sync(conn, REGISTRY)
     assert result == """DROP TRIGGER IF EXISTS "update_time" ON "_trigger"."TriggerTable";
 DROP FUNCTION IF EXISTS "_trigger"."YT-TriggerTable-update_time-8085b1-18ebfe";
-CREATE OR REPLACE FUNCTION "_trigger"."YT-TriggerTable-update_time-386fb5-af0df2"() RETURNS TRIGGER AS $$ BEGIN
+CREATE OR REPLACE FUNCTION "_trigger"."YT-TriggerTable-update_time-386fb5-af0df2"() RETURNS TRIGGER AS $$
+BEGIN
   NEW.updated_time = NOW();
   RETURN NEW;
 END; $$ language 'plpgsql' ;
@@ -96,7 +94,8 @@ DROP FUNCTION IF EXISTS "_trigger"."YT-TriggerTable-update_time-386fb5-af0df2";"
     TriggerTable.__triggers__ = [original_trigger]
 
     result = await sync(conn, REGISTRY)
-    assert result == """CREATE OR REPLACE FUNCTION "_trigger"."YT-TriggerTable-update_time-8085b1-18ebfe"() RETURNS TRIGGER AS $$ BEGIN
+    assert result == """CREATE OR REPLACE FUNCTION "_trigger"."YT-TriggerTable-update_time-8085b1-18ebfe"() RETURNS TRIGGER AS $$
+BEGIN
   NEW.updated_time = NOW();
   RETURN NEW;
 END; $$ language 'plpgsql' ;
@@ -137,7 +136,8 @@ CREATE TABLE "_trigger"."TriggerX" (
         ))
 
     result = await sync(conn, r)
-    assert result == """CREATE OR REPLACE FUNCTION "_trigger"."YT-TriggerX-update_time-8085b1-af0df2"() RETURNS TRIGGER AS $$ BEGIN
+    assert result == """CREATE OR REPLACE FUNCTION "_trigger"."YT-TriggerX-update_time-8085b1-af0df2"() RETURNS TRIGGER AS $$
+BEGIN
   NEW.updated_time = NOW();
   RETURN NEW;
 END; $$ language 'plpgsql' ;

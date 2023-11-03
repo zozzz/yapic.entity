@@ -4,7 +4,6 @@ from ._entity_operation import load_operations, save_operations  # noqa
 from ._entity_serializer import DontSerialize, EntitySerializer, SerializerCtx  # noqa
 from ._expression import *  # noqa
 from ._registry import *  # noqa
-from ._virtual_attr import VirtualAttribute
 from .enum import Enum  # noqa
 from .field import (  # noqa
     UUID,
@@ -22,6 +21,7 @@ from .field import (  # noqa
     Field,
     Float,
     ForeignKey,
+    ForeignKeyList,
     Index,
     Int,
     IntArray,

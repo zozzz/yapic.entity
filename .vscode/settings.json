@@ -5,7 +5,6 @@
         "tests"
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.nosetestsEnabled": false,
     "python.testing.pytestEnabled": false,
     "python.testing.pytestPath": "pytest.py",
     "sqltools.connections": [
@@ -29,7 +28,5 @@
         "editor.codeActionsOnSave": {
             "source.organizeImports": true
         }
-    },
-    "restructuredtext.confPath": "${workspaceFolder}\\docs",
-    "esbonio.sphinx.confDir": "${workspaceFolder}\\docs"
+    }
 }

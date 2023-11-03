@@ -12,7 +12,8 @@ cdef class Trigger:
                  list params = None,
                  list args = None,
                  str body = None,
-                 str unique_name = None):
+                 str unique_name = None,
+                 str declare = None):
         self.name = name
         self.before = before.upper() if before else None
         self.after = after.upper() if after else None
@@ -20,13 +21,19 @@ cdef class Trigger:
         self.when = when
         self.params = params
         self.args = args
+        self.declare = declare
         self.body = body
         self.unique_name = unique_name
 
     cdef str get_unique_name(self, EntityType entity):
         if self.unique_name:
             return self.unique_name
-        return f"YT-{entity.__name__}-{self.name}-{short_hash(self.when) + '-' if self.when else ''}{short_hash(self.body)}"
+
+        cdef str name = f"YT-{entity.__name__}-{self.name}-{short_hash(self.when) + '-' if self.when else ''}{short_hash(self.body + str(self.declare or ''))}"
+        if len(name) >= 63:
+            return long_hash(name)
+        else:
+            return name
 
     def is_eq(self, EntityType entity, Trigger other):
         return self.before == other.before \
@@ -67,6 +74,9 @@ cdef class PolymorphParentDeleteTrigger(Trigger):
         return f"YT-{entity.__name__}-{self.name}"
 
 
-cdef str short_hash(str val):
+cdef str long_hash(str val):
     md5 = hashlib.md5(val.encode("UTF-8"))
-    return md5.hexdigest()[0:6]
+    return md5.hexdigest()
+
+cdef str short_hash(str val):
+    return long_hash(val)[0:6]

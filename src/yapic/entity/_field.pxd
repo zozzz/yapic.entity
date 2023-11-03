@@ -54,12 +54,22 @@ cdef class Unique(FieldExtension):
     cdef readonly str name
 
 
-cdef class ForeignKey(FieldExtension):
+cdef class FKBase(FieldExtension):
     cdef object _ref
     cdef readonly Field ref
     cdef readonly str name
     cdef readonly str on_update
     cdef readonly str on_delete
+
+
+cdef class ForeignKey(FKBase):
+    pass
+
+
+cdef class ForeignKeyList(FKBase):
+    cdef tuple __check_trigger(self)
+    cdef tuple __update_trigger(self)
+    cdef tuple __delete_trigger(self)
 
 
 # name: chk_table__field

@@ -1,25 +1,18 @@
 # flake8: noqa: E501
 
 import pytest
-
 from yapic.entity import (
     Auto,
-    Composite,
-    DependencyList,
     Entity,
     ForeignKey,
     Int,
-    Json,
     Many,
-    ManyAcross,
     One,
-    PrimaryKey,
     Query,
     Registry,
     Serial,
     String,
     func,
-    save_operations,
     virtual,
 )
 from yapic.entity.sql import sync
@@ -103,7 +96,8 @@ CREATE TABLE "poly"."WorkerY" (
 );
 ALTER TABLE "poly"."Manager"
   ADD CONSTRAINT "fk_Manager__id-Employee__id" FOREIGN KEY ("id") REFERENCES "poly"."Employee" ("id") ON UPDATE CASCADE ON DELETE CASCADE;
-CREATE OR REPLACE FUNCTION "poly"."YT-Manager-polyd_Employee"() RETURNS TRIGGER AS $$ BEGIN
+CREATE OR REPLACE FUNCTION "poly"."YT-Manager-polyd_Employee"() RETURNS TRIGGER AS $$
+BEGIN
   DELETE FROM "poly"."Employee" "parent" WHERE "parent"."id"=OLD."id";
   RETURN OLD;
 END; $$ language 'plpgsql' ;
@@ -116,7 +110,8 @@ ALTER TABLE "poly"."Organization"
   ADD CONSTRAINT "fk_Organization__employee_id-Employee__id" FOREIGN KEY ("employee_id") REFERENCES "poly"."Employee" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
 ALTER TABLE "poly"."Worker"
   ADD CONSTRAINT "fk_Worker__id-Employee__id" FOREIGN KEY ("id") REFERENCES "poly"."Employee" ("id") ON UPDATE CASCADE ON DELETE CASCADE;
-CREATE OR REPLACE FUNCTION "poly"."YT-Worker-polyd_Employee"() RETURNS TRIGGER AS $$ BEGIN
+CREATE OR REPLACE FUNCTION "poly"."YT-Worker-polyd_Employee"() RETURNS TRIGGER AS $$
+BEGIN
   DELETE FROM "poly"."Employee" "parent" WHERE "parent"."id"=OLD."id";
   RETURN OLD;
 END; $$ language 'plpgsql' ;
@@ -126,7 +121,8 @@ CREATE TRIGGER "polyd_Employee"
   EXECUTE FUNCTION "poly"."YT-Worker-polyd_Employee"();
 ALTER TABLE "poly"."WorkerX"
   ADD CONSTRAINT "fk_WorkerX__id-Worker__id" FOREIGN KEY ("id") REFERENCES "poly"."Worker" ("id") ON UPDATE CASCADE ON DELETE CASCADE;
-CREATE OR REPLACE FUNCTION "poly"."YT-WorkerX-polyd_Worker"() RETURNS TRIGGER AS $$ BEGIN
+CREATE OR REPLACE FUNCTION "poly"."YT-WorkerX-polyd_Worker"() RETURNS TRIGGER AS $$
+BEGIN
   DELETE FROM "poly"."Worker" "parent" WHERE "parent"."id"=OLD."id";
   RETURN OLD;
 END; $$ language 'plpgsql' ;
@@ -136,7 +132,8 @@ CREATE TRIGGER "polyd_Worker"
   EXECUTE FUNCTION "poly"."YT-WorkerX-polyd_Worker"();
 ALTER TABLE "poly"."WorkerY"
   ADD CONSTRAINT "fk_WorkerY__id-Worker__id" FOREIGN KEY ("id") REFERENCES "poly"."Worker" ("id") ON UPDATE CASCADE ON DELETE CASCADE;
-CREATE OR REPLACE FUNCTION "poly"."YT-WorkerY-polyd_Worker"() RETURNS TRIGGER AS $$ BEGIN
+CREATE OR REPLACE FUNCTION "poly"."YT-WorkerY-polyd_Worker"() RETURNS TRIGGER AS $$
+BEGIN
   DELETE FROM "poly"."Worker" "parent" WHERE "parent"."id"=OLD."id";
   RETURN OLD;
 END; $$ language 'plpgsql' ;

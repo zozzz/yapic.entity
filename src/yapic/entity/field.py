@@ -11,7 +11,7 @@ from ._entity import Entity, EntityAttribute, EntityAttributeExt
 from ._expression import const
 from ._field import AutoIncrement, Check
 from ._field import Field as _Field
-from ._field import ForeignKey, Index, PrimaryKey
+from ._field import ForeignKey, Index, PrimaryKey, ForeignKeyList
 from ._field_impl import ArrayImpl as _ArrayImpl
 from ._field_impl import AutoImpl, BoolImpl, BytesImpl
 from ._field_impl import ChoiceImpl as _ChoiceImpl
