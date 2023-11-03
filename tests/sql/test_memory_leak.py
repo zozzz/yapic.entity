@@ -1,20 +1,30 @@
 # flake8: noqa: E501
 
 import asyncio
-import pytest
-import pytest_asyncio
-import asyncpg
-import contextlib
-import tracemalloc
+import functools
 import gc
 import sys
-import functools
+import tracemalloc
 
+import asyncpg
+from yapic.entity import (
+    Auto,
+    Composite,
+    Entity,
+    ForeignKey,
+    Index,
+    Int,
+    Many,
+    ManyAcross,
+    One,
+    PrimaryKey,
+    Query,
+    Registry,
+    Serial,
+    String,
+    UpdatedTime,
+)
 from yapic.entity.sql import PostgreDialect, sync
-from yapic.entity import (Entity, Registry, Int, String, DateTime, PrimaryKey, Serial, Composite, UpdatedTime,
-                          ForeignKey, Auto, One, ManyAcross, Many, Query, Index)
-from yapic.entity._entity import EntityState
-from yapic.entity.sql.pgsql import PostgreConnection
 
 dialect = PostgreDialect()
 REGISTRY = Registry()
@@ -214,9 +224,9 @@ def memleak(fn):
 # XXX: valami leak van az asyncpg-ben
 async def test_asyncpg_connection():
     conn = await asyncpg.connect(
-        user="root",
+        user="postgres",
         password="root",
-        database="root",
+        database="postgres",
         host="127.0.0.1",
     )
     await conn.close()

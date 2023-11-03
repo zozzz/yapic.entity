@@ -5,7 +5,7 @@ from yapic import json
 
 from yapic.entity._entity import Entity
 from yapic.entity._entity cimport EntityType, EntityAttribute, EntityAttributeExtGroup
-from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, Index, Check, AutoIncrement, StorageType
+from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, Index, Check, Unique, AutoIncrement, StorageType
 from yapic.entity._registry cimport Registry
 from yapic.entity._expression cimport RawExpression
 from yapic.entity._trigger cimport Trigger, PolymorphParentDeleteTrigger
@@ -194,6 +194,7 @@ cdef class PostgreDDLReflect(DDLReflect):
             await self.update_indexes(conn, schema, table, id, entity, registry)
             await self.update_foreign_keys(conn, schema, table, id, entity, registry)
             await self.update_checks(conn, schema, table, id, entity, registry)
+            await self.update_uniques(conn, schema, table, id, entity, registry)
 
     async def create_entity(self, conn, Registry registry, str schema, str table, list fields):
         schema = None if schema == "public" else schema
@@ -262,6 +263,7 @@ cdef class PostgreDDLReflect(DDLReflect):
             WHERE pg_index.indrelid={table_id}
                 AND pg_index.indisprimary IS FALSE
                 AND pg_index.indislive IS TRUE
+                AND NOT EXISTS(SELECT 1 FROM pg_catalog.pg_constraint pc WHERE pc.conname = pg_class.relname)
         """)
 
     async def get_checks(self, conn, str schema, str table):
@@ -274,6 +276,21 @@ cdef class PostgreDDLReflect(DDLReflect):
                 INNER JOIN pg_catalog.pg_namespace sch ON sch."oid" = cls.relnamespace
                 LEFT JOIN pg_catalog.pg_description pd ON pd.objoid = pc."oid"
             WHERE pc.contype = 'c'
+                AND sch.nspname = '{schema}'
+                AND cls.relname = '{table}'
+        """)
+
+    async def get_uniques(self, conn, str schema, str table):
+        return await conn.fetch(f"""
+            SELECT
+                pc.conname AS "name",
+                pg_attribute.attname as "field"
+            FROM pg_catalog.pg_constraint pc
+                INNER JOIN pg_catalog.pg_class cls ON cls."oid" = pc.conrelid
+                INNER JOIN pg_catalog.pg_namespace sch ON sch."oid" = cls.relnamespace
+                INNER JOIN pg_attribute ON pg_attribute.attrelid = pc.conrelid
+					AND pg_attribute.attnum = ANY(pc.conkey)
+            WHERE pc.contype = 'u'
                 AND sch.nspname = '{schema}'
                 AND cls.relname = '{table}'
         """)
@@ -518,6 +535,13 @@ cdef class PostgreDDLReflect(DDLReflect):
                 chk = Check("", name=name)
                 chk.props = prop
                 field // chk
+
+    async def update_uniques(self, conn, str schema, str table, table_id, EntityType entity, Registry registry):
+        cdef list uniques = await self.get_uniques(conn, schema, table)
+
+        for unique in uniques:
+            field = getattr(entity, unique["field"])
+            field // Unique(name=unique["name"])
 
     async def get_auto_increment(self, conn, Registry registry, str schema, str table, str field, default):
         if not default:

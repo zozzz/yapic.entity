@@ -1,8 +1,20 @@
 # flake8: noqa: E501
 
 import pytest
-
-from yapic.entity import (Entity, Field, Serial, Int, String, ForeignKey, One, Query, Registry, Auto, Many, Bool)
+from yapic.entity import (
+    Auto,
+    Bool,
+    Entity,
+    Field,
+    ForeignKey,
+    Int,
+    Many,
+    One,
+    Query,
+    Registry,
+    Serial,
+    String,
+)
 from yapic.entity.sql import sync
 
 pytestmark = pytest.mark.asyncio
@@ -171,7 +183,8 @@ ALTER TABLE "circular_deps"."Node"
   ADD CONSTRAINT "fk_Node__author_id-User__id" FOREIGN KEY ("author_id") REFERENCES "circular_deps"."User" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
 ALTER TABLE "circular_deps"."File"
   ADD CONSTRAINT "fk_File__id-Node__id" FOREIGN KEY ("id") REFERENCES "circular_deps"."Node" ("id") ON UPDATE CASCADE ON DELETE CASCADE;
-CREATE OR REPLACE FUNCTION "circular_deps"."YT-File-polyd_Node"() RETURNS TRIGGER AS $$ BEGIN
+CREATE OR REPLACE FUNCTION "circular_deps"."YT-File-polyd_Node"() RETURNS TRIGGER AS $$
+BEGIN
   DELETE FROM "circular_deps"."Node" "parent" WHERE "parent"."id"=OLD."id";
   RETURN OLD;
 END; $$ language 'plpgsql' ;
@@ -191,7 +204,8 @@ ALTER TABLE "circular_deps"."Article"
   ADD CONSTRAINT "fk_Article__updater_id-User__id" FOREIGN KEY ("updater_id") REFERENCES "circular_deps"."User" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
 ALTER TABLE "circular_deps"."Dir"
   ADD CONSTRAINT "fk_Dir__id-Node__id" FOREIGN KEY ("id") REFERENCES "circular_deps"."Node" ("id") ON UPDATE CASCADE ON DELETE CASCADE;
-CREATE OR REPLACE FUNCTION "circular_deps"."YT-Dir-polyd_Node"() RETURNS TRIGGER AS $$ BEGIN
+CREATE OR REPLACE FUNCTION "circular_deps"."YT-Dir-polyd_Node"() RETURNS TRIGGER AS $$
+BEGIN
   DELETE FROM "circular_deps"."Node" "parent" WHERE "parent"."id"=OLD."id";
   RETURN OLD;
 END; $$ language 'plpgsql' ;

@@ -37,6 +37,7 @@ from .field import (  # noqa
     TimeTz,
     UpdatedTime,
     virtual,
+    Unique,
 )
 from .relation import *  # noqa
 from .sql._query import *  # noqa

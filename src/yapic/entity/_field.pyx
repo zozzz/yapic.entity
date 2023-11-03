@@ -227,7 +227,32 @@ cdef class Index(FieldExtension):
 
 
 cdef class Unique(FieldExtension):
-    pass
+    @classmethod
+    def validate_group(self, EntityAttributeExtGroup group):
+        cdef list items = group.items
+        cdef Unique main = items[0]
+        group.name = main.name
+
+    def __cinit__(self, *, str name = None):
+        self.name = name
+
+    cpdef object init(self):
+        cdef EntityAttribute attr = self.get_attr()
+
+        if not self.name:
+            name = f"unique_{attr.get_entity().__name__}__{attr._name_}"
+            if len(name) >= 63:
+                name = f"unique_{hashlib.md5(name.encode()).hexdigest()}"
+            self.name = name
+
+        self.add_to_group(self.name)
+        return FieldExtension.init(self)
+
+    cpdef object clone(self):
+        return Unique(name=self.name)
+
+    def __repr__(self):
+        return f"@Unique(name={self.name})"
 
 # todo: faster eval, with Py_CompileString(ref, "<string>", Py_eval_input); PyEval_EvalCode
 

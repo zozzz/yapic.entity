@@ -1,16 +1,50 @@
 # flake8: noqa: E501
 
-from typing import List, TypedDict
-import pytest
-from datetime import datetime, date, time, tzinfo, timedelta
+from datetime import date, datetime, time, timedelta, tzinfo
 from decimal import Decimal
-from yapic.entity.field import Choice
-from yapic.entity.sql import sync as _sync, PostgreDialect
-from yapic.entity import (Entity, Field, Serial, Int, String, Bytes, Date, DateTime, DateTimeTz, Time, TimeTz, Bool,
-                          ForeignKey, PrimaryKey, One, Query, func, EntityDiff, Registry, Json, JsonArray, Composite,
-                          Auto, Numeric, Float, Point, UUID, virtual, StringArray, IntArray, CreatedTime, UpdatedTime,
-                          Enum, AutoIncrement, Index)
+from typing import List, TypedDict
+
+import pytest
 from yapic import json
+from yapic.entity import (
+    UUID,
+    Auto,
+    AutoIncrement,
+    Bool,
+    Bytes,
+    Composite,
+    CreatedTime,
+    Date,
+    DateTime,
+    DateTimeTz,
+    Entity,
+    EntityDiff,
+    Enum,
+    Field,
+    Float,
+    ForeignKey,
+    Index,
+    Int,
+    IntArray,
+    Json,
+    Numeric,
+    One,
+    Point,
+    PrimaryKey,
+    Query,
+    Registry,
+    Serial,
+    String,
+    StringArray,
+    Time,
+    TimeTz,
+    UpdatedTime,
+    func,
+    virtual,
+)
+from yapic.entity.field import Choice
+from yapic.entity.sql import PostgreDialect
+from yapic.entity.sql import sync as _sync
 
 pytestmark = pytest.mark.asyncio
 REGISTRY = Registry()
@@ -1057,7 +1091,8 @@ CREATE TABLE "execution"."UT" (
   "updated_time" TIMESTAMPTZ,
   PRIMARY KEY("id")
 );
-CREATE OR REPLACE FUNCTION "execution"."YT-UT-update-updated_time-386fb5-c18e88"() RETURNS TRIGGER AS $$ BEGIN
+CREATE OR REPLACE FUNCTION "execution"."YT-UT-update-updated_time-386fb5-c18e88"() RETURNS TRIGGER AS $$
+BEGIN
   NEW."updated_time" = CURRENT_TIMESTAMP; RETURN NEW;
 END; $$ language 'plpgsql' ;
 CREATE TRIGGER "update-updated_time"
@@ -1386,7 +1421,8 @@ CREATE INDEX "idx_User__article_id" ON "execution"."User" USING btree ("article_
 ALTER TABLE "execution"."User"
   ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT,
   ADD CONSTRAINT "fk_User__article_id-Article__id" FOREIGN KEY ("article_id") REFERENCES "execution"."Article" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
-CREATE OR REPLACE FUNCTION "execution"."YT-User-update-updated_time-386fb5-c18e88"() RETURNS TRIGGER AS $$ BEGIN
+CREATE OR REPLACE FUNCTION "execution"."YT-User-update-updated_time-386fb5-c18e88"() RETURNS TRIGGER AS $$
+BEGIN
   NEW."updated_time" = CURRENT_TIMESTAMP; RETURN NEW;
 END; $$ language 'plpgsql' ;
 CREATE TRIGGER "update-updated_time"
@@ -1465,7 +1501,8 @@ CREATE INDEX "idx_User__article_id" ON "execution"."User" USING btree ("article_
 ALTER TABLE "execution"."User"
   ADD CONSTRAINT "fk_User__address_id-Address__id" FOREIGN KEY ("address_id") REFERENCES "execution"."Address" ("id") ON UPDATE RESTRICT ON DELETE CASCADE,
   ADD CONSTRAINT "fk_User__article_id-Article__id" FOREIGN KEY ("article_id") REFERENCES "execution"."Article" ("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
-CREATE OR REPLACE FUNCTION "execution"."YT-User-update-updated_time-386fb5-c18e88"() RETURNS TRIGGER AS $$ BEGIN
+CREATE OR REPLACE FUNCTION "execution"."YT-User-update-updated_time-386fb5-c18e88"() RETURNS TRIGGER AS $$
+BEGIN
   NEW."updated_time" = CURRENT_TIMESTAMP; RETURN NEW;
 END; $$ language 'plpgsql' ;
 CREATE TRIGGER "update-updated_time"

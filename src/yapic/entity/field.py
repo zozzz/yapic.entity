@@ -9,7 +9,7 @@ from typing import Any, Callable, Generic, List, NoReturn, Optional, Tuple, Type
 
 from ._entity import Entity, EntityAttribute, EntityAttributeExt
 from ._expression import const
-from ._field import AutoIncrement, Check
+from ._field import AutoIncrement, Check, Unique
 from ._field import Field as _Field
 from ._field import ForeignKey, Index, PrimaryKey, ForeignKeyList
 from ._field_impl import ArrayImpl as _ArrayImpl

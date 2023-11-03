@@ -830,7 +830,7 @@ cdef class EntityAttributeExt:
             group.items.append(self)
         else:
             if not isinstance(self, group.type):
-                raise ValueError("Can't mix extension types in group")
+                raise ValueError(f"Can't mix extension types in group {group} {self}")
             for item in group.items:
                 # already existing in this group
                 if id(item) == id(self):

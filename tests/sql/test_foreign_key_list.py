@@ -50,7 +50,7 @@ CREATE TABLE "fkl"."XUpdate" (
   "cascade_ids" INT4[],
   PRIMARY KEY("id")
 );
-CREATE OR REPLACE FUNCTION "fkl"."YT-A-fk_XDelete__restrict_ids-A__id-RD-2adde5"() RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION "fkl"."YT-A-fk_XDelete__restrict_ids-A__id-RD-28a8b1"() RETURNS TRIGGER AS $$
 BEGIN
   IF EXISTS(SELECT 1 FROM "fkl"."XDelete" WHERE OLD."id" = ANY("restrict_ids")) THEN
       RAISE EXCEPTION 'ForeignKeyList prevent of record delete, because has references %', OLD
@@ -61,8 +61,8 @@ END; $$ language 'plpgsql' ;
 CREATE TRIGGER "fk_XDelete__restrict_ids-A__id-RD"
   BEFORE DELETE ON "fkl"."A"
   FOR EACH ROW
-  EXECUTE FUNCTION "fkl"."YT-A-fk_XDelete__restrict_ids-A__id-RD-2adde5"();
-CREATE OR REPLACE FUNCTION "fkl"."YT-A-fk_XDelete__cascade_ids-A__id-RD-d29d54"() RETURNS TRIGGER AS $$
+  EXECUTE FUNCTION "fkl"."YT-A-fk_XDelete__restrict_ids-A__id-RD-28a8b1"();
+CREATE OR REPLACE FUNCTION "fkl"."YT-A-fk_XDelete__cascade_ids-A__id-RD-a4679b"() RETURNS TRIGGER AS $$
 BEGIN
   UPDATE "fkl"."XDelete"
       SET "cascade_ids" = array_remove("cascade_ids", OLD."id")
@@ -72,8 +72,8 @@ END; $$ language 'plpgsql' ;
 CREATE TRIGGER "fk_XDelete__cascade_ids-A__id-RD"
   AFTER DELETE ON "fkl"."A"
   FOR EACH ROW
-  EXECUTE FUNCTION "fkl"."YT-A-fk_XDelete__cascade_ids-A__id-RD-d29d54"();
-CREATE OR REPLACE FUNCTION "fkl"."YT-A-fk_XDelete__null_ids-A__id-RD-4aea0b"() RETURNS TRIGGER AS $$
+  EXECUTE FUNCTION "fkl"."YT-A-fk_XDelete__cascade_ids-A__id-RD-a4679b"();
+CREATE OR REPLACE FUNCTION "fkl"."YT-A-fk_XDelete__null_ids-A__id-RD-2f907a"() RETURNS TRIGGER AS $$
 BEGIN
   UPDATE "fkl"."XDelete"
       SET "null_ids" = array_replace("null_ids", OLD."id", NULL)
@@ -83,8 +83,8 @@ END; $$ language 'plpgsql' ;
 CREATE TRIGGER "fk_XDelete__null_ids-A__id-RD"
   AFTER DELETE ON "fkl"."A"
   FOR EACH ROW
-  EXECUTE FUNCTION "fkl"."YT-A-fk_XDelete__null_ids-A__id-RD-4aea0b"();
-CREATE OR REPLACE FUNCTION "fkl"."YT-A-fk_XUpdate__restrict_ids-A__id-RU-b66f6e-b2656b"() RETURNS TRIGGER AS $$
+  EXECUTE FUNCTION "fkl"."YT-A-fk_XDelete__null_ids-A__id-RD-2f907a"();
+CREATE OR REPLACE FUNCTION "fkl"."YT-A-fk_XUpdate__restrict_ids-A__id-RU-b66f6e-9acbbf"() RETURNS TRIGGER AS $$
 BEGIN
   IF EXISTS(SELECT 1 FROM "fkl"."XUpdate" WHERE OLD."id" = ANY("restrict_ids")) THEN
       RAISE EXCEPTION 'ForeignKeyList prevent of record update, because has references %', NEW
@@ -96,8 +96,8 @@ CREATE TRIGGER "fk_XUpdate__restrict_ids-A__id-RU"
   BEFORE UPDATE ON "fkl"."A"
   FOR EACH ROW
   WHEN (OLD."id" IS DISTINCT FROM NEW."id")
-  EXECUTE FUNCTION "fkl"."YT-A-fk_XUpdate__restrict_ids-A__id-RU-b66f6e-b2656b"();
-CREATE OR REPLACE FUNCTION "fkl"."YT-A-fk_XUpdate__cascade_ids-A__id-RU-b66f6e-9081d3"() RETURNS TRIGGER AS $$
+  EXECUTE FUNCTION "fkl"."YT-A-fk_XUpdate__restrict_ids-A__id-RU-b66f6e-9acbbf"();
+CREATE OR REPLACE FUNCTION "fkl"."YT-A-fk_XUpdate__cascade_ids-A__id-RU-b66f6e-15d129"() RETURNS TRIGGER AS $$
 BEGIN
   UPDATE "fkl"."XUpdate"
       SET "cascade_ids" = array_replace("cascade_ids", OLD."id", NEW."id")
@@ -108,7 +108,7 @@ CREATE TRIGGER "fk_XUpdate__cascade_ids-A__id-RU"
   AFTER UPDATE ON "fkl"."A"
   FOR EACH ROW
   WHEN (OLD."id" IS DISTINCT FROM NEW."id")
-  EXECUTE FUNCTION "fkl"."YT-A-fk_XUpdate__cascade_ids-A__id-RU-b66f6e-9081d3"();
+  EXECUTE FUNCTION "fkl"."YT-A-fk_XUpdate__cascade_ids-A__id-RU-b66f6e-15d129"();
 CREATE OR REPLACE FUNCTION "fkl"."YT-XDelete-fk_XDelete__restrict_ids-A__id-CI-687eaa"() RETURNS TRIGGER AS $$
 DECLARE missing RECORD;
 BEGIN

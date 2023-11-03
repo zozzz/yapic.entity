@@ -5,7 +5,7 @@ from yapic.entity._entity_diff cimport EntityDiff
 from yapic.entity._entity_diff import EntityDiffKind
 from yapic.entity._registry cimport RegistryDiff
 from yapic.entity._registry import RegistryDiffKind
-from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, Index, Check, AutoIncrement, StorageType
+from yapic.entity._field cimport Field, PrimaryKey, ForeignKey, Index, Check, Unique, AutoIncrement, StorageType
 from yapic.entity._expression cimport Expression
 from yapic.entity._trigger cimport Trigger
 
@@ -66,6 +66,8 @@ cdef class DDLCompiler:
                 comments.append(comment)
             elif value.type is ForeignKey:
                 compiled_constraint.append(f"ADD {self.compile_foreign_key(value)}")
+            elif value.type is Unique:
+                compiled_constraint.append(f"ADD {self.compile_create_unique(value)}")
 
         if compiled_constraint:
             if is_type:
@@ -180,6 +182,15 @@ cdef class DDLCompiler:
         cdef str comment = f"COMMENT ON CONSTRAINT {self.dialect.quote_ident(group.name)} ON {self.dialect.table_qname(main.attr._entity_)} IS {self.dialect.quote_value(comments)};"
         return constraint, comment
 
+    def compile_create_unique(self, EntityAttributeExtGroup group):
+        cdef Unique item
+        cdef list fields = []
+
+        for item in group.items:
+            fields.append(self.dialect.quote_ident(item.attr._name_))
+
+        return f"CONSTRAINT {self.dialect.quote_ident(group.name)} UNIQUE ({', '.join(fields)})"
+
     def compile_registry_diff(self, RegistryDiff diff):
         lines = []
         deferred = []
@@ -266,6 +277,8 @@ cdef class DDLCompiler:
                     alter.append(f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(group.name)}")
                 elif group.type is Check:
                     alter.append(f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(group.name)}")
+                elif group.type is Unique:
+                    alter.append(f"DROP CONSTRAINT IF EXISTS {self.dialect.quote_ident(group.name)}")
                 elif group.type is Index:
                     schema = group.items[0].attr._entity_.__meta__.get("schema", "public")
                     schema = f"{self.dialect.quote_ident(schema)}." if schema != "public" else ""
@@ -282,6 +295,8 @@ cdef class DDLCompiler:
                         alter.append(f"ADD {check}")
                     if comment:
                         post.append(comment)
+                elif group.type is Unique:
+                    alter.append(f"ADD {self.compile_create_unique(group)}")
             elif kind == EntityDiffKind.REMOVE_TRIGGER:
                 pre.append(self.remove_trigger(param[0], param[1]))
             elif kind == EntityDiffKind.CREATE_TRIGGER:
