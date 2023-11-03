@@ -214,9 +214,8 @@ cdef class Index(FieldExtension):
         return type(self)(expr=self.expr, name=self.name, method=self.method, unique=self.unique, collate=self.collate)
 
     cpdef object init(self):
-        cdef EntityAttribute attr
+        cdef EntityAttribute attr = self.get_attr()
         if not self.name:
-            attr = self.get_attr()
             self.name = f"idx_{attr.get_entity().__name__}__{attr._name_}"
 
         if not self.method:
