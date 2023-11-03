@@ -31,7 +31,7 @@ cdef class Trigger:
 
         cdef str name = f"YT-{entity.__name__}-{self.name}-{short_hash(self.when) + '-' if self.when else ''}{short_hash(self.body + str(self.declare or ''))}"
         if len(name) >= 63:
-            return long_hash(name)
+            return f"YT-{long_hash(name)}"
         else:
             return name
 
