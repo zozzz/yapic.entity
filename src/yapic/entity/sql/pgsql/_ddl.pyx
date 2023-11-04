@@ -1,5 +1,6 @@
 # from hashids import Hashids
 import re
+import hashlib
 from typing import Any
 from yapic import json
 
@@ -41,6 +42,32 @@ from ._trigger cimport PostgreTrigger
 
 
 RE_NEXTVAL = re.compile(r"""nextval\('([^']+)'(?:::regclass)?\)""", re.I)
+
+
+BULTIN_FUNCTIONS = {
+    ("public", "yapic_entity_typmod"): """(attr pg_attribute, typ pg_type) RETURNS INT[] AS $$
+        DECLARE typmodstr TEXT;
+        DECLARE typmodarr INT[];
+        BEGIN
+            IF typ.typmodout = '-'::regproc OR attr.atttypmod < 0 THEN
+                IF typ.typlen > 0 THEN
+                    RETURN ARRAY[typ.typlen];
+                ELSE
+                    RETURN NULL;
+                END IF;
+            END IF;
+
+            IF typ.typcategory NOT IN ('A', 'B', 'G', 'N', 'S') THEN
+                RETURN NULL;
+            END IF;
+
+            EXECUTE 'SELECT ' || typ.typmodout || '(' || attr.atttypmod || ')' INTO typmodstr;
+
+            SELECT replace(replace(typmodstr, '(', '{'), ')', '}')::INT[] INTO typmodarr;
+            RETURN typmodarr;
+        END $$ LANGUAGE plpgsql;
+    """
+}
 
 
 cdef class PostgreDDLCompiler(DDLCompiler):
@@ -128,6 +155,9 @@ cdef class PostgreDDLReflect(DDLReflect):
 
     async def get_entities(self, conn, Registry registry):
         cdef EntityType entity
+
+        for bultin_name, builtin_body in BULTIN_FUNCTIONS.items():
+            await self._ensure_builtin_function(conn, bultin_name, builtin_body)
 
         # "pg_class"."relkind" IN('r', 'c', 'S')
         types = await conn.fetch("""
@@ -309,39 +339,74 @@ cdef class PostgreDDLReflect(DDLReflect):
                 LEFT JOIN "geometry_columns" "geom" ON
                     "geom"."f_table_schema"={self.dialect.quote_value(schema)}
                     AND "geom"."f_table_name"={self.dialect.quote_value(table)}
-                    AND "geom"."f_geometry_column"="pg_attribute"."attname"
+                    AND "geom"."f_geometry_column"="main_attr"."attname"
                 LEFT JOIN "geography_columns" "geog" ON
                     "geog"."f_table_schema"={self.dialect.quote_value(schema)}
                     AND "geog"."f_table_name"={self.dialect.quote_value(table)}
-                    AND "geog"."f_geography_column"="pg_attribute"."attname" """
+                    AND "geog"."f_geography_column"="main_attr"."attname" """
         else:
             postgis_select = f""
             postgis_join = f""
 
-        fields = await conn.fetch(f"""
-            SELECT
-                "pg_attribute"."attname" as "name",
-                pg_get_expr(pg_attrdef.adbin, pg_attrdef.adrelid) as "default",
-                (
-                    CASE
-                        WHEN "pg_attribute"."attnotnull" OR ("pg_type"."typtype" = 'd' AND "pg_type"."typnotnull") THEN 'NO'
-                        ELSE 'YES'
-                    END
-                ) as "is_nullable",
-                typens.nspname as "typeschema",
-                pg_type.typname as "typename",
-                information_schema._pg_char_max_length(information_schema._pg_truetypid(pg_attribute.*, pg_type.*), information_schema._pg_truetypmod(pg_attribute.*, pg_type.*)) AS character_maximum_length,
-                information_schema._pg_numeric_precision(information_schema._pg_truetypid(pg_attribute.*, pg_type.*), information_schema._pg_truetypmod(pg_attribute.*, pg_type.*)) AS numeric_precision,
-                information_schema._pg_numeric_scale(information_schema._pg_truetypid(pg_attribute.*, pg_type.*), information_schema._pg_truetypmod(pg_attribute.*, pg_type.*)) AS numeric_scale,
-                pg_attribute.attlen as "size",
-                pg_type.typcategory as "category"
-                {postgis_select}
-            FROM pg_attribute
-                INNER JOIN pg_type ON pg_type.oid=pg_attribute.atttypid
-                INNER JOIN pg_namespace typens ON typens.oid=pg_type.typnamespace
-                LEFT JOIN pg_attrdef ON pg_attribute.attrelid = pg_attrdef.adrelid AND pg_attribute.attnum = pg_attrdef.adnum
-                {postgis_join}
-            WHERE attrelid={typeid} AND attnum > 0 ORDER BY attnum""")
+        # query = f"""
+        #     SELECT
+        #         "pg_attribute"."attname" as "name",
+        #         pg_get_expr(pg_attrdef.adbin, pg_attrdef.adrelid) as "default",
+        #         (
+        #             CASE
+        #                 WHEN "pg_attribute"."attnotnull" OR ("pg_type"."typtype" = 'd' AND "pg_type"."typnotnull") THEN 'NO'
+        #                 ELSE 'YES'
+        #             END
+        #         ) as "is_nullable",
+        #         typens.nspname as "typeschema",
+        #         pg_type.typname as "typename",
+        #         information_schema._pg_char_max_length(information_schema._pg_truetypid(pg_attribute.*, pg_type.*), information_schema._pg_truetypmod(pg_attribute.*, pg_type.*)) AS character_maximum_length,
+        #         information_schema._pg_numeric_precision(information_schema._pg_truetypid(pg_attribute.*, pg_type.*), information_schema._pg_truetypmod(pg_attribute.*, pg_type.*)) AS numeric_precision,
+        #         information_schema._pg_numeric_scale(information_schema._pg_truetypid(pg_attribute.*, pg_type.*), information_schema._pg_truetypmod(pg_attribute.*, pg_type.*)) AS numeric_scale,
+        #         pg_attribute.attlen as "size",
+        #         pg_type.typcategory as "category"
+        #         {postgis_select}
+        #     FROM pg_attribute
+        #         INNER JOIN pg_type ON pg_type.oid=pg_attribute.atttypid
+        #         INNER JOIN pg_namespace typens ON typens.oid=pg_type.typnamespace
+        #         LEFT JOIN pg_attrdef ON pg_attribute.attrelid = pg_attrdef.adrelid AND pg_attribute.attnum = pg_attrdef.adnum
+        #         {postgis_join}
+        #     WHERE attrelid={typeid} AND attnum > 0 ORDER BY attnum
+        # """
+
+        query = f"""
+        SELECT
+            "main_attr"."attname" as "name",
+            pg_get_expr(attr_def.adbin, attr_def.adrelid) as "default",
+            (
+                CASE
+                    WHEN "main_attr"."attnotnull" OR ("main_type"."typtype" = 'd' AND "main_type"."typnotnull") THEN 'NO'
+                    ELSE 'YES'
+                END
+            ) as "is_nullable",
+            "typens"."nspname" as "typeschema",
+            "main_type"."typname" as "main_typename",
+            "attr_type"."typname" as "typename",
+            yapic_entity_typmod(main_attr, attr_type) AS "size",
+            main_type.typcategory as "category"
+            {postgis_select}
+        FROM pg_attribute main_attr
+            INNER JOIN pg_type main_type ON main_type.oid = main_attr.atttypid
+            LEFT JOIN pg_type item_type ON item_type.oid = main_type.typelem
+            INNER JOIN pg_type attr_type ON
+                (item_type.oid IS NOT NULL AND attr_type.oid = item_type.oid)
+                OR
+                (item_type.oid IS NULL AND attr_type.oid = main_type.oid)
+            INNER JOIN pg_namespace typens ON typens.oid=attr_type.typnamespace
+            LEFT JOIN pg_attrdef attr_def ON attr_def.adrelid = main_attr.attrelid
+                AND attr_def.adnum = main_attr.attnum
+            {postgis_join}
+        WHERE
+            main_attr.attrelid={typeid}
+            AND main_attr.attnum > 0
+        ORDER BY main_attr.attnum
+        """
+        fields = await conn.fetch(query)
 
         pks = await self.get_primary_keys(conn, schema, table)
 
@@ -397,7 +462,7 @@ cdef class PostgreDDLReflect(DDLReflect):
         default = record["default"]
 
         if typename in ("int2", "_int2", "int4", "_int4", "int8", "_int8"):
-            field = Field(IntImpl(), size=int(record["size"]), nullable=is_nullable)
+            field = Field(IntImpl(), size=record["size"][0], nullable=is_nullable)
 
             if default is not None:
                 if primary:
@@ -413,9 +478,9 @@ cdef class PostgreDDLReflect(DDLReflect):
         elif typename == "bytea":
             field = Field(BytesImpl(), nullable=is_nullable)
         elif typename == "varchar":
-            field = Field(StringImpl(), size=record["character_maximum_length"], nullable=is_nullable)
+            field = Field(StringImpl(), size=record["size"][0], nullable=is_nullable)
         elif typename == "bpchar":
-            l = record["character_maximum_length"]
+            l = record["size"][0]
             field = Field(StringImpl(), size=[l, l], nullable=is_nullable)
         elif typename == "bool":
             field = Field(BoolImpl(), nullable=is_nullable)
@@ -430,15 +495,15 @@ cdef class PostgreDDLReflect(DDLReflect):
         elif typename == "timetz":
             field = Field(TimeTzImpl(), nullable=is_nullable)
         elif typename == "numeric":
-            field = Field(NumericImpl(), size=(record["numeric_precision"], record["numeric_scale"]), nullable=is_nullable)
+            field = Field(NumericImpl(), size=record["size"], nullable=is_nullable)
         elif typename == "float4" or typename == "float8":
-            field = Field(FloatImpl(), size=record["size"], nullable=is_nullable)
+            field = Field(FloatImpl(), size=record["size"][0], nullable=is_nullable)
         elif typename == "uuid":
             field = Field(UUIDImpl(), nullable=is_nullable)
         elif typename == "jsonb":
             field = Field(JsonImpl(Any), nullable=is_nullable)
-        elif typename == "point":
-            field = Field(PointImpl(), nullable=is_nullable)
+        # elif typename == "point":
+        #     field = Field(PointImpl(), nullable=is_nullable)
         elif typename == "geometry":
             geom_type = record["geom_type"].lower()
             if geom_type == "point":
@@ -459,7 +524,12 @@ cdef class PostgreDDLReflect(DDLReflect):
             raise TypeError("Can't determine type from sql type: %r" % typename)
 
         if record["category"] == b"A":
-            field = Field(ArrayImpl(field._impl_), nullable=field.nullable)
+            min_size = field.min_size
+            max_size = field.max_size
+            field = Field(ArrayImpl(field._impl_), nullable=field.nullable, size=(min_size, max_size))
+        elif record["category"] == b"G":
+            if record["main_typename"] == "point":
+                field = Field(PointImpl(), nullable=is_nullable)
 
         field._name_ = record["name"]
 
@@ -570,6 +640,44 @@ cdef class PostgreDDLReflect(DDLReflect):
 
     async def real_quote_ident(self, conn, ident):
         return await conn.fetchval(f"SELECT quote_ident({self.dialect.quote_value(ident)})")
+
+    async def _ensure_builtin_function(self, conn, tuple name, str body):
+        if len(name) != 2:
+            raise ValueError(f"Invalid builtin function name: {name}, must be tuple with two items (schema, name)")
+
+        body = "\n".join(reident_lines(body, 4))
+        cdef dict existing = await self._get_builtin_funcion(conn, name)
+        if not existing or "hash" not in existing:
+            await self._create_builtin_function(conn, name, body)
+        else:
+            current_hash = hashlib.md5(body.encode("UTF-8")).hexdigest()
+            if existing["hash"] != current_hash:
+                await self._create_builtin_function(conn, name, body)
+
+    async def _get_builtin_funcion(self, conn, tuple name):
+        res = await conn.fetchrow(
+            f"""
+            SELECT
+                pd.description
+            FROM pg_proc
+                INNER JOIN pg_catalog.pg_namespace sch ON sch."oid" = pg_proc.pronamespace
+                LEFT JOIN pg_catalog.pg_description pd ON pd.objoid = pg_proc."oid"
+            WHERE sch.nspname = '{name[0]}'
+                AND pg_proc.proname= '{name[1]}';
+            """
+        )
+
+        if res:
+            return json.loads(res["description"])
+        return None
+
+    async def _create_builtin_function(self, conn, tuple name, str body):
+        comment = json.dumps({"hash": hashlib.md5(body.encode("UTF-8")).hexdigest()})
+        qname = ".".join(self.dialect.quote_ident(v) for v in name)
+        query = f"DROP FUNCTION IF EXISTS {qname};"
+        query += f"CREATE OR REPLACE FUNCTION {qname}{body};"
+        query += f"COMMENT ON FUNCTION {qname} IS '{comment}';"
+        await conn.execute(query)
 
 
 cdef list reident_lines(str data, int ident_size = 2):

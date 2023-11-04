@@ -3267,7 +3267,7 @@ static PyObject *__pyx_f_5yapic_6entity_8_trigger_7Trigger_get_unique_name(struc
  * 
  *         cdef str name = f"YT-{entity.__name__}-{self.name}-{short_hash(self.when) + '-' if self.when else ''}{short_hash(self.body + str(self.declare or ''))}"             # <<<<<<<<<<<<<<
  *         if len(name) >= 63:
- *             return long_hash(name)
+ *             return f"YT-{long_hash(name)}"
  */
   __pyx_t_2 = PyTuple_New(7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -3363,7 +3363,7 @@ static PyObject *__pyx_f_5yapic_6entity_8_trigger_7Trigger_get_unique_name(struc
  * 
  *         cdef str name = f"YT-{entity.__name__}-{self.name}-{short_hash(self.when) + '-' if self.when else ''}{short_hash(self.body + str(self.declare or ''))}"
  *         if len(name) >= 63:             # <<<<<<<<<<<<<<
- *             return long_hash(name)
+ *             return f"YT-{long_hash(name)}"
  *         else:
  */
   __pyx_t_3 = __Pyx_PyUnicode_GET_LENGTH(__pyx_v_name); if (unlikely(__pyx_t_3 == ((Py_ssize_t)-1))) __PYX_ERR(0, 33, __pyx_L1_error)
@@ -3373,13 +3373,19 @@ static PyObject *__pyx_f_5yapic_6entity_8_trigger_7Trigger_get_unique_name(struc
     /* "yapic/entity/_trigger.pyx":34
  *         cdef str name = f"YT-{entity.__name__}-{self.name}-{short_hash(self.when) + '-' if self.when else ''}{short_hash(self.body + str(self.declare or ''))}"
  *         if len(name) >= 63:
- *             return long_hash(name)             # <<<<<<<<<<<<<<
+ *             return f"YT-{long_hash(name)}"             # <<<<<<<<<<<<<<
  *         else:
  *             return name
  */
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_5 = __pyx_f_5yapic_6entity_8_trigger_long_hash(__pyx_v_name); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 34, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_2 = __Pyx_PyUnicode_Unicode(__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 34, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = __Pyx_PyUnicode_Concat(__pyx_kp_u_YT, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 34, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_r = ((PyObject*)__pyx_t_5);
     __pyx_t_5 = 0;
     goto __pyx_L0;
@@ -3388,13 +3394,13 @@ static PyObject *__pyx_f_5yapic_6entity_8_trigger_7Trigger_get_unique_name(struc
  * 
  *         cdef str name = f"YT-{entity.__name__}-{self.name}-{short_hash(self.when) + '-' if self.when else ''}{short_hash(self.body + str(self.declare or ''))}"
  *         if len(name) >= 63:             # <<<<<<<<<<<<<<
- *             return long_hash(name)
+ *             return f"YT-{long_hash(name)}"
  *         else:
  */
   }
 
   /* "yapic/entity/_trigger.pyx":36
- *             return long_hash(name)
+ *             return f"YT-{long_hash(name)}"
  *         else:
  *             return name             # <<<<<<<<<<<<<<
  * 

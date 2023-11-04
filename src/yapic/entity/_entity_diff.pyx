@@ -92,6 +92,7 @@ cdef class EntityDiff:
                 self.changes.append((EntityDiffKind.REMOVE_TRIGGER, (a, trigger_a)))
                 self.changes.append((EntityDiffKind.CREATE_TRIGGER, (b, trigger_b)))
 
+        # print(a)
         # print("\n".join(map(repr, self.changes)))
 
     def __bool__(self):

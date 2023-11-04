@@ -7,7 +7,7 @@ from cpython.weakref cimport PyWeakref_NewRef
 
 from ._entity cimport EntityType, EntityBase, EntityAttributeImpl, EntityAttribute, NOTSET
 from ._expression cimport PathExpression, CallExpression, RawExpression
-from ._field cimport StorageType, ForeignKey
+from ._field cimport StorageType, ForeignKey, Field
 from ._resolve cimport ResolveContext
 
 
@@ -33,6 +33,20 @@ cdef class BytesImpl(FieldImpl):
 
 
 cdef class IntImpl(FieldImpl):
+    cpdef object init(self, EntityAttribute attr):
+        if not FieldImpl.init(self, attr):
+            return False
+
+        cdef Field field
+        if isinstance(attr, Field):
+            field = (<Field>attr)
+
+            if field.min_size < 0 or field.max_size < 0:
+                field.min_size = 0
+                field.max_size = 4
+
+        return True
+
     def __repr__(self):
         return "Int"
 
@@ -405,6 +419,15 @@ cdef class ArrayImpl(FieldImpl):
     def __init__(self, item_impl):
         self._item_impl_ = item_impl
         super().__init__()
+
+    cpdef object init(self, EntityAttribute attr):
+        if not FieldImpl.init(self, attr):
+            return False
+
+        if not self._item_impl_.init(attr):
+            return False
+
+        return True
 
     cdef object state_init(self, object initial):
         if initial is NOTSET or initial is None:

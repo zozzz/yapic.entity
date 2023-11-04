@@ -386,9 +386,6 @@ cdef class ForeignKeyList(FKBase):
 
         cdef Field field = self.get_attr()
 
-        # ERRCODE fkl-delete-restricted
-        # ERRCODE fkl-update-restricted
-
         field.get_entity().__triggers__.extend(self.__check_trigger())
         self.ref.get_entity().__triggers__.extend(self.__update_trigger())
         self.ref.get_entity().__triggers__.extend(self.__delete_trigger())

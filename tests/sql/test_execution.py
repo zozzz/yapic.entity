@@ -1026,7 +1026,7 @@ async def test_array(conn, pgclean):
     assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
 CREATE TABLE "execution"."ArrayTest" (
   "strings" TEXT[],
-  "ints" INT[]
+  "ints" INT4[]
 );"""
 
     await conn.execute(result)

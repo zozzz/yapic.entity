@@ -329,6 +329,8 @@ CREATE TRIGGER "fk_XUpdate__cascade_ids-A__id-CU"
   FOR EACH ROW
   WHEN (OLD."cascade_ids" IS DISTINCT FROM NEW."cascade_ids")
   EXECUTE FUNCTION "fkl"."YT-XUpdate-fk_XUpdate__cascade_ids-A__id-CU-f3fd34-50a446"();"""
+    await conn.execute(result)
+    assert not await sync(conn, reg)
 
 
 async def test_checks(conn, pgclean):
@@ -345,6 +347,7 @@ async def test_checks(conn, pgclean):
 
     result = await sync(conn, reg)
     await conn.execute(result)
+    assert not await sync(conn, reg)
 
     a1 = A(id=1, name="Item 1")
     a2 = A(id=2, name="Item 2")
@@ -393,6 +396,7 @@ async def test_update_trigger(conn, pgclean):
 
     result = await sync(conn, reg)
     await conn.execute(result)
+    assert not await sync(conn, reg)
 
     a1 = A(id=1, name="Item 1")
     a2 = A(id=2, name="Item 2")
@@ -429,6 +433,7 @@ async def test_delete_trigger(conn, pgclean):
 
     result = await sync(conn, reg)
     await conn.execute(result)
+    assert not await sync(conn, reg)
 
     a1 = A(id=1, name="Item 1")
     a2 = A(id=2, name="Item 2")
