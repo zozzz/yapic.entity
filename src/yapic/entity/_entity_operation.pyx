@@ -83,9 +83,10 @@ cdef _collect_entities(EntityBase entity, DependencyList order, list ops, object
             set_related_attrs(<Relation>attr, entity, related, order, ops)
             _collect_entities(related, order, ops, determine_entity_op(related))
 
-        for related in rem:
-            del_related_attrs(<Relation>attr, entity, related, order, ops)
-            _collect_entities(related, order, ops, determine_entity_op(related))
+        # TODO:
+        # for related in rem:
+        #     del_related_attrs(<Relation>attr, entity, related, order, ops)
+        #     _collect_entities(related, order, ops, determine_entity_op(related))
 
         for related in chg:
             set_related_attrs(<Relation>attr, entity, related, order, ops)

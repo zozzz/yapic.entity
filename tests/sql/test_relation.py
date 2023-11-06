@@ -1,10 +1,25 @@
 # flake8: noqa: E501
 
 import pytest
-from yapic.entity.sql import sync, PostgreDialect
-from yapic.entity import (Entity, Serial, Int, String, ForeignKey, PrimaryKey, One, Many, ManyAcross, Registry,
-                          DependencyList, Json, Composite, save_operations, Auto, Query, Loading, Relation, raw)
 from yapic import json
+from yapic.entity import (
+    Auto,
+    Composite,
+    Entity,
+    ForeignKey,
+    Loading,
+    Many,
+    ManyAcross,
+    One,
+    PrimaryKey,
+    Query,
+    Registry,
+    Relation,
+    Serial,
+    String,
+    raw,
+)
+from yapic.entity.sql import PostgreDialect, sync
 
 pytestmark = pytest.mark.asyncio  # type: ignore
 
@@ -378,3 +393,26 @@ async def test_load_multi_entity(conn):
     data = json.dumps(user)
     # TODO: üres nem kívánt értékek törlése
     assert data == """[{"id":8,"name":{},"address":{"addr":"XYZ Addr"},"children":[],"tags":[]},1]"""
+
+
+@pytest.mark.skip("TODO: Implement relation remove")
+async def test_clear_relation(conn, pgclean):
+    result = await sync(conn, _registry)
+    await conn.execute(result)
+
+    user = User(
+        name={"family": "User"},
+        address=Address(addr="XYZ Addr"),
+    )
+    await conn.save(user)
+
+    addr_id = user.address_id
+
+    user = await conn.select(Query(User).load(User, User.address).where(User.id == user.id)).first()
+    assert user.address is not None
+    assert addr_id == user.address.id
+
+    user.address = None
+    await conn.save(user)
+    user = await conn.select(Query(User).load(User, User.address).where(User.id == user.id)).first()
+    assert user.address is None
