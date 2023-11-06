@@ -11897,7 +11897,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedItem_state_get_dirty
  *                 return ([current], [], [])
  *         else:
  *             if current is None:             # <<<<<<<<<<<<<<
- *                 return ([], [initial], [])
+ *                 return ([], [current], [])
  *             elif initial == current:
  */
   /*else*/ {
@@ -11908,7 +11908,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedItem_state_get_dirty
       /* "yapic/entity/_relation.pyx":428
  *         else:
  *             if current is None:
- *                 return ([], [initial], [])             # <<<<<<<<<<<<<<
+ *                 return ([], [current], [])             # <<<<<<<<<<<<<<
  *             elif initial == current:
  *                 if current.__state__.is_dirty:
  */
@@ -11917,9 +11917,9 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedItem_state_get_dirty
       __Pyx_GOTREF(__pyx_t_6);
       __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 428, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_INCREF(__pyx_v_initial);
-      __Pyx_GIVEREF(__pyx_v_initial);
-      PyList_SET_ITEM(__pyx_t_3, 0, __pyx_v_initial);
+      __Pyx_INCREF(__pyx_v_current);
+      __Pyx_GIVEREF(__pyx_v_current);
+      PyList_SET_ITEM(__pyx_t_3, 0, __pyx_v_current);
       __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 428, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 428, __pyx_L1_error)
@@ -11941,14 +11941,14 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedItem_state_get_dirty
  *                 return ([current], [], [])
  *         else:
  *             if current is None:             # <<<<<<<<<<<<<<
- *                 return ([], [initial], [])
+ *                 return ([], [current], [])
  *             elif initial == current:
  */
     }
 
     /* "yapic/entity/_relation.pyx":429
  *             if current is None:
- *                 return ([], [initial], [])
+ *                 return ([], [current], [])
  *             elif initial == current:             # <<<<<<<<<<<<<<
  *                 if current.__state__.is_dirty:
  *                     return ([], [], [current])
@@ -11959,7 +11959,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedItem_state_get_dirty
     if (__pyx_t_8) {
 
       /* "yapic/entity/_relation.pyx":430
- *                 return ([], [initial], [])
+ *                 return ([], [current], [])
  *             elif initial == current:
  *                 if current.__state__.is_dirty:             # <<<<<<<<<<<<<<
  *                     return ([], [], [current])
@@ -12007,7 +12007,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedItem_state_get_dirty
         goto __pyx_L0;
 
         /* "yapic/entity/_relation.pyx":430
- *                 return ([], [initial], [])
+ *                 return ([], [current], [])
  *             elif initial == current:
  *                 if current.__state__.is_dirty:             # <<<<<<<<<<<<<<
  *                     return ([], [], [current])
@@ -12031,7 +12031,7 @@ static PyObject *__pyx_f_5yapic_6entity_9_relation_11RelatedItem_state_get_dirty
 
       /* "yapic/entity/_relation.pyx":429
  *             if current is None:
- *                 return ([], [initial], [])
+ *                 return ([], [current], [])
  *             elif initial == current:             # <<<<<<<<<<<<<<
  *                 if current.__state__.is_dirty:
  *                     return ([], [], [current])
