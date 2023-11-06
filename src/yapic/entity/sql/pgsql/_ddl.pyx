@@ -674,7 +674,8 @@ cdef class PostgreDDLReflect(DDLReflect):
     async def _create_builtin_function(self, conn, tuple name, str body):
         comment = json.dumps({"hash": hashlib.md5(body.encode("UTF-8")).hexdigest()})
         qname = ".".join(self.dialect.quote_ident(v) for v in name)
-        query = f"DROP FUNCTION IF EXISTS {qname};"
+        query = f"CREATE SCHEMA IF NOT EXISTS {self.dialect.quote_ident(name[0])};"
+        query += f"DROP FUNCTION IF EXISTS {qname};"
         query += f"CREATE OR REPLACE FUNCTION {qname}{body};"
         query += f"COMMENT ON FUNCTION {qname} IS '{comment}';"
         await conn.execute(query)

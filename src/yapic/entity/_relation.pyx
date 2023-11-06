@@ -425,7 +425,7 @@ cdef class RelatedItem(ValueStore):
                 return ([current], [], [])
         else:
             if current is None:
-                return ([], [current], [])
+                return ([], [initial], [])
             elif initial == current:
                 if current.__state__.is_dirty:
                     return ([], [], [current])

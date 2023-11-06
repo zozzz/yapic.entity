@@ -1066,8 +1066,8 @@ struct __pyx_obj_5yapic_6entity_17_entity_operation__comparator;
 struct __pyx_obj_5yapic_6entity_17_entity_operation_FieldUpdater;
 
 /* "_expression.pxd":86
- * 
- * 
+ *
+ *
  * ctypedef enum EPA:             # <<<<<<<<<<<<<<
  *     GETATTR = 1
  *     GETITEM = 2
@@ -1083,7 +1083,7 @@ struct __pyx_opt_args_5yapic_6entity_7_entity_11EntityState_update;
 
 /* "_entity.pxd":17
  * # ezt hasznlni ahelyett, hogy van-e deferred field
- * 
+ *
  * ctypedef enum EntityStage:             # <<<<<<<<<<<<<<
  *     UNRESOLVED = 1
  *     RESOLVING = 2
@@ -1096,7 +1096,7 @@ enum __pyx_t_5yapic_6entity_7_entity_EntityStage {
 typedef enum __pyx_t_5yapic_6entity_7_entity_EntityStage __pyx_t_5yapic_6entity_7_entity_EntityStage;
 
 /* "_entity.pxd":57
- * 
+ *
  *     cpdef object __entity_ready__(self)
  *     cpdef object get_meta(self, str key=*, default=*)             # <<<<<<<<<<<<<<
  *     cpdef object set_meta(self, str key, object value)
@@ -1109,10 +1109,10 @@ struct __pyx_opt_args_5yapic_6entity_7_entity_10EntityType_get_meta {
 };
 
 /* "_entity.pxd":174
- * 
+ *
  *     cdef object init(self)
  *     cpdef object update(self, dict data, bint is_initial=*)             # <<<<<<<<<<<<<<
- * 
+ *
  *     cdef object set_value(self, EntityAttribute attr, object value)
  */
 struct __pyx_opt_args_5yapic_6entity_7_entity_11EntityState_update {
@@ -1121,20 +1121,20 @@ struct __pyx_opt_args_5yapic_6entity_7_entity_11EntityState_update {
 };
 
 /* "_factory.pxd":39
- * 
- * 
+ *
+ *
  * ctypedef bint (*set_attribute_fn) (object instance, dict attributes)             # <<<<<<<<<<<<<<
- * 
+ *
  * @cython.final
  */
 typedef int (*__pyx_t_5yapic_6entity_8_factory_set_attribute_fn)(PyObject *, PyObject *);
 
 /* "_expression.pxd":4
- * 
- * 
+ *
+ *
  * cdef class Visitor:             # <<<<<<<<<<<<<<
  *     cpdef visit(self, Expression expr)
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_11_expression_Visitor {
   PyObject_HEAD
@@ -1143,8 +1143,8 @@ struct __pyx_obj_5yapic_6entity_11_expression_Visitor {
 
 
 /* "_expression.pxd":8
- * 
- * 
+ *
+ *
  * cdef class Expression:             # <<<<<<<<<<<<<<
  *     cpdef visit(self, Visitor visitor)
  *     cpdef asc(self)
@@ -1156,8 +1156,8 @@ struct __pyx_obj_5yapic_6entity_11_expression_Expression {
 
 
 /* "_expression.pxd":19
- * 
- * 
+ *
+ *
  * cdef class BinaryExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly Expression left
  *     cdef readonly Expression right
@@ -1172,8 +1172,8 @@ struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression {
 
 
 /* "_expression.pxd":26
- * 
- * 
+ *
+ *
  * cdef class UnaryExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly Expression expr
  *     cdef readonly object op
@@ -1186,8 +1186,8 @@ struct __pyx_obj_5yapic_6entity_11_expression_UnaryExpression {
 
 
 /* "_expression.pxd":31
- * 
- * 
+ *
+ *
  * cdef class CastExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly Expression expr
  *     cdef readonly object to
@@ -1200,8 +1200,8 @@ struct __pyx_obj_5yapic_6entity_11_expression_CastExpression {
 
 
 /* "_expression.pxd":36
- * 
- * 
+ *
+ *
  * cdef class ConstExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly object value
  *     cdef readonly type type
@@ -1214,8 +1214,8 @@ struct __pyx_obj_5yapic_6entity_11_expression_ConstExpression {
 
 
 /* "_expression.pxd":41
- * 
- * 
+ *
+ *
  * cdef class AliasExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly Expression expr
  *     cdef readonly str value
@@ -1229,7 +1229,7 @@ struct __pyx_obj_5yapic_6entity_11_expression_AliasExpression {
 
 /* "_expression.pxd":45
  *     cdef readonly str value
- * 
+ *
  * cdef class ColumnRefExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly Expression expr
  *     cdef readonly int index
@@ -1242,8 +1242,8 @@ struct __pyx_obj_5yapic_6entity_11_expression_ColumnRefExpression {
 
 
 /* "_expression.pxd":53
- * 
- * 
+ *
+ *
  * cdef class OrderExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly Expression expr
  *     cdef readonly bint is_asc
@@ -1256,8 +1256,8 @@ struct __pyx_obj_5yapic_6entity_11_expression_OrderExpression {
 
 
 /* "_expression.pxd":58
- * 
- * 
+ *
+ *
  * cdef class CallExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly Expression callable
  *     cdef readonly tuple args
@@ -1270,11 +1270,11 @@ struct __pyx_obj_5yapic_6entity_11_expression_CallExpression {
 
 
 /* "_expression.pxd":63
- * 
- * 
+ *
+ *
  * cdef class RawExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly str expr
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_11_expression_RawExpression {
   struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
@@ -1283,11 +1283,11 @@ struct __pyx_obj_5yapic_6entity_11_expression_RawExpression {
 
 
 /* "_expression.pxd":67
- * 
- * 
+ *
+ *
  * cdef class PathExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly list _path_
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_11_expression_PathExpression {
   struct __pyx_obj_5yapic_6entity_11_expression_Expression __pyx_base;
@@ -1296,8 +1296,8 @@ struct __pyx_obj_5yapic_6entity_11_expression_PathExpression {
 
 
 /* "_expression.pxd":71
- * 
- * 
+ *
+ *
  * cdef class OverExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly Expression expr
  *     cdef readonly list _order
@@ -1311,7 +1311,7 @@ struct __pyx_obj_5yapic_6entity_11_expression_OverExpression {
 
 
 /* "_expression.pxd":93
- * 
+ *
  * @cython.final
  * cdef class ExpressionPlaceholder(Expression):             # <<<<<<<<<<<<<<
  *     cdef object origin
@@ -1326,7 +1326,7 @@ struct __pyx_obj_5yapic_6entity_11_expression_ExpressionPlaceholder {
 
 
 /* "_expression.pxd":102
- * 
+ *
  * @cython.final
  * cdef class MultiExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly tuple expressions
@@ -1340,7 +1340,7 @@ struct __pyx_obj_5yapic_6entity_11_expression_MultiExpression {
 
 
 /* "_registry.pxd":6
- * 
+ *
  * @cython.final
  * cdef class Registry:             # <<<<<<<<<<<<<<
  *     cdef object __weakref__
@@ -1360,7 +1360,7 @@ struct __pyx_obj_5yapic_6entity_9_registry_Registry {
 
 
 /* "_registry.pxd":29
- * 
+ *
  * @cython.final
  * cdef class RegistryDiff:             # <<<<<<<<<<<<<<
  *     cdef readonly Registry a
@@ -1376,7 +1376,7 @@ struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff {
 
 
 /* "_registry.pxd":39
- * 
+ *
  * @cython.final
  * cdef class ScopeDict(dict):             # <<<<<<<<<<<<<<
  *     cdef set_path(self, str path, object value)
@@ -1388,7 +1388,7 @@ struct __pyx_obj_5yapic_6entity_9_registry_ScopeDict {
 
 
 /* "_resolve.pxd":8
- * 
+ *
  * @cython.final
  * cdef class ResolveContext:             # <<<<<<<<<<<<<<
  *     cdef Registry registry
@@ -1406,11 +1406,11 @@ struct __pyx_obj_5yapic_6entity_8_resolve_ResolveContext {
 
 
 /* "_entity.pxd":10
- * 
- * 
+ *
+ *
  * cdef class NOTSET:             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_7_entity_NOTSET {
   PyObject_HEAD
@@ -1418,8 +1418,8 @@ struct __pyx_obj_5yapic_6entity_7_entity_NOTSET {
 
 
 /* "_entity.pxd":27
- * 
- * 
+ *
+ *
  * cdef class EntityType(type):             # <<<<<<<<<<<<<<
  *     cdef readonly tuple __attrs__
  *     cdef readonly tuple __fields__
@@ -1444,7 +1444,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityType {
 
 
 /* "_entity.pxd":63
- * 
+ *
  * @cython.final
  * cdef class EntityAlias(EntityType):             # <<<<<<<<<<<<<<
  *     cdef EntityType get_entity(self)
@@ -1456,8 +1456,8 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAlias {
 
 
 /* "_entity.pxd":72
- * 
- * 
+ *
+ *
  * cdef class EntityBase:             # <<<<<<<<<<<<<<
  *     cdef readonly EntityState __state__
  *     cdef int iter_index
@@ -1470,8 +1470,8 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityBase {
 
 
 /* "_entity.pxd":77
- * 
- * 
+ *
+ *
  * cdef class EntityAttribute(Expression):             # <<<<<<<<<<<<<<
  *     cdef object __weakref__
  *     cdef object _impl
@@ -1495,8 +1495,8 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute {
 
 
 /* "_entity.pxd":111
- * 
- * 
+ *
+ *
  * cdef class EntityAttributeExt:             # <<<<<<<<<<<<<<
  *     cdef object attr_ref
  *     cdef EntityStage stage
@@ -1510,11 +1510,11 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt {
 
 
 /* "_entity.pxd":130
- * 
+ *
  * @cython.final
  * cdef class EntityAttributeExtList(list):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExtList {
   PyListObject __pyx_base;
@@ -1522,8 +1522,8 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExtList {
 
 
 /* "_entity.pxd":134
- * 
- * 
+ *
+ *
  * cdef class EntityAttributeExtGroup:             # <<<<<<<<<<<<<<
  *     cdef readonly str name
  *     cdef readonly list items
@@ -1537,11 +1537,11 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExtGroup {
 
 
 /* "_entity.pxd":140
- * 
- * 
+ *
+ *
  * cdef class EntityAttributeImpl:             # <<<<<<<<<<<<<<
  *     cdef EntityStage stage
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl {
   PyObject_HEAD
@@ -1569,7 +1569,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityState {
 
 
 /* "_entity.pxd":193
- * 
+ *
  * @cython.final
  * cdef class EntityDependency:             # <<<<<<<<<<<<<<
  *     cdef object registry_ref
@@ -1584,7 +1584,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_EntityDependency {
 
 
 /* "_entity.pxd":207
- * 
+ *
  * @cython.final
  * cdef class DependencyList(list):             # <<<<<<<<<<<<<<
  *     cdef list items
@@ -1599,11 +1599,11 @@ struct __pyx_obj_5yapic_6entity_7_entity_DependencyList {
 
 
 /* "_entity.pxd":221
- * 
+ *
  * @cython.final
  * cdef class PolymorphDict(dict):             # <<<<<<<<<<<<<<
  *     cdef readonly tuple id_fields
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_7_entity_PolymorphDict {
   PyDictObject __pyx_base;
@@ -1613,7 +1613,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_PolymorphDict {
 
 
 /* "_entity.pxd":233
- * 
+ *
  * @cython.final
  * cdef class Polymorph:             # <<<<<<<<<<<<<<
  *     # TODO: Relation type
@@ -1631,7 +1631,7 @@ struct __pyx_obj_5yapic_6entity_7_entity_Polymorph {
 
 
 /* "_factory.pxd":42
- * 
+ *
  * @cython.final
  * cdef class Factory:             # <<<<<<<<<<<<<<
  *     cdef object orig_type
@@ -1647,8 +1647,8 @@ struct __pyx_obj_5yapic_6entity_8_factory_Factory {
 
 
 /* "_field.pxd":7
- * 
- * 
+ *
+ *
  * cdef class Field(EntityAttribute):             # <<<<<<<<<<<<<<
  *     cdef dict type_cache
  *     cdef readonly int min_size
@@ -1664,11 +1664,11 @@ struct __pyx_obj_5yapic_6entity_6_field_Field {
 
 
 /* "_field.pxd":22
- * 
- * 
+ *
+ *
  * cdef class FieldExtension(EntityAttributeExt):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_6_field_FieldExtension {
   struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt __pyx_base;
@@ -1676,8 +1676,8 @@ struct __pyx_obj_5yapic_6entity_6_field_FieldExtension {
 
 
 /* "_field.pxd":26
- * 
- * 
+ *
+ *
  * cdef class StorageType:             # <<<<<<<<<<<<<<
  *     cdef readonly name
  *     cpdef object encode(self, object value)
@@ -1690,11 +1690,11 @@ struct __pyx_obj_5yapic_6entity_6_field_StorageType {
 
 
 /* "_field.pxd":32
- * 
- * 
+ *
+ *
  * cdef class StorageTypeFactory:             # <<<<<<<<<<<<<<
  *     cpdef StorageType create(self, Field field)
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_6_field_StorageTypeFactory {
   PyObject_HEAD
@@ -1703,11 +1703,11 @@ struct __pyx_obj_5yapic_6entity_6_field_StorageTypeFactory {
 
 
 /* "_field.pxd":36
- * 
- * 
+ *
+ *
  * cdef class PrimaryKey(FieldExtension):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_6_field_PrimaryKey {
   struct __pyx_obj_5yapic_6entity_6_field_FieldExtension __pyx_base;
@@ -1715,8 +1715,8 @@ struct __pyx_obj_5yapic_6entity_6_field_PrimaryKey {
 
 
 /* "_field.pxd":40
- * 
- * 
+ *
+ *
  * cdef class AutoIncrement(FieldExtension):             # <<<<<<<<<<<<<<
  *     cdef object _seq_arg
  *     cdef readonly EntityType sequence
@@ -1729,8 +1729,8 @@ struct __pyx_obj_5yapic_6entity_6_field_AutoIncrement {
 
 
 /* "_field.pxd":45
- * 
- * 
+ *
+ *
  * cdef class Index(FieldExtension):             # <<<<<<<<<<<<<<
  *     cdef readonly str name
  *     cdef readonly str method
@@ -1746,11 +1746,11 @@ struct __pyx_obj_5yapic_6entity_6_field_Index {
 
 
 /* "_field.pxd":53
- * 
- * 
+ *
+ *
  * cdef class Unique(FieldExtension):             # <<<<<<<<<<<<<<
  *     cdef readonly str name
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_6_field_Unique {
   struct __pyx_obj_5yapic_6entity_6_field_FieldExtension __pyx_base;
@@ -1759,8 +1759,8 @@ struct __pyx_obj_5yapic_6entity_6_field_Unique {
 
 
 /* "_field.pxd":57
- * 
- * 
+ *
+ *
  * cdef class FKBase(FieldExtension):             # <<<<<<<<<<<<<<
  *     cdef object _ref
  *     cdef readonly Field ref
@@ -1776,11 +1776,11 @@ struct __pyx_obj_5yapic_6entity_6_field_FKBase {
 
 
 /* "_field.pxd":65
- * 
- * 
+ *
+ *
  * cdef class ForeignKey(FKBase):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_6_field_ForeignKey {
   struct __pyx_obj_5yapic_6entity_6_field_FKBase __pyx_base;
@@ -1788,8 +1788,8 @@ struct __pyx_obj_5yapic_6entity_6_field_ForeignKey {
 
 
 /* "_field.pxd":69
- * 
- * 
+ *
+ *
  * cdef class ForeignKeyList(FKBase):             # <<<<<<<<<<<<<<
  *     cdef tuple __check_trigger(self)
  *     cdef tuple __update_trigger(self)
@@ -1815,11 +1815,11 @@ struct __pyx_obj_5yapic_6entity_6_field_Check {
 
 
 /* "_relation.pxd":11
- * 
- * 
+ *
+ *
  * cdef class Relation(EntityAttribute):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_9_relation_Relation {
   struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute __pyx_base;
@@ -1827,7 +1827,7 @@ struct __pyx_obj_5yapic_6entity_9_relation_Relation {
 
 
 /* "_relation.pxd":16
- * 
+ *
  * @cython.final
  * cdef class RelatedAttribute(EntityAttribute):             # <<<<<<<<<<<<<<
  *     cdef readonly Relation __relation__
@@ -1842,11 +1842,11 @@ struct __pyx_obj_5yapic_6entity_9_relation_RelatedAttribute {
 
 
 /* "_relation.pxd":22
- * 
- * 
+ *
+ *
  * cdef class RelatedAttributeImpl(EntityAttributeImpl):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_9_relation_RelatedAttributeImpl {
   struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeImpl __pyx_base;
@@ -1854,8 +1854,8 @@ struct __pyx_obj_5yapic_6entity_9_relation_RelatedAttributeImpl {
 
 
 /* "_relation.pxd":26
- * 
- * 
+ *
+ *
  * cdef class RelationImpl(EntityAttributeImpl):             # <<<<<<<<<<<<<<
  *     cdef object joined_entity_ref
  *     cdef object relation_ref
@@ -1871,11 +1871,11 @@ struct __pyx_obj_5yapic_6entity_9_relation_RelationImpl {
 
 
 /* "_relation.pxd":44
- * 
- * 
+ *
+ *
  * cdef class ManyToOne(RelationImpl):             # <<<<<<<<<<<<<<
  *     cdef Expression _determine_join_expr(self, EntityAttribute relation)
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_9_relation_ManyToOne {
   struct __pyx_obj_5yapic_6entity_9_relation_RelationImpl __pyx_base;
@@ -1883,11 +1883,11 @@ struct __pyx_obj_5yapic_6entity_9_relation_ManyToOne {
 
 
 /* "_relation.pxd":48
- * 
- * 
+ *
+ *
  * cdef class OneToMany(RelationImpl):             # <<<<<<<<<<<<<<
  *     cdef Expression _determine_join_expr(self, EntityAttribute relation)
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_9_relation_OneToMany {
   struct __pyx_obj_5yapic_6entity_9_relation_RelationImpl __pyx_base;
@@ -1895,8 +1895,8 @@ struct __pyx_obj_5yapic_6entity_9_relation_OneToMany {
 
 
 /* "_relation.pxd":52
- * 
- * 
+ *
+ *
  * cdef class ManyToMany(RelationImpl):             # <<<<<<<<<<<<<<
  *     cdef object across_entity_ref
  *     cdef EntityType across_alias_ref
@@ -1910,8 +1910,8 @@ struct __pyx_obj_5yapic_6entity_9_relation_ManyToMany {
 
 
 /* "_relation.pxd":65
- * 
- * 
+ *
+ *
  * cdef class ValueStore:             # <<<<<<<<<<<<<<
  *     cpdef object state_init(self, object initial)
  *     cpdef object state_set(self, object initial, object current, object value)
@@ -1923,11 +1923,11 @@ struct __pyx_obj_5yapic_6entity_9_relation_ValueStore {
 
 
 /* "_relation.pxd":71
- * 
- * 
+ *
+ *
  * cdef class RelatedItem(ValueStore):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_9_relation_RelatedItem {
   struct __pyx_obj_5yapic_6entity_9_relation_ValueStore __pyx_base;
@@ -1935,11 +1935,11 @@ struct __pyx_obj_5yapic_6entity_9_relation_RelatedItem {
 
 
 /* "_relation.pxd":75
- * 
- * 
+ *
+ *
  * cdef class RelatedList(ValueStore):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_9_relation_RelatedList {
   struct __pyx_obj_5yapic_6entity_9_relation_ValueStore __pyx_base;
@@ -1947,11 +1947,11 @@ struct __pyx_obj_5yapic_6entity_9_relation_RelatedList {
 
 
 /* "_relation.pxd":79
- * 
- * 
+ *
+ *
  * cdef class RelatedDict(ValueStore):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_9_relation_RelatedDict {
   struct __pyx_obj_5yapic_6entity_9_relation_ValueStore __pyx_base;
@@ -1959,8 +1959,8 @@ struct __pyx_obj_5yapic_6entity_9_relation_RelatedDict {
 
 
 /* "_relation.pxd":83
- * 
- * 
+ *
+ *
  * cdef class Loading(EntityAttributeExt):             # <<<<<<<<<<<<<<
  *     cdef readonly bint always
  *     cdef readonly list fields
@@ -1973,11 +1973,11 @@ struct __pyx_obj_5yapic_6entity_9_relation_Loading {
 
 
 /* "yapic/entity/_entity_operation.pyx":42
- * 
+ *
  * @cython.final
  * cdef class _comparator:             # <<<<<<<<<<<<<<
  *     cdef DependencyList order
- * 
+ *
  */
 struct __pyx_obj_5yapic_6entity_17_entity_operation__comparator {
   PyObject_HEAD
@@ -1986,8 +1986,8 @@ struct __pyx_obj_5yapic_6entity_17_entity_operation__comparator {
 
 
 /* "yapic/entity/_entity_operation.pyx":152
- * 
- * 
+ *
+ *
  * cdef class FieldUpdater(Visitor):             # <<<<<<<<<<<<<<
  *     cdef EntityBase target
  *     cdef EntityType target_t
@@ -2004,11 +2004,11 @@ struct __pyx_obj_5yapic_6entity_17_entity_operation_FieldUpdater {
 
 
 /* "_expression.pxd":4
- * 
- * 
+ *
+ *
  * cdef class Visitor:             # <<<<<<<<<<<<<<
  *     cpdef visit(self, Expression expr)
- * 
+ *
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_11_expression_Visitor {
@@ -2018,8 +2018,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_Visitor *__pyx_vtabp
 
 
 /* "_expression.pxd":8
- * 
- * 
+ *
+ *
  * cdef class Expression:             # <<<<<<<<<<<<<<
  *     cpdef visit(self, Visitor visitor)
  *     cpdef asc(self)
@@ -2038,8 +2038,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression *__pyx_vt
 
 
 /* "_expression.pxd":19
- * 
- * 
+ *
+ *
  * cdef class BinaryExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly Expression left
  *     cdef readonly Expression right
@@ -2052,8 +2052,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_BinaryExpression *__
 
 
 /* "_expression.pxd":26
- * 
- * 
+ *
+ *
  * cdef class UnaryExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly Expression expr
  *     cdef readonly object op
@@ -2066,8 +2066,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_UnaryExpression *__p
 
 
 /* "_expression.pxd":31
- * 
- * 
+ *
+ *
  * cdef class CastExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly Expression expr
  *     cdef readonly object to
@@ -2080,8 +2080,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_CastExpression *__py
 
 
 /* "_expression.pxd":36
- * 
- * 
+ *
+ *
  * cdef class ConstExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly object value
  *     cdef readonly type type
@@ -2094,8 +2094,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_ConstExpression *__p
 
 
 /* "_expression.pxd":41
- * 
- * 
+ *
+ *
  * cdef class AliasExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly Expression expr
  *     cdef readonly str value
@@ -2109,7 +2109,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_AliasExpression *__p
 
 /* "_expression.pxd":45
  *     cdef readonly str value
- * 
+ *
  * cdef class ColumnRefExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly Expression expr
  *     cdef readonly int index
@@ -2122,8 +2122,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_ColumnRefExpression 
 
 
 /* "_expression.pxd":53
- * 
- * 
+ *
+ *
  * cdef class OrderExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly Expression expr
  *     cdef readonly bint is_asc
@@ -2136,8 +2136,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_OrderExpression *__p
 
 
 /* "_expression.pxd":58
- * 
- * 
+ *
+ *
  * cdef class CallExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly Expression callable
  *     cdef readonly tuple args
@@ -2150,11 +2150,11 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_CallExpression *__py
 
 
 /* "_expression.pxd":63
- * 
- * 
+ *
+ *
  * cdef class RawExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly str expr
- * 
+ *
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_11_expression_RawExpression {
@@ -2164,11 +2164,11 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_RawExpression *__pyx
 
 
 /* "_expression.pxd":67
- * 
- * 
+ *
+ *
  * cdef class PathExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly list _path_
- * 
+ *
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_11_expression_PathExpression {
@@ -2178,8 +2178,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_PathExpression *__py
 
 
 /* "_expression.pxd":71
- * 
- * 
+ *
+ *
  * cdef class OverExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly Expression expr
  *     cdef readonly list _order
@@ -2192,7 +2192,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_OverExpression *__py
 
 
 /* "_expression.pxd":93
- * 
+ *
  * @cython.final
  * cdef class ExpressionPlaceholder(Expression):             # <<<<<<<<<<<<<<
  *     cdef object origin
@@ -2207,7 +2207,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_ExpressionPlaceholde
 
 
 /* "_expression.pxd":102
- * 
+ *
  * @cython.final
  * cdef class MultiExpression(Expression):             # <<<<<<<<<<<<<<
  *     cdef readonly tuple expressions
@@ -2221,7 +2221,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_11_expression_MultiExpression *__p
 
 
 /* "_registry.pxd":6
- * 
+ *
  * @cython.final
  * cdef class Registry:             # <<<<<<<<<<<<<<
  *     cdef object __weakref__
@@ -2241,7 +2241,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_9_registry_Registry *__pyx_vtabptr
 
 
 /* "_registry.pxd":29
- * 
+ *
  * @cython.final
  * cdef class RegistryDiff:             # <<<<<<<<<<<<<<
  *     cdef readonly Registry a
@@ -2255,7 +2255,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_9_registry_RegistryDiff *__pyx_vta
 
 
 /* "_registry.pxd":39
- * 
+ *
  * @cython.final
  * cdef class ScopeDict(dict):             # <<<<<<<<<<<<<<
  *     cdef set_path(self, str path, object value)
@@ -2268,7 +2268,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_9_registry_ScopeDict *__pyx_vtabpt
 
 
 /* "_resolve.pxd":8
- * 
+ *
  * @cython.final
  * cdef class ResolveContext:             # <<<<<<<<<<<<<<
  *     cdef Registry registry
@@ -2289,8 +2289,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_8_resolve_ResolveContext *__pyx_vt
 
 
 /* "_entity.pxd":27
- * 
- * 
+ *
+ *
  * cdef class EntityType(type):             # <<<<<<<<<<<<<<
  *     cdef readonly tuple __attrs__
  *     cdef readonly tuple __fields__
@@ -2316,7 +2316,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityType *__pyx_vtabptr
 
 
 /* "_entity.pxd":63
- * 
+ *
  * @cython.final
  * cdef class EntityAlias(EntityType):             # <<<<<<<<<<<<<<
  *     cdef EntityType get_entity(self)
@@ -2332,8 +2332,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAlias *__pyx_vtabpt
 
 
 /* "_entity.pxd":77
- * 
- * 
+ *
+ *
  * cdef class EntityAttribute(Expression):             # <<<<<<<<<<<<<<
  *     cdef object __weakref__
  *     cdef object _impl
@@ -2358,8 +2358,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute *__pyx_vt
 
 
 /* "_entity.pxd":111
- * 
- * 
+ *
+ *
  * cdef class EntityAttributeExt:             # <<<<<<<<<<<<<<
  *     cdef object attr_ref
  *     cdef EntityStage stage
@@ -2380,11 +2380,11 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeExt *__pyx
 
 
 /* "_entity.pxd":140
- * 
- * 
+ *
+ *
  * cdef class EntityAttributeImpl:             # <<<<<<<<<<<<<<
  *     cdef EntityStage stage
- * 
+ *
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttributeImpl {
@@ -2430,7 +2430,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *__pyx_vtabpt
 
 
 /* "_entity.pxd":193
- * 
+ *
  * @cython.final
  * cdef class EntityDependency:             # <<<<<<<<<<<<<<
  *     cdef object registry_ref
@@ -2449,7 +2449,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityDependency *__pyx_v
 
 
 /* "_entity.pxd":207
- * 
+ *
  * @cython.final
  * cdef class DependencyList(list):             # <<<<<<<<<<<<<<
  *     cdef list items
@@ -2466,11 +2466,11 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList *__pyx_vta
 
 
 /* "_entity.pxd":221
- * 
+ *
  * @cython.final
  * cdef class PolymorphDict(dict):             # <<<<<<<<<<<<<<
  *     cdef readonly tuple id_fields
- * 
+ *
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_7_entity_PolymorphDict {
@@ -2483,7 +2483,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_PolymorphDict *__pyx_vtab
 
 
 /* "_entity.pxd":233
- * 
+ *
  * @cython.final
  * cdef class Polymorph:             # <<<<<<<<<<<<<<
  *     # TODO: Relation type
@@ -2500,7 +2500,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_7_entity_Polymorph *__pyx_vtabptr_
 
 
 /* "_factory.pxd":42
- * 
+ *
  * @cython.final
  * cdef class Factory:             # <<<<<<<<<<<<<<
  *     cdef object orig_type
@@ -2515,8 +2515,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_8_factory_Factory *__pyx_vtabptr_5
 
 
 /* "_field.pxd":7
- * 
- * 
+ *
+ *
  * cdef class Field(EntityAttribute):             # <<<<<<<<<<<<<<
  *     cdef dict type_cache
  *     cdef readonly int min_size
@@ -2530,11 +2530,11 @@ static struct __pyx_vtabstruct_5yapic_6entity_6_field_Field *__pyx_vtabptr_5yapi
 
 
 /* "_field.pxd":22
- * 
- * 
+ *
+ *
  * cdef class FieldExtension(EntityAttributeExt):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_6_field_FieldExtension {
@@ -2544,8 +2544,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_6_field_FieldExtension *__pyx_vtab
 
 
 /* "_field.pxd":26
- * 
- * 
+ *
+ *
  * cdef class StorageType:             # <<<<<<<<<<<<<<
  *     cdef readonly name
  *     cpdef object encode(self, object value)
@@ -2559,11 +2559,11 @@ static struct __pyx_vtabstruct_5yapic_6entity_6_field_StorageType *__pyx_vtabptr
 
 
 /* "_field.pxd":32
- * 
- * 
+ *
+ *
  * cdef class StorageTypeFactory:             # <<<<<<<<<<<<<<
  *     cpdef StorageType create(self, Field field)
- * 
+ *
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_6_field_StorageTypeFactory {
@@ -2573,11 +2573,11 @@ static struct __pyx_vtabstruct_5yapic_6entity_6_field_StorageTypeFactory *__pyx_
 
 
 /* "_field.pxd":36
- * 
- * 
+ *
+ *
  * cdef class PrimaryKey(FieldExtension):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_6_field_PrimaryKey {
@@ -2587,8 +2587,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_6_field_PrimaryKey *__pyx_vtabptr_
 
 
 /* "_field.pxd":40
- * 
- * 
+ *
+ *
  * cdef class AutoIncrement(FieldExtension):             # <<<<<<<<<<<<<<
  *     cdef object _seq_arg
  *     cdef readonly EntityType sequence
@@ -2601,8 +2601,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_6_field_AutoIncrement *__pyx_vtabp
 
 
 /* "_field.pxd":45
- * 
- * 
+ *
+ *
  * cdef class Index(FieldExtension):             # <<<<<<<<<<<<<<
  *     cdef readonly str name
  *     cdef readonly str method
@@ -2615,11 +2615,11 @@ static struct __pyx_vtabstruct_5yapic_6entity_6_field_Index *__pyx_vtabptr_5yapi
 
 
 /* "_field.pxd":53
- * 
- * 
+ *
+ *
  * cdef class Unique(FieldExtension):             # <<<<<<<<<<<<<<
  *     cdef readonly str name
- * 
+ *
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_6_field_Unique {
@@ -2629,8 +2629,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_6_field_Unique *__pyx_vtabptr_5yap
 
 
 /* "_field.pxd":57
- * 
- * 
+ *
+ *
  * cdef class FKBase(FieldExtension):             # <<<<<<<<<<<<<<
  *     cdef object _ref
  *     cdef readonly Field ref
@@ -2643,11 +2643,11 @@ static struct __pyx_vtabstruct_5yapic_6entity_6_field_FKBase *__pyx_vtabptr_5yap
 
 
 /* "_field.pxd":65
- * 
- * 
+ *
+ *
  * cdef class ForeignKey(FKBase):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_6_field_ForeignKey {
@@ -2657,8 +2657,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_6_field_ForeignKey *__pyx_vtabptr_
 
 
 /* "_field.pxd":69
- * 
- * 
+ *
+ *
  * cdef class ForeignKeyList(FKBase):             # <<<<<<<<<<<<<<
  *     cdef tuple __check_trigger(self)
  *     cdef tuple __update_trigger(self)
@@ -2689,11 +2689,11 @@ static struct __pyx_vtabstruct_5yapic_6entity_6_field_Check *__pyx_vtabptr_5yapi
 
 
 /* "_relation.pxd":11
- * 
- * 
+ *
+ *
  * cdef class Relation(EntityAttribute):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_9_relation_Relation {
@@ -2703,7 +2703,7 @@ static struct __pyx_vtabstruct_5yapic_6entity_9_relation_Relation *__pyx_vtabptr
 
 
 /* "_relation.pxd":16
- * 
+ *
  * @cython.final
  * cdef class RelatedAttribute(EntityAttribute):             # <<<<<<<<<<<<<<
  *     cdef readonly Relation __relation__
@@ -2717,11 +2717,11 @@ static struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedAttribute *__pyx
 
 
 /* "_relation.pxd":22
- * 
- * 
+ *
+ *
  * cdef class RelatedAttributeImpl(EntityAttributeImpl):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedAttributeImpl {
@@ -2731,8 +2731,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedAttributeImpl *_
 
 
 /* "_relation.pxd":26
- * 
- * 
+ *
+ *
  * cdef class RelationImpl(EntityAttributeImpl):             # <<<<<<<<<<<<<<
  *     cdef object joined_entity_ref
  *     cdef object relation_ref
@@ -2752,11 +2752,11 @@ static struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelationImpl *__pyx_vta
 
 
 /* "_relation.pxd":44
- * 
- * 
+ *
+ *
  * cdef class ManyToOne(RelationImpl):             # <<<<<<<<<<<<<<
  *     cdef Expression _determine_join_expr(self, EntityAttribute relation)
- * 
+ *
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_9_relation_ManyToOne {
@@ -2767,11 +2767,11 @@ static struct __pyx_vtabstruct_5yapic_6entity_9_relation_ManyToOne *__pyx_vtabpt
 
 
 /* "_relation.pxd":48
- * 
- * 
+ *
+ *
  * cdef class OneToMany(RelationImpl):             # <<<<<<<<<<<<<<
  *     cdef Expression _determine_join_expr(self, EntityAttribute relation)
- * 
+ *
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_9_relation_OneToMany {
@@ -2782,8 +2782,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_9_relation_OneToMany *__pyx_vtabpt
 
 
 /* "_relation.pxd":52
- * 
- * 
+ *
+ *
  * cdef class ManyToMany(RelationImpl):             # <<<<<<<<<<<<<<
  *     cdef object across_entity_ref
  *     cdef EntityType across_alias_ref
@@ -2801,8 +2801,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_9_relation_ManyToMany *__pyx_vtabp
 
 
 /* "_relation.pxd":65
- * 
- * 
+ *
+ *
  * cdef class ValueStore:             # <<<<<<<<<<<<<<
  *     cpdef object state_init(self, object initial)
  *     cpdef object state_set(self, object initial, object current, object value)
@@ -2817,11 +2817,11 @@ static struct __pyx_vtabstruct_5yapic_6entity_9_relation_ValueStore *__pyx_vtabp
 
 
 /* "_relation.pxd":71
- * 
- * 
+ *
+ *
  * cdef class RelatedItem(ValueStore):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedItem {
@@ -2831,11 +2831,11 @@ static struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedItem *__pyx_vtab
 
 
 /* "_relation.pxd":75
- * 
- * 
+ *
+ *
  * cdef class RelatedList(ValueStore):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedList {
@@ -2845,11 +2845,11 @@ static struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedList *__pyx_vtab
 
 
 /* "_relation.pxd":79
- * 
- * 
+ *
+ *
  * cdef class RelatedDict(ValueStore):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 
 struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedDict {
@@ -2859,8 +2859,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_9_relation_RelatedDict *__pyx_vtab
 
 
 /* "_relation.pxd":83
- * 
- * 
+ *
+ *
  * cdef class Loading(EntityAttributeExt):             # <<<<<<<<<<<<<<
  *     cdef readonly bint always
  *     cdef readonly list fields
@@ -2873,8 +2873,8 @@ static struct __pyx_vtabstruct_5yapic_6entity_9_relation_Loading *__pyx_vtabptr_
 
 
 /* "yapic/entity/_entity_operation.pyx":152
- * 
- * 
+ *
+ *
  * cdef class FieldUpdater(Visitor):             # <<<<<<<<<<<<<<
  *     cdef EntityBase target
  *     cdef EntityType target_t
@@ -3486,7 +3486,6 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_load_operations(stru
 static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *, struct __pyx_obj_5yapic_6entity_7_entity_DependencyList *, PyObject *, PyObject *); /*proto*/
 static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_poly_id(struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *); /*proto*/
 static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_related_attrs(struct __pyx_obj_5yapic_6entity_9_relation_Relation *, struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *, struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *, struct __pyx_obj_5yapic_6entity_7_entity_DependencyList *, PyObject *); /*proto*/
-static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_del_related_attrs(struct __pyx_obj_5yapic_6entity_9_relation_Relation *, struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *, struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *, struct __pyx_obj_5yapic_6entity_7_entity_DependencyList *, PyObject *); /*proto*/
 static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_append_fields(struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *, struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *, struct __pyx_obj_5yapic_6entity_11_expression_Expression *, PyObject *); /*proto*/
 static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_determine_entity_op(struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *); /*proto*/
 static int __pyx_f_5yapic_6entity_17_entity_operation_test_entity_type_eq(struct __pyx_obj_5yapic_6entity_7_entity_EntityType *, struct __pyx_obj_5yapic_6entity_7_entity_EntityType *); /*proto*/
@@ -3617,8 +3616,8 @@ static PyObject *__pyx_int_16;
 /* Late includes */
 
 /* "yapic/entity/_entity_operation.pyx":23
- * 
- * 
+ *
+ *
  * cpdef list save_operations(EntityBase entity):             # <<<<<<<<<<<<<<
  *     cdef DependencyList order = DependencyList()
  *     cdef list ops = []
@@ -3642,11 +3641,11 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_save_operations(stru
   __Pyx_RefNannySetupContext("save_operations", 0);
 
   /* "yapic/entity/_entity_operation.pyx":24
- * 
+ *
  * cpdef list save_operations(EntityBase entity):
  *     cdef DependencyList order = DependencyList()             # <<<<<<<<<<<<<<
  *     cdef list ops = []
- * 
+ *
  */
   __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_5yapic_6entity_7_entity_DependencyList)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -3657,7 +3656,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_save_operations(stru
  * cpdef list save_operations(EntityBase entity):
  *     cdef DependencyList order = DependencyList()
  *     cdef list ops = []             # <<<<<<<<<<<<<<
- * 
+ *
  *     _collect_entities(entity, order, ops, determine_entity_op(entity))
  */
   __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
@@ -3667,9 +3666,9 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_save_operations(stru
 
   /* "yapic/entity/_entity_operation.pyx":27
  *     cdef list ops = []
- * 
+ *
  *     _collect_entities(entity, order, ops, determine_entity_op(entity))             # <<<<<<<<<<<<<<
- * 
+ *
  *     # print("\n".join(map(repr, ops)))
  */
   __pyx_t_1 = __pyx_f_5yapic_6entity_17_entity_operation_determine_entity_op(__pyx_v_entity); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
@@ -3681,7 +3680,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_save_operations(stru
 
   /* "yapic/entity/_entity_operation.pyx":32
  *     # print(order)
- * 
+ *
  *     ops.sort(key=cmp_to_key(_comparator(order)))             # <<<<<<<<<<<<<<
  *     # import pprint; pprint.pprint(ops)
  *     return ops
@@ -3722,8 +3721,8 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_save_operations(stru
  *     ops.sort(key=cmp_to_key(_comparator(order)))
  *     # import pprint; pprint.pprint(ops)
  *     return ops             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_ops);
@@ -3731,8 +3730,8 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_save_operations(stru
   goto __pyx_L0;
 
   /* "yapic/entity/_entity_operation.pyx":23
- * 
- * 
+ *
+ *
  * cpdef list save_operations(EntityBase entity):             # <<<<<<<<<<<<<<
  *     cdef DependencyList order = DependencyList()
  *     cdef list ops = []
@@ -3804,11 +3803,11 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_save_operations(CYT
 }
 
 /* "yapic/entity/_entity_operation.pyx":37
- * 
- * 
+ *
+ *
  * cpdef list load_operations(EntityBase entity):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 
 static PyObject *__pyx_pw_5yapic_6entity_17_entity_operation_3load_operations(PyObject *__pyx_self, PyObject *__pyx_v_entity); /*proto*/
@@ -3873,10 +3872,10 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_2load_operations(CY
 
 /* "yapic/entity/_entity_operation.pyx":45
  *     cdef DependencyList order
- * 
+ *
  *     def __cinit__(self, DependencyList order):             # <<<<<<<<<<<<<<
  *         self.order = order
- * 
+ *
  */
 
 /* Python wrapper */
@@ -3943,10 +3942,10 @@ static int __pyx_pf_5yapic_6entity_17_entity_operation_11_comparator___cinit__(s
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
   /* "yapic/entity/_entity_operation.pyx":46
- * 
+ *
  *     def __cinit__(self, DependencyList order):
  *         self.order = order             # <<<<<<<<<<<<<<
- * 
+ *
  *     def __call__(self, a, b):
  */
   __Pyx_INCREF(((PyObject *)__pyx_v_order));
@@ -3957,10 +3956,10 @@ static int __pyx_pf_5yapic_6entity_17_entity_operation_11_comparator___cinit__(s
 
   /* "yapic/entity/_entity_operation.pyx":45
  *     cdef DependencyList order
- * 
+ *
  *     def __cinit__(self, DependencyList order):             # <<<<<<<<<<<<<<
  *         self.order = order
- * 
+ *
  */
 
   /* function exit code */
@@ -3971,7 +3970,7 @@ static int __pyx_pf_5yapic_6entity_17_entity_operation_11_comparator___cinit__(s
 
 /* "yapic/entity/_entity_operation.pyx":48
  *         self.order = order
- * 
+ *
  *     def __call__(self, a, b):             # <<<<<<<<<<<<<<
  *         a_op, a_val = a
  *         b_op, b_val = b
@@ -4062,11 +4061,11 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_11_comparator_2__ca
   __Pyx_RefNannySetupContext("__call__", 0);
 
   /* "yapic/entity/_entity_operation.pyx":49
- * 
+ *
  *     def __call__(self, a, b):
  *         a_op, a_val = a             # <<<<<<<<<<<<<<
  *         b_op, b_val = b
- * 
+ *
  */
   if ((likely(PyTuple_CheckExact(__pyx_v_a))) || (PyList_CheckExact(__pyx_v_a))) {
     PyObject* sequence = __pyx_v_a;
@@ -4078,11 +4077,11 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_11_comparator_2__ca
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
-      __pyx_t_1 = PyTuple_GET_ITEM(sequence, 0); 
-      __pyx_t_2 = PyTuple_GET_ITEM(sequence, 1); 
+      __pyx_t_1 = PyTuple_GET_ITEM(sequence, 0);
+      __pyx_t_2 = PyTuple_GET_ITEM(sequence, 1);
     } else {
-      __pyx_t_1 = PyList_GET_ITEM(sequence, 0); 
-      __pyx_t_2 = PyList_GET_ITEM(sequence, 1); 
+      __pyx_t_1 = PyList_GET_ITEM(sequence, 0);
+      __pyx_t_2 = PyList_GET_ITEM(sequence, 1);
     }
     __Pyx_INCREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_t_2);
@@ -4121,7 +4120,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_11_comparator_2__ca
  *     def __call__(self, a, b):
  *         a_op, a_val = a
  *         b_op, b_val = b             # <<<<<<<<<<<<<<
- * 
+ *
  *         if a_op < EntityOperation.UPDATE_ATTR and b_op < EntityOperation.UPDATE_ATTR:
  */
   if ((likely(PyTuple_CheckExact(__pyx_v_b))) || (PyList_CheckExact(__pyx_v_b))) {
@@ -4134,11 +4133,11 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_11_comparator_2__ca
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
-      __pyx_t_2 = PyTuple_GET_ITEM(sequence, 0); 
-      __pyx_t_1 = PyTuple_GET_ITEM(sequence, 1); 
+      __pyx_t_2 = PyTuple_GET_ITEM(sequence, 0);
+      __pyx_t_1 = PyTuple_GET_ITEM(sequence, 1);
     } else {
-      __pyx_t_2 = PyList_GET_ITEM(sequence, 0); 
-      __pyx_t_1 = PyList_GET_ITEM(sequence, 1); 
+      __pyx_t_2 = PyList_GET_ITEM(sequence, 0);
+      __pyx_t_1 = PyList_GET_ITEM(sequence, 1);
     }
     __Pyx_INCREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_t_1);
@@ -4175,7 +4174,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_11_comparator_2__ca
 
   /* "yapic/entity/_entity_operation.pyx":52
  *         b_op, b_val = b
- * 
+ *
  *         if a_op < EntityOperation.UPDATE_ATTR and b_op < EntityOperation.UPDATE_ATTR:             # <<<<<<<<<<<<<<
  *             return self.order.index(type(a_val)) - self.order.index(type(b_val))
  *         else:
@@ -4208,7 +4207,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_11_comparator_2__ca
   if (__pyx_t_5) {
 
     /* "yapic/entity/_entity_operation.pyx":53
- * 
+ *
  *         if a_op < EntityOperation.UPDATE_ATTR and b_op < EntityOperation.UPDATE_ATTR:
  *             return self.order.index(type(a_val)) - self.order.index(type(b_val))             # <<<<<<<<<<<<<<
  *         else:
@@ -4231,7 +4230,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_11_comparator_2__ca
 
     /* "yapic/entity/_entity_operation.pyx":52
  *         b_op, b_val = b
- * 
+ *
  *         if a_op < EntityOperation.UPDATE_ATTR and b_op < EntityOperation.UPDATE_ATTR:             # <<<<<<<<<<<<<<
  *             return self.order.index(type(a_val)) - self.order.index(type(b_val))
  *         else:
@@ -4488,8 +4487,8 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_11_comparator_2__ca
  *                     return a_idx - max(self.order.index(b_val[1]._entity_), self.order.index(b_val[3]._entity_))
  *                 else:
  *                     return a_idx - self.order.index(type(b_val))             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
       /*else*/ {
         __Pyx_XDECREF(__pyx_r);
@@ -4508,7 +4507,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_11_comparator_2__ca
 
   /* "yapic/entity/_entity_operation.pyx":48
  *         self.order = order
- * 
+ *
  *     def __call__(self, a, b):             # <<<<<<<<<<<<<<
  *         a_op, a_val = a
  *         b_op, b_val = b
@@ -4534,8 +4533,8 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_11_comparator_2__ca
 }
 
 /* "yapic/entity/_entity_operation.pyx":69
- * 
- * 
+ *
+ *
  * cdef _collect_entities(EntityBase entity, DependencyList order, list ops, object op):             # <<<<<<<<<<<<<<
  *     cdef EntityState state = entity.__state__
  *     cdef EntityAttribute attr
@@ -4545,7 +4544,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
   struct __pyx_obj_5yapic_6entity_7_entity_EntityState *__pyx_v_state = 0;
   struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *__pyx_v_attr = 0;
   PyObject *__pyx_v_add = 0;
-  PyObject *__pyx_v_rem = 0;
+  CYTHON_UNUSED PyObject *__pyx_v_rem = 0;
   PyObject *__pyx_v_chg = 0;
   struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *__pyx_v_related = 0;
   int __pyx_v_is_dirty;
@@ -4573,7 +4572,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
   __Pyx_RefNannySetupContext("_collect_entities", 0);
 
   /* "yapic/entity/_entity_operation.pyx":70
- * 
+ *
  * cdef _collect_entities(EntityBase entity, DependencyList order, list ops, object op):
  *     cdef EntityState state = entity.__state__             # <<<<<<<<<<<<<<
  *     cdef EntityAttribute attr
@@ -4586,9 +4585,9 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
 
   /* "yapic/entity/_entity_operation.pyx":78
  *     cdef bint is_dirty
- * 
+ *
  *     set_poly_id(entity)             # <<<<<<<<<<<<<<
- * 
+ *
  *     for attr, (add, rem, chg) in state.changed_realtions():
  */
   __pyx_t_1 = __pyx_f_5yapic_6entity_17_entity_operation_set_poly_id(__pyx_v_entity); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
@@ -4597,7 +4596,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
 
   /* "yapic/entity/_entity_operation.pyx":80
  *     set_poly_id(entity)
- * 
+ *
  *     for attr, (add, rem, chg) in state.changed_realtions():             # <<<<<<<<<<<<<<
  *         is_dirty = True
  *         for related in add:
@@ -4669,11 +4668,11 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
-        __pyx_t_3 = PyTuple_GET_ITEM(sequence, 0); 
-        __pyx_t_6 = PyTuple_GET_ITEM(sequence, 1); 
+        __pyx_t_3 = PyTuple_GET_ITEM(sequence, 0);
+        __pyx_t_6 = PyTuple_GET_ITEM(sequence, 1);
       } else {
-        __pyx_t_3 = PyList_GET_ITEM(sequence, 0); 
-        __pyx_t_6 = PyList_GET_ITEM(sequence, 1); 
+        __pyx_t_3 = PyList_GET_ITEM(sequence, 0);
+        __pyx_t_6 = PyList_GET_ITEM(sequence, 1);
       }
       __Pyx_INCREF(__pyx_t_3);
       __Pyx_INCREF(__pyx_t_6);
@@ -4718,13 +4717,13 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
-        __pyx_t_7 = PyTuple_GET_ITEM(sequence, 0); 
-        __pyx_t_9 = PyTuple_GET_ITEM(sequence, 1); 
-        __pyx_t_10 = PyTuple_GET_ITEM(sequence, 2); 
+        __pyx_t_7 = PyTuple_GET_ITEM(sequence, 0);
+        __pyx_t_9 = PyTuple_GET_ITEM(sequence, 1);
+        __pyx_t_10 = PyTuple_GET_ITEM(sequence, 2);
       } else {
-        __pyx_t_7 = PyList_GET_ITEM(sequence, 0); 
-        __pyx_t_9 = PyList_GET_ITEM(sequence, 1); 
-        __pyx_t_10 = PyList_GET_ITEM(sequence, 2); 
+        __pyx_t_7 = PyList_GET_ITEM(sequence, 0);
+        __pyx_t_9 = PyList_GET_ITEM(sequence, 1);
+        __pyx_t_10 = PyList_GET_ITEM(sequence, 2);
       }
       __Pyx_INCREF(__pyx_t_7);
       __Pyx_INCREF(__pyx_t_9);
@@ -4772,7 +4771,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
     __pyx_t_10 = 0;
 
     /* "yapic/entity/_entity_operation.pyx":81
- * 
+ *
  *     for attr, (add, rem, chg) in state.changed_realtions():
  *         is_dirty = True             # <<<<<<<<<<<<<<
  *         for related in add:
@@ -4809,7 +4808,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
  *         for related in add:
  *             set_related_attrs(<Relation>attr, entity, related, order, ops)             # <<<<<<<<<<<<<<
  *             _collect_entities(related, order, ops, determine_entity_op(related))
- * 
+ *
  */
       __pyx_t_6 = __pyx_f_5yapic_6entity_17_entity_operation_set_related_attrs(((struct __pyx_obj_5yapic_6entity_9_relation_Relation *)__pyx_v_attr), __pyx_v_entity, __pyx_v_related, __pyx_v_order, __pyx_v_ops); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 83, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
@@ -4819,8 +4818,8 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
  *         for related in add:
  *             set_related_attrs(<Relation>attr, entity, related, order, ops)
  *             _collect_entities(related, order, ops, determine_entity_op(related))             # <<<<<<<<<<<<<<
- * 
- *         for related in rem:
+ *
+ *         # TODO:
  */
       __pyx_t_6 = __pyx_f_5yapic_6entity_17_entity_operation_determine_entity_op(__pyx_v_related); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 84, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
@@ -4841,10 +4840,10 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
 
     /* "yapic/entity/_entity_operation.pyx":86
  *             _collect_entities(related, order, ops, determine_entity_op(related))
- * 
+ *
  *         for related in rem:             # <<<<<<<<<<<<<<
- *             if related:
- *                 del_related_attrs(<Relation>attr, entity, related, order, ops)
+ *             del_related_attrs(<Relation>attr, entity, related, order, ops)
+ *             _collect_entities(related, order, ops, determine_entity_op(related))
  */
     if (unlikely(__pyx_v_rem == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
@@ -4864,62 +4863,43 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
       __pyx_t_3 = 0;
 
       /* "yapic/entity/_entity_operation.pyx":87
- * 
+ *
  *         for related in rem:
- *             if related:             # <<<<<<<<<<<<<<
- *                 del_related_attrs(<Relation>attr, entity, related, order, ops)
- *                 _collect_entities(related, order, ops, determine_entity_op(related))
+ *             del_related_attrs(<Relation>attr, entity, related, order, ops)             # <<<<<<<<<<<<<<
+ *             _collect_entities(related, order, ops, determine_entity_op(related))
+ *
  */
-      __pyx_t_13 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_related)); if (unlikely(__pyx_t_13 < 0)) __PYX_ERR(0, 87, __pyx_L1_error)
-      if (__pyx_t_13) {
+      __pyx_t_3 = __pyx_f_5yapic_6entity_17_entity_operation_del_related_attrs(((struct __pyx_obj_5yapic_6entity_9_relation_Relation *)__pyx_v_attr), __pyx_v_entity, __pyx_v_related, __pyx_v_order, __pyx_v_ops); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 87, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-        /* "yapic/entity/_entity_operation.pyx":88
+      /* "yapic/entity/_entity_operation.pyx":88
  *         for related in rem:
- *             if related:
- *                 del_related_attrs(<Relation>attr, entity, related, order, ops)             # <<<<<<<<<<<<<<
- *                 _collect_entities(related, order, ops, determine_entity_op(related))
- * 
- */
-        __pyx_t_3 = __pyx_f_5yapic_6entity_17_entity_operation_del_related_attrs(((struct __pyx_obj_5yapic_6entity_9_relation_Relation *)__pyx_v_attr), __pyx_v_entity, __pyx_v_related, __pyx_v_order, __pyx_v_ops); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 88, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
-        /* "yapic/entity/_entity_operation.pyx":89
- *             if related:
- *                 del_related_attrs(<Relation>attr, entity, related, order, ops)
- *                 _collect_entities(related, order, ops, determine_entity_op(related))             # <<<<<<<<<<<<<<
- * 
+ *             del_related_attrs(<Relation>attr, entity, related, order, ops)
+ *             _collect_entities(related, order, ops, determine_entity_op(related))             # <<<<<<<<<<<<<<
+ *
  *         for related in chg:
  */
-        __pyx_t_3 = __pyx_f_5yapic_6entity_17_entity_operation_determine_entity_op(__pyx_v_related); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 89, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_6 = __pyx_f_5yapic_6entity_17_entity_operation__collect_entities(__pyx_v_related, __pyx_v_order, __pyx_v_ops, __pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 89, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-
-        /* "yapic/entity/_entity_operation.pyx":87
- * 
- *         for related in rem:
- *             if related:             # <<<<<<<<<<<<<<
- *                 del_related_attrs(<Relation>attr, entity, related, order, ops)
- *                 _collect_entities(related, order, ops, determine_entity_op(related))
- */
-      }
+      __pyx_t_3 = __pyx_f_5yapic_6entity_17_entity_operation_determine_entity_op(__pyx_v_related); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 88, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_6 = __pyx_f_5yapic_6entity_17_entity_operation__collect_entities(__pyx_v_related, __pyx_v_order, __pyx_v_ops, __pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 88, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
       /* "yapic/entity/_entity_operation.pyx":86
  *             _collect_entities(related, order, ops, determine_entity_op(related))
- * 
+ *
  *         for related in rem:             # <<<<<<<<<<<<<<
- *             if related:
- *                 del_related_attrs(<Relation>attr, entity, related, order, ops)
+ *             del_related_attrs(<Relation>attr, entity, related, order, ops)
+ *             _collect_entities(related, order, ops, determine_entity_op(related))
  */
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "yapic/entity/_entity_operation.pyx":91
- *                 _collect_entities(related, order, ops, determine_entity_op(related))
- * 
+    /* "yapic/entity/_entity_operation.pyx":90
+ *             _collect_entities(related, order, ops, determine_entity_op(related))
+ *
  *         for related in chg:             # <<<<<<<<<<<<<<
  *             set_related_attrs(<Relation>attr, entity, related, order, ops)
  *             _collect_entities(related, order, ops, determine_entity_op(related))
@@ -4932,23 +4912,23 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
     for (;;) {
       if (__pyx_t_12 >= PyList_GET_SIZE(__pyx_t_1)) break;
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-      __pyx_t_6 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_12); __Pyx_INCREF(__pyx_t_6); __pyx_t_12++; if (unlikely(0 < 0)) __PYX_ERR(0, 91, __pyx_L1_error)
+      __pyx_t_6 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_12); __Pyx_INCREF(__pyx_t_6); __pyx_t_12++; if (unlikely(0 < 0)) __PYX_ERR(0, 90, __pyx_L1_error)
       #else
-      __pyx_t_6 = PySequence_ITEM(__pyx_t_1, __pyx_t_12); __pyx_t_12++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 91, __pyx_L1_error)
+      __pyx_t_6 = PySequence_ITEM(__pyx_t_1, __pyx_t_12); __pyx_t_12++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 90, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       #endif
-      if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5yapic_6entity_7_entity_EntityBase))))) __PYX_ERR(0, 91, __pyx_L1_error)
+      if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5yapic_6entity_7_entity_EntityBase))))) __PYX_ERR(0, 90, __pyx_L1_error)
       __Pyx_XDECREF_SET(__pyx_v_related, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *)__pyx_t_6));
       __pyx_t_6 = 0;
 
       /* "yapic/entity/_entity_operation.pyx":92
- * 
+ *
  *         for related in chg:
  *             set_related_attrs(<Relation>attr, entity, related, order, ops)             # <<<<<<<<<<<<<<
  *             _collect_entities(related, order, ops, determine_entity_op(related))
- * 
+ *
  */
-      __pyx_t_6 = __pyx_f_5yapic_6entity_17_entity_operation_set_related_attrs(((struct __pyx_obj_5yapic_6entity_9_relation_Relation *)__pyx_v_attr), __pyx_v_entity, __pyx_v_related, __pyx_v_order, __pyx_v_ops); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 92, __pyx_L1_error)
+      __pyx_t_6 = __pyx_f_5yapic_6entity_17_entity_operation_set_related_attrs(((struct __pyx_obj_5yapic_6entity_9_relation_Relation *)__pyx_v_attr), __pyx_v_entity, __pyx_v_related, __pyx_v_order, __pyx_v_ops); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 91, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
@@ -4956,19 +4936,21 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
  *         for related in chg:
  *             set_related_attrs(<Relation>attr, entity, related, order, ops)
  *             _collect_entities(related, order, ops, determine_entity_op(related))             # <<<<<<<<<<<<<<
- * 
+ *
  *     if (is_dirty or state.is_dirty or not state.exists) and entity not in ops:
  */
-      __pyx_t_6 = __pyx_f_5yapic_6entity_17_entity_operation_determine_entity_op(__pyx_v_related); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 93, __pyx_L1_error)
+      __pyx_t_6 = __pyx_f_5yapic_6entity_17_entity_operation_determine_entity_op(__pyx_v_related); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 92, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_3 = __pyx_f_5yapic_6entity_17_entity_operation__collect_entities(__pyx_v_related, __pyx_v_order, __pyx_v_ops, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 93, __pyx_L1_error)
+      __pyx_t_3 = __pyx_f_5yapic_6entity_17_entity_operation__collect_entities(__pyx_v_related, __pyx_v_order, __pyx_v_ops, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 92, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __pyx_t_6 = __pyx_f_5yapic_6entity_17_entity_operation__collect_entities(__pyx_v_related, __pyx_v_order, __pyx_v_ops, __pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 93, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "yapic/entity/_entity_operation.pyx":91
- *                 _collect_entities(related, order, ops, determine_entity_op(related))
- * 
+      /* "yapic/entity/_entity_operation.pyx":90
+ *             _collect_entities(related, order, ops, determine_entity_op(related))
+ *
  *         for related in chg:             # <<<<<<<<<<<<<<
  *             set_related_attrs(<Relation>attr, entity, related, order, ops)
  *             _collect_entities(related, order, ops, determine_entity_op(related))
@@ -4978,7 +4960,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
 
     /* "yapic/entity/_entity_operation.pyx":80
  *     set_poly_id(entity)
- * 
+ *
  *     for attr, (add, rem, chg) in state.changed_realtions():             # <<<<<<<<<<<<<<
  *         is_dirty = True
  *         for related in add:
@@ -4988,7 +4970,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
 
   /* "yapic/entity/_entity_operation.pyx":95
  *             _collect_entities(related, order, ops, determine_entity_op(related))
- * 
+ *
  *     if (is_dirty or state.is_dirty or not state.exists) and entity not in ops:             # <<<<<<<<<<<<<<
  *         ops.append((op, entity))
  *         order.add(type(entity))
@@ -4996,7 +4978,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
   __pyx_t_14 = (__pyx_v_is_dirty != 0);
   if (!__pyx_t_14) {
   } else {
-    goto __pyx_L18_next_and;
+    goto __pyx_L17_next_and;
   }
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_state), __pyx_n_s_is_dirty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 95, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -5004,27 +4986,27 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (!__pyx_t_14) {
   } else {
-    goto __pyx_L18_next_and;
+    goto __pyx_L17_next_and;
   }
   __pyx_t_14 = ((!(__pyx_v_state->exists != 0)) != 0);
   if (__pyx_t_14) {
   } else {
     __pyx_t_13 = __pyx_t_14;
-    goto __pyx_L17_bool_binop_done;
+    goto __pyx_L16_bool_binop_done;
   }
-  __pyx_L18_next_and:;
-  __pyx_t_14 = (__Pyx_PySequence_ContainsTF(((PyObject *)__pyx_v_entity), __pyx_v_ops, Py_NE)); if (unlikely(__pyx_t_14 < 0)) __PYX_ERR(0, 95, __pyx_L1_error)
+  __pyx_L17_next_and:;
+  __pyx_t_14 = (__Pyx_PySequence_ContainsTF(((PyObject *)__pyx_v_entity), __pyx_v_ops, Py_NE)); if (unlikely(__pyx_t_14 < 0)) __PYX_ERR(0, 94, __pyx_L1_error)
   __pyx_t_15 = (__pyx_t_14 != 0);
   __pyx_t_13 = __pyx_t_15;
-  __pyx_L17_bool_binop_done:;
+  __pyx_L16_bool_binop_done:;
   if (__pyx_t_13) {
 
     /* "yapic/entity/_entity_operation.pyx":96
- * 
+ *
  *     if (is_dirty or state.is_dirty or not state.exists) and entity not in ops:
  *         ops.append((op, entity))             # <<<<<<<<<<<<<<
  *         order.add(type(entity))
- * 
+ *
  */
     if (unlikely(__pyx_v_ops == Py_None)) {
       PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
@@ -5045,8 +5027,8 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
  *     if (is_dirty or state.is_dirty or not state.exists) and entity not in ops:
  *         ops.append((op, entity))
  *         order.add(type(entity))             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
     if (!(likely(__Pyx_TypeTest(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_entity))), __pyx_ptype_5yapic_6entity_7_entity_EntityType)))) __PYX_ERR(0, 97, __pyx_L1_error)
     __pyx_t_2 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_DependencyList *)__pyx_v_order->__pyx_vtab)->add(__pyx_v_order, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)((PyObject *)Py_TYPE(((PyObject *)__pyx_v_entity)))), 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 97, __pyx_L1_error)
@@ -5055,7 +5037,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
 
     /* "yapic/entity/_entity_operation.pyx":95
  *             _collect_entities(related, order, ops, determine_entity_op(related))
- * 
+ *
  *     if (is_dirty or state.is_dirty or not state.exists) and entity not in ops:             # <<<<<<<<<<<<<<
  *         ops.append((op, entity))
  *         order.add(type(entity))
@@ -5063,8 +5045,8 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
   }
 
   /* "yapic/entity/_entity_operation.pyx":69
- * 
- * 
+ *
+ *
  * cdef _collect_entities(EntityBase entity, DependencyList order, list ops, object op):             # <<<<<<<<<<<<<<
  *     cdef EntityState state = entity.__state__
  *     cdef EntityAttribute attr
@@ -5097,8 +5079,8 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation__collect_entities(st
 }
 
 /* "yapic/entity/_entity_operation.pyx":100
- * 
- * 
+ *
+ *
  * cdef set_poly_id(EntityBase main):             # <<<<<<<<<<<<<<
  *     cdef EntityType main_t = type(main)
  *     cdef Polymorph poly = main_t.__polymorph__
@@ -5124,7 +5106,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_poly_id(struct _
   __Pyx_RefNannySetupContext("set_poly_id", 0);
 
   /* "yapic/entity/_entity_operation.pyx":101
- * 
+ *
  * cdef set_poly_id(EntityBase main):
  *     cdef EntityType main_t = type(main)             # <<<<<<<<<<<<<<
  *     cdef Polymorph poly = main_t.__polymorph__
@@ -5161,7 +5143,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_poly_id(struct _
 
   /* "yapic/entity/_entity_operation.pyx":107
  *     cdef Relation parent
- * 
+ *
  *     if pk and poly is not None:             # <<<<<<<<<<<<<<
  *         parent_entity = main
  *         for parent in poly.parents():
@@ -5179,7 +5161,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_poly_id(struct _
   if (__pyx_t_2) {
 
     /* "yapic/entity/_entity_operation.pyx":108
- * 
+ *
  *     if pk and poly is not None:
  *         parent_entity = main             # <<<<<<<<<<<<<<
  *         for parent in poly.parents():
@@ -5220,7 +5202,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_poly_id(struct _
  *         for parent in poly.parents():
  *             parent_entity = parent_entity.__state__.get_value(parent)             # <<<<<<<<<<<<<<
  *             parent_entity.__pk__ = pk
- * 
+ *
  */
       __pyx_t_1 = ((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityState *)__pyx_v_parent_entity->__state__->__pyx_vtab)->get_value(__pyx_v_parent_entity->__state__, ((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *)__pyx_v_parent)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 110, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
@@ -5232,8 +5214,8 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_poly_id(struct _
  *         for parent in poly.parents():
  *             parent_entity = parent_entity.__state__.get_value(parent)
  *             parent_entity.__pk__ = pk             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
       if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_parent_entity), __pyx_n_s_pk, __pyx_v_pk) < 0) __PYX_ERR(0, 111, __pyx_L1_error)
 
@@ -5249,7 +5231,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_poly_id(struct _
 
     /* "yapic/entity/_entity_operation.pyx":107
  *     cdef Relation parent
- * 
+ *
  *     if pk and poly is not None:             # <<<<<<<<<<<<<<
  *         parent_entity = main
  *         for parent in poly.parents():
@@ -5257,8 +5239,8 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_poly_id(struct _
   }
 
   /* "yapic/entity/_entity_operation.pyx":100
- * 
- * 
+ *
+ *
  * cdef set_poly_id(EntityBase main):             # <<<<<<<<<<<<<<
  *     cdef EntityType main_t = type(main)
  *     cdef Polymorph poly = main_t.__polymorph__
@@ -5284,8 +5266,8 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_poly_id(struct _
 }
 
 /* "yapic/entity/_entity_operation.pyx":114
- * 
- * 
+ *
+ *
  * cdef set_related_attrs(Relation attr, EntityBase main, EntityBase related, DependencyList order, list ops):             # <<<<<<<<<<<<<<
  *     if isinstance(attr._impl_, ManyToMany):
  *         across_alias = (<ManyToMany>attr._impl_).get_across_alias()
@@ -5307,7 +5289,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_related_attrs(st
   __Pyx_RefNannySetupContext("set_related_attrs", 0);
 
   /* "yapic/entity/_entity_operation.pyx":115
- * 
+ *
  * cdef set_related_attrs(Relation attr, EntityBase main, EntityBase related, DependencyList order, list ops):
  *     if isinstance(attr._impl_, ManyToMany):             # <<<<<<<<<<<<<<
  *         across_alias = (<ManyToMany>attr._impl_).get_across_alias()
@@ -5315,7 +5297,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_related_attrs(st
  */
   __pyx_t_1 = ((PyObject *)__pyx_v_attr->__pyx_base._impl_);
   __Pyx_INCREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_TypeCheck(__pyx_t_1, __pyx_ptype_5yapic_6entity_9_relation_ManyToMany); 
+  __pyx_t_2 = __Pyx_TypeCheck(__pyx_t_1, __pyx_ptype_5yapic_6entity_9_relation_ManyToMany);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (__pyx_t_3) {
@@ -5325,7 +5307,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_related_attrs(st
  *     if isinstance(attr._impl_, ManyToMany):
  *         across_alias = (<ManyToMany>attr._impl_).get_across_alias()             # <<<<<<<<<<<<<<
  *         across_entity = get_alias_target(across_alias)()
- * 
+ *
  */
     __pyx_t_1 = ((PyObject *)((struct __pyx_vtabstruct_5yapic_6entity_9_relation_ManyToMany *)((struct __pyx_obj_5yapic_6entity_9_relation_ManyToMany *)__pyx_v_attr->__pyx_base._impl_)->__pyx_base.__pyx_base.__pyx_vtab)->get_across_alias(((struct __pyx_obj_5yapic_6entity_9_relation_ManyToMany *)__pyx_v_attr->__pyx_base._impl_))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 116, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
@@ -5336,7 +5318,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_related_attrs(st
  *     if isinstance(attr._impl_, ManyToMany):
  *         across_alias = (<ManyToMany>attr._impl_).get_across_alias()
  *         across_entity = get_alias_target(across_alias)()             # <<<<<<<<<<<<<<
- * 
+ *
  *         append_fields(across_entity, main, attr._impl_.across_join_expr, ops)
  */
     __pyx_t_4 = ((PyObject *)__pyx_f_5yapic_6entity_7_entity_get_alias_target(__pyx_v_across_alias, 0)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 117, __pyx_L1_error)
@@ -5361,10 +5343,10 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_related_attrs(st
 
     /* "yapic/entity/_entity_operation.pyx":119
  *         across_entity = get_alias_target(across_alias)()
- * 
+ *
  *         append_fields(across_entity, main, attr._impl_.across_join_expr, ops)             # <<<<<<<<<<<<<<
  *         append_fields(across_entity, related, attr._impl_.join_expr, ops)
- * 
+ *
  */
     if (!(likely(((__pyx_v_across_entity) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_across_entity, __pyx_ptype_5yapic_6entity_7_entity_EntityBase))))) __PYX_ERR(0, 119, __pyx_L1_error)
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_attr->__pyx_base._impl_), __pyx_n_s_across_join_expr); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 119, __pyx_L1_error)
@@ -5376,10 +5358,10 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_related_attrs(st
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
     /* "yapic/entity/_entity_operation.pyx":120
- * 
+ *
  *         append_fields(across_entity, main, attr._impl_.across_join_expr, ops)
  *         append_fields(across_entity, related, attr._impl_.join_expr, ops)             # <<<<<<<<<<<<<<
- * 
+ *
  *         _collect_entities(across_entity, order, ops, EntityOperation.INSERT_OR_UPDATE)
  */
     if (!(likely(((__pyx_v_across_entity) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_across_entity, __pyx_ptype_5yapic_6entity_7_entity_EntityBase))))) __PYX_ERR(0, 120, __pyx_L1_error)
@@ -5393,7 +5375,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_related_attrs(st
 
     /* "yapic/entity/_entity_operation.pyx":122
  *         append_fields(across_entity, related, attr._impl_.join_expr, ops)
- * 
+ *
  *         _collect_entities(across_entity, order, ops, EntityOperation.INSERT_OR_UPDATE)             # <<<<<<<<<<<<<<
  *         order.add(across_alias)
  *     elif isinstance(attr._impl_, OneToMany):
@@ -5410,7 +5392,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_related_attrs(st
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
     /* "yapic/entity/_entity_operation.pyx":123
- * 
+ *
  *         _collect_entities(across_entity, order, ops, EntityOperation.INSERT_OR_UPDATE)
  *         order.add(across_alias)             # <<<<<<<<<<<<<<
  *     elif isinstance(attr._impl_, OneToMany):
@@ -5421,7 +5403,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_related_attrs(st
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
     /* "yapic/entity/_entity_operation.pyx":115
- * 
+ *
  * cdef set_related_attrs(Relation attr, EntityBase main, EntityBase related, DependencyList order, list ops):
  *     if isinstance(attr._impl_, ManyToMany):             # <<<<<<<<<<<<<<
  *         across_alias = (<ManyToMany>attr._impl_).get_across_alias()
@@ -5439,7 +5421,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_related_attrs(st
  */
   __pyx_t_1 = ((PyObject *)__pyx_v_attr->__pyx_base._impl_);
   __Pyx_INCREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_TypeCheck(__pyx_t_1, __pyx_ptype_5yapic_6entity_9_relation_OneToMany); 
+  __pyx_t_3 = __Pyx_TypeCheck(__pyx_t_1, __pyx_ptype_5yapic_6entity_9_relation_OneToMany);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_2 = (__pyx_t_3 != 0);
   if (__pyx_t_2) {
@@ -5473,8 +5455,8 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_related_attrs(st
  *         append_fields(related, main, attr._impl_.join_expr, ops)
  *     else:
  *         append_fields(main, related, attr._impl_.join_expr, ops)             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   /*else*/ {
     __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_attr->__pyx_base._impl_), __pyx_n_s_join_expr); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 127, __pyx_L1_error)
@@ -5488,8 +5470,8 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_related_attrs(st
   __pyx_L3:;
 
   /* "yapic/entity/_entity_operation.pyx":114
- * 
- * 
+ *
+ *
  * cdef set_related_attrs(Relation attr, EntityBase main, EntityBase related, DependencyList order, list ops):             # <<<<<<<<<<<<<<
  *     if isinstance(attr._impl_, ManyToMany):
  *         across_alias = (<ManyToMany>attr._impl_).get_across_alias()
@@ -5513,11 +5495,11 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_set_related_attrs(st
 }
 
 /* "yapic/entity/_entity_operation.pyx":130
- * 
- * 
+ *
+ *
  * cdef del_related_attrs(Relation attr, EntityBase main, EntityBase related, DependencyList order, list ops):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
 
 static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_del_related_attrs(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_9_relation_Relation *__pyx_v_attr, CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *__pyx_v_main, CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_7_entity_EntityBase *__pyx_v_related, CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_7_entity_DependencyList *__pyx_v_order, CYTHON_UNUSED PyObject *__pyx_v_ops) {
@@ -5533,8 +5515,8 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_del_related_attrs(CY
 }
 
 /* "yapic/entity/_entity_operation.pyx":134
- * 
- * 
+ *
+ *
  * cdef append_fields(EntityBase main, EntityBase related, Expression expr, list ops):             # <<<<<<<<<<<<<<
  *     v = FieldUpdater(main, related)
  *     v.visit(expr)
@@ -5556,11 +5538,11 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_append_fields(struct
   __Pyx_RefNannySetupContext("append_fields", 0);
 
   /* "yapic/entity/_entity_operation.pyx":135
- * 
+ *
  * cdef append_fields(EntityBase main, EntityBase related, Expression expr, list ops):
  *     v = FieldUpdater(main, related)             # <<<<<<<<<<<<<<
  *     v.visit(expr)
- * 
+ *
  */
   __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 135, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -5580,7 +5562,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_append_fields(struct
  * cdef append_fields(EntityBase main, EntityBase related, Expression expr, list ops):
  *     v = FieldUpdater(main, related)
  *     v.visit(expr)             # <<<<<<<<<<<<<<
- * 
+ *
  *     for r in v.result:
  */
   __pyx_t_2 = ((struct __pyx_vtabstruct_5yapic_6entity_17_entity_operation_FieldUpdater *)__pyx_v_v->__pyx_base.__pyx_vtab)->__pyx_base.visit(((struct __pyx_obj_5yapic_6entity_11_expression_Visitor *)__pyx_v_v), __pyx_v_expr, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 136, __pyx_L1_error)
@@ -5589,10 +5571,10 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_append_fields(struct
 
   /* "yapic/entity/_entity_operation.pyx":138
  *     v.visit(expr)
- * 
+ *
  *     for r in v.result:             # <<<<<<<<<<<<<<
  *         ops.append((EntityOperation.UPDATE_ATTR, r))
- * 
+ *
  */
   if (unlikely(__pyx_v_v->result == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
@@ -5611,11 +5593,11 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_append_fields(struct
     __pyx_t_1 = 0;
 
     /* "yapic/entity/_entity_operation.pyx":139
- * 
+ *
  *     for r in v.result:
  *         ops.append((EntityOperation.UPDATE_ATTR, r))             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
     if (unlikely(__pyx_v_ops == Py_None)) {
       PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
@@ -5639,17 +5621,17 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_append_fields(struct
 
     /* "yapic/entity/_entity_operation.pyx":138
  *     v.visit(expr)
- * 
+ *
  *     for r in v.result:             # <<<<<<<<<<<<<<
  *         ops.append((EntityOperation.UPDATE_ATTR, r))
- * 
+ *
  */
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "yapic/entity/_entity_operation.pyx":134
- * 
- * 
+ *
+ *
  * cdef append_fields(EntityBase main, EntityBase related, Expression expr, list ops):             # <<<<<<<<<<<<<<
  *     v = FieldUpdater(main, related)
  *     v.visit(expr)
@@ -5673,8 +5655,8 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_append_fields(struct
 }
 
 /* "yapic/entity/_entity_operation.pyx":142
- * 
- * 
+ *
+ *
  * cdef determine_entity_op(EntityBase entity):             # <<<<<<<<<<<<<<
  *     if entity.__pk__:
  *         if entity.__state__.exists:
@@ -5692,7 +5674,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_determine_entity_op(
   __Pyx_RefNannySetupContext("determine_entity_op", 0);
 
   /* "yapic/entity/_entity_operation.pyx":143
- * 
+ *
  * cdef determine_entity_op(EntityBase entity):
  *     if entity.__pk__:             # <<<<<<<<<<<<<<
  *         if entity.__state__.exists:
@@ -5760,7 +5742,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_determine_entity_op(
     }
 
     /* "yapic/entity/_entity_operation.pyx":143
- * 
+ *
  * cdef determine_entity_op(EntityBase entity):
  *     if entity.__pk__:             # <<<<<<<<<<<<<<
  *         if entity.__state__.exists:
@@ -5772,8 +5754,8 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_determine_entity_op(
  *             return EntityOperation.INSERT_OR_UPDATE
  *     else:
  *         return EntityOperation.INSERT             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
@@ -5788,8 +5770,8 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_determine_entity_op(
   }
 
   /* "yapic/entity/_entity_operation.pyx":142
- * 
- * 
+ *
+ *
  * cdef determine_entity_op(EntityBase entity):             # <<<<<<<<<<<<<<
  *     if entity.__pk__:
  *         if entity.__state__.exists:
@@ -5809,7 +5791,7 @@ static PyObject *__pyx_f_5yapic_6entity_17_entity_operation_determine_entity_op(
 
 /* "yapic/entity/_entity_operation.pyx":159
  *     cdef list result
- * 
+ *
  *     def __cinit__(self, EntityBase target, EntityBase source):             # <<<<<<<<<<<<<<
  *         self.target = target
  *         self.target_t = get_alias_target(type(target))
@@ -5895,7 +5877,7 @@ static int __pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater___cinit__(
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
   /* "yapic/entity/_entity_operation.pyx":160
- * 
+ *
  *     def __cinit__(self, EntityBase target, EntityBase source):
  *         self.target = target             # <<<<<<<<<<<<<<
  *         self.target_t = get_alias_target(type(target))
@@ -5941,7 +5923,7 @@ static int __pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater___cinit__(
  *         self.source = source
  *         self.source_t = get_alias_target(type(source))             # <<<<<<<<<<<<<<
  *         self.result = []
- * 
+ *
  */
   if (!(likely(__Pyx_TypeTest(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_source))), __pyx_ptype_5yapic_6entity_7_entity_EntityType)))) __PYX_ERR(0, 163, __pyx_L1_error)
   __pyx_t_1 = ((PyObject *)__pyx_f_5yapic_6entity_7_entity_get_alias_target(((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)((PyObject *)Py_TYPE(((PyObject *)__pyx_v_source)))), 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 163, __pyx_L1_error)
@@ -5956,7 +5938,7 @@ static int __pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater___cinit__(
  *         self.source = source
  *         self.source_t = get_alias_target(type(source))
  *         self.result = []             # <<<<<<<<<<<<<<
- * 
+ *
  *     def visit_binary(self, BinaryExpression expr):
  */
   __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 164, __pyx_L1_error)
@@ -5969,7 +5951,7 @@ static int __pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater___cinit__(
 
   /* "yapic/entity/_entity_operation.pyx":159
  *     cdef list result
- * 
+ *
  *     def __cinit__(self, EntityBase target, EntityBase source):             # <<<<<<<<<<<<<<
  *         self.target = target
  *         self.target_t = get_alias_target(type(target))
@@ -5989,7 +5971,7 @@ static int __pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater___cinit__(
 
 /* "yapic/entity/_entity_operation.pyx":166
  *         self.result = []
- * 
+ *
  *     def visit_binary(self, BinaryExpression expr):             # <<<<<<<<<<<<<<
  *         left = self.visit(expr.left)
  *         right = self.visit(expr.right)
@@ -6034,11 +6016,11 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
   __Pyx_RefNannySetupContext("visit_binary", 0);
 
   /* "yapic/entity/_entity_operation.pyx":167
- * 
+ *
  *     def visit_binary(self, BinaryExpression expr):
  *         left = self.visit(expr.left)             # <<<<<<<<<<<<<<
  *         right = self.visit(expr.right)
- * 
+ *
  */
   __pyx_t_1 = ((PyObject *)__pyx_v_expr->left);
   __Pyx_INCREF(__pyx_t_1);
@@ -6052,7 +6034,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
  *     def visit_binary(self, BinaryExpression expr):
  *         left = self.visit(expr.left)
  *         right = self.visit(expr.right)             # <<<<<<<<<<<<<<
- * 
+ *
  *         if expr.op is __eq__:
  */
   __pyx_t_2 = ((PyObject *)__pyx_v_expr->right);
@@ -6065,7 +6047,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
 
   /* "yapic/entity/_entity_operation.pyx":170
  *         right = self.visit(expr.right)
- * 
+ *
  *         if expr.op is __eq__:             # <<<<<<<<<<<<<<
  *             if isinstance(left, EntityAttribute):
  *                 left = get_alias_target((<EntityAttribute>left).get_entity()).__attrs__[left._index_]
@@ -6078,13 +6060,13 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
   if (likely(__pyx_t_4)) {
 
     /* "yapic/entity/_entity_operation.pyx":171
- * 
+ *
  *         if expr.op is __eq__:
  *             if isinstance(left, EntityAttribute):             # <<<<<<<<<<<<<<
  *                 left = get_alias_target((<EntityAttribute>left).get_entity()).__attrs__[left._index_]
- * 
+ *
  */
-    __pyx_t_4 = __Pyx_TypeCheck(__pyx_v_left, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute); 
+    __pyx_t_4 = __Pyx_TypeCheck(__pyx_v_left, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute);
     __pyx_t_3 = (__pyx_t_4 != 0);
     if (__pyx_t_3) {
 
@@ -6092,7 +6074,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
  *         if expr.op is __eq__:
  *             if isinstance(left, EntityAttribute):
  *                 left = get_alias_target((<EntityAttribute>left).get_entity()).__attrs__[left._index_]             # <<<<<<<<<<<<<<
- * 
+ *
  *             if isinstance(right, EntityAttribute):
  */
       __pyx_t_1 = ((PyObject *)((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute *)((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *)__pyx_v_left)->__pyx_base.__pyx_vtab)->get_entity(((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *)__pyx_v_left))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 172, __pyx_L1_error)
@@ -6114,30 +6096,30 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
       __pyx_t_5 = 0;
 
       /* "yapic/entity/_entity_operation.pyx":171
- * 
+ *
  *         if expr.op is __eq__:
  *             if isinstance(left, EntityAttribute):             # <<<<<<<<<<<<<<
  *                 left = get_alias_target((<EntityAttribute>left).get_entity()).__attrs__[left._index_]
- * 
+ *
  */
     }
 
     /* "yapic/entity/_entity_operation.pyx":174
  *                 left = get_alias_target((<EntityAttribute>left).get_entity()).__attrs__[left._index_]
- * 
+ *
  *             if isinstance(right, EntityAttribute):             # <<<<<<<<<<<<<<
  *                 right = get_alias_target((<EntityAttribute>right).get_entity()).__attrs__[right._index_]
- * 
+ *
  */
-    __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_right, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute); 
+    __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_right, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute);
     __pyx_t_4 = (__pyx_t_3 != 0);
     if (__pyx_t_4) {
 
       /* "yapic/entity/_entity_operation.pyx":175
- * 
+ *
  *             if isinstance(right, EntityAttribute):
  *                 right = get_alias_target((<EntityAttribute>right).get_entity()).__attrs__[right._index_]             # <<<<<<<<<<<<<<
- * 
+ *
  *             if isinstance(left, EntityAttribute) and test_entity_type_eq(self.target_t, (<EntityAttribute>left).get_entity()):
  */
       __pyx_t_5 = ((PyObject *)((struct __pyx_vtabstruct_5yapic_6entity_7_entity_EntityAttribute *)((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *)__pyx_v_right)->__pyx_base.__pyx_vtab)->get_entity(((struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *)__pyx_v_right))); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 175, __pyx_L1_error)
@@ -6160,21 +6142,21 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
 
       /* "yapic/entity/_entity_operation.pyx":174
  *                 left = get_alias_target((<EntityAttribute>left).get_entity()).__attrs__[left._index_]
- * 
+ *
  *             if isinstance(right, EntityAttribute):             # <<<<<<<<<<<<<<
  *                 right = get_alias_target((<EntityAttribute>right).get_entity()).__attrs__[right._index_]
- * 
+ *
  */
     }
 
     /* "yapic/entity/_entity_operation.pyx":177
  *                 right = get_alias_target((<EntityAttribute>right).get_entity()).__attrs__[right._index_]
- * 
+ *
  *             if isinstance(left, EntityAttribute) and test_entity_type_eq(self.target_t, (<EntityAttribute>left).get_entity()):             # <<<<<<<<<<<<<<
  *                 if isinstance(right, EntityAttribute) and test_entity_type_eq(self.source_t, (<EntityAttribute>right).get_entity()):
  *                     self.result.append((self.target, left, self.source, right))
  */
-    __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_left, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute); 
+    __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_left, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute);
     __pyx_t_6 = (__pyx_t_3 != 0);
     if (__pyx_t_6) {
     } else {
@@ -6193,13 +6175,13 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
     if (__pyx_t_4) {
 
       /* "yapic/entity/_entity_operation.pyx":178
- * 
+ *
  *             if isinstance(left, EntityAttribute) and test_entity_type_eq(self.target_t, (<EntityAttribute>left).get_entity()):
  *                 if isinstance(right, EntityAttribute) and test_entity_type_eq(self.source_t, (<EntityAttribute>right).get_entity()):             # <<<<<<<<<<<<<<
  *                     self.result.append((self.target, left, self.source, right))
  *                 else:
  */
-      __pyx_t_6 = __Pyx_TypeCheck(__pyx_v_right, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute); 
+      __pyx_t_6 = __Pyx_TypeCheck(__pyx_v_right, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute);
       __pyx_t_3 = (__pyx_t_6 != 0);
       if (__pyx_t_3) {
       } else {
@@ -6246,7 +6228,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
         /* "yapic/entity/_entity_operation.pyx":178
- * 
+ *
  *             if isinstance(left, EntityAttribute) and test_entity_type_eq(self.target_t, (<EntityAttribute>left).get_entity()):
  *                 if isinstance(right, EntityAttribute) and test_entity_type_eq(self.source_t, (<EntityAttribute>right).get_entity()):             # <<<<<<<<<<<<<<
  *                     self.result.append((self.target, left, self.source, right))
@@ -6272,7 +6254,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
 
       /* "yapic/entity/_entity_operation.pyx":177
  *                 right = get_alias_target((<EntityAttribute>right).get_entity()).__attrs__[right._index_]
- * 
+ *
  *             if isinstance(left, EntityAttribute) and test_entity_type_eq(self.target_t, (<EntityAttribute>left).get_entity()):             # <<<<<<<<<<<<<<
  *                 if isinstance(right, EntityAttribute) and test_entity_type_eq(self.source_t, (<EntityAttribute>right).get_entity()):
  *                     self.result.append((self.target, left, self.source, right))
@@ -6287,7 +6269,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
  *                 if isinstance(left, EntityAttribute) and test_entity_type_eq(self.source_t, (<EntityAttribute>left).get_entity()):
  *                     self.result.append((self.target, right, self.source, left))
  */
-    __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_right, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute); 
+    __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_right, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute);
     __pyx_t_6 = (__pyx_t_3 != 0);
     if (__pyx_t_6) {
     } else {
@@ -6312,7 +6294,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
  *                     self.result.append((self.target, right, self.source, left))
  *                 else:
  */
-      __pyx_t_6 = __Pyx_TypeCheck(__pyx_v_left, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute); 
+      __pyx_t_6 = __Pyx_TypeCheck(__pyx_v_left, __pyx_ptype_5yapic_6entity_7_entity_EntityAttribute);
       __pyx_t_3 = (__pyx_t_6 != 0);
       if (__pyx_t_3) {
       } else {
@@ -6395,7 +6377,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
 
     /* "yapic/entity/_entity_operation.pyx":170
  *         right = self.visit(expr.right)
- * 
+ *
  *         if expr.op is __eq__:             # <<<<<<<<<<<<<<
  *             if isinstance(left, EntityAttribute):
  *                 left = get_alias_target((<EntityAttribute>left).get_entity()).__attrs__[left._index_]
@@ -6407,7 +6389,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
  *                     self.target.__state__.set_value(right, left)
  *         else:
  *             raise ValueError("Unsupported operator: %r" % expr.op)             # <<<<<<<<<<<<<<
- * 
+ *
  *     def visit_unary(self, UnaryExpression expr):
  */
   /*else*/ {
@@ -6424,7 +6406,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
 
   /* "yapic/entity/_entity_operation.pyx":166
  *         self.result = []
- * 
+ *
  *     def visit_binary(self, BinaryExpression expr):             # <<<<<<<<<<<<<<
  *         left = self.visit(expr.left)
  *         right = self.visit(expr.right)
@@ -6449,7 +6431,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_2vis
 
 /* "yapic/entity/_entity_operation.pyx":190
  *             raise ValueError("Unsupported operator: %r" % expr.op)
- * 
+ *
  *     def visit_unary(self, UnaryExpression expr):             # <<<<<<<<<<<<<<
  *         if expr.op is __neg__ or expr.op is __pos__:
  *             val = self.visit(expr.expr)
@@ -6492,7 +6474,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_4vis
   __Pyx_RefNannySetupContext("visit_unary", 0);
 
   /* "yapic/entity/_entity_operation.pyx":191
- * 
+ *
  *     def visit_unary(self, UnaryExpression expr):
  *         if expr.op is __neg__ or expr.op is __pos__:             # <<<<<<<<<<<<<<
  *             val = self.visit(expr.expr)
@@ -6539,7 +6521,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_4vis
  *                 return expr.op(val)
  *             else:
  */
-    __pyx_t_1 = __Pyx_TypeCheck(__pyx_v_val, __pyx_ptype_5yapic_6entity_11_expression_Expression); 
+    __pyx_t_1 = __Pyx_TypeCheck(__pyx_v_val, __pyx_ptype_5yapic_6entity_11_expression_Expression);
     __pyx_t_3 = ((!(__pyx_t_1 != 0)) != 0);
     if (__pyx_t_3) {
 
@@ -6595,7 +6577,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_4vis
     }
 
     /* "yapic/entity/_entity_operation.pyx":191
- * 
+ *
  *     def visit_unary(self, UnaryExpression expr):
  *         if expr.op is __neg__ or expr.op is __pos__:             # <<<<<<<<<<<<<<
  *             val = self.visit(expr.expr)
@@ -6607,7 +6589,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_4vis
  *                 return expr
  *         else:
  *             raise ValueError("Unsupported operator: %r" % expr.op)             # <<<<<<<<<<<<<<
- * 
+ *
  *     # def visit_cast(self, CastExpression expr):
  */
   /*else*/ {
@@ -6623,7 +6605,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_4vis
 
   /* "yapic/entity/_entity_operation.pyx":190
  *             raise ValueError("Unsupported operator: %r" % expr.op)
- * 
+ *
  *     def visit_unary(self, UnaryExpression expr):             # <<<<<<<<<<<<<<
  *         if expr.op is __neg__ or expr.op is __pos__:
  *             val = self.visit(expr.expr)
@@ -6645,10 +6627,10 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_4vis
 
 /* "yapic/entity/_entity_operation.pyx":203
  *     #     return self.visit(expr.expr).cast(expr.type)
- * 
+ *
  *     def visit_raw(self, RawExpression expr):             # <<<<<<<<<<<<<<
  *         return expr
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6678,10 +6660,10 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_6vis
   __Pyx_RefNannySetupContext("visit_raw", 0);
 
   /* "yapic/entity/_entity_operation.pyx":204
- * 
+ *
  *     def visit_raw(self, RawExpression expr):
  *         return expr             # <<<<<<<<<<<<<<
- * 
+ *
  *     def visit_field(self, EntityAttribute expr):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -6691,10 +6673,10 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_6vis
 
   /* "yapic/entity/_entity_operation.pyx":203
  *     #     return self.visit(expr.expr).cast(expr.type)
- * 
+ *
  *     def visit_raw(self, RawExpression expr):             # <<<<<<<<<<<<<<
  *         return expr
- * 
+ *
  */
 
   /* function exit code */
@@ -6706,7 +6688,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_6vis
 
 /* "yapic/entity/_entity_operation.pyx":206
  *         return expr
- * 
+ *
  *     def visit_field(self, EntityAttribute expr):             # <<<<<<<<<<<<<<
  *         if get_alias_target(expr.get_entity()) is self.source_t:
  *             val = self.source.__state__.get_value(expr)
@@ -6747,7 +6729,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_8vis
   __Pyx_RefNannySetupContext("visit_field", 0);
 
   /* "yapic/entity/_entity_operation.pyx":207
- * 
+ *
  *     def visit_field(self, EntityAttribute expr):
  *         if get_alias_target(expr.get_entity()) is self.source_t:             # <<<<<<<<<<<<<<
  *             val = self.source.__state__.get_value(expr)
@@ -6791,7 +6773,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_8vis
  *             if val is not NOTSET:
  *                 return val             # <<<<<<<<<<<<<<
  *         return expr
- * 
+ *
  */
       __Pyx_XDECREF(__pyx_r);
       __Pyx_INCREF(__pyx_v_val);
@@ -6808,7 +6790,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_8vis
     }
 
     /* "yapic/entity/_entity_operation.pyx":207
- * 
+ *
  *     def visit_field(self, EntityAttribute expr):
  *         if get_alias_target(expr.get_entity()) is self.source_t:             # <<<<<<<<<<<<<<
  *             val = self.source.__state__.get_value(expr)
@@ -6820,7 +6802,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_8vis
  *             if val is not NOTSET:
  *                 return val
  *         return expr             # <<<<<<<<<<<<<<
- * 
+ *
  *     def visit_const(self, ConstExpression expr):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -6830,7 +6812,7 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_8vis
 
   /* "yapic/entity/_entity_operation.pyx":206
  *         return expr
- * 
+ *
  *     def visit_field(self, EntityAttribute expr):             # <<<<<<<<<<<<<<
  *         if get_alias_target(expr.get_entity()) is self.source_t:
  *             val = self.source.__state__.get_value(expr)
@@ -6851,10 +6833,10 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_8vis
 
 /* "yapic/entity/_entity_operation.pyx":213
  *         return expr
- * 
+ *
  *     def visit_const(self, ConstExpression expr):             # <<<<<<<<<<<<<<
  *         return expr.value
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6884,11 +6866,11 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_10vi
   __Pyx_RefNannySetupContext("visit_const", 0);
 
   /* "yapic/entity/_entity_operation.pyx":214
- * 
+ *
  *     def visit_const(self, ConstExpression expr):
  *         return expr.value             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_expr->value);
@@ -6897,10 +6879,10 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_10vi
 
   /* "yapic/entity/_entity_operation.pyx":213
  *         return expr
- * 
+ *
  *     def visit_const(self, ConstExpression expr):             # <<<<<<<<<<<<<<
  *         return expr.value
- * 
+ *
  */
 
   /* function exit code */
@@ -6911,8 +6893,8 @@ static PyObject *__pyx_pf_5yapic_6entity_17_entity_operation_12FieldUpdater_10vi
 }
 
 /* "yapic/entity/_entity_operation.pyx":217
- * 
- * 
+ *
+ *
  * cdef bint test_entity_type_eq(EntityType a, EntityType b):             # <<<<<<<<<<<<<<
  *     if b.__polymorph__ is not None and issubclass(b, a):
  *         return True
@@ -6930,7 +6912,7 @@ static int __pyx_f_5yapic_6entity_17_entity_operation_test_entity_type_eq(struct
   __Pyx_RefNannySetupContext("test_entity_type_eq", 0);
 
   /* "yapic/entity/_entity_operation.pyx":218
- * 
+ *
  * cdef bint test_entity_type_eq(EntityType a, EntityType b):
  *     if b.__polymorph__ is not None and issubclass(b, a):             # <<<<<<<<<<<<<<
  *         return True
@@ -6960,7 +6942,7 @@ static int __pyx_f_5yapic_6entity_17_entity_operation_test_entity_type_eq(struct
     goto __pyx_L0;
 
     /* "yapic/entity/_entity_operation.pyx":218
- * 
+ *
  * cdef bint test_entity_type_eq(EntityType a, EntityType b):
  *     if b.__polymorph__ is not None and issubclass(b, a):             # <<<<<<<<<<<<<<
  *         return True
@@ -7019,8 +7001,8 @@ static int __pyx_f_5yapic_6entity_17_entity_operation_test_entity_type_eq(struct
   }
 
   /* "yapic/entity/_entity_operation.pyx":217
- * 
- * 
+ *
+ *
  * cdef bint test_entity_type_eq(EntityType a, EntityType b):             # <<<<<<<<<<<<<<
  *     if b.__polymorph__ is not None and issubclass(b, a):
  *         return True
@@ -7036,8 +7018,8 @@ static int __pyx_f_5yapic_6entity_17_entity_operation_test_entity_type_eq(struct
 }
 
 /* "_entity.pxd":247
- * 
- * 
+ *
+ *
  * cdef inline entity_is_builtin(EntityType entity):             # <<<<<<<<<<<<<<
  *     try:
  *         return entity.__meta__["is_builtin"] is True
@@ -7060,7 +7042,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_7_entity_entity_is_builtin
   __Pyx_RefNannySetupContext("entity_is_builtin", 0);
 
   /* "_entity.pxd":248
- * 
+ *
  * cdef inline entity_is_builtin(EntityType entity):
  *     try:             # <<<<<<<<<<<<<<
  *         return entity.__meta__["is_builtin"] is True
@@ -7097,7 +7079,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_7_entity_entity_is_builtin
       goto __pyx_L7_try_return;
 
       /* "_entity.pxd":248
- * 
+ *
  * cdef inline entity_is_builtin(EntityType entity):
  *     try:             # <<<<<<<<<<<<<<
  *         return entity.__meta__["is_builtin"] is True
@@ -7113,7 +7095,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_7_entity_entity_is_builtin
  *         return entity.__meta__["is_builtin"] is True
  *     except KeyError:             # <<<<<<<<<<<<<<
  *         return False
- * 
+ *
  */
     __pyx_t_7 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_KeyError);
     if (__pyx_t_7) {
@@ -7127,8 +7109,8 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_7_entity_entity_is_builtin
  *         return entity.__meta__["is_builtin"] is True
  *     except KeyError:
  *         return False             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
       __Pyx_XDECREF(__pyx_r);
       __Pyx_INCREF(Py_False);
@@ -7142,7 +7124,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_7_entity_entity_is_builtin
     __pyx_L5_except_error:;
 
     /* "_entity.pxd":248
- * 
+ *
  * cdef inline entity_is_builtin(EntityType entity):
  *     try:             # <<<<<<<<<<<<<<
  *         return entity.__meta__["is_builtin"] is True
@@ -7168,8 +7150,8 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_7_entity_entity_is_builtin
   }
 
   /* "_entity.pxd":247
- * 
- * 
+ *
+ *
  * cdef inline entity_is_builtin(EntityType entity):             # <<<<<<<<<<<<<<
  *     try:
  *         return entity.__meta__["is_builtin"] is True
@@ -7189,8 +7171,8 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_7_entity_entity_is_builtin
 }
 
 /* "_entity.pxd":254
- * 
- * 
+ *
+ *
  * cdef inline entity_is_virtual(EntityType entity):             # <<<<<<<<<<<<<<
  *     try:
  *         return entity.__meta__["is_virtual"] is True
@@ -7213,7 +7195,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_7_entity_entity_is_virtual
   __Pyx_RefNannySetupContext("entity_is_virtual", 0);
 
   /* "_entity.pxd":255
- * 
+ *
  * cdef inline entity_is_virtual(EntityType entity):
  *     try:             # <<<<<<<<<<<<<<
  *         return entity.__meta__["is_virtual"] is True
@@ -7250,7 +7232,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_7_entity_entity_is_virtual
       goto __pyx_L7_try_return;
 
       /* "_entity.pxd":255
- * 
+ *
  * cdef inline entity_is_virtual(EntityType entity):
  *     try:             # <<<<<<<<<<<<<<
  *         return entity.__meta__["is_virtual"] is True
@@ -7266,7 +7248,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_7_entity_entity_is_virtual
  *         return entity.__meta__["is_virtual"] is True
  *     except KeyError:             # <<<<<<<<<<<<<<
  *         return False
- * 
+ *
  */
     __pyx_t_7 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_KeyError);
     if (__pyx_t_7) {
@@ -7280,8 +7262,8 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_7_entity_entity_is_virtual
  *         return entity.__meta__["is_virtual"] is True
  *     except KeyError:
  *         return False             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
       __Pyx_XDECREF(__pyx_r);
       __Pyx_INCREF(Py_False);
@@ -7295,7 +7277,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_7_entity_entity_is_virtual
     __pyx_L5_except_error:;
 
     /* "_entity.pxd":255
- * 
+ *
  * cdef inline entity_is_virtual(EntityType entity):
  *     try:             # <<<<<<<<<<<<<<
  *         return entity.__meta__["is_virtual"] is True
@@ -7321,8 +7303,8 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_7_entity_entity_is_virtual
   }
 
   /* "_entity.pxd":254
- * 
- * 
+ *
+ *
  * cdef inline entity_is_virtual(EntityType entity):             # <<<<<<<<<<<<<<
  *     try:
  *         return entity.__meta__["is_virtual"] is True
@@ -7342,8 +7324,8 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_7_entity_entity_is_virtual
 }
 
 /* "_entity.pxd":261
- * 
- * 
+ *
+ *
  * cdef inline entity_is_type(EntityType entity):             # <<<<<<<<<<<<<<
  *     try:
  *         return entity.__meta__["is_type"] is True
@@ -7366,7 +7348,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_7_entity_entity_is_type(st
   __Pyx_RefNannySetupContext("entity_is_type", 0);
 
   /* "_entity.pxd":262
- * 
+ *
  * cdef inline entity_is_type(EntityType entity):
  *     try:             # <<<<<<<<<<<<<<
  *         return entity.__meta__["is_type"] is True
@@ -7403,7 +7385,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_7_entity_entity_is_type(st
       goto __pyx_L7_try_return;
 
       /* "_entity.pxd":262
- * 
+ *
  * cdef inline entity_is_type(EntityType entity):
  *     try:             # <<<<<<<<<<<<<<
  *         return entity.__meta__["is_type"] is True
@@ -7445,7 +7427,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_7_entity_entity_is_type(st
     __pyx_L5_except_error:;
 
     /* "_entity.pxd":262
- * 
+ *
  * cdef inline entity_is_type(EntityType entity):
  *     try:             # <<<<<<<<<<<<<<
  *         return entity.__meta__["is_type"] is True
@@ -7471,8 +7453,8 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_7_entity_entity_is_type(st
   }
 
   /* "_entity.pxd":261
- * 
- * 
+ *
+ *
  * cdef inline entity_is_type(EntityType entity):             # <<<<<<<<<<<<<<
  *     try:
  *         return entity.__meta__["is_type"] is True
@@ -7492,11 +7474,11 @@ static CYTHON_INLINE PyObject *__pyx_f_5yapic_6entity_7_entity_entity_is_type(st
 }
 
 /* "_field.pxd":18
- * 
- * 
+ *
+ *
  * cdef inline bint field_eq(Field a, Field b):             # <<<<<<<<<<<<<<
  *     return a._uid_ is b._uid_
- * 
+ *
  */
 
 static CYTHON_INLINE int __pyx_f_5yapic_6entity_6_field_field_eq(struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_a, struct __pyx_obj_5yapic_6entity_6_field_Field *__pyx_v_b) {
@@ -7505,21 +7487,21 @@ static CYTHON_INLINE int __pyx_f_5yapic_6entity_6_field_field_eq(struct __pyx_ob
   __Pyx_RefNannySetupContext("field_eq", 0);
 
   /* "_field.pxd":19
- * 
+ *
  * cdef inline bint field_eq(Field a, Field b):
  *     return a._uid_ is b._uid_             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_r = (__pyx_v_a->__pyx_base._uid_ == __pyx_v_b->__pyx_base._uid_);
   goto __pyx_L0;
 
   /* "_field.pxd":18
- * 
- * 
+ *
+ *
  * cdef inline bint field_eq(Field a, Field b):             # <<<<<<<<<<<<<<
  *     return a._uid_ is b._uid_
- * 
+ *
  */
 
   /* function exit code */
@@ -8024,7 +8006,7 @@ static int __Pyx_modinit_type_import_code(void) {
   /*--- Type import code ---*/
   __pyx_t_1 = PyImport_ImportModule(__Pyx_BUILTIN_MODULE_NAME); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_ptype_7cpython_4type_type = __Pyx_ImportType_0_29_36(__pyx_t_1, __Pyx_BUILTIN_MODULE_NAME, "type", 
+  __pyx_ptype_7cpython_4type_type = __Pyx_ImportType_0_29_36(__pyx_t_1, __Pyx_BUILTIN_MODULE_NAME, "type",
   #if defined(PYPY_VERSION_NUM) && PYPY_VERSION_NUM < 0x050B0000
   sizeof(PyTypeObject), __PYX_GET_STRUCT_ALIGNMENT_0_29_36(PyTypeObject),
   #else
@@ -8425,7 +8407,7 @@ if (!__Pyx_RefNanny) {
  * from enum import IntFlag
  * from functools import cmp_to_key             # <<<<<<<<<<<<<<
  * from operator import __and__, __eq__, __neg__, __pos__
- * 
+ *
  */
   __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -8445,7 +8427,7 @@ if (!__Pyx_RefNanny) {
  * from enum import IntFlag
  * from functools import cmp_to_key
  * from operator import __and__, __eq__, __neg__, __pos__             # <<<<<<<<<<<<<<
- * 
+ *
  * import cython
  */
   __pyx_t_1 = PyList_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 3, __pyx_L1_error)
@@ -8484,8 +8466,8 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "yapic/entity/_entity_operation.pyx":12
- * 
- * 
+ *
+ *
  * class EntityOperation(IntFlag):             # <<<<<<<<<<<<<<
  *     REMOVE = 1
  *     UPDATE = 2
@@ -8503,7 +8485,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_GOTREF(__pyx_t_3);
 
   /* "yapic/entity/_entity_operation.pyx":13
- * 
+ *
  * class EntityOperation(IntFlag):
  *     REMOVE = 1             # <<<<<<<<<<<<<<
  *     UPDATE = 2
@@ -8525,7 +8507,7 @@ if (!__Pyx_RefNanny) {
  *     UPDATE = 2
  *     INSERT = 4             # <<<<<<<<<<<<<<
  *     INSERT_OR_UPDATE = 8
- * 
+ *
  */
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_INSERT, __pyx_int_4) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
 
@@ -8533,7 +8515,7 @@ if (!__Pyx_RefNanny) {
  *     UPDATE = 2
  *     INSERT = 4
  *     INSERT_OR_UPDATE = 8             # <<<<<<<<<<<<<<
- * 
+ *
  *     # (EntityBase target, EntityAttribute target_attr, EntityBase src, EntityAttribute src_attr)
  */
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_INSERT_OR_UPDATE, __pyx_int_8) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
@@ -8542,14 +8524,14 @@ if (!__Pyx_RefNanny) {
  *     # (EntityBase target, EntityAttribute target_attr, EntityBase src, EntityAttribute src_attr)
  *     # XXX MUST HAVE LAST VALUE
  *     UPDATE_ATTR = 16             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_UPDATE_ATTR, __pyx_int_16) < 0) __PYX_ERR(0, 20, __pyx_L1_error)
 
   /* "yapic/entity/_entity_operation.pyx":12
- * 
- * 
+ *
+ *
  * class EntityOperation(IntFlag):             # <<<<<<<<<<<<<<
  *     REMOVE = 1
  *     UPDATE = 2
@@ -8573,11 +8555,11 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "_field.pxd":18
- * 
- * 
+ *
+ *
  * cdef inline bint field_eq(Field a, Field b):             # <<<<<<<<<<<<<<
  *     return a._uid_ is b._uid_
- * 
+ *
  */
 
   /*--- Wrapped vars code ---*/
