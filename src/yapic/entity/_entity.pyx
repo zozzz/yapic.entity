@@ -1011,6 +1011,11 @@ cdef class EntityState:
         Py_XDECREF(iv)
         PyTuple_SET_ITEM(<object>initial, idx, <object>nv)
 
+    cdef object get_initial_value(self, EntityAttribute attr):
+        cdef PyObject* initial = <PyObject*>self.initial
+        cdef PyObject* iv = PyTuple_GET_ITEM(<object>initial, attr._index_)
+        return <object>iv
+
     cdef object get_value(self, EntityAttribute attr):
         cdef PyObject* initial = <PyObject*>self.initial
         cdef PyObject* current = <PyObject*>self.current

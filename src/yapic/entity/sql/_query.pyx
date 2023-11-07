@@ -1133,10 +1133,10 @@ cdef class QueryCompiler:
     cpdef compile_insert_or_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
         raise NotImplementedError()
 
-    cpdef compile_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
+    cpdef compile_update(self, EntityType entity, list attrs, list names, list values, list where, bint inline_values=False):
         raise NotImplementedError()
 
-    cpdef compile_delete(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
+    cpdef compile_delete(self, EntityType entity, list attrs, list names, list values, list where, bint inline_values=False):
         raise NotImplementedError()
 
 

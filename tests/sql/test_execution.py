@@ -40,6 +40,7 @@ from yapic.entity import (
     TimeTz,
     UpdatedTime,
     func,
+    raw,
     virtual,
 )
 from yapic.entity.field import Choice
@@ -167,6 +168,10 @@ async def test_basic_insert_update(conn):
     assert u.__state__.changes() == {}
 
     assert await conn.delete(u) is True
+
+    assert bool(u.id)
+    deleted_user = await conn.select(Query(User).where(User.id == u.id)).first()
+    assert deleted_user is None
 
 
 async def test_insert_or_update(conn):
@@ -1524,3 +1529,60 @@ ALTER TABLE "execution"."Article"
     assert user is not None
     article = await conn.select(Query(Article).where(Article.id == article.id)).first()
     assert article is not None
+
+
+async def test_update_pk(conn, pgclean):
+    reg = Registry()
+
+    class User(Entity, schema="execution", registry=reg):
+      id: Serial
+      name: String
+
+    await conn.execute(await sync(conn, reg))
+
+    user = User(name="id-1")
+    await conn.save(user)
+    assert user.id == 1
+
+    user.id = 5
+    await conn.save(user)
+    assert user.id == 5
+
+    user_from_db = await conn.select(Query(User).where(User.id == 5)).first()
+    assert user_from_db is not None
+    assert user_from_db.id == 5
+    assert user_from_db.name == user.name
+
+
+async def test_update_composite_pk(conn, pgclean):
+    reg = Registry()
+
+    class ProductCategory(Entity, schema="execution", registry=reg):
+        product_id: Int = PrimaryKey()
+        category_id: Int = PrimaryKey()
+
+    await conn.execute(await sync(conn, reg))
+
+    pc = ProductCategory(product_id=1, category_id=2)
+    await conn.save(pc)
+    assert pc.product_id == 1
+    assert pc.category_id == 2
+
+    pc.category_id = 3
+    await conn.save(pc)
+    assert pc.product_id == 1
+    assert pc.category_id == 3
+
+    pc.product_id = 4
+    await conn.save(pc)
+    assert pc.product_id == 4
+    assert pc.category_id == 3
+
+    pc.product_id = 5
+    pc.category_id = 6
+    await conn.save(pc)
+    assert pc.product_id == 5
+    assert pc.category_id == 6
+
+    count = await conn.select(Query(ProductCategory).columns(raw("count(*)"))).first()
+    assert count == 1

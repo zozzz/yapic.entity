@@ -477,7 +477,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
         return "".join(q), self.params
 
-    cpdef compile_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
+    cpdef compile_update(self, EntityType entity, list attrs, list names, list values, list where, bint inline_values=False):
         if not values:
             return (None, None)
 
@@ -485,7 +485,7 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         self.inline_values = inline_values
 
         cdef list updates = []
-        cdef list where = []
+        cdef list where_clause = []
         cdef int idx
 
         if inline_values:
@@ -497,10 +497,10 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                 else:
                     v = self.dialect.quote_value(v)
 
-                if (<EntityAttribute>attrs[i]).get_ext(PrimaryKey):
-                    where.append(f"{name}={v}")
-                else:
-                    updates.append(f"{name}={v}")
+                updates.append(f"{name}={v}")
+
+            for k, v in where:
+                where_clause.append(f"{k}={self.dialect.quote_value(v)}")
         else:
             idx = 1
             for i, name in enumerate(names):
@@ -514,21 +514,22 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                         updates.append(f"{name}={v}")
                 else:
                     self.params.append(v)
-                    if (<EntityAttribute>attrs[i]).get_ext(PrimaryKey):
-                        where.append(f"{name}=${len(self.params)}")
-                    else:
-                        updates.append(f"{name}=${len(self.params)}")
+                    updates.append(f"{name}=${len(self.params)}")
+
+            for k, v in where:
+                self.params.append(v)
+                where_clause.append(f"{k}=${len(self.params)}")
 
         if not updates:
             return (None, None)
 
-        if not where:
-            raise RuntimeError("TODO: ...")
+        if not where_clause:
+            raise RuntimeError("Missing where clause")
 
         return "".join(("UPDATE ", self.dialect.table_qname(get_alias_target(entity)), " SET ",
-            ", ".join(updates), " WHERE ", " AND ".join(where))), self.params
+            ", ".join(updates), " WHERE ", " AND ".join(where_clause))), self.params
 
-    cpdef compile_delete(self, EntityType entity, list attrs, list names, list values, bint inline_values=False):
+    cpdef compile_delete(self, EntityType entity, list attrs, list names, list values, list where, bint inline_values=False):
         """
 
         Returns:
@@ -536,33 +537,31 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                 1. element is query string
                 2. element is params
         """
-        cdef list where = []
+        cdef list where_clause = []
         cdef list params = []
 
         if inline_values:
-            for i, attr in enumerate(attrs):
-                if attr.get_ext(PrimaryKey):
-                    where.append(f"{names[i]}={self.dialect.quote_value(values[i])}")
+            for k, v in where:
+                where_clause.append(f"{k}={self.dialect.quote_value(v)}")
         else:
-            for i, attr in enumerate(attrs):
-                if attr.get_ext(PrimaryKey):
-                    where.append(f"{names[i]}=${i+1}")
-                    params.append(values[i])
+            for k, v in where:
+                params.append(v)
+                where_clause.append(f"{k}=${len(params)}")
 
-        if not where:
+        if not where_clause:
             if not values:
                 return (None, None)
 
             if inline_values:
                 for i, attr in enumerate(attrs):
-                    where.append(f"{names[i]}={self.dialect.quote_value(values[i])}")
+                    where_clause.append(f"{names[i]}={self.dialect.quote_value(values[i])}")
             else:
                 for i, attr in enumerate(attrs):
-                    where.append(f"{names[i]}=${i+1}")
+                    where_clause.append(f"{names[i]}=${i+1}")
                     params.append(values[i])
 
         return "".join(("DELETE FROM ", self.dialect.table_qname(get_alias_target(entity)),
-             " WHERE ", " AND ".join(where))), params
+             " WHERE ", " AND ".join(where_clause))), params
 
 
 cdef compile_binary(PostgreQueryCompiler qc, BinaryExpression expr, str op):

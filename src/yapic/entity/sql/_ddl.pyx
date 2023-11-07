@@ -235,12 +235,12 @@ cdef class DDLCompiler:
                     lines.append(q + ";")
             elif kind is RegistryDiffKind.UPDATE_ENTITY:
                 qc = self.dialect.create_query_compiler()
-                q, p = qc.compile_update(param[0], param[1], param[2], param[3], True)
+                q, p = qc.compile_update(param[0], param[1], param[2], param[3], param[4], True)
                 if q:
                     lines.append(q + ";")
             elif kind is RegistryDiffKind.REMOVE_ENTITY:
                 qc = self.dialect.create_query_compiler()
-                q, p = qc.compile_delete(param[0], param[1], param[2], param[3], True)
+                q, p = qc.compile_delete(param[0], param[1], param[2], param[3], param[4], True)
                 if q:
                     lines.append(q + ";")
 

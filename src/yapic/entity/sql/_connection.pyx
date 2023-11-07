@@ -57,8 +57,9 @@ class Connection:
         cdef list attrs = []
         cdef list names = []
         cdef list values = []
+        cdef list where = []
 
-        await _collect_attrs(dialect, entity, True, attrs, names, values, None)
+        await _collect_attrs(dialect, entity, True, attrs, names, values, where, None)
 
         q, p = dialect.create_query_compiler() \
             .compile_insert(ent, attrs, names, values, False)
@@ -77,8 +78,9 @@ class Connection:
         cdef list attrs = []
         cdef list names = []
         cdef list values = []
+        cdef list where = []
 
-        await _collect_attrs(dialect, entity, True, attrs, names, values, None)
+        await _collect_attrs(dialect, entity, True, attrs, names, values, where, None)
 
         q, p = dialect.create_query_compiler() \
             .compile_insert_or_update(ent, attrs, names, values, False)
@@ -99,11 +101,12 @@ class Connection:
         cdef list attrs = []
         cdef list names = []
         cdef list values = []
+        cdef list where = []
 
-        await _collect_attrs(dialect, entity, False, attrs, names, values, None)
+        await _collect_attrs(dialect, entity, False, attrs, names, values, where, None)
 
         q, p = dialect.create_query_compiler() \
-            .compile_update(ent, attrs, names, values, False)
+            .compile_update(ent, attrs, names, values, where, False)
 
         if not q:
             return entity
@@ -119,11 +122,12 @@ class Connection:
         cdef list attrs = []
         cdef list names = []
         cdef list values = []
+        cdef list where = []
 
-        await _collect_attrs(dialect, entity, True, attrs, names, values, None)
+        await _collect_attrs(dialect, entity, False, attrs, names, values, where, None)
 
         q, p = dialect.create_query_compiler() \
-            .compile_delete(ent, attrs, names, values, False)
+            .compile_delete(ent, attrs, names, values, where, False)
 
         if not q:
             return False
@@ -191,14 +195,14 @@ class Connection:
 
 
 
-async def _collect_attrs(Dialect dialect, EntityBase entity, bint for_insert, list attrs, list names, list values, Expression path):
+async def _collect_attrs(Dialect dialect, EntityBase entity, bint for_insert, list attrs, list names, list values, list where, Expression path):
     cdef EntityType entity_type = type(entity)
     cdef EntityState state = entity.__state__
     cdef EntityAttribute attr
     cdef Field field
     cdef list data = state.data_for_insert() if for_insert else state.data_for_update()
     cdef StorageType field_type
-    cdef bint has_nonpk_attr = False
+    # cdef bint has_nonpk_attr = False
 
     for i in range(len(data)):
         attr, value = <tuple>data[i]
@@ -225,45 +229,49 @@ async def _collect_attrs(Dialect dialect, EntityBase entity, bint for_insert, li
                         #       hogy ez composite mezőt módosítani kell, de maga a composite mező nem dirty
                         #       mert egy másik lekérdezés composite mezője lett beállítva
                         #       - Asetleg az EntityTypeImpl.state_get_dirty függvényben kéne megjelölni a mezőket dirtyre
-                        await _collect_attrs(dialect, value, True, attrs, names, values, spath)
+                        await _collect_attrs(dialect, value, True, attrs, names, values, where, spath)
                         continue
 
                 values.append(dialect.encode_value(attr, value))
 
             attrs.append(attr)
-            if has_nonpk_attr is False and not attr.get_ext(PrimaryKey):
-                has_nonpk_attr = True
+            # if has_nonpk_attr is False and not attr.get_ext(PrimaryKey):
+            #     has_nonpk_attr = True
 
             if path is None:
                 names.append(dialect.quote_ident(attr._name_))
             else:
                 names.append(_compile_path(dialect, getattr(path, attr._key_)))
 
+    # Ha van változás, akkor a Field.on_update metódusát meghívja
+    if not for_insert and len(data) > 0:
+        for field in entity_type.__fields__:
+            if field.on_update is not None:
+                field_name = dialect.quote_ident(field._name_)
+                if field_name not in names:
+                    value = field.on_update(entity)
+                    if iscoroutine(value):
+                        value = await value
+
+                    attrs.append(field)
+                    names.append(dialect.quote_ident(field._name_))
+                    values.append(dialect.encode_value(field, value))
+
+    # Ha nem isnert, és nem valami composite type adatai kellenek, akkor összeállítja a where-t
     if not for_insert and not path:
-        if has_nonpk_attr is True:
-            for field in entity_type.__fields__:
-                if field.on_update is not None:
-                    field_name = dialect.quote_ident(field._name_)
-                    if field_name not in names:
-                        value = field.on_update(entity)
-                        if iscoroutine(value):
-                            value = await value
-
-                        attrs.append(field)
-                        names.append(dialect.quote_ident(field._name_))
-                        values.append(dialect.encode_value(field, value))
-
         for attr in entity_type.__pk__:
             field_name = dialect.quote_ident(attr._name_)
             if field_name not in names:
                 value = state.get_value(attr)
                 if value is NOTSET:
-                    continue
+                    raise RuntimeError("Missing primary key value")
+                    # continue
+            else:
+                value = state.get_initial_value(attr)
+                if value is NOTSET:
+                    raise RuntimeError("Missing primary key value")
 
-                attrs.append(attr)
-                names.append(field_name)
-                values.append(dialect.encode_value(attr, value))
-
+            where.append((field_name, dialect.encode_value(attr, value)))
 
 # cpdef wrap_connection(conn, dialect):
 #     if isinstance(dialect, str):

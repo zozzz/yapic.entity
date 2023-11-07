@@ -1,11 +1,14 @@
-import os, sys
-import pytest
-import docker
-import json
-import asyncpg
 import asyncio
-import pytest_asyncio
+import json
+import os
+import sys
+import time
 from contextlib import contextmanager
+
+import asyncpg
+import docker
+import pytest
+import pytest_asyncio
 from asyncpg.exceptions import OperatorInterventionError, PostgresConnectionError
 from docker import APIClient
 from docker.errors import ImageNotFound, NotFound
@@ -55,7 +58,7 @@ def start_container(image, name, ports):
             return client.containers.get(name)
         except NotFound:
             # docker run -d --name yapic_entity_pgsql_docker -p 5432:5432 --rm yapic_entity:pgsql_test
-            return client.containers.run(
+            res = client.containers.run(
                 image,
                 name=name,
                 detach=True,
@@ -65,9 +68,11 @@ def start_container(image, name, ports):
                        for port in ports},
                 cap_add=["SYS_PTRACE"],
             )
+            time.sleep(5)
+            return res
 
 
-@pytest.fixture
+@pytest.fixture()
 def pgsql_docker():
     build_docker(SELF_PATH, PG_DOCKER_TAG)
     return start_container(PG_DOCKER_TAG, "yapic_entity_pgsql_docker", ports=[5432])

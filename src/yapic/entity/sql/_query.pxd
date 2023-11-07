@@ -72,8 +72,8 @@ cdef class QueryCompiler(Visitor):
     cpdef compile_select(self, Query query)
     cpdef compile_insert(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)
     cpdef compile_insert_or_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)
-    cpdef compile_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)
-    cpdef compile_delete(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)
+    cpdef compile_update(self, EntityType entity, list attrs, list names, list values, list where, bint inline_values=*)
+    cpdef compile_delete(self, EntityType entity, list attrs, list names, list values, list where, bint inline_values=*)
 
 
 """

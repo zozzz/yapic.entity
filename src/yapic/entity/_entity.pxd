@@ -175,6 +175,7 @@ cdef class EntityState:
 
     cdef object set_value(self, EntityAttribute attr, object value)
     cdef object set_initial_value(self, EntityAttribute attr, object value)
+    cdef object get_initial_value(self, EntityAttribute attr)
     cdef object get_value(self, EntityAttribute attr)
     cdef object del_value(self, EntityAttribute attr)
 

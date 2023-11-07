@@ -4,7 +4,7 @@ from collections import deque
 
 from ._entity cimport DependencyList, EntityBase, EntityType, EntityAttribute, EntityAttributeExt, EntityAttributeExtGroup, EntityAttributeImpl, NOTSET, entity_is_builtin, entity_is_virtual
 from ._entity_diff cimport EntityDiff
-from ._field cimport ForeignKey
+from ._field cimport ForeignKey, Field
 
 
 # TODO: inherit from dict
@@ -222,6 +222,7 @@ cdef class RegistryDiff:
         return iter(self.changes)
 
     cpdef list compare_data(self, list a_ents, list b_ents):
+        cdef Field field
         cdef list result = []
         a_values = set(a_ents)
         b_values = set(b_ents)
@@ -236,7 +237,13 @@ cdef class RegistryDiff:
             b_ent = b_ents[i]
             a_ent = a_ents[a_ents.index(b_ent)]
             if not entity_data_is_eq(a_ent, b_ent):
-                result.append((RegistryDiffKind.UPDATE_ENTITY, b_ent))
+                target = a_ent if a_ent.__state__.exists else b_ent
+                source = a_ent if not a_ent.__state__.exists else b_ent
+
+                for field in type(target).__fields__:
+                    setattr(target, field._key_, getattr(source, field._key_))
+
+                result.append((RegistryDiffKind.UPDATE_ENTITY, target))
 
         return result
 

@@ -55,7 +55,8 @@ async def convert_data_to_raw(connection, tuple change):
         attrs = []
         names = []
         values = []
-        await _collect_attrs(connection.dialect, param, True, attrs, names, values, None)
-        return (kind, (entity_t, attrs, names, values))
+        where = []
+        await _collect_attrs(connection.dialect, param, kind is RegistryDiffKind.INSERT_ENTITY, attrs, names, values, where, None)
+        return (kind, (entity_t, attrs, names, values, where))
     else:
         return kind, param

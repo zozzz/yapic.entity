@@ -408,8 +408,10 @@ async def test_update_trigger(conn, pgclean):
     b = B(restrict_ids=[1], cascade_ids=[2])
     await conn.save(b)
 
+    a1.id = 10
     with pytest.raises(ForeignKeyViolationError, match="ForeignKeyList prevent of record update, because has references"):
-        await conn.execute('UPDATE "fkl"."A" SET "id" = 10 WHERE "id" = 1')
+        await conn.save(a1)
+        # await conn.execute('UPDATE "fkl"."A" SET "id" = 10 WHERE "id" = 1')
 
     await conn.execute('UPDATE "fkl"."A" SET "id" = 20 WHERE "id" = 2')
     b = await conn.select(Query(B).where(B.id == b.id)).first()
