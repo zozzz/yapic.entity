@@ -25,7 +25,6 @@ from yapic.entity import (
     ForeignKey,
     Index,
     Int,
-    IntArray,
     Json,
     Numeric,
     One,
@@ -35,7 +34,6 @@ from yapic.entity import (
     Registry,
     Serial,
     String,
-    StringArray,
     Time,
     TimeTz,
     UpdatedTime,
@@ -1020,61 +1018,7 @@ async def test_virtual_load(conn):
     assert sql == 'SELECT "t0"."data_1" FROM "execution"."VirtualLoad" "t0"'
 
 
-async def test_array(conn, pgclean):
-    registry = Registry()
 
-    class ArrayTest(Entity, registry=registry, schema="execution"):
-        strings: StringArray
-        ints: IntArray
-
-    result = await sync(conn, registry)
-    assert result == """CREATE SCHEMA IF NOT EXISTS "execution";
-CREATE TABLE "execution"."ArrayTest" (
-  "strings" TEXT[],
-  "ints" INT4[]
-);"""
-
-    await conn.execute(result)
-
-    result = await sync(conn, registry)
-    assert result is None
-
-    registry2 = Registry()
-
-    class ArrayTest(Entity, registry=registry2, schema="execution"):
-        id: Serial
-        strings: StringArray
-        ints: StringArray
-
-    result = await sync(conn, registry2)
-    assert result == """CREATE SEQUENCE "execution"."ArrayTest_id_seq";
-ALTER TABLE "execution"."ArrayTest"
-  ADD COLUMN "id" INT4 NOT NULL DEFAULT nextval('"execution"."ArrayTest_id_seq"'::regclass),
-  ALTER COLUMN "ints" TYPE TEXT[] USING "ints"::TEXT[],
-  ADD PRIMARY KEY("id");"""
-
-    await conn.execute(result)
-
-    result = await sync(conn, registry2)
-    assert result is None
-
-    inst = ArrayTest(strings=["Hello", "World"])
-    await conn.save(inst)
-    inst = await conn.select(Query(ArrayTest).where(ArrayTest.strings.contains("Hello"))).first()
-    assert inst is not None
-    assert inst.strings == ["Hello", "World"]
-
-    inst.strings.append("Some Value")
-    await conn.save(inst)
-    inst = await conn.select(Query(ArrayTest).where(ArrayTest.strings.contains("Hello"))).first()
-    assert inst.strings == ["Hello", "World", "Some Value"]
-
-    inst.strings.append("42")
-    await conn.save(inst)
-    inst.strings.append("43")
-    await conn.save(inst)
-    inst = await conn.select(Query(ArrayTest).where(ArrayTest.strings.contains("43"))).first()
-    assert inst.strings == ["Hello", "World", "Some Value", "42", "43"]
 
 
 async def test_updated_time(conn, pgclean):

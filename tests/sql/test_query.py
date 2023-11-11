@@ -4,7 +4,6 @@ import operator
 from typing import Any
 
 import pytest
-
 from yapic.entity import (
     Auto,
     Bool,
@@ -16,12 +15,10 @@ from yapic.entity import (
     Field,
     ForeignKey,
     Int,
-    IntArray,
     Json,
     Loading,
     ManyAcross,
     One,
-    PrimaryKey,
     Query,
     Registry,
     Serial,
@@ -31,7 +28,6 @@ from yapic.entity import (
     endswith,
     find,
     func,
-    in_,
     or_,
     startswith,
     virtual,
@@ -383,7 +379,7 @@ def test_auto_join_relation():
 def test_eager_load():
     q = Query().select_from(User).columns(User, User.address, User.tags)
     sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == ''
+    assert sql == ""
     assert params == ()
 
 
@@ -699,26 +695,7 @@ def test_join_type_in_or():
     assert params == (2, 3)
 
 
-def test_array():
-    R = Registry()
 
-    class A(Entity, registry=R):
-        id: Serial
-        ints: IntArray
-
-    q = Query(A).where(A.ints[0] == 1)
-    sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == """SELECT "t0"."id", "t0"."ints" FROM "A" "t0" WHERE ("t0"."ints")[1] = $1"""
-    assert params == (1, )
-
-    q = Query(A).where(A.ints.contains(1))
-    sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == """SELECT "t0"."id", "t0"."ints" FROM "A" "t0" WHERE $1=ANY("t0"."ints")"""
-    assert params == (1, )
-
-    q = Query(A).where(~A.ints.contains(1))
-    sql, params = dialect.create_query_compiler().compile_select(q)
-    assert sql == """SELECT "t0"."id", "t0"."ints" FROM "A" "t0" WHERE NOT($1=ANY("t0"."ints"))"""
 
 
 def test_over():

@@ -430,10 +430,14 @@ cdef class ArrayImpl(FieldImpl):
         return True
 
     cdef object state_init(self, object initial):
-        if initial is NOTSET or initial is None:
-            return []
-        else:
+        if initial is NOTSET:
+            return NOTSET
+        elif initial is None:
+            return None
+        elif isinstance(initial, (list, set, tuple)):
             return list(initial)
+        else:
+            raise ValueError(f"Invalid value for array: {type(initial)} {initial}")
 
     cpdef getitem(self, EntityAttribute attr, object index):
         if not isinstance(index, int):
@@ -445,8 +449,10 @@ cdef class ArrayImpl(FieldImpl):
             return NOTSET
         elif value is None:
             return None
-        else:
+        elif isinstance(value, (list, set, tuple)):
             return list(value)
+        else:
+            raise ValueError(f"Invalid value for array: {type(initial)} {initial}")
 
     cdef object state_get_dirty(self, object initial, object current):
         if current is NOTSET:
