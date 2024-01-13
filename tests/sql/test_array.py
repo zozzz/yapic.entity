@@ -109,11 +109,17 @@ async def test_update(conn, pgclean):
     assert test_db.strings == ["Overwrite"]
     assert test_db.ints == [1]  # never change
 
+    test_db.strings = ["Overwrite2"]
+    await conn.save(test_db)
+    test_db = await conn.select(Query(ArrayTest).where(ArrayTest.id == 1)).first()
+    assert test_db.strings == ["Overwrite2"]
+    assert test_db.ints == [1]  # never change
+
     test_db = await conn.select(Query(ArrayTest).load(ArrayTest.id, ArrayTest.strings).where(ArrayTest.id == 1)).first()
     test_db.strings.append("PartialLoad")
     await conn.save(test_db)
     test_db = await conn.select(Query(ArrayTest).where(ArrayTest.id == 1)).first()
-    assert test_db.strings == ["Overwrite", "PartialLoad"]
+    assert test_db.strings == ["Overwrite2", "PartialLoad"]
     assert test_db.ints == [1]  # never change
 
 

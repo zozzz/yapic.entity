@@ -26,7 +26,7 @@
         "editor.formatOnType": false,
         "editor.formatOnSave": false,
         "editor.codeActionsOnSave": {
-            "source.organizeImports": true
+            "source.organizeImports": "explicit"
         }
     }
 }

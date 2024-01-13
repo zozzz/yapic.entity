@@ -19,7 +19,7 @@ cdef class EntitySerializer:
     cdef int idx
     cdef int length
 
-    cdef object _next(self)
+    # cdef object _next(self)
 
 
 cdef class DontSerialize(EntityAttributeExt):

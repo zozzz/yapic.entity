@@ -35,27 +35,64 @@ cdef class EntitySerializer:
         return self
 
     def __next__(self):
-        return self._next()
-
-    cdef object _next(self):
         cdef PyObject* attr
         cdef PyObject* attrs = <PyObject*>self.entity.__attrs__
 
-        if self.idx < self.length:
+        while self.idx < self.length:
             attr = PyTuple_GET_ITEM(<object>attrs, self.idx)
             self.idx += 1
 
             if (<EntityAttribute>(<object>attr))._key_ is None:
-                return self._next()
+                continue
 
             value = getattr(self.instance, (<EntityAttribute>(<object>attr))._key_)
 
             if self.ctx.skip_attribute(<EntityAttribute>(<object>attr), value):
-                return self._next()
+                continue
             else:
                 return ((<EntityAttribute>attr)._key_, create_serializable(value, self.ctx.enter((<EntityAttribute>attr)._key_)))
-        else:
-            raise StopIteration()
+
+        raise StopIteration()
+
+    # def __next__(self):
+    #     return self._next()
+
+    # cdef object _next(self):
+    #     cdef PyObject* attr
+    #     cdef PyObject* attrs = <PyObject*>self.entity.__attrs__
+
+    #     # if self.idx < self.length:
+    #     #     attr = PyTuple_GET_ITEM(<object>attrs, self.idx)
+    #     #     self.idx += 1
+
+    #     #     if (<EntityAttribute>(<object>attr))._key_ is None:
+    #     #         return self._next()
+
+    #     #     value = getattr(self.instance, (<EntityAttribute>(<object>attr))._key_)
+
+    #     #     if self.ctx.skip_attribute(<EntityAttribute>(<object>attr), value):
+    #     #         return self._next()
+    #     #     else:
+    #     #         return ((<EntityAttribute>attr)._key_, create_serializable(value, self.ctx.enter((<EntityAttribute>attr)._key_)))
+    #     # else:
+    #     #     raise StopIteration()
+
+    #     while self.idx < self.length:
+    #         attr = PyTuple_GET_ITEM(<object>attrs, self.idx)
+    #         self.idx += 1
+
+    #         if (<EntityAttribute>(<object>attr))._key_ is None:
+    #             continue
+
+    #         value = getattr(self.instance, (<EntityAttribute>(<object>attr))._key_)
+
+    #         if self.ctx.skip_attribute(<EntityAttribute>(<object>attr), value):
+    #             continue
+    #         else:
+    #             return ((<EntityAttribute>attr)._key_, create_serializable(value, self.ctx.enter((<EntityAttribute>attr)._key_)))
+
+    #     raise StopIteration()
+
 
 
 
