@@ -938,6 +938,7 @@ cdef inline state_set_value(PyObject* initial, PyObject* current, EntityAttribut
     cdef int idx = attr._index_
     cdef PyObject* iv = PyTuple_GET_ITEM(<object>initial, idx)
     cdef PyObject* cv = PyTuple_GET_ITEM(<object>current, idx)
+    # cdef PyObject* nv = <PyObject*>((<EntityAttributeImpl>attr._impl_).state_set(<object>iv, <object>cv, value))
 
     nv = (<EntityAttributeImpl>attr._impl_).state_set(<object>iv, <object>cv, value)
     Py_INCREF(<object>nv)
@@ -1049,6 +1050,7 @@ cdef class EntityState:
             if cv is <PyObject*>NOTSET:
                 cv = PyTuple_GET_ITEM(<object>initial, idx)
             if cv is <PyObject*>NOTSET:
+                # TODO: ez itt hülyeség, a PrimaryKey-nek is lehet default értéke
                 if not attr.get_ext(PrimaryKey):
                     cv = <PyObject*>(attr._default_)
                     if not isinstance(<object>cv, Expression) and callable(<object>cv):

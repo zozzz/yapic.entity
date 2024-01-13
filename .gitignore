@@ -105,3 +105,4 @@ venv.bak/
 .vscode/ipch
 
 vc140.pdb
+memray-out

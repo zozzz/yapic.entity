@@ -1,0 +1,35 @@
+#!/bin/bash
+
+_build() {
+    python3 setup.py bdist_wheel
+}
+
+installed=$(python -c 'import pkgutil; print(1 if pkgutil.find_loader("yapic.entity") else 0)')
+
+if [ "$installed" -eq 0 ]; then
+    if [ ! -d "dist" ]; then
+        _build
+    fi
+
+    whl=$(ls dist)
+
+    if [ -z "$whl" ]; then
+        _build
+    fi
+
+    whl=$(ls dist)
+
+    python3 -m pip install "$whl"
+fi
+
+mkdir -p memray-output
+
+_memry() {
+    python3 -m memray run -o "memray-output/$1" "$1"
+    python3 -m memray tree "memray-output/$1"
+}
+
+_memry "tests/memprofile/main.py"
+
+# python3 -m memray run -o "memray-output/$1" "$1"
+# python3 -m memray tree "memray-output/$1"

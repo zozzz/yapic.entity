@@ -12,6 +12,9 @@ from ._type_factory cimport PostgreTypeFactory
 
 
 cdef class PostgreDialect(Dialect):
+    def __init__(self):
+        super().__init__(PostgreTypeFactory(self))
+
     cpdef DDLCompiler create_ddl_compiler(self):
         return PostgreDDLCompiler(self)
 
@@ -20,9 +23,6 @@ cdef class PostgreDialect(Dialect):
 
     cpdef QueryCompiler create_query_compiler(self):
         return PostgreQueryCompiler(self)
-
-    cpdef StorageTypeFactory create_type_factory(self):
-        return PostgreTypeFactory(self)
 
     cpdef str quote_ident(self, str ident):
         ident = ident.replace('"', '""')

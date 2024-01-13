@@ -1,3 +1,5 @@
+from cpython.object cimport PyObject
+
 from yapic.entity._field cimport Field, StorageType, StorageTypeFactory
 from yapic.entity._field_impl cimport (
     StringImpl,
@@ -31,7 +33,8 @@ from ._dialect cimport PostgreDialect
 
 
 cdef class PostgreTypeFactory(StorageTypeFactory):
-    cdef PostgreDialect dialect
+    cdef object _dialect_ref
+    cdef PostgreDialect get_dialect(self)
 
     cpdef StorageType _create(self, Field field, object impl)
     cdef StorageType __int_type(self, Field field, IntImpl impl)

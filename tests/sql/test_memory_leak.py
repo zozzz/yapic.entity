@@ -7,6 +7,7 @@ import sys
 import tracemalloc
 
 import asyncpg
+import memory_profiler
 from yapic.entity import (
     Auto,
     Composite,
@@ -121,6 +122,7 @@ def test_query():
     cloned3 = cloned2.clone()
 
 
+@memory_profiler.profile
 def test_entity_state():
     registry = Registry()
 

@@ -16,6 +16,7 @@ from yapic.entity.sql.pgsql import PostgreConnection
 
 PG_DOCKER_TAG = "yapic_entity:pgsql_test"
 SELF_PATH = os.path.realpath(os.path.dirname(__file__))
+IN_DOCKER = int(os.getenv("IN_DOCKER", "0")) == 1
 
 if False:
     import uvloop
@@ -74,18 +75,20 @@ def start_container(image, name, ports):
 
 @pytest.fixture()
 def pgsql_docker():
-    build_docker(SELF_PATH, PG_DOCKER_TAG)
-    return start_container(PG_DOCKER_TAG, "yapic_entity_pgsql_docker", ports=[5432])
+    if not IN_DOCKER:
+        build_docker(SELF_PATH, PG_DOCKER_TAG)
+        return start_container(PG_DOCKER_TAG, "yapic_entity_pgsql_docker", ports=[5432])
 
 
 @pytest_asyncio.fixture
 async def pgsql(pgsql_docker):
+    host = "postgre" if IN_DOCKER else "127.0.0.1"
     for i in range(30):
         try:
             connection = await asyncpg.connect(user="postgres",
                                                password="root",
                                                database="root",
-                                               host="127.0.0.1",
+                                               host=host,
                                                connection_class=PostgreConnection)
             yield connection
         except (OperatorInterventionError, PostgresConnectionError):

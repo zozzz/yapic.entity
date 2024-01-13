@@ -7,6 +7,9 @@ from ._query cimport QueryCompiler
 
 
 cdef class Dialect:
+    def __init__(self, StorageTypeFactory type_factory):
+        self.type_factory = type_factory
+
     cpdef DDLCompiler create_ddl_compiler(self):
         raise NotImplementedError()
 
@@ -14,9 +17,6 @@ cdef class Dialect:
         raise NotImplementedError()
 
     cpdef QueryCompiler create_query_compiler(self):
-        raise NotImplementedError()
-
-    cpdef StorageTypeFactory create_type_factory(self):
         raise NotImplementedError()
 
     cpdef str quote_ident(self, str ident):
@@ -32,8 +32,7 @@ cdef class Dialect:
         raise NotImplementedError()
 
     cpdef StorageType get_field_type(self, Field field):
-        # XXX: optimalize...
-        return field.get_type(self.create_type_factory())
+        return field.get_type(self.type_factory)
 
     cpdef object encode_value(self, Field field, object value):
         if value is None:

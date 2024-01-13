@@ -1,5 +1,7 @@
 from datetime import date, datetime, time
 from decimal import Decimal
+from cpython.object cimport PyObject
+from cpython.weakref cimport PyWeakref_NewRef, PyWeakref_GetObject
 
 from yapic import json
 from yapic.entity._entity cimport EntityType, EntityBase
@@ -36,7 +38,12 @@ from ._dialect cimport PostgreDialect
 
 cdef class PostgreTypeFactory(StorageTypeFactory):
     def __cinit__(self, PostgreDialect dialect):
-        self.dialect = dialect
+        self._dialect_ref = <object>PyWeakref_NewRef(dialect, None)
+
+    cdef PostgreDialect get_dialect(self):
+        if self._dialect_ref is not None:
+            return <object>PyWeakref_GetObject(<object>self._dialect_ref)
+        return None
 
     cpdef StorageType create(self, Field field):
         return self._create(field, field._impl_)
@@ -150,7 +157,7 @@ cdef class PostgreTypeFactory(StorageTypeFactory):
         return t
 
     cdef StorageType __composite_type(self, Field field, CompositeImpl impl):
-        cdef CompositeType t = CompositeType(self.dialect.table_qname(impl._entity_))
+        cdef CompositeType t = CompositeType(self.get_dialect().table_qname(impl._entity_))
         t.entity = impl._entity_
         return t
 

@@ -14,7 +14,7 @@ cdef class RCState:
     def __cinit__(self, object conn):
         self.conn = conn
         self.cache = {}
-        self.tf = conn.dialect.create_type_factory()
+        self.tf = conn.dialect.type_factory
 
 
 def convert_record(object record, list rcos_list, RCState state):

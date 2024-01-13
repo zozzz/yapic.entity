@@ -7,10 +7,12 @@ from ._ddl cimport DDLCompiler, DDLReflect
 from ._query cimport QueryCompiler
 
 cdef class Dialect:
+    cdef object __weakref__
+    cdef readonly StorageTypeFactory type_factory
+
     cpdef DDLCompiler create_ddl_compiler(self)
     cpdef DDLReflect create_ddl_reflect(self, EntityType base)
     cpdef QueryCompiler create_query_compiler(self)
-    cpdef StorageTypeFactory create_type_factory(self)
 
     cpdef str quote_ident(self, str ident)
     cpdef list unquote_ident(self, str ident)

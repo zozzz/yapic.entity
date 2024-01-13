@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  postgre:
+    image: docker.dev.trigon.hu/docker/postgres:15
+    hostname: postgre
+    volumes:
+      - db:/data
+    ports:
+      - "5432:5432"
+    environment:
+      PGSQL_ROOT_PASS: root
+      PGSQL_DATABASE: root
+
+  app:
+    build:
+      context: .
+    command: tail -f /dev/null
+    volumes:
+      - history:/root/history
+      - ./tests:/app/tests
+      - ./src:/app/src
+    environment:
+      HISTFILE: /root/history/.bash_history
+
+volumes: {db, history}

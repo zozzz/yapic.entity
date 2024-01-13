@@ -1,14 +1,16 @@
-import asyncio
-import sys
-import os
 import gc
+import os
+import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "build", "lib.linux-x86_64-3.8-pydebug"))
+# sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "build", "lib.linux-x86_64-3.8-pydebug"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "build", "lib.linux-x86_64-cpython-311"))
 
-from memory_profiler import profile as mprofile
 import asyncpg
+from memory_profiler import profile as mprofile
+from yapic.entity import Entity, Registry, Serial, String
 
-from yapic.entity import Registry, Entity, Serial, String, func
+IN_DOCKER = int(os.getenv("IN_DOCKER", "0")) == 1
+POSTGRE_HOST = "postgre" if IN_DOCKER else "127.0.0.1"
 
 # XXX: python -m memory_profiler tests/memprofile/asyncpg_connection.py
 
@@ -20,10 +22,10 @@ def profile(fn):
 @profile
 async def connect():
     connection = await asyncpg.connect(
-        user="root",
+        user="postgres",
         password="root",
         database="root",
-        host="127.0.0.1",
+        host=POSTGRE_HOST,
     )
     await connection.close()
     test_entity_state()
@@ -32,8 +34,8 @@ async def connect():
 @profile
 async def pool():
     pg_pool = await asyncpg.create_pool(
-        host="127.0.0.1",
-        user="root",
+        host=POSTGRE_HOST,
+        user="postgres",
         password="root",
         database="root",
     )
@@ -68,4 +70,5 @@ def test_entity_state():
 
 
 if __name__ == "__main__":
-    asyncio.run(pool())
+    test_entity_state()
+    # asyncio.run(test_entity_state())

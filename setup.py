@@ -1,14 +1,18 @@
-import sys
 import os
 import shutil
-from pathlib import Path
-from setuptools import setup
-from setuptools.command.test import test as TestCommand
+import sys
 from distutils.extension import Extension
+from pathlib import Path
+
 from Cython.Build import cythonize
 from Cython.Build.Dependencies import parse_dependencies
+from setuptools import setup
+from setuptools.command.test import test as TestCommand
 
 RECOMPILE = True
+DEBUG = os.getenv("DEBUG", None)
+if DEBUG is not None:
+    DEBUG = DEBUG == "1"
 
 subcommand_args = []
 if "--" in sys.argv:
@@ -20,9 +24,10 @@ undef_macros = []
 extra_compile_args = []
 
 if sys.platform == "win32":
-    DEVELOP = sys.executable.endswith("python_d.exe")
+    if DEBUG is None:
+        DEBUG = sys.executable.endswith("python_d.exe")
 
-    if DEVELOP:
+    if DEBUG:
         define_macros["_DEBUG"] = "1"
         undef_macros.append("NDEBUG")
         extra_compile_args.append("/MTd")
@@ -30,12 +35,14 @@ if sys.platform == "win32":
     else:
         undef_macros.append("_DEBUG")
 else:
-    DEVELOP = sys.executable.endswith("-dbg")
+    if DEBUG is None:
+        DEBUG = sys.executable.endswith("-dbg")
     extra_compile_args.append("-std=c++11")
 
-    if DEVELOP:
+    if DEBUG:
         define_macros["_DEBUG"] = 1
         undef_macros.append("NDEBUG")
+        extra_compile_args.append("-g3")
     else:
         extra_compile_args.append("-O3")
 
@@ -188,7 +195,7 @@ almafa = setup(
         compiler_directives={
             "language_level": 3,
             "iterable_coroutine": False,
-            "boundscheck": DEVELOP,
+            "boundscheck": DEBUG,
             "wraparound": False,
             "auto_pickle": False
         },
