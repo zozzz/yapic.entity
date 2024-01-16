@@ -546,8 +546,12 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                 where_clause.append(f"{k}={self.dialect.quote_value(v)}")
         else:
             for k, v in where:
-                params.append(v)
-                where_clause.append(f"{k}=${len(params)}")
+                if isinstance(v, Expression):
+                    v = (<Expression>v).visit(self)
+                    where_clause.append(f"{k}={v}")
+                else:
+                    params.append(v)
+                    where_clause.append(f"{k}=${len(params)}")
 
         if not where_clause:
             if not values:
@@ -558,8 +562,13 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                     where_clause.append(f"{names[i]}={self.dialect.quote_value(values[i])}")
             else:
                 for i, attr in enumerate(attrs):
-                    where_clause.append(f"{names[i]}=${i+1}")
-                    params.append(values[i])
+                    value = values[i]
+                    if isinstance(value, Expression):
+                        value = (<Expression>value).visit(self)
+                        where_clause.append(f"{names[i]}={value}")
+                    else:
+                        params.append(value)
+                        where_clause.append(f"{names[i]}=${len(params)}")
 
         return "".join(("DELETE FROM ", self.dialect.table_qname(get_alias_target(entity)),
              " WHERE ", " AND ".join(where_clause))), params

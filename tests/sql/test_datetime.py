@@ -78,3 +78,5 @@ async def test_day_as_pk(pgclean, conn):
 
     queried = await conn.select(Query(DayAsPK).where(DayAsPK.day == inserted.day)).first()
     assert queried.value == 2
+
+    await conn.delete(queried)
