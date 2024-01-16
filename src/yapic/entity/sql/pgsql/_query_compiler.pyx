@@ -508,17 +508,18 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
                 if isinstance(v, Expression):
                     v = (<Expression>v).visit(self)
-                    if (<EntityAttribute>attrs[i]).get_ext(PrimaryKey):
-                        where.append(f"{name}={v}")
-                    else:
-                        updates.append(f"{name}={v}")
+                    updates.append(f"{name}={v}")
                 else:
                     self.params.append(v)
                     updates.append(f"{name}=${len(self.params)}")
 
             for k, v in where:
-                self.params.append(v)
-                where_clause.append(f"{k}=${len(self.params)}")
+                if isinstance(v, Expression):
+                    v = (<Expression>v).visit(self)
+                    where_clause.append(f"{k}={v}")
+                else:
+                    self.params.append(v)
+                    where_clause.append(f"{k}=${len(self.params)}")
 
         if not updates:
             return (None, None)
