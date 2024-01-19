@@ -30,6 +30,8 @@ cdef class StorageType:
 
 
 cdef class StorageTypeFactory:
+    cdef readonly str _uid_
+
     cpdef StorageType create(self, Field field)
 
 

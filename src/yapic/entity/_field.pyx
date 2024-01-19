@@ -68,12 +68,11 @@ cdef class Field(EntityAttribute):
         return res
 
     cpdef StorageType get_type(self, StorageTypeFactory factory):
-        cdef str factory_key = str(factory)
         try:
-            return self.type_cache[factory_key]
+            return self.type_cache[factory._uid_]
         except KeyError:
             type = factory.create(self)
-            self.type_cache[factory_key] = type
+            self.type_cache[factory._uid_] = type
             return type
 
     def __repr__(self):
@@ -132,12 +131,15 @@ cdef class StorageType:
 
 
 cdef class StorageTypeFactory:
+    def __cinit__(self):
+        t = type(self)
+        self._uid_ = f"{t.__module__}::{t.__name__}"
+
     cpdef StorageType create(self, Field field):
         raise NotImplementedError()
 
     def __str__(self):
-        t = type(self)
-        return f"{t.__module__}::{t.__name__}"
+        return self._uid_
 
 
 cdef class PrimaryKey(FieldExtension):
