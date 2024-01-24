@@ -21,7 +21,8 @@ async def sync(connection, Registry registry, EntityType entity_base=Entity, com
     if diff:
         changes = []
         async for c in compare_data(connection, diff):
-            changes.append(await convert_data_to_raw(connection, c))
+            async for cc in convert_data_to_raw(connection, c):
+                changes.append(cc)
         diff.changes = changes
 
         res = connection.dialect.create_ddl_compiler().compile_registry_diff(diff)
@@ -51,12 +52,13 @@ async def convert_data_to_raw(connection, tuple change):
 
     kind, param = change
     if kind is RegistryDiffKind.INSERT_ENTITY or kind is RegistryDiffKind.UPDATE_ENTITY or kind is RegistryDiffKind.REMOVE_ENTITY:
-        entity_t = type(param)
-        attrs = []
-        names = []
-        values = []
-        where = []
-        await _collect_attrs(connection.dialect, param, kind is RegistryDiffKind.INSERT_ENTITY, attrs, names, values, where, None)
-        return (kind, (entity_t, attrs, names, values, where))
+        for entity_inst in param:
+            entity_t = type(entity_inst)
+            attrs = []
+            names = []
+            values = []
+            where = []
+            await _collect_attrs(connection.dialect, entity_inst, kind is RegistryDiffKind.INSERT_ENTITY, attrs, names, values, where, None)
+            yield (kind, (entity_t, attrs, names, values, where))
     else:
-        return kind, param
+        yield kind, param

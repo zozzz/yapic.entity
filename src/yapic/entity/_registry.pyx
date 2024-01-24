@@ -184,8 +184,7 @@ cdef class RegistryDiff:
             order.add(val)
 
             if val.__fix_entries__:
-                for fix in val.__fix_entries__:
-                    self.changes.append((RegistryDiffKind.INSERT_ENTITY, fix))
+                self.changes.append((RegistryDiffKind.INSERT_ENTITY, val.__fix_entries__))
 
         for maybe_changed in sorted(a_names & b_names):
             val = b[maybe_changed]
@@ -203,7 +202,7 @@ cdef class RegistryDiff:
             if isinstance(val, EntityDiff):
                 return order.index((<EntityDiff>val).b)
             elif kind is RegistryDiffKind.INSERT_ENTITY:
-                return order.index(type(val))
+                return order.index(type(val[0]))
             elif kind is RegistryDiffKind.COMPARE_DATA:
                 return order.index(val[1])
             else:
@@ -227,12 +226,17 @@ cdef class RegistryDiff:
         a_values = set(a_ents)
         b_values = set(b_ents)
 
-        for removed in a_values - b_values:
+        removed = a_values - b_values
+        if removed:
+            removed = list(sorted(removed, key=a_ents.index, reverse=True))
             result.append((RegistryDiffKind.REMOVE_ENTITY, removed))
 
-        for created in b_values - a_values:
+        created = b_values - a_values
+        if created:
+            created = list(sorted(created, key=b_ents.index))
             result.append((RegistryDiffKind.INSERT_ENTITY, created))
 
+        changed = []
         for i in sorted(map(b_ents.index, a_values & b_values)):
             b_ent = b_ents[i]
             a_ent = a_ents[a_ents.index(b_ent)]
@@ -243,7 +247,10 @@ cdef class RegistryDiff:
                 for field in type(target).__fields__:
                     setattr(target, field._key_, getattr(source, field._key_))
 
-                result.append((RegistryDiffKind.UPDATE_ENTITY, target))
+                changed.append(target)
+
+        if changed:
+            result.append((RegistryDiffKind.UPDATE_ENTITY, changed))
 
         return result
 
