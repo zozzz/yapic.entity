@@ -65,6 +65,14 @@ cdef class PostgreDialect(Dialect):
             return "TRUE" if value else "FALSE"
         elif value is None:
             return "NULL"
+        elif isinstance(value, (list, tuple, set)):
+            if len(value) == 0:
+                return "'{}'"
+
+            # values = [self.quote_value(v) for v in value]
+            # return self.quote_value("{" + ",".join(values) + "}")
+            values = [self.quote_value(v) for v in value]
+            return f"ARRAY[{','.join(values)}]"
         else:
             value = str(value).replace("'", "''")
             return f"'{value}'"

@@ -149,3 +149,35 @@ def test_query():
     q = Query(A).where(~A.ints.contains(1))
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == """SELECT "t0"."id", "t0"."ints" FROM "A" "t0" WHERE NOT($1=ANY("t0"."ints"))"""
+
+
+async def test_fix_entries(conn, pgclean):
+    R = Registry()
+
+    class A(Entity, registry=R, schema="array_test"):
+        id: Serial
+        ints: IntArray
+        strings: StringArray
+
+    A.__fix_entries__ = [
+        A(id=1, ints=[1], strings=["Alma"]),
+        A(id=2, ints=[1, 2, 3], strings=["Alma", "Körte"]),
+        A(id=3, ints=[], strings=[]),
+    ]
+
+    diff = await sync(conn, R)
+    await conn.execute(diff)
+    assert diff == """CREATE SCHEMA IF NOT EXISTS "array_test";
+CREATE SEQUENCE "array_test"."A_id_seq";
+CREATE TABLE "array_test"."A" (
+  "id" INT4 NOT NULL DEFAULT nextval('"array_test"."A_id_seq"'::regclass),
+  "ints" INT4[],
+  "strings" TEXT[],
+  PRIMARY KEY("id")
+);
+INSERT INTO "array_test"."A" ("id", "ints", "strings") VALUES (1, ARRAY[1], ARRAY['Alma']) ON CONFLICT ("id") DO UPDATE SET "ints"=ARRAY[1], "strings"=ARRAY['Alma'];
+INSERT INTO "array_test"."A" ("id", "ints", "strings") VALUES (2, ARRAY[1,2,3], ARRAY['Alma','Körte']) ON CONFLICT ("id") DO UPDATE SET "ints"=ARRAY[1,2,3], "strings"=ARRAY['Alma','Körte'];
+INSERT INTO "array_test"."A" ("id", "ints", "strings") VALUES (3, '{}', '{}') ON CONFLICT ("id") DO UPDATE SET "ints"='{}', "strings"='{}';"""
+
+    diff = await sync(conn, R)
+    assert bool(diff) is False
