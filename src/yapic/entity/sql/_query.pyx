@@ -749,7 +749,12 @@ cdef class QueryFinalizer(Visitor):
             if polymorph is None:
                 continue
 
-            reducer.add(polymorph.get_id(ent))
+            try:
+                poly_id = polymorph.get_id(ent)
+            except ValueError:
+                pass
+            else:
+                reducer.add(poly_id)
 
             for parent in polymorph.parents():
                 parent_ent = (<RelationImpl>parent._impl_).get_joined_alias()

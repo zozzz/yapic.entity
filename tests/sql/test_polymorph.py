@@ -665,3 +665,10 @@ async def test_reduce_children(conn, pgclean):
     sql, params = conn.dialect.create_query_compiler().compile_select(q)
     assert sql == '''SELECT "t0"."id", "t0"."type", "t1"."a_field", "t2"."b_field", "t3"."c_field", "t4"."d_field", "t5"."e3_field", "t6"."c2_field", "t7"."d2_field", "t8"."e2_field" FROM "reduce_children"."Base" "t0" LEFT JOIN "reduce_children"."A" "t1" ON "t1"."id" = "t0"."id" LEFT JOIN "reduce_children"."B" "t2" ON "t2"."id" = "t1"."id" LEFT JOIN "reduce_children"."C" "t3" ON "t3"."id" = "t2"."id" LEFT JOIN "reduce_children"."D" "t4" ON "t4"."id" = "t3"."id" LEFT JOIN "reduce_children"."E3" "t5" ON "t5"."id" = "t4"."id" LEFT JOIN "reduce_children"."C2" "t6" ON "t6"."id" = "t2"."id" LEFT JOIN "reduce_children"."D2" "t7" ON "t7"."id" = "t6"."id" LEFT JOIN "reduce_children"."E2" "t8" ON "t8"."id" = "t7"."id"'''
 
+    q = Query().select_from(Base).reduce_children({Base})
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    assert sql == '''SELECT "t0"."id", "t0"."type" FROM "reduce_children"."Base" "t0"'''
+
+    q = Query().select_from(Base).reduce_children(set())
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    assert sql == '''SELECT "t0"."id", "t0"."type" FROM "reduce_children"."Base" "t0"'''
