@@ -1620,7 +1620,7 @@ struct __pyx_opt_args_5yapic_6entity_3sql_6_query_13QueryCompiler_compile_insert
 struct __pyx_opt_args_5yapic_6entity_3sql_6_query_13QueryCompiler_compile_update;
 struct __pyx_opt_args_5yapic_6entity_3sql_6_query_13QueryCompiler_compile_delete;
 
-/* "_query.pxd":41
+/* "_query.pxd":42
  * 
  * 
  * ctypedef enum QLS:             # <<<<<<<<<<<<<<
@@ -1635,7 +1635,7 @@ enum __pyx_t_5yapic_6entity_3sql_6_query_QLS {
 };
 typedef enum __pyx_t_5yapic_6entity_3sql_6_query_QLS __pyx_t_5yapic_6entity_3sql_6_query_QLS;
 
-/* "_query.pxd":127
+/* "_query.pxd":128
  * """
  * 
  * ctypedef enum RCO:             # <<<<<<<<<<<<<<
@@ -1656,7 +1656,7 @@ enum __pyx_t_5yapic_6entity_3sql_6_query_RCO {
 };
 typedef enum __pyx_t_5yapic_6entity_3sql_6_query_RCO __pyx_t_5yapic_6entity_3sql_6_query_RCO;
 
-/* "_query.pxd":73
+/* "_query.pxd":74
  * 
  *     cpdef compile_select(self, Query query)
  *     cpdef compile_insert(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)             # <<<<<<<<<<<<<<
@@ -1668,7 +1668,7 @@ struct __pyx_opt_args_5yapic_6entity_3sql_6_query_13QueryCompiler_compile_insert
   int inline_values;
 };
 
-/* "_query.pxd":74
+/* "_query.pxd":75
  *     cpdef compile_select(self, Query query)
  *     cpdef compile_insert(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)
  *     cpdef compile_insert_or_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)             # <<<<<<<<<<<<<<
@@ -1680,7 +1680,7 @@ struct __pyx_opt_args_5yapic_6entity_3sql_6_query_13QueryCompiler_compile_insert
   int inline_values;
 };
 
-/* "_query.pxd":75
+/* "_query.pxd":76
  *     cpdef compile_insert(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)
  *     cpdef compile_insert_or_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)
  *     cpdef compile_update(self, EntityType entity, list attrs, list names, list values, list where, bint inline_values=*)             # <<<<<<<<<<<<<<
@@ -1692,7 +1692,7 @@ struct __pyx_opt_args_5yapic_6entity_3sql_6_query_13QueryCompiler_compile_update
   int inline_values;
 };
 
-/* "_query.pxd":76
+/* "_query.pxd":77
  *     cpdef compile_insert_or_update(self, EntityType entity, list attrs, list names, list values, bint inline_values=*)
  *     cpdef compile_update(self, EntityType entity, list attrs, list names, list values, list where, bint inline_values=*)
  *     cpdef compile_delete(self, EntityType entity, list attrs, list names, list values, list where, bint inline_values=*)             # <<<<<<<<<<<<<<
@@ -2438,6 +2438,7 @@ struct __pyx_obj_5yapic_6entity_3sql_6_query_Query {
   PyObject *_aliases;
   PyObject *_range;
   PyObject *_entities;
+  PyObject *_reduce_children;
   struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryLoad *_load;
   int _as_row;
   int _as_json;
@@ -2450,7 +2451,7 @@ struct __pyx_obj_5yapic_6entity_3sql_6_query_Query {
 };
 
 
-/* "_query.pxd":49
+/* "_query.pxd":50
  * 
  * @cython.final
  * cdef class QueryLoad(Visitor):             # <<<<<<<<<<<<<<
@@ -2464,7 +2465,7 @@ struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryLoad {
 };
 
 
-/* "_query.pxd":59
+/* "_query.pxd":60
  * 
  * 
  * cdef class QueryFinalizer(Visitor):             # <<<<<<<<<<<<<<
@@ -2481,7 +2482,7 @@ struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryFinalizer {
 };
 
 
-/* "_query.pxd":67
+/* "_query.pxd":68
  * 
  * 
  * cdef class QueryCompiler(Visitor):             # <<<<<<<<<<<<<<
@@ -2496,7 +2497,7 @@ struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryCompiler {
 };
 
 
-/* "_query.pxd":182
+/* "_query.pxd":183
  * @cython.final
  * @cython.freelist(1000)
  * cdef class RowConvertOp:             # <<<<<<<<<<<<<<
@@ -2511,7 +2512,7 @@ struct __pyx_obj_5yapic_6entity_3sql_6_query_RowConvertOp {
 };
 
 
-/* "_query.pxd":189
+/* "_query.pxd":190
  * 
  * @cython.final
  * cdef class QueryFactory:             # <<<<<<<<<<<<<<
@@ -3233,7 +3234,7 @@ struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_Query {
 static struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_Query *__pyx_vtabptr_5yapic_6entity_3sql_6_query_Query;
 
 
-/* "_query.pxd":49
+/* "_query.pxd":50
  * 
  * @cython.final
  * cdef class QueryLoad(Visitor):             # <<<<<<<<<<<<<<
@@ -3251,7 +3252,7 @@ struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_QueryLoad {
 static struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_QueryLoad *__pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryLoad;
 
 
-/* "_query.pxd":59
+/* "_query.pxd":60
  * 
  * 
  * cdef class QueryFinalizer(Visitor):             # <<<<<<<<<<<<<<
@@ -3265,7 +3266,7 @@ struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_QueryFinalizer {
 static struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_QueryFinalizer *__pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryFinalizer;
 
 
-/* "_query.pxd":67
+/* "_query.pxd":68
  * 
  * 
  * cdef class QueryCompiler(Visitor):             # <<<<<<<<<<<<<<
@@ -9059,14 +9060,14 @@ static int __Pyx_modinit_type_import_code(void) {
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_5yapic_6entity_3sql_6_query_Query = __Pyx_ImportType_3_0_8(__pyx_t_1, "yapic.entity.sql._query", "Query", sizeof(struct __pyx_obj_5yapic_6entity_3sql_6_query_Query), __PYX_GET_STRUCT_ALIGNMENT_3_0_8(struct __pyx_obj_5yapic_6entity_3sql_6_query_Query),__Pyx_ImportType_CheckSize_Warn_3_0_8); if (!__pyx_ptype_5yapic_6entity_3sql_6_query_Query) __PYX_ERR(9, 8, __pyx_L1_error)
   __pyx_vtabptr_5yapic_6entity_3sql_6_query_Query = (struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_Query*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_6_query_Query); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_6_query_Query)) __PYX_ERR(9, 8, __pyx_L1_error)
-  __pyx_ptype_5yapic_6entity_3sql_6_query_QueryLoad = __Pyx_ImportType_3_0_8(__pyx_t_1, "yapic.entity.sql._query", "QueryLoad", sizeof(struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryLoad), __PYX_GET_STRUCT_ALIGNMENT_3_0_8(struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryLoad),__Pyx_ImportType_CheckSize_Warn_3_0_8); if (!__pyx_ptype_5yapic_6entity_3sql_6_query_QueryLoad) __PYX_ERR(9, 49, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryLoad = (struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_QueryLoad*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_6_query_QueryLoad); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryLoad)) __PYX_ERR(9, 49, __pyx_L1_error)
-  __pyx_ptype_5yapic_6entity_3sql_6_query_QueryFinalizer = __Pyx_ImportType_3_0_8(__pyx_t_1, "yapic.entity.sql._query", "QueryFinalizer", sizeof(struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryFinalizer), __PYX_GET_STRUCT_ALIGNMENT_3_0_8(struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryFinalizer),__Pyx_ImportType_CheckSize_Warn_3_0_8); if (!__pyx_ptype_5yapic_6entity_3sql_6_query_QueryFinalizer) __PYX_ERR(9, 59, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryFinalizer = (struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_QueryFinalizer*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_6_query_QueryFinalizer); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryFinalizer)) __PYX_ERR(9, 59, __pyx_L1_error)
-  __pyx_ptype_5yapic_6entity_3sql_6_query_QueryCompiler = __Pyx_ImportType_3_0_8(__pyx_t_1, "yapic.entity.sql._query", "QueryCompiler", sizeof(struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryCompiler), __PYX_GET_STRUCT_ALIGNMENT_3_0_8(struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryCompiler),__Pyx_ImportType_CheckSize_Warn_3_0_8); if (!__pyx_ptype_5yapic_6entity_3sql_6_query_QueryCompiler) __PYX_ERR(9, 67, __pyx_L1_error)
-  __pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryCompiler = (struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_QueryCompiler*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_6_query_QueryCompiler); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryCompiler)) __PYX_ERR(9, 67, __pyx_L1_error)
-  __pyx_ptype_5yapic_6entity_3sql_6_query_RowConvertOp = __Pyx_ImportType_3_0_8(__pyx_t_1, "yapic.entity.sql._query", "RowConvertOp", sizeof(struct __pyx_obj_5yapic_6entity_3sql_6_query_RowConvertOp), __PYX_GET_STRUCT_ALIGNMENT_3_0_8(struct __pyx_obj_5yapic_6entity_3sql_6_query_RowConvertOp),__Pyx_ImportType_CheckSize_Warn_3_0_8); if (!__pyx_ptype_5yapic_6entity_3sql_6_query_RowConvertOp) __PYX_ERR(9, 182, __pyx_L1_error)
-  __pyx_ptype_5yapic_6entity_3sql_6_query_QueryFactory = __Pyx_ImportType_3_0_8(__pyx_t_1, "yapic.entity.sql._query", "QueryFactory", sizeof(struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryFactory), __PYX_GET_STRUCT_ALIGNMENT_3_0_8(struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryFactory),__Pyx_ImportType_CheckSize_Warn_3_0_8); if (!__pyx_ptype_5yapic_6entity_3sql_6_query_QueryFactory) __PYX_ERR(9, 189, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_3sql_6_query_QueryLoad = __Pyx_ImportType_3_0_8(__pyx_t_1, "yapic.entity.sql._query", "QueryLoad", sizeof(struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryLoad), __PYX_GET_STRUCT_ALIGNMENT_3_0_8(struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryLoad),__Pyx_ImportType_CheckSize_Warn_3_0_8); if (!__pyx_ptype_5yapic_6entity_3sql_6_query_QueryLoad) __PYX_ERR(9, 50, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryLoad = (struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_QueryLoad*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_6_query_QueryLoad); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryLoad)) __PYX_ERR(9, 50, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_3sql_6_query_QueryFinalizer = __Pyx_ImportType_3_0_8(__pyx_t_1, "yapic.entity.sql._query", "QueryFinalizer", sizeof(struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryFinalizer), __PYX_GET_STRUCT_ALIGNMENT_3_0_8(struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryFinalizer),__Pyx_ImportType_CheckSize_Warn_3_0_8); if (!__pyx_ptype_5yapic_6entity_3sql_6_query_QueryFinalizer) __PYX_ERR(9, 60, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryFinalizer = (struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_QueryFinalizer*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_6_query_QueryFinalizer); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryFinalizer)) __PYX_ERR(9, 60, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_3sql_6_query_QueryCompiler = __Pyx_ImportType_3_0_8(__pyx_t_1, "yapic.entity.sql._query", "QueryCompiler", sizeof(struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryCompiler), __PYX_GET_STRUCT_ALIGNMENT_3_0_8(struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryCompiler),__Pyx_ImportType_CheckSize_Warn_3_0_8); if (!__pyx_ptype_5yapic_6entity_3sql_6_query_QueryCompiler) __PYX_ERR(9, 68, __pyx_L1_error)
+  __pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryCompiler = (struct __pyx_vtabstruct_5yapic_6entity_3sql_6_query_QueryCompiler*)__Pyx_GetVtable(__pyx_ptype_5yapic_6entity_3sql_6_query_QueryCompiler); if (unlikely(!__pyx_vtabptr_5yapic_6entity_3sql_6_query_QueryCompiler)) __PYX_ERR(9, 68, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_3sql_6_query_RowConvertOp = __Pyx_ImportType_3_0_8(__pyx_t_1, "yapic.entity.sql._query", "RowConvertOp", sizeof(struct __pyx_obj_5yapic_6entity_3sql_6_query_RowConvertOp), __PYX_GET_STRUCT_ALIGNMENT_3_0_8(struct __pyx_obj_5yapic_6entity_3sql_6_query_RowConvertOp),__Pyx_ImportType_CheckSize_Warn_3_0_8); if (!__pyx_ptype_5yapic_6entity_3sql_6_query_RowConvertOp) __PYX_ERR(9, 183, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_3sql_6_query_QueryFactory = __Pyx_ImportType_3_0_8(__pyx_t_1, "yapic.entity.sql._query", "QueryFactory", sizeof(struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryFactory), __PYX_GET_STRUCT_ALIGNMENT_3_0_8(struct __pyx_obj_5yapic_6entity_3sql_6_query_QueryFactory),__Pyx_ImportType_CheckSize_Warn_3_0_8); if (!__pyx_ptype_5yapic_6entity_3sql_6_query_QueryFactory) __PYX_ERR(9, 190, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

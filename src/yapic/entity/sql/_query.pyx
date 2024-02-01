@@ -25,6 +25,7 @@ cdef class Query(Expression):
         self.__expr_alias = {}
         self.__alias_c = 0
         self._pending_joins = []
+        self._reduce_children = None
 
     def __init__(self, from_ = None):
         if from_ is not None:
@@ -272,6 +273,13 @@ cdef class Query(Expression):
         self._load.add(load)
         return self
 
+    def reduce_children(self, set entities):
+        if self._reduce_children is None:
+            self._reduce_children = entities
+        else:
+            self._reduce_children |= entities
+        return self
+
     cpdef Query clone(self):
         if not self._allow_clone:
             raise RuntimeError("Query is not cloneable")
@@ -293,6 +301,10 @@ cdef class Query(Expression):
         if self._load:          q._load = self._load.clone()
         if self._parent:        q._parent = self._parent.clone()
         if self._pending_joins: q._pending_joins = list(self._pending_joins)
+
+        if self._reduce_children is not None:
+            q._reduce_children = set(self._reduce_children)
+
         q._as_row = self._as_row
         q._as_json = self._as_json
 
@@ -678,6 +690,8 @@ cdef class QueryFinalizer(Visitor):
         return expr
 
     def finalize(self, *expr_list):
+        self._update_child_reducer()
+
         if self.q._select_from:
             new_from = []
             for f in self.q._select_from:
@@ -719,6 +733,35 @@ cdef class QueryFinalizer(Visitor):
         # from pprint import pprint
         # pprint(self.rcos)
         # print("="*40)
+
+    def _update_child_reducer(self):
+        if self.q._reduce_children is None:
+            return
+
+        cdef set reducer = set()
+        cdef EntityType ent
+        cdef EntityType parent_ent
+        cdef Polymorph polymorph
+        cdef Relation parent
+
+        for ent in self.q._reduce_children:
+            polymorph = ent.__polymorph__
+            if polymorph is None:
+                continue
+
+            reducer.add(polymorph.get_id(ent))
+
+            for parent in polymorph.parents():
+                parent_ent = (<RelationImpl>parent._impl_).get_joined_alias()
+
+                try:
+                    poly_id = polymorph.get_id(parent_ent)
+                except ValueError:
+                    continue
+                else:
+                    reducer.add(poly_id)
+
+        self.q._reduce_children = reducer
 
     def _visit_columns(self, expr_list):
         cdef PathExpression path
@@ -877,7 +920,7 @@ cdef class QueryFinalizer(Visitor):
         cdef Relation parent_relation = None
         cdef Field field
         cdef list rco = []
-        cdef dict create_poly = {}
+
         cdef tuple pk_fields
         cdef list poly_id_fields = []
 
@@ -940,8 +983,8 @@ cdef class QueryFinalizer(Visitor):
 
         rco.extend(self._rco_for_normal_entity(entity, fields, before_create))
 
-        pc = self._add_poly_child(create_poly, entity, fields, pk_fields)
-        if pc is True:
+        cdef dict create_poly = self._add_poly_child(entity, fields, pk_fields)
+        if create_poly:
             rco.append(_RCO_PUSH)
 
             id_fields = []
@@ -952,16 +995,21 @@ cdef class QueryFinalizer(Visitor):
 
         return rco
 
-    def _add_poly_child(self, dict create_poly, EntityType entity, dict fields, tuple pk_fields):
+    def _add_poly_child(self, EntityType entity, dict fields, tuple pk_fields):
         cdef Polymorph poly = entity.__polymorph__
         cdef Relation relation
         cdef EntityType child
-        cdef bint has_poly_child = False
-        cdef dict child_rcos = {}
+        cdef dict child_rcos
+        cdef dict result = {}
         cdef Field field
 
         for relation in poly.children:
             child = (<RelationImpl>relation._impl_).get_joined_alias()
+            poly_id = poly.get_id(child)
+
+            if self.q._reduce_children is not None and poly_id not in self.q._reduce_children:
+                continue
+
             self.q.join(relation, None, type="LEFT")
 
             for i, field in enumerate(pk_fields):
@@ -978,17 +1026,15 @@ cdef class QueryFinalizer(Visitor):
                 RowConvertOp(RCO.SET_ATTR, child.__polymorph__.parent),
             ])
 
-            pc = self._add_poly_child(child_rcos, child, fields, pk_fields)
-            if pc:
+            child_rcos = self._add_poly_child(child, fields, pk_fields)
+            if child_rcos:
                 for k, v in child_rcos.items():
                     v[0][0:0] = rcos + [_RCO_PUSH]
+                result.update(child_rcos)
 
-                create_poly.update(child_rcos)
+            result[poly_id] = [rcos]
 
-            create_poly[poly.get_id(child)] = [rcos]
-            has_poly_child = True
-
-        return has_poly_child
+        return result
 
     def _rco_for_composite(self, Field field, EntityType entity, list path=None):
         cdef Field f

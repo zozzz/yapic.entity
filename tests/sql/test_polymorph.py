@@ -614,3 +614,54 @@ async def test_virtual(conn, pgclean):
     assert result.name == "zozzz"
     assert result.files[0].id == some_file.id
     assert result.files[0].with_dir == "zozzz/test.py"
+
+
+async def test_reduce_children(conn, pgclean):
+    R = Registry()
+
+    class Base(Entity, registry=R, schema="reduce_children", polymorph="type"):
+        id: Serial
+        type: String
+
+    class A(Base, polymorph_id="A"):
+        a_field: Int
+
+    class B(A, polymorph_id="B"):
+        b_field: Int
+
+    class C(B, polymorph_id="C"):
+        c_field: Int
+
+    class C2(B, polymorph_id="C2"):
+        c2_field: Int
+
+    class D(C, polymorph_id="D"):
+        d_field: Int
+
+    class D2(C2, polymorph_id="D2"):
+        d2_field: Int
+
+    class E(D, polymorph_id="E"):
+        e_field: Int
+
+    class E2(D2, polymorph_id="E2"):
+        e2_field: Int
+
+    class E3(D, polymorph_id="E3"):
+        e3_field: Int
+
+    diff = await sync(conn, R)
+    await conn.execute(diff)
+
+    q = Query().select_from(B)
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    assert sql == '''SELECT "t2"."id", "t2"."type", "t1"."a_field", "t0"."b_field", "t3"."c_field", "t4"."d_field", "t5"."e_field", "t6"."e3_field", "t7"."c2_field", "t8"."d2_field", "t9"."e2_field" FROM "reduce_children"."B" "t0" INNER JOIN "reduce_children"."A" "t1" ON "t0"."id" = "t1"."id" INNER JOIN "reduce_children"."Base" "t2" ON "t1"."id" = "t2"."id" LEFT JOIN "reduce_children"."C" "t3" ON "t3"."id" = "t0"."id" LEFT JOIN "reduce_children"."D" "t4" ON "t4"."id" = "t3"."id" LEFT JOIN "reduce_children"."E" "t5" ON "t5"."id" = "t4"."id" LEFT JOIN "reduce_children"."E3" "t6" ON "t6"."id" = "t4"."id" LEFT JOIN "reduce_children"."C2" "t7" ON "t7"."id" = "t0"."id" LEFT JOIN "reduce_children"."D2" "t8" ON "t8"."id" = "t7"."id" LEFT JOIN "reduce_children"."E2" "t9" ON "t9"."id" = "t8"."id"'''
+
+    q = Query().select_from(B).reduce_children({E3})
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    assert sql == '''SELECT "t2"."id", "t2"."type", "t1"."a_field", "t0"."b_field", "t3"."c_field", "t4"."d_field", "t5"."e3_field" FROM "reduce_children"."B" "t0" INNER JOIN "reduce_children"."A" "t1" ON "t0"."id" = "t1"."id" INNER JOIN "reduce_children"."Base" "t2" ON "t1"."id" = "t2"."id" LEFT JOIN "reduce_children"."C" "t3" ON "t3"."id" = "t0"."id" LEFT JOIN "reduce_children"."D" "t4" ON "t4"."id" = "t3"."id" LEFT JOIN "reduce_children"."E3" "t5" ON "t5"."id" = "t4"."id"'''
+
+    q = Query().select_from(Base).reduce_children({E2, E3})
+    sql, params = conn.dialect.create_query_compiler().compile_select(q)
+    assert sql == '''SELECT "t0"."id", "t0"."type", "t1"."a_field", "t2"."b_field", "t3"."c_field", "t4"."d_field", "t5"."e3_field", "t6"."c2_field", "t7"."d2_field", "t8"."e2_field" FROM "reduce_children"."Base" "t0" LEFT JOIN "reduce_children"."A" "t1" ON "t1"."id" = "t0"."id" LEFT JOIN "reduce_children"."B" "t2" ON "t2"."id" = "t1"."id" LEFT JOIN "reduce_children"."C" "t3" ON "t3"."id" = "t2"."id" LEFT JOIN "reduce_children"."D" "t4" ON "t4"."id" = "t3"."id" LEFT JOIN "reduce_children"."E3" "t5" ON "t5"."id" = "t4"."id" LEFT JOIN "reduce_children"."C2" "t6" ON "t6"."id" = "t2"."id" LEFT JOIN "reduce_children"."D2" "t7" ON "t7"."id" = "t6"."id" LEFT JOIN "reduce_children"."E2" "t8" ON "t8"."id" = "t7"."id"'''
+

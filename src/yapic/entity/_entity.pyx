@@ -1720,8 +1720,6 @@ cdef class Polymorph:
                 poly_ids[f] = id_values[i]
         self.poly_ids = poly_ids
 
-
-
     cdef object add_child(self, object relation):
         if not isinstance(relation, Relation):
             raise ValueError(f"{relation} is must be Relation")

@@ -1,6 +1,7 @@
-from typing import Literal, TypeVar, Generic, Type, Optional, Union
-from .._expression import Expression
+from typing import Generic, Literal, Optional, Type, TypeVar, Union
+
 from .._entity import Entity
+from .._expression import Expression
 
 ENT = TypeVar("ENT", bound=Entity)
 JOIN = TypeVar("JOIN", bound=Entity)
@@ -73,8 +74,15 @@ class Query(Generic[ENT], Expression):
     def load(self, *load) -> "Query[ENT]":
         pass
 
+    def reduce_children(self, entities: set[Entity]) -> "Query[ENT]":
+        """
+        Reduce polymorph children query by polymorph ids
+        """
+
     def exclude(self, *exclude) -> "Query[ENT]":
         pass
 
     def clone(self) -> "Query[ENT]":
         pass
+
+
