@@ -15,7 +15,8 @@ from yapic.entity._expression cimport (
     RawExpression,
     PathExpression,
     ColumnRefExpression,
-    OverExpression)
+    OverExpression,
+    ParamExpression)
 from yapic.entity._expression import and_
 from yapic.entity._field cimport Field, PrimaryKey
 from yapic.entity._field_impl cimport JsonImpl, CompositeImpl, ArrayImpl
@@ -368,7 +369,25 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         return f"{self.visit(expr.expr)} OVER({' '.join(args)})"
 
     def visit_raw(self, RawExpression expr):
-        return expr.expr
+        cdef list result = []
+
+        for e in expr.exprs:
+            if isinstance(e, Expression):
+                result.append(self.visit(e))
+            else:
+                result.append(e)
+
+        return "".join(result)
+
+    def visit_param(self, ParamExpression expr):
+        value = expr.value
+        try:
+            idx = self.params.index(value)
+        except ValueError:
+            self.params.append(value)
+            return f"${len(self.params)}"
+        else:
+            return f"${idx + 1}"
 
     def _get_entity_alias(self, EntityType ent):
         try:

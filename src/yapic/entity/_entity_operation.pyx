@@ -6,7 +6,7 @@ import cython
 
 from ._entity cimport EntityBase, EntityType, EntityState, EntityAttribute, NOTSET, DependencyList, get_alias_target, Polymorph
 from ._relation cimport Relation, ManyToMany, OneToMany
-from ._expression cimport Visitor, Expression, ConstExpression, RawExpression, UnaryExpression, BinaryExpression
+from ._expression cimport Visitor, Expression, ConstExpression, RawExpression, UnaryExpression, BinaryExpression, ParamExpression
 
 
 class EntityOperation(IntFlag):
@@ -201,6 +201,15 @@ cdef class FieldUpdater(Visitor):
     #     return self.visit(expr.expr).cast(expr.type)
 
     def visit_raw(self, RawExpression expr):
+        cdef list exprs = []
+        for e in expr.exprs:
+            if isinstance(e, Expression):
+                exprs.append(self.visit(e))
+            else:
+                exprs.append(e)
+        return RawExpression(*exprs)
+
+    def visit_param(self, ParamExpression expr):
         return expr
 
     def visit_field(self, EntityAttribute expr):

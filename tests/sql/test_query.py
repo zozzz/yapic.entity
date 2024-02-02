@@ -29,6 +29,8 @@ from yapic.entity import (
     find,
     func,
     or_,
+    param,
+    raw,
     startswith,
     virtual,
 )
@@ -784,3 +786,23 @@ def test_enum():
     assert len(params) == 0
 
 
+def test_raw():
+    q = Query(User).where(raw("FULL INVALID"))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == '''SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE FULL INVALID'''
+    assert params == ()
+
+    q = Query(User).where(raw("ARRAY[", User.id, "]", " && ", "ARRAY[", param(1), ',', param(2), "]"))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == '''SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE ARRAY["t0"."id"] && ARRAY[$1,$2]'''
+    assert params == (1, 2)
+
+    q = Query(User).where(raw("ARRAY[", param("ALMA"), ',', User.name, "]"))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == '''SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE ARRAY[$1,"t0"."name"]'''
+    assert params == ("ALMA",)
+
+    q = Query(User).where(raw("ARRAY[", param("ALMA"), ',', User.name, "]")).where(User.id == 42)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == '''SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE ARRAY[$1,"t0"."name"] AND "t0"."id" = $2'''
+    assert params == ("ALMA", 42)

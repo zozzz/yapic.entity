@@ -6,7 +6,7 @@ from yapic.entity._field cimport Field, field_eq
 from yapic.entity._field_impl cimport CompositeImpl
 from yapic.entity._expression cimport (Expression, AliasExpression, ColumnRefExpression, OrderExpression, Visitor,
     BinaryExpression, UnaryExpression, CastExpression, CallExpression, RawExpression, PathExpression,
-    ConstExpression, raw, OverExpression)
+    ConstExpression, OverExpression)
 from yapic.entity._expression import and_
 from yapic.entity._relation cimport Relation, RelationImpl, ManyToOne, ManyToMany, RelatedAttribute, determine_join_expr, Loading
 from yapic.entity._error cimport JoinError
@@ -611,7 +611,16 @@ cdef class QueryFinalizer(Visitor):
     def visit_call(self, CallExpression expr):
         return CallExpression(self.visit(expr.callable), self._visit_iterable(expr.args))
 
-    def visit_raw(self, expr):
+    def visit_raw(self, RawExpression expr):
+        cdef list exprs = []
+        for e in expr.exprs:
+            if isinstance(e, Expression):
+                exprs.append(self.visit(e))
+            else:
+                exprs.append(e)
+        return RawExpression(*exprs)
+
+    def visit_param(self, expr):
         return expr
 
     def visit_field(self, Field expr):
@@ -1102,7 +1111,7 @@ cdef class QueryFinalizer(Visitor):
 
         column_name = self.q._get_next_alias()
         alias_name = self.q._get_next_alias()
-        col_query = Query(q.alias(alias_name)).columns(raw(f'ARRAY_AGG("{alias_name}")'))
+        col_query = Query(q.alias(alias_name)).columns(RawExpression(f'ARRAY_AGG("{alias_name}")'))
         cdef AliasExpression column_alias = self.visit(col_query.alias(column_name))
         cdef Query column = column_alias.expr
         cdef AliasExpression subq_alias = column._select_from[0]

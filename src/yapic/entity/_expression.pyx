@@ -187,14 +187,26 @@ cdef class CallExpression(Expression):
 
 
 cdef class RawExpression(Expression):
-    def __cinit__(self, str expr):
-        self.expr = expr
+    def __cinit__(self, *exprs):
+        self.exprs = exprs
 
     def __repr__(self):
-        return "<RAW %r>" % (self.expr)
+        return "<RAW %r>" % (self.exprs)
 
     cpdef visit(self, Visitor visitor):
         return visitor.visit_raw(self)
+
+
+cdef class ParamExpression(Expression):
+    def __cinit__(self, value):
+        self.value = value
+
+    def __repr__(self):
+        return "<PARAM %r>" % (self.value)
+
+    cpdef visit(self, Visitor visitor):
+        return visitor.visit_param(self)
+
 
 
 cdef class AliasExpression(Expression):
@@ -532,9 +544,11 @@ cpdef direction(Expression expr, str dir):
     else:
         return expr.desc()
 
-cpdef raw(str expr):
-    return RawExpression(expr)
+def raw(*exprs):
+    return RawExpression(*exprs)
 
+def param(value):
+    return ParamExpression(value)
 
 cdef class RawIdFactory:
     def __getattribute__(self, name):

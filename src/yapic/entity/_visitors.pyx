@@ -1,4 +1,4 @@
-from ._expression cimport Expression, Visitor, BinaryExpression, UnaryExpression, OrderExpression, AliasExpression, CastExpression, CallExpression, RawExpression, PathExpression, coerce_expression, ExpressionPlaceholder, OverExpression
+from ._expression cimport Expression, Visitor, BinaryExpression, UnaryExpression, OrderExpression, AliasExpression, CastExpression, CallExpression, RawExpression, PathExpression, coerce_expression, ExpressionPlaceholder, OverExpression, ParamExpression
 from ._entity cimport EntityType, EntityAttribute
 from ._field cimport Field, field_eq
 from ._relation cimport Relation, ManyToMany, RelationImpl, RelatedAttribute
@@ -27,6 +27,15 @@ cdef class ReplacerBase(Visitor):
         return self.visit(expr.callable)(*self._visit_iterable(expr.args))
 
     def visit_raw(self, RawExpression expr):
+        cdef list exprs = []
+        for e in expr.exprs:
+            if isinstance(e, Expression):
+                exprs.append(self.visit(e))
+            else:
+                exprs.append(e)
+        return RawExpression(*exprs)
+
+    def visit_param(self, ParamExpression expr):
         return expr
 
     def visit_field(self, expr):

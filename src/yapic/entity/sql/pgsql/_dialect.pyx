@@ -1,5 +1,5 @@
 from yapic.entity._entity cimport EntityType
-from yapic.entity._expression cimport RawExpression
+from yapic.entity._expression cimport RawExpression, ParamExpression
 from yapic.entity._field cimport StorageTypeFactory
 
 from .._dialect cimport Dialect
@@ -58,7 +58,10 @@ cdef class PostgreDialect(Dialect):
 
     cpdef object quote_value(self, object value):
         if isinstance(value, RawExpression):
-            return (<RawExpression>value).expr
+            values = [v if isinstance(v, str) else self.quote_value(v) for v in (<RawExpression>value).exprs]
+            return "".join(values)
+        elif isinstance(value, ParamExpression):
+            return self.quote_value((<ParamExpression>value).value)
         elif isinstance(value, int) or isinstance(value, float):
             return str(value)
         elif isinstance(value, bool):
