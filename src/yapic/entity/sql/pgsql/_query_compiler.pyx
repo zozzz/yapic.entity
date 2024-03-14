@@ -275,7 +275,12 @@ cdef class PostgreQueryCompiler(QueryCompiler):
 
     def visit_order(self, OrderExpression expr):
         e = expr.expr
-        return f"{self.visit(e)} {'ASC' if expr.is_asc else 'DESC'}"
+        order_by = self.visit(e)
+
+        if isinstance(e, BinaryExpression):
+            order_by = f"({order_by})"
+
+        return f"{order_by} {'ASC' if expr.is_asc else 'DESC'}"
 
     def visit_alias(self, expr):
         if self.skip_alias > 0:

@@ -221,7 +221,7 @@ def test_order_by():
 
     sql, params = dialect.create_query_compiler().compile_select(q)
 
-    assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" ORDER BY "t0"."id" ASC, "t0"."name" ASC, "t0"."email" DESC, "t0"."email" = $1 ASC'
+    assert sql == 'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" ORDER BY "t0"."id" ASC, "t0"."name" ASC, "t0"."email" DESC, ("t0"."email" = $1) ASC'
     assert params == ("email", )
 
 
@@ -806,3 +806,11 @@ def test_raw():
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == '''SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE ARRAY[$1,"t0"."name"] AND "t0"."id" = $2'''
     assert params == ("ALMA", 42)
+
+
+def test_order_by_binary_expr():
+    q = Query(User).order(and_(User.id == 1, User.name == "Alma"))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    print(sql)
+    assert sql == '''SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" ORDER BY ("t0"."id" = $1 AND "t0"."name" = $2) ASC'''
+    assert params == (1, "Alma")
