@@ -269,18 +269,23 @@ async def _collect_attrs(Dialect dialect, EntityBase entity, bint for_insert, li
             else:
                 value = state.get_initial_value(attr)
                 if value is NOTSET:
-                    raise RuntimeError("Missing primary key value")
+                    value = state.get_value(attr)
+                    if value is NOTSET:
+                        raise RuntimeError("Missing primary key value")
 
-            where.append((field_name, dialect.encode_value(attr, value)))
+            pk_value = dialect.encode_value(attr, value)
+            where.append((field_name, pk_value))
 
-# cpdef wrap_connection(conn, dialect):
-#     if isinstance(dialect, str):
-#         package = __import__(f"yapic.entity.sql.{dialect}", fromlist=["Dialect", "Connection"])
-#         dialect = getattr(package, "Dialect")
-#         connection = getattr(package, "Connection")
-#     else:
-#         raise TypeError("Invalid dialect argument: %r" % dialect)
-#     return connection(conn, dialect())
+            # if primary key is not changed, remove from values
+            try:
+                existing_pk_idx = names.index(field_name)
+            except ValueError:
+                pass
+            else:
+                if values[existing_pk_idx] == pk_value:
+                    attrs.pop(existing_pk_idx)
+                    names.pop(existing_pk_idx)
+                    values.pop(existing_pk_idx)
 
 
 cdef str _compile_path(Dialect dialect, PathExpression path):

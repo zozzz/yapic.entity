@@ -16,14 +16,14 @@ async def sync(connection, Registry registry, EntityType entity_base=Entity, com
 
     cdef RegistryDiff diff = await connection.diff(registry, entity_base, compare_field_position=compare_field_position)
 
-    # print("\n".join(map(repr, diff.changes)))
-
     if diff:
         changes = []
         async for c in compare_data(connection, diff):
             async for cc in convert_data_to_raw(connection, c):
                 changes.append(cc)
         diff.changes = changes
+
+        # print("\n".join(map(repr, diff.changes)))
 
         res = connection.dialect.create_ddl_compiler().compile_registry_diff(diff)
         if not res:

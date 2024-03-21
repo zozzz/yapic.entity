@@ -104,6 +104,9 @@ cdef class EntityDiff:
     def __iter__(self):
         return iter(self.changes)
 
+    def __repr__(self):
+        return f"<EntityDiff {self.changes!r}>"
+
 
 cdef inline dict field_eq(Field a, Field b, object expression_eq, bint compare_field_position):
     result = {}

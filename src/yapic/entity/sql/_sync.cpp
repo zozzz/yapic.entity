@@ -5999,7 +5999,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5_sync_2generator(__pyx_CoroutineO
  * 
  *     cdef RegistryDiff diff = await connection.diff(registry, entity_base, compare_field_position=compare_field_position)             # <<<<<<<<<<<<<<
  * 
- *     # print("\n".join(map(repr, diff.changes)))
+ *     if diff:
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_connection, __pyx_n_s_diff); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -6042,37 +6042,37 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5_sync_2generator(__pyx_CoroutineO
   __pyx_cur_scope->__pyx_v_diff = ((struct __pyx_obj_5yapic_6entity_9_registry_RegistryDiff *)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "yapic/entity/sql/_sync.pyx":21
- *     # print("\n".join(map(repr, diff.changes)))
+  /* "yapic/entity/sql/_sync.pyx":19
+ *     cdef RegistryDiff diff = await connection.diff(registry, entity_base, compare_field_position=compare_field_position)
  * 
  *     if diff:             # <<<<<<<<<<<<<<
  *         changes = []
  *         async for c in compare_data(connection, diff):
  */
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_cur_scope->__pyx_v_diff)); if (unlikely((__pyx_t_1 < 0))) __PYX_ERR(0, 21, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_cur_scope->__pyx_v_diff)); if (unlikely((__pyx_t_1 < 0))) __PYX_ERR(0, 19, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "yapic/entity/sql/_sync.pyx":22
+    /* "yapic/entity/sql/_sync.pyx":20
  * 
  *     if diff:
  *         changes = []             # <<<<<<<<<<<<<<
  *         async for c in compare_data(connection, diff):
  *             async for cc in convert_data_to_raw(connection, c):
  */
-    __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 22, __pyx_L1_error)
+    __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 20, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_5);
     __pyx_cur_scope->__pyx_v_changes = ((PyObject*)__pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "yapic/entity/sql/_sync.pyx":23
+    /* "yapic/entity/sql/_sync.pyx":21
  *     if diff:
  *         changes = []
  *         async for c in compare_data(connection, diff):             # <<<<<<<<<<<<<<
  *             async for cc in convert_data_to_raw(connection, c):
  *                 changes.append(cc)
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_compare_data); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 23, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_compare_data); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 21, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_3 = NULL;
     __pyx_t_6 = 0;
@@ -6092,15 +6092,15 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5_sync_2generator(__pyx_CoroutineO
       PyObject *__pyx_callargs[3] = {__pyx_t_3, __pyx_cur_scope->__pyx_v_connection, ((PyObject *)__pyx_cur_scope->__pyx_v_diff)};
       __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_6, 2+__pyx_t_6);
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 23, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 21, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
-    __pyx_t_4 = __Pyx_Coroutine_GetAsyncIter(__pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 23, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_Coroutine_GetAsyncIter(__pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 21, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     for (;;) {
-      __pyx_t_5 = __Pyx_Coroutine_AsyncIterNext(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 23, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_Coroutine_AsyncIterNext(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 21, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_5);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -6124,7 +6124,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5_sync_2generator(__pyx_CoroutineO
             PyErr_Clear();
             break;
           }
-          __PYX_ERR(0, 23, __pyx_L1_error)
+          __PYX_ERR(0, 21, __pyx_L1_error)
         }
         __pyx_t_5 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_5);
       } else {
@@ -6134,7 +6134,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5_sync_2generator(__pyx_CoroutineO
           break;
         }
         __pyx_t_5 = NULL;
-        if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_5) < 0) __PYX_ERR(0, 23, __pyx_L1_error)
+        if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_5) < 0) __PYX_ERR(0, 21, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
       }
       __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_c);
@@ -6142,14 +6142,14 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5_sync_2generator(__pyx_CoroutineO
       __Pyx_GIVEREF(__pyx_t_5);
       __pyx_t_5 = 0;
 
-      /* "yapic/entity/sql/_sync.pyx":24
+      /* "yapic/entity/sql/_sync.pyx":22
  *         changes = []
  *         async for c in compare_data(connection, diff):
  *             async for cc in convert_data_to_raw(connection, c):             # <<<<<<<<<<<<<<
  *                 changes.append(cc)
  *         diff.changes = changes
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_convert_data_to_raw); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 24, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_convert_data_to_raw); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 22, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_2 = NULL;
       __pyx_t_6 = 0;
@@ -6169,15 +6169,15 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5_sync_2generator(__pyx_CoroutineO
         PyObject *__pyx_callargs[3] = {__pyx_t_2, __pyx_cur_scope->__pyx_v_connection, __pyx_cur_scope->__pyx_v_c};
         __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+1-__pyx_t_6, 2+__pyx_t_6);
         __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 24, __pyx_L1_error)
+        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 22, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       }
-      __pyx_t_3 = __Pyx_Coroutine_GetAsyncIter(__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 24, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_Coroutine_GetAsyncIter(__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 22, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       for (;;) {
-        __pyx_t_5 = __Pyx_Coroutine_AsyncIterNext(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 24, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_Coroutine_AsyncIterNext(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 22, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_5);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -6206,7 +6206,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5_sync_2generator(__pyx_CoroutineO
               PyErr_Clear();
               break;
             }
-            __PYX_ERR(0, 24, __pyx_L1_error)
+            __PYX_ERR(0, 22, __pyx_L1_error)
           }
           __pyx_t_5 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_5);
         } else {
@@ -6216,7 +6216,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5_sync_2generator(__pyx_CoroutineO
             break;
           }
           __pyx_t_5 = NULL;
-          if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_5) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
+          if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_5) < 0) __PYX_ERR(0, 22, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_5);
         }
         __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_cc);
@@ -6224,16 +6224,16 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5_sync_2generator(__pyx_CoroutineO
         __Pyx_GIVEREF(__pyx_t_5);
         __pyx_t_5 = 0;
 
-        /* "yapic/entity/sql/_sync.pyx":25
+        /* "yapic/entity/sql/_sync.pyx":23
  *         async for c in compare_data(connection, diff):
  *             async for cc in convert_data_to_raw(connection, c):
  *                 changes.append(cc)             # <<<<<<<<<<<<<<
  *         diff.changes = changes
  * 
  */
-        __pyx_t_7 = __Pyx_PyList_Append(__pyx_cur_scope->__pyx_v_changes, __pyx_cur_scope->__pyx_v_cc); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 25, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyList_Append(__pyx_cur_scope->__pyx_v_changes, __pyx_cur_scope->__pyx_v_cc); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 23, __pyx_L1_error)
 
-        /* "yapic/entity/sql/_sync.pyx":24
+        /* "yapic/entity/sql/_sync.pyx":22
  *         changes = []
  *         async for c in compare_data(connection, diff):
  *             async for cc in convert_data_to_raw(connection, c):             # <<<<<<<<<<<<<<
@@ -6243,7 +6243,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5_sync_2generator(__pyx_CoroutineO
       }
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-      /* "yapic/entity/sql/_sync.pyx":23
+      /* "yapic/entity/sql/_sync.pyx":21
  *     if diff:
  *         changes = []
  *         async for c in compare_data(connection, diff):             # <<<<<<<<<<<<<<
@@ -6253,12 +6253,12 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5_sync_2generator(__pyx_CoroutineO
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "yapic/entity/sql/_sync.pyx":26
+    /* "yapic/entity/sql/_sync.pyx":24
  *             async for cc in convert_data_to_raw(connection, c):
  *                 changes.append(cc)
  *         diff.changes = changes             # <<<<<<<<<<<<<<
  * 
- *         res = connection.dialect.create_ddl_compiler().compile_registry_diff(diff)
+ *         # print("\n".join(map(repr, diff.changes)))
  */
     __Pyx_INCREF(__pyx_cur_scope->__pyx_v_changes);
     __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_changes);
@@ -6267,7 +6267,7 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5_sync_2generator(__pyx_CoroutineO
     __pyx_cur_scope->__pyx_v_diff->changes = __pyx_cur_scope->__pyx_v_changes;
 
     /* "yapic/entity/sql/_sync.pyx":28
- *         diff.changes = changes
+ *         # print("\n".join(map(repr, diff.changes)))
  * 
  *         res = connection.dialect.create_ddl_compiler().compile_registry_diff(diff)             # <<<<<<<<<<<<<<
  *         if not res:
@@ -6373,8 +6373,8 @@ static PyObject *__pyx_gb_5yapic_6entity_3sql_5_sync_2generator(__pyx_CoroutineO
       goto __pyx_L0;
     }
 
-    /* "yapic/entity/sql/_sync.pyx":21
- *     # print("\n".join(map(repr, diff.changes)))
+    /* "yapic/entity/sql/_sync.pyx":19
+ *     cdef RegistryDiff diff = await connection.diff(registry, entity_base, compare_field_position=compare_field_position)
  * 
  *     if diff:             # <<<<<<<<<<<<<<
  *         changes = []

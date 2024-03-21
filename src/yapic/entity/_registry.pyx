@@ -241,12 +241,10 @@ cdef class RegistryDiff:
             b_ent = b_ents[i]
             a_ent = a_ents[a_ents.index(b_ent)]
             if not entity_data_is_eq(a_ent, b_ent):
-                target = a_ent if a_ent.__state__.exists else b_ent
-                source = a_ent if not a_ent.__state__.exists else b_ent
-
-                for field in type(target).__fields__:
-                    setattr(target, field._key_, getattr(source, field._key_))
-
+                if a_ent.__state__.exists:
+                    target = b_ent
+                else:
+                    target = a_ent
                 changed.append(target)
 
         if changed:
@@ -276,7 +274,7 @@ cdef object entity_data_is_eq(EntityBase a, EntityBase b):
     for i in range(length):
         attr = <EntityAttribute>entity_b.__fields__[i]
         attr2 = getattr(entity_a, attr._key_, None)
-        if attr2 is None:
+        if attr2 is None and attr is not None:
             return False
 
         iv = a.__state__.get_value(attr2)

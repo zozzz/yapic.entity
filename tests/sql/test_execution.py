@@ -1242,6 +1242,47 @@ ALTER TABLE "execution"."EnumTest"
     assert inst.int_enum == IntEnum.RUNNING
 
 
+async def test_enum_model_recreate(conn, pgclean):
+    r1 = Registry()
+
+    class SomeEnum(Enum, registry=r1, schema="enum"):
+        field_name: Int = 0
+        another: Bool = False
+
+        VALUE1 = dict(field_name=10, another=True)
+        VALUE2 = dict(field_name=20, another=False)
+
+    result = await sync(conn, r1)
+    assert result == """CREATE SCHEMA IF NOT EXISTS "enum";
+CREATE TABLE "enum"."SomeEnum" (
+  "field_name" INT4 NOT NULL DEFAULT 0,
+  "another" BOOLEAN NOT NULL DEFAULT FALSE,
+  "value" TEXT NOT NULL,
+  "label" TEXT,
+  "index" INT4,
+  PRIMARY KEY("value")
+);
+INSERT INTO "enum"."SomeEnum" ("field_name", "another", "value", "index") VALUES (10, TRUE, 'VALUE1', 0) ON CONFLICT ("value") DO UPDATE SET "field_name"=10, "another"=TRUE, "index"=0;
+INSERT INTO "enum"."SomeEnum" ("field_name", "another", "value", "index") VALUES (20, FALSE, 'VALUE2', 1) ON CONFLICT ("value") DO UPDATE SET "field_name"=20, "another"=FALSE, "index"=1;"""
+    await conn.execute(result)
+
+    r2 = Registry()
+
+    class SomeEnum(Enum, registry=r2, schema="enum"):
+        field_name_changed: Bool = True
+        another: Bool = False
+
+        VALUE1 = dict(field_name_changed=False, another=True)
+        VALUE2 = dict(field_name_changed=True, another=False)
+
+    result = await _sync(conn, r2, compare_field_position=True)
+    assert result == """ALTER TABLE "enum"."SomeEnum"
+  DROP COLUMN "field_name",
+  ADD COLUMN "field_name_changed" BOOLEAN NOT NULL DEFAULT TRUE;
+UPDATE "enum"."SomeEnum" SET "field_name_changed"=FALSE, "another"=TRUE, "index"=0 WHERE "value"='VALUE1';
+UPDATE "enum"."SomeEnum" SET "field_name_changed"=TRUE, "another"=FALSE, "index"=1 WHERE "value"='VALUE2';"""
+
+
 async def test_same_seq(conn, pgclean):
     reg = Registry()
 
