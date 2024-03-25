@@ -465,6 +465,18 @@ def test_op_invert(op, original, inverted):
     assert sql == f'SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE "t0"."id" {original} "t0"."email" AND "t0"."id" {inverted} "t0"."email"'
 
 
+def test_op_precedence():
+    q = Query().select_from(User).where((User.id - User.id) / (2000 / User.id))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE ("t0"."id" - "t0"."id") / ($1 / "t0"."id")"""
+    assert params == (2000,)
+
+    q = Query().select_from(User).where((User.id - User.id) / (User.id - 2000 - User.email - (User.id * (3 - User.id))))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" WHERE ("t0"."id" - "t0"."id") / ((("t0"."id" - $1) - "t0"."email") - ("t0"."id" * ($2 - "t0"."id")))"""
+    assert params == (2000, 3)
+
+
 def test_call():
     q = Query()
     q.select_from(User)

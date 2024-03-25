@@ -2194,7 +2194,7 @@ struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression {
   PyObject *(*cast)(struct __pyx_obj_5yapic_6entity_11_expression_Expression *, PyObject *, int __pyx_skip_dispatch);
   PyObject *(*alias)(struct __pyx_obj_5yapic_6entity_11_expression_Expression *, PyObject *, int __pyx_skip_dispatch);
   PyObject *(*over)(struct __pyx_obj_5yapic_6entity_11_expression_Expression *, int __pyx_skip_dispatch);
-  struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *(*_new_binary_expr)(struct __pyx_obj_5yapic_6entity_11_expression_Expression *, PyObject *, PyObject *);
+  struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *(*_new_binary_expr)(struct __pyx_obj_5yapic_6entity_11_expression_Expression *, PyObject *, PyObject *, PyObject *);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression *__pyx_vtabptr_5yapic_6entity_11_expression_Expression;
 
@@ -3466,7 +3466,7 @@ static struct __pyx_obj_5yapic_6entity_13_virtual_attr_VirtualAttribute *__pyx_f
 static struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_f_5yapic_6entity_13_virtual_attr_16VirtualAttribute_get_value_expr(struct __pyx_obj_5yapic_6entity_13_virtual_attr_VirtualAttribute *__pyx_v_self, PyObject *__pyx_v_query); /* proto*/
 static struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_f_5yapic_6entity_13_virtual_attr_16VirtualAttribute_get_order_expr(struct __pyx_obj_5yapic_6entity_13_virtual_attr_VirtualAttribute *__pyx_v_self, PyObject *__pyx_v_query, PyObject *__pyx_v_op); /* proto*/
 static struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_f_5yapic_6entity_13_virtual_attr_16VirtualAttribute_get_compare_expr(struct __pyx_obj_5yapic_6entity_13_virtual_attr_VirtualAttribute *__pyx_v_self, PyObject *__pyx_v_query, PyObject *__pyx_v_op, PyObject *__pyx_v_value); /* proto*/
-static struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *__pyx_f_5yapic_6entity_13_virtual_attr_16VirtualAttribute__new_binary_expr(struct __pyx_obj_5yapic_6entity_13_virtual_attr_VirtualAttribute *__pyx_v_self, PyObject *__pyx_v_right, PyObject *__pyx_v_op); /* proto*/
+static struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *__pyx_f_5yapic_6entity_13_virtual_attr_16VirtualAttribute__new_binary_expr(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_13_virtual_attr_VirtualAttribute *__pyx_v_self, PyObject *__pyx_v_left, PyObject *__pyx_v_right, PyObject *__pyx_v_op); /* proto*/
 static PyObject *__pyx_f_5yapic_6entity_13_virtual_attr_16VirtualAttribute_asc(struct __pyx_obj_5yapic_6entity_13_virtual_attr_VirtualAttribute *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
 static PyObject *__pyx_f_5yapic_6entity_13_virtual_attr_16VirtualAttribute_desc(struct __pyx_obj_5yapic_6entity_13_virtual_attr_VirtualAttribute *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
 static struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_f_5yapic_6entity_13_virtual_attr_23VirtualBinaryExpression__create_expr_(struct __pyx_obj_5yapic_6entity_13_virtual_attr_VirtualBinaryExpression *__pyx_v_self, PyObject *__pyx_v_query, int __pyx_skip_dispatch); /* proto*/
@@ -7128,7 +7128,7 @@ static struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_f_5yapic_
  *             return self._cmp(self.get_source(), query, op, value)
  *         return op(self.get_value_expr(query), value)             # <<<<<<<<<<<<<<
  * 
- *     cdef BinaryExpression _new_binary_expr(self, object right, object op):
+ *     cdef BinaryExpression _new_binary_expr(self, object left, object right, object op):
  */
   __Pyx_XDECREF((PyObject *)__pyx_r);
   __pyx_t_4 = ((PyObject *)((struct __pyx_vtabstruct_5yapic_6entity_13_virtual_attr_VirtualAttribute *)__pyx_v_self->__pyx_base.__pyx_base.__pyx_vtab)->get_value_expr(__pyx_v_self, __pyx_v_query)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 97, __pyx_L1_error)
@@ -7187,12 +7187,12 @@ static struct __pyx_obj_5yapic_6entity_11_expression_Expression *__pyx_f_5yapic_
 /* "yapic/entity/_virtual_attr.pyx":99
  *         return op(self.get_value_expr(query), value)
  * 
- *     cdef BinaryExpression _new_binary_expr(self, object right, object op):             # <<<<<<<<<<<<<<
- *         return VirtualBinaryExpression(self, right, op)
+ *     cdef BinaryExpression _new_binary_expr(self, object left, object right, object op):             # <<<<<<<<<<<<<<
+ *         return VirtualBinaryExpression(left, right, op)
  * 
  */
 
-static struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *__pyx_f_5yapic_6entity_13_virtual_attr_16VirtualAttribute__new_binary_expr(struct __pyx_obj_5yapic_6entity_13_virtual_attr_VirtualAttribute *__pyx_v_self, PyObject *__pyx_v_right, PyObject *__pyx_v_op) {
+static struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *__pyx_f_5yapic_6entity_13_virtual_attr_16VirtualAttribute__new_binary_expr(CYTHON_UNUSED struct __pyx_obj_5yapic_6entity_13_virtual_attr_VirtualAttribute *__pyx_v_self, PyObject *__pyx_v_left, PyObject *__pyx_v_right, PyObject *__pyx_v_op) {
   struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7204,17 +7204,17 @@ static struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *__pyx_f_5
 
   /* "yapic/entity/_virtual_attr.pyx":100
  * 
- *     cdef BinaryExpression _new_binary_expr(self, object right, object op):
- *         return VirtualBinaryExpression(self, right, op)             # <<<<<<<<<<<<<<
+ *     cdef BinaryExpression _new_binary_expr(self, object left, object right, object op):
+ *         return VirtualBinaryExpression(left, right, op)             # <<<<<<<<<<<<<<
  * 
  *     cpdef asc(self):
  */
   __Pyx_XDECREF((PyObject *)__pyx_r);
   __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 100, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF((PyObject *)__pyx_v_self);
-  __Pyx_GIVEREF((PyObject *)__pyx_v_self);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self))) __PYX_ERR(0, 100, __pyx_L1_error);
+  __Pyx_INCREF(__pyx_v_left);
+  __Pyx_GIVEREF(__pyx_v_left);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_left)) __PYX_ERR(0, 100, __pyx_L1_error);
   __Pyx_INCREF(__pyx_v_right);
   __Pyx_GIVEREF(__pyx_v_right);
   if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_right)) __PYX_ERR(0, 100, __pyx_L1_error);
@@ -7231,8 +7231,8 @@ static struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *__pyx_f_5
   /* "yapic/entity/_virtual_attr.pyx":99
  *         return op(self.get_value_expr(query), value)
  * 
- *     cdef BinaryExpression _new_binary_expr(self, object right, object op):             # <<<<<<<<<<<<<<
- *         return VirtualBinaryExpression(self, right, op)
+ *     cdef BinaryExpression _new_binary_expr(self, object left, object right, object op):             # <<<<<<<<<<<<<<
+ *         return VirtualBinaryExpression(left, right, op)
  * 
  */
 
@@ -7249,7 +7249,7 @@ static struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *__pyx_f_5
 }
 
 /* "yapic/entity/_virtual_attr.pyx":102
- *         return VirtualBinaryExpression(self, right, op)
+ *         return VirtualBinaryExpression(left, right, op)
  * 
  *     cpdef asc(self):             # <<<<<<<<<<<<<<
  *         return VirtualOrderExpression(self, True)
@@ -7353,7 +7353,7 @@ static PyObject *__pyx_f_5yapic_6entity_13_virtual_attr_16VirtualAttribute_asc(s
   goto __pyx_L0;
 
   /* "yapic/entity/_virtual_attr.pyx":102
- *         return VirtualBinaryExpression(self, right, op)
+ *         return VirtualBinaryExpression(left, right, op)
  * 
  *     cpdef asc(self):             # <<<<<<<<<<<<<<
  *         return VirtualOrderExpression(self, True)
@@ -10215,7 +10215,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_yapic_entity__virtual_attr_p, __pyx_n_s_visit, 68, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) __PYX_ERR(0, 68, __pyx_L1_error)
 
   /* "yapic/entity/_virtual_attr.pyx":102
- *         return VirtualBinaryExpression(self, right, op)
+ *         return VirtualBinaryExpression(left, right, op)
  * 
  *     cpdef asc(self):             # <<<<<<<<<<<<<<
  *         return VirtualOrderExpression(self, True)
@@ -10342,7 +10342,7 @@ static int __Pyx_modinit_type_init_code(void) {
   __pyx_vtable_5yapic_6entity_13_virtual_attr_VirtualAttribute.__pyx_base.__pyx_base.visit = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_11_expression_Expression *, struct __pyx_obj_5yapic_6entity_11_expression_Visitor *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_13_virtual_attr_16VirtualAttribute_visit;
   __pyx_vtable_5yapic_6entity_13_virtual_attr_VirtualAttribute.__pyx_base.__pyx_base.asc = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_11_expression_Expression *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_13_virtual_attr_16VirtualAttribute_asc;
   __pyx_vtable_5yapic_6entity_13_virtual_attr_VirtualAttribute.__pyx_base.__pyx_base.desc = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_11_expression_Expression *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_13_virtual_attr_16VirtualAttribute_desc;
-  __pyx_vtable_5yapic_6entity_13_virtual_attr_VirtualAttribute.__pyx_base.__pyx_base._new_binary_expr = (struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *(*)(struct __pyx_obj_5yapic_6entity_11_expression_Expression *, PyObject *, PyObject *))__pyx_f_5yapic_6entity_13_virtual_attr_16VirtualAttribute__new_binary_expr;
+  __pyx_vtable_5yapic_6entity_13_virtual_attr_VirtualAttribute.__pyx_base.__pyx_base._new_binary_expr = (struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *(*)(struct __pyx_obj_5yapic_6entity_11_expression_Expression *, PyObject *, PyObject *, PyObject *))__pyx_f_5yapic_6entity_13_virtual_attr_16VirtualAttribute__new_binary_expr;
   __pyx_vtable_5yapic_6entity_13_virtual_attr_VirtualAttribute.__pyx_base.clone = (PyObject *(*)(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *, int __pyx_skip_dispatch))__pyx_f_5yapic_6entity_13_virtual_attr_16VirtualAttribute_clone;
   __pyx_vtable_5yapic_6entity_13_virtual_attr_VirtualAttribute.get_value_expr = (struct __pyx_obj_5yapic_6entity_11_expression_Expression *(*)(struct __pyx_obj_5yapic_6entity_13_virtual_attr_VirtualAttribute *, PyObject *))__pyx_f_5yapic_6entity_13_virtual_attr_16VirtualAttribute_get_value_expr;
   __pyx_vtable_5yapic_6entity_13_virtual_attr_VirtualAttribute.get_order_expr = (struct __pyx_obj_5yapic_6entity_11_expression_Expression *(*)(struct __pyx_obj_5yapic_6entity_13_virtual_attr_VirtualAttribute *, PyObject *, PyObject *))__pyx_f_5yapic_6entity_13_virtual_attr_16VirtualAttribute_get_order_expr;
@@ -10994,7 +10994,7 @@ if (!__Pyx_RefNanny) {
   PyType_Modified(__pyx_ptype_5yapic_6entity_13_virtual_attr_VirtualAttribute);
 
   /* "yapic/entity/_virtual_attr.pyx":102
- *         return VirtualBinaryExpression(self, right, op)
+ *         return VirtualBinaryExpression(left, right, op)
  * 
  *     cpdef asc(self):             # <<<<<<<<<<<<<<
  *         return VirtualOrderExpression(self, True)

@@ -13,7 +13,7 @@ cdef class Expression:
     cpdef alias(self, str alias)
     cpdef over(self)
 
-    cdef BinaryExpression _new_binary_expr(self, object other, object op)
+    cdef BinaryExpression _new_binary_expr(self, object left, object right, object op)
 
 
 cdef class BinaryExpression(Expression):

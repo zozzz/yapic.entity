@@ -16,27 +16,37 @@ cdef class Expression:
         raise NotImplementedError("%s::visit", type(self))
 
     def __hash__(self): return _Py_HashPointer(<PyObject*>(<object>self))
-    def __lt__(Expression self, other): return self._new_binary_expr(other, operator.__lt__)
-    def __le__(Expression self, other): return self._new_binary_expr(other, operator.__le__)
-    def __eq__(Expression self, other): return self._new_binary_expr(other, operator.__eq__)
-    def __ne__(Expression self, other): return self._new_binary_expr(other, operator.__ne__)
-    def __ge__(Expression self, other): return self._new_binary_expr(other, operator.__ge__)
-    def __gt__(Expression self, other): return self._new_binary_expr(other, operator.__gt__)
+    def __lt__(Expression self, other): return self._new_binary_expr(self, other, operator.__lt__)
+    def __le__(Expression self, other): return self._new_binary_expr(self, other, operator.__le__)
+    def __eq__(Expression self, other): return self._new_binary_expr(self, other, operator.__eq__)
+    def __ne__(Expression self, other): return self._new_binary_expr(self, other, operator.__ne__)
+    def __ge__(Expression self, other): return self._new_binary_expr(self, other, operator.__ge__)
+    def __gt__(Expression self, other): return self._new_binary_expr(self, other, operator.__gt__)
 
-    def __add__(Expression self, other): return self._new_binary_expr(other, operator.__add__)
-    def __sub__(Expression self, other): return self._new_binary_expr(other, operator.__sub__)
-    def __and__(Expression self, other): return self._new_binary_expr(other, operator.__and__)
-    def __or__(Expression self, other): return self._new_binary_expr(other, operator.__or__)
-    def __xor__(Expression self, other): return self._new_binary_expr(other, operator.__xor__)
+    def __add__(Expression self, other): return self._new_binary_expr(self, other, operator.__add__)
+    def __radd__(Expression self, other): return self._new_binary_expr(other, self, operator.__add__)
+    def __sub__(Expression self, other): return self._new_binary_expr(self, other, operator.__sub__)
+    def __rsub__(Expression self, other): return self._new_binary_expr(other, self, operator.__sub__)
+    def __and__(Expression self, other): return self._new_binary_expr(self, other, operator.__and__)
+    def __rand__(Expression self, other): return self._new_binary_expr(other, self, operator.__and__)
+    def __or__(Expression self, other): return self._new_binary_expr(self, other, operator.__or__)
+    def __ror__(Expression self, other): return self._new_binary_expr(other, self, operator.__or__)
+    def __xor__(Expression self, other): return self._new_binary_expr(self, other, operator.__xor__)
+    def __rxor__(Expression self, other): return self._new_binary_expr(other, self, operator.__xor__)
+    def __lshift__(Expression self, other): return self._new_binary_expr(self, other, operator.__lshift__)
+    def __rlshift__(Expression self, other): return self._new_binary_expr(other, self, operator.__lshift__)
+    def __rshift__(Expression self, other): return self._new_binary_expr(self, other, operator.__rshift__)
+    def __rrshift__(Expression self, other): return self._new_binary_expr(other, self, operator.__rshift__)
+    def __mod__(Expression self, other): return self._new_binary_expr(self, other, operator.__mod__)
+    def __rmod__(Expression self, other): return self._new_binary_expr(other, self, operator.__mod__)
+    def __mul__(Expression self, other): return self._new_binary_expr(self, other, operator.__mul__)
+    def __rmul__(Expression self, other): return self._new_binary_expr(other, self, operator.__mul__)
+    def __truediv__(Expression self, other): return self._new_binary_expr(self, other, operator.__truediv__)
+    def __rtruediv__(Expression self, other): return self._new_binary_expr(other, self, operator.__truediv__)
     def __invert__(Expression self): return UnaryExpression(self, operator.__invert__)
-    def __lshift__(Expression self, other): return self._new_binary_expr(other, operator.__lshift__)
-    def __rshift__(Expression self, other): return self._new_binary_expr(other, operator.__rshift__)
-    def __mod__(Expression self, other): return self._new_binary_expr(other, operator.__mod__)
-    def __mul__(Expression self, other): return self._new_binary_expr(other, operator.__mul__)
-    def __truediv__(Expression self, other): return self._new_binary_expr(other, operator.__truediv__)
     def __neg__(Expression self): return UnaryExpression(self, operator.__neg__)
     def __pos__(Expression self): return UnaryExpression(self, operator.__pos__)
-    def __pow__(Expression self, other, modulo): return self._new_binary_expr(other, operator.__pow__)
+    def __pow__(Expression self, other, modulo): return self._new_binary_expr(self, other, operator.__pow__)
     def __abs__(Expression self): return UnaryExpression(self, operator.__abs__)
     def __call__(Expression self, *args): return CallExpression(self, args)
     def in_(Expression self, *values):
@@ -47,16 +57,16 @@ cdef class Expression:
                 values = list(values[0])
 
             if isinstance(values, (list, tuple)) and len(values) == 1:
-                return self._new_binary_expr(values[0], operator.__eq__)
-        return self._new_binary_expr(values, in_)
+                return self._new_binary_expr(self, values[0], operator.__eq__)
+        return self._new_binary_expr(self, values, in_)
     def is_true(Expression self): return self == True
     def is_false(Expression self): return self == False
     def is_null(Expression self): return self == None
     def is_none(Expression self): return self == None
-    def startswith(Expression self, other): return self._new_binary_expr(other, startswith)
-    def endswith(Expression self, other): return self._new_binary_expr(other, endswith)
-    def contains(Expression self, other): return self._new_binary_expr(other, contains)
-    def find(Expression self, other): return self._new_binary_expr(other, find)
+    def startswith(Expression self, other): return self._new_binary_expr(self, other, startswith)
+    def endswith(Expression self, other): return self._new_binary_expr(self, other, endswith)
+    def contains(Expression self, other): return self._new_binary_expr(self, other, contains)
+    def find(Expression self, other): return self._new_binary_expr(self, other, find)
 
     cpdef asc(Expression self): return OrderExpression(self, True)
     cpdef desc(Expression self): return OrderExpression(self, False)
@@ -64,8 +74,8 @@ cdef class Expression:
     cpdef alias(Expression self, str alias): return AliasExpression(self, alias)
     cpdef over(Expression self): return OverExpression(self)
 
-    cdef BinaryExpression _new_binary_expr(Expression self, object other, object op):
-        return BinaryExpression(self, other, op)
+    cdef BinaryExpression _new_binary_expr(Expression self, object left, object right, object op):
+        return BinaryExpression(left, right, op)
 
     def __repr__(self):
         return "<Expr EMPTY>"
@@ -104,8 +114,8 @@ cdef class BinaryExpression(Expression):
         self.op = op
         return self
 
-    cdef BinaryExpression _new_binary_expr(self, object other, object op):
-        return type(self)(self, other, op)
+    cdef BinaryExpression _new_binary_expr(self, object left, object right, object op):
+        return type(self)(left, right, op)
 
     cpdef visit(self, Visitor visitor):
         return visitor.visit_binary(self)
@@ -363,32 +373,32 @@ cdef class ExpressionPlaceholder(Expression):
 
 
 # TODO: invert
-@cython.final
-cdef class MultiExpression(Expression):
-    def __cinit__(self, tuple expressions, object combinator):
-        self.expressions = expressions
-        self.combinator = combinator
+# @cython.final
+# cdef class MultiExpression(Expression):
+#     def __cinit__(self, tuple expressions, object combinator):
+#         self.expressions = expressions
+#         self.combinator = combinator
 
-    cpdef visit(self, Visitor visitor):
-        return visitor.visit_multi(self)
+#     cpdef visit(self, Visitor visitor):
+#         return visitor.visit_multi(self)
 
-    cdef BinaryExpression _new_binary_expr(MultiExpression self, object other, object op):
-        cdef list parts = []
+#     cdef BinaryExpression _new_binary_expr(MultiExpression self, object left, object right, object op):
+#         cdef list parts = []
 
-        if isinstance(other, tuple):
-            if len(<tuple>other) != len(self.expressions):
-                raise ValueError(f"Wrong count of paramaters ({other}) for multi expression {self}")
-            else:
-                for i, expr in enumerate(self.expressions):
-                    parts.append(op(expr, (<tuple>other)[i]))
-        else:
-            for i, expr in enumerate(self.expressions):
-                parts.append(op(expr, other))
+#         if isinstance(right, tuple):
+#             if len(<tuple>right) != len(self.expressions):
+#                 raise ValueError(f"Wrong count of paramaters ({right}) for multi expression {self}")
+#             else:
+#                 for i, expr in enumerate(self.expressions):
+#                     parts.append(op(expr, (<tuple>right)[i]))
+#         else:
+#             for i, expr in enumerate(self.expressions):
+#                 parts.append(op(expr, right))
 
-        return self.combinator(*parts)
+#         return self.combinator(*parts)
 
-    def __repr__(self):
-        return f"<Multi {self.combinator} {self.expressions}>"
+#     def __repr__(self):
+#         return f"<Multi {self.combinator} {self.expressions}>"
 
 
 cdef class Visitor:

@@ -96,8 +96,8 @@ cdef class VirtualAttribute(EntityAttribute):
             return self._cmp(self.get_source(), query, op, value)
         return op(self.get_value_expr(query), value)
 
-    cdef BinaryExpression _new_binary_expr(self, object right, object op):
-        return VirtualBinaryExpression(self, right, op)
+    cdef BinaryExpression _new_binary_expr(self, object left, object right, object op):
+        return VirtualBinaryExpression(left, right, op)
 
     cpdef asc(self):
         return VirtualOrderExpression(self, True)

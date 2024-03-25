@@ -18,7 +18,7 @@ from ._field cimport Field, PrimaryKey, ForeignKey
 from ._field_impl cimport AutoImpl
 from ._relation cimport Relation, ManyToOne, RelatedItem, RelatedAttribute, RelationImpl
 from ._factory cimport Factory, get_type_hints, new_instance_from_forward, is_forward_decl
-from ._expression cimport Visitor, Expression, MultiExpression
+from ._expression cimport Visitor, Expression
 from ._expression import or_
 from ._registry cimport Registry
 from ._entity_serializer import EntitySerializer, SerializerCtx

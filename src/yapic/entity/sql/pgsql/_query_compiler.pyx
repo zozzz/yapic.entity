@@ -597,9 +597,16 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         return "".join(("DELETE FROM ", self.dialect.table_qname(get_alias_target(entity)),
              " WHERE ", " AND ".join(where_clause))), params
 
-
 cdef compile_binary(PostgreQueryCompiler qc, BinaryExpression expr, str op):
-    return f"{qc.visit(expr.left)} {op} {qc.visit(expr.right)}"
+    left = qc.visit(expr.left)
+    if isinstance(expr.left, BinaryExpression):
+        left = f"({left})"
+
+    right = qc.visit(expr.right)
+    if isinstance(expr.right, BinaryExpression):
+        right = f"({right})"
+
+    return f"{left} {op} {right}"
 
 
 cdef str path_expr(object d, str type, str base, list path):

@@ -2917,7 +2917,7 @@ struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression {
   PyObject *(*cast)(struct __pyx_obj_5yapic_6entity_11_expression_Expression *, PyObject *, int __pyx_skip_dispatch);
   PyObject *(*alias)(struct __pyx_obj_5yapic_6entity_11_expression_Expression *, PyObject *, int __pyx_skip_dispatch);
   PyObject *(*over)(struct __pyx_obj_5yapic_6entity_11_expression_Expression *, int __pyx_skip_dispatch);
-  struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *(*_new_binary_expr)(struct __pyx_obj_5yapic_6entity_11_expression_Expression *, PyObject *, PyObject *);
+  struct __pyx_obj_5yapic_6entity_11_expression_BinaryExpression *(*_new_binary_expr)(struct __pyx_obj_5yapic_6entity_11_expression_Expression *, PyObject *, PyObject *, PyObject *);
 };
 static struct __pyx_vtabstruct_5yapic_6entity_11_expression_Expression *__pyx_vtabptr_5yapic_6entity_11_expression_Expression;
 
@@ -46548,7 +46548,7 @@ if (!__Pyx_RefNanny) {
 
   /* "yapic/entity/_entity.pyx":22
  * from ._factory cimport Factory, get_type_hints, new_instance_from_forward, is_forward_decl
- * from ._expression cimport Visitor, Expression, MultiExpression
+ * from ._expression cimport Visitor, Expression
  * from ._expression import or_             # <<<<<<<<<<<<<<
  * from ._registry cimport Registry
  * from ._entity_serializer import EntitySerializer, SerializerCtx
