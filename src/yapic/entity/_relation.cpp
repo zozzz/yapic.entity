@@ -1565,6 +1565,8 @@ struct __pyx_obj_5yapic_6entity_9_visitors_FieldExtractor;
 struct __pyx_obj_5yapic_6entity_9_visitors_FieldReplacer;
 struct __pyx_obj_5yapic_6entity_6_error_EntityError;
 struct __pyx_obj_5yapic_6entity_6_error_JoinError;
+struct __pyx_obj_5yapic_6entity_6_error_MultipleRows;
+struct __pyx_obj_5yapic_6entity_6_error_MissingRow;
 struct __pyx_obj_5yapic_6entity_9_relation_Relation;
 struct __pyx_obj_5yapic_6entity_9_relation_RelatedAttribute;
 struct __pyx_obj_5yapic_6entity_9_relation_RelatedAttributeImpl;
@@ -2452,8 +2454,32 @@ struct __pyx_obj_5yapic_6entity_6_error_EntityError {
  * 
  * cdef class JoinError(Exception):             # <<<<<<<<<<<<<<
  *     pass
+ * 
  */
 struct __pyx_obj_5yapic_6entity_6_error_JoinError {
+  PyBaseExceptionObject __pyx_base;
+};
+
+
+/* "_error.pxd":9
+ *     pass
+ * 
+ * cdef class MultipleRows(Exception):             # <<<<<<<<<<<<<<
+ *     pass
+ * 
+ */
+struct __pyx_obj_5yapic_6entity_6_error_MultipleRows {
+  PyBaseExceptionObject __pyx_base;
+};
+
+
+/* "_error.pxd":12
+ *     pass
+ * 
+ * cdef class MissingRow(Exception):             # <<<<<<<<<<<<<<
+ *     pass
+ */
+struct __pyx_obj_5yapic_6entity_6_error_MissingRow {
   PyBaseExceptionObject __pyx_base;
 };
 
@@ -4848,6 +4874,8 @@ typedef struct {
   #endif
   PyTypeObject *__pyx_ptype_5yapic_6entity_6_error_EntityError;
   PyTypeObject *__pyx_ptype_5yapic_6entity_6_error_JoinError;
+  PyTypeObject *__pyx_ptype_5yapic_6entity_6_error_MultipleRows;
+  PyTypeObject *__pyx_ptype_5yapic_6entity_6_error_MissingRow;
   #if CYTHON_USE_MODULE_STATE
   PyObject *__pyx_type_5yapic_6entity_9_relation_Relation;
   PyObject *__pyx_type_5yapic_6entity_9_relation_RelatedAttribute;
@@ -5117,6 +5145,8 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_ptype_5yapic_6entity_9_visitors_FieldReplacer);
   Py_CLEAR(clear_module_state->__pyx_ptype_5yapic_6entity_6_error_EntityError);
   Py_CLEAR(clear_module_state->__pyx_ptype_5yapic_6entity_6_error_JoinError);
+  Py_CLEAR(clear_module_state->__pyx_ptype_5yapic_6entity_6_error_MultipleRows);
+  Py_CLEAR(clear_module_state->__pyx_ptype_5yapic_6entity_6_error_MissingRow);
   Py_CLEAR(clear_module_state->__pyx_ptype_5yapic_6entity_9_relation_Relation);
   Py_CLEAR(clear_module_state->__pyx_type_5yapic_6entity_9_relation_Relation);
   Py_CLEAR(clear_module_state->__pyx_ptype_5yapic_6entity_9_relation_RelatedAttribute);
@@ -5362,6 +5392,8 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_ptype_5yapic_6entity_9_visitors_FieldReplacer);
   Py_VISIT(traverse_module_state->__pyx_ptype_5yapic_6entity_6_error_EntityError);
   Py_VISIT(traverse_module_state->__pyx_ptype_5yapic_6entity_6_error_JoinError);
+  Py_VISIT(traverse_module_state->__pyx_ptype_5yapic_6entity_6_error_MultipleRows);
+  Py_VISIT(traverse_module_state->__pyx_ptype_5yapic_6entity_6_error_MissingRow);
   Py_VISIT(traverse_module_state->__pyx_ptype_5yapic_6entity_9_relation_Relation);
   Py_VISIT(traverse_module_state->__pyx_type_5yapic_6entity_9_relation_Relation);
   Py_VISIT(traverse_module_state->__pyx_ptype_5yapic_6entity_9_relation_RelatedAttribute);
@@ -5653,6 +5685,8 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #endif
 #define __pyx_ptype_5yapic_6entity_6_error_EntityError __pyx_mstate_global->__pyx_ptype_5yapic_6entity_6_error_EntityError
 #define __pyx_ptype_5yapic_6entity_6_error_JoinError __pyx_mstate_global->__pyx_ptype_5yapic_6entity_6_error_JoinError
+#define __pyx_ptype_5yapic_6entity_6_error_MultipleRows __pyx_mstate_global->__pyx_ptype_5yapic_6entity_6_error_MultipleRows
+#define __pyx_ptype_5yapic_6entity_6_error_MissingRow __pyx_mstate_global->__pyx_ptype_5yapic_6entity_6_error_MissingRow
 #if CYTHON_USE_MODULE_STATE
 #define __pyx_type_5yapic_6entity_9_relation_Relation __pyx_mstate_global->__pyx_type_5yapic_6entity_9_relation_Relation
 #define __pyx_type_5yapic_6entity_9_relation_RelatedAttribute __pyx_mstate_global->__pyx_type_5yapic_6entity_9_relation_RelatedAttribute
@@ -21968,6 +22002,8 @@ static int __Pyx_modinit_type_import_code(void) {
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_5yapic_6entity_6_error_EntityError = __Pyx_ImportType_3_0_8(__pyx_t_1, "yapic.entity._error", "EntityError", sizeof(struct __pyx_obj_5yapic_6entity_6_error_EntityError), __PYX_GET_STRUCT_ALIGNMENT_3_0_8(struct __pyx_obj_5yapic_6entity_6_error_EntityError),__Pyx_ImportType_CheckSize_Warn_3_0_8); if (!__pyx_ptype_5yapic_6entity_6_error_EntityError) __PYX_ERR(10, 3, __pyx_L1_error)
   __pyx_ptype_5yapic_6entity_6_error_JoinError = __Pyx_ImportType_3_0_8(__pyx_t_1, "yapic.entity._error", "JoinError", sizeof(struct __pyx_obj_5yapic_6entity_6_error_JoinError), __PYX_GET_STRUCT_ALIGNMENT_3_0_8(struct __pyx_obj_5yapic_6entity_6_error_JoinError),__Pyx_ImportType_CheckSize_Warn_3_0_8); if (!__pyx_ptype_5yapic_6entity_6_error_JoinError) __PYX_ERR(10, 6, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_6_error_MultipleRows = __Pyx_ImportType_3_0_8(__pyx_t_1, "yapic.entity._error", "MultipleRows", sizeof(struct __pyx_obj_5yapic_6entity_6_error_MultipleRows), __PYX_GET_STRUCT_ALIGNMENT_3_0_8(struct __pyx_obj_5yapic_6entity_6_error_MultipleRows),__Pyx_ImportType_CheckSize_Warn_3_0_8); if (!__pyx_ptype_5yapic_6entity_6_error_MultipleRows) __PYX_ERR(10, 9, __pyx_L1_error)
+  __pyx_ptype_5yapic_6entity_6_error_MissingRow = __Pyx_ImportType_3_0_8(__pyx_t_1, "yapic.entity._error", "MissingRow", sizeof(struct __pyx_obj_5yapic_6entity_6_error_MissingRow), __PYX_GET_STRUCT_ALIGNMENT_3_0_8(struct __pyx_obj_5yapic_6entity_6_error_MissingRow),__Pyx_ImportType_CheckSize_Warn_3_0_8); if (!__pyx_ptype_5yapic_6entity_6_error_MissingRow) __PYX_ERR(10, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

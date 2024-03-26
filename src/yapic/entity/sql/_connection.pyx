@@ -282,7 +282,8 @@ async def _collect_attrs(Dialect dialect, EntityBase entity, bint for_insert, li
             except ValueError:
                 pass
             else:
-                if values[existing_pk_idx] == pk_value:
+                if (not isinstance(values[existing_pk_idx], Expression) or not isinstance(pk_value, Expression)) \
+                        and values[existing_pk_idx] == pk_value:
                     attrs.pop(existing_pk_idx)
                     names.pop(existing_pk_idx)
                     values.pop(existing_pk_idx)

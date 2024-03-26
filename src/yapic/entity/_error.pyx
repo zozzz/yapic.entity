@@ -5,3 +5,9 @@ cdef class EntityError(Exception):
 
 cdef class JoinError(Exception):
     pass
+
+cdef class MultipleRows(Exception):
+    pass
+
+cdef class MissingRow(Exception):
+    pass

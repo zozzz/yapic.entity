@@ -6,6 +6,7 @@ from cpython.tuple cimport PyTuple_New, PyTuple_SET_ITEM, PyTuple_GET_ITEM, _PyT
 from yapic.entity._entity cimport EntityType, EntityState, EntityAttribute
 from yapic.entity._field cimport StorageType
 from yapic.entity._field_impl cimport CompositeImpl
+from yapic.entity._error cimport MultipleRows, MissingRow
 
 from ._dialect cimport Dialect
 from ._record_converter cimport RCState
@@ -56,6 +57,20 @@ cdef class QueryContext:
                 return self.convert_row(row)
             else:
                 return None
+
+    async def one(self, *, timeout=None):
+        cdef list row
+        cdef int rl
+        async with ensure_transaction(self.conn):
+            cursor = await self.cursor_factory
+            row = await cursor.fetch(2, timeout=timeout)
+            rl = len(row)
+            if rl == 1:
+                return self.convert_row(row[0])
+            elif rl == 0:
+                raise MissingRow("Not found any row for the given criteria")
+            else:
+                raise MultipleRows("Multiple rows found for the given criteria")
 
     cdef convert_row(self, object row):
         return convert_record(row, self.rcos_list, self.rc_state)

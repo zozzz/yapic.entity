@@ -26,6 +26,8 @@ from yapic.entity import (
     Index,
     Int,
     Json,
+    MissingRow,
+    MultipleRows,
     Numeric,
     One,
     Point,
@@ -1545,29 +1547,83 @@ async def test_update_composite_pk(conn, pgclean):
     class ProductCategory(Entity, schema="execution", registry=reg):
         product_id: Int = PrimaryKey()
         category_id: Int = PrimaryKey()
+        another_field: String
 
     await conn.execute(await sync(conn, reg))
 
-    pc = ProductCategory(product_id=1, category_id=2)
+    pc = ProductCategory(product_id=1, category_id=2, another_field="something")
     await conn.save(pc)
+    pc = await conn.select(Query(ProductCategory).where(ProductCategory.product_id == 1, ProductCategory.category_id == 2)).first()
     assert pc.product_id == 1
     assert pc.category_id == 2
 
     pc.category_id = 3
     await conn.save(pc)
+    pc = await conn.select(Query(ProductCategory).where(ProductCategory.product_id == 1, ProductCategory.category_id == 3)).first()
     assert pc.product_id == 1
     assert pc.category_id == 3
 
     pc.product_id = 4
     await conn.save(pc)
+    pc = await conn.select(Query(ProductCategory).where(ProductCategory.product_id == 4, ProductCategory.category_id == 3)).first()
     assert pc.product_id == 4
     assert pc.category_id == 3
 
     pc.product_id = 5
     pc.category_id = 6
     await conn.save(pc)
+    pc = await conn.select(Query(ProductCategory).where(ProductCategory.product_id == 5, ProductCategory.category_id == 6)).first()
     assert pc.product_id == 5
     assert pc.category_id == 6
 
     count = await conn.select(Query(ProductCategory).columns(raw("count(*)"))).first()
     assert count == 1
+
+
+async def test_update_composite_pk2(conn, pgclean):
+    reg = Registry()
+
+    class Resv(Entity, schema="execution", registry=reg):
+        warehouse_id: Int = PrimaryKey()
+        product_id: Int = PrimaryKey()
+        processed: Bool = Field(nullable=False, default=False) // PrimaryKey()
+        qty: Int = Field(nullable=False)
+
+    await conn.execute(await sync(conn, reg))
+
+    resv = Resv(warehouse_id=1, product_id=2, qty=3)
+    await conn.save(resv)
+
+    resv.processed = True
+    await conn.save(resv)
+    resv = await conn.select(Query(Resv)).one()
+    assert resv.warehouse_id == 1
+    assert resv.product_id == 2
+    assert resv.processed is True
+    assert resv.qty == 3
+
+
+async def test_one(conn, pgclean):
+    reg = Registry()
+
+    class Product(Entity, schema="execution", registry=reg):
+        id: Int
+        name: String
+
+    await conn.execute(await sync(conn, reg))
+
+    p1 = Product(id=1, name="Prod1")
+    await conn.save(p1)
+    p2 = Product(id=2, name="Prod2")
+    await conn.save(p2)
+    p3 = Product(id=3, name="Prod3")
+    await conn.save(p3)
+
+    res = await conn.select(Query(Product).where(Product.id == 1)).one()
+    assert res.id == 1
+
+    with pytest.raises(MultipleRows):
+        await conn.select(Query(Product)).one()
+
+    with pytest.raises(MissingRow):
+        await conn.select(Query(Product).where(Product.id == 10)).one()

@@ -41,3 +41,4 @@ from .field import (  # noqa
 )
 from .relation import *  # noqa
 from .sql._query import *  # noqa
+from ._error import MultipleRows, MissingRow # noqa

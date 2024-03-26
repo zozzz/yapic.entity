@@ -1490,6 +1490,8 @@ static const char *__pyx_f[] = {
 /*--- Type declarations ---*/
 struct __pyx_obj_5yapic_6entity_6_error_EntityError;
 struct __pyx_obj_5yapic_6entity_6_error_JoinError;
+struct __pyx_obj_5yapic_6entity_6_error_MultipleRows;
+struct __pyx_obj_5yapic_6entity_6_error_MissingRow;
 
 /* "yapic/entity/_error.pxd":3
  * 
@@ -1508,8 +1510,32 @@ struct __pyx_obj_5yapic_6entity_6_error_EntityError {
  * 
  * cdef class JoinError(Exception):             # <<<<<<<<<<<<<<
  *     pass
+ * 
  */
 struct __pyx_obj_5yapic_6entity_6_error_JoinError {
+  PyBaseExceptionObject __pyx_base;
+};
+
+
+/* "yapic/entity/_error.pxd":9
+ *     pass
+ * 
+ * cdef class MultipleRows(Exception):             # <<<<<<<<<<<<<<
+ *     pass
+ * 
+ */
+struct __pyx_obj_5yapic_6entity_6_error_MultipleRows {
+  PyBaseExceptionObject __pyx_base;
+};
+
+
+/* "yapic/entity/_error.pxd":12
+ *     pass
+ * 
+ * cdef class MissingRow(Exception):             # <<<<<<<<<<<<<<
+ *     pass
+ */
+struct __pyx_obj_5yapic_6entity_6_error_MissingRow {
   PyBaseExceptionObject __pyx_base;
 };
 
@@ -1881,7 +1907,9 @@ static const char __pyx_k_enable[] = "enable";
 static const char __pyx_k_disable[] = "disable";
 static const char __pyx_k_JoinError[] = "JoinError";
 static const char __pyx_k_isenabled[] = "isenabled";
+static const char __pyx_k_MissingRow[] = "MissingRow";
 static const char __pyx_k_EntityError[] = "EntityError";
+static const char __pyx_k_MultipleRows[] = "MultipleRows";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 /* #### Code section: decls ### */
 /* #### Code section: late_includes ### */
@@ -1914,12 +1942,18 @@ typedef struct {
   #if CYTHON_USE_MODULE_STATE
   PyObject *__pyx_type_5yapic_6entity_6_error_EntityError;
   PyObject *__pyx_type_5yapic_6entity_6_error_JoinError;
+  PyObject *__pyx_type_5yapic_6entity_6_error_MultipleRows;
+  PyObject *__pyx_type_5yapic_6entity_6_error_MissingRow;
   #endif
   PyTypeObject *__pyx_ptype_5yapic_6entity_6_error_EntityError;
   PyTypeObject *__pyx_ptype_5yapic_6entity_6_error_JoinError;
+  PyTypeObject *__pyx_ptype_5yapic_6entity_6_error_MultipleRows;
+  PyTypeObject *__pyx_ptype_5yapic_6entity_6_error_MissingRow;
   PyObject *__pyx_n_s_;
   PyObject *__pyx_n_s_EntityError;
   PyObject *__pyx_n_s_JoinError;
+  PyObject *__pyx_n_s_MissingRow;
+  PyObject *__pyx_n_s_MultipleRows;
   PyObject *__pyx_n_s_cline_in_traceback;
   PyObject *__pyx_kp_u_disable;
   PyObject *__pyx_kp_u_enable;
@@ -1974,9 +2008,15 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_type_5yapic_6entity_6_error_EntityError);
   Py_CLEAR(clear_module_state->__pyx_ptype_5yapic_6entity_6_error_JoinError);
   Py_CLEAR(clear_module_state->__pyx_type_5yapic_6entity_6_error_JoinError);
+  Py_CLEAR(clear_module_state->__pyx_ptype_5yapic_6entity_6_error_MultipleRows);
+  Py_CLEAR(clear_module_state->__pyx_type_5yapic_6entity_6_error_MultipleRows);
+  Py_CLEAR(clear_module_state->__pyx_ptype_5yapic_6entity_6_error_MissingRow);
+  Py_CLEAR(clear_module_state->__pyx_type_5yapic_6entity_6_error_MissingRow);
   Py_CLEAR(clear_module_state->__pyx_n_s_);
   Py_CLEAR(clear_module_state->__pyx_n_s_EntityError);
   Py_CLEAR(clear_module_state->__pyx_n_s_JoinError);
+  Py_CLEAR(clear_module_state->__pyx_n_s_MissingRow);
+  Py_CLEAR(clear_module_state->__pyx_n_s_MultipleRows);
   Py_CLEAR(clear_module_state->__pyx_n_s_cline_in_traceback);
   Py_CLEAR(clear_module_state->__pyx_kp_u_disable);
   Py_CLEAR(clear_module_state->__pyx_kp_u_enable);
@@ -2009,9 +2049,15 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_type_5yapic_6entity_6_error_EntityError);
   Py_VISIT(traverse_module_state->__pyx_ptype_5yapic_6entity_6_error_JoinError);
   Py_VISIT(traverse_module_state->__pyx_type_5yapic_6entity_6_error_JoinError);
+  Py_VISIT(traverse_module_state->__pyx_ptype_5yapic_6entity_6_error_MultipleRows);
+  Py_VISIT(traverse_module_state->__pyx_type_5yapic_6entity_6_error_MultipleRows);
+  Py_VISIT(traverse_module_state->__pyx_ptype_5yapic_6entity_6_error_MissingRow);
+  Py_VISIT(traverse_module_state->__pyx_type_5yapic_6entity_6_error_MissingRow);
   Py_VISIT(traverse_module_state->__pyx_n_s_);
   Py_VISIT(traverse_module_state->__pyx_n_s_EntityError);
   Py_VISIT(traverse_module_state->__pyx_n_s_JoinError);
+  Py_VISIT(traverse_module_state->__pyx_n_s_MissingRow);
+  Py_VISIT(traverse_module_state->__pyx_n_s_MultipleRows);
   Py_VISIT(traverse_module_state->__pyx_n_s_cline_in_traceback);
   Py_VISIT(traverse_module_state->__pyx_kp_u_disable);
   Py_VISIT(traverse_module_state->__pyx_kp_u_enable);
@@ -2051,12 +2097,18 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #if CYTHON_USE_MODULE_STATE
 #define __pyx_type_5yapic_6entity_6_error_EntityError __pyx_mstate_global->__pyx_type_5yapic_6entity_6_error_EntityError
 #define __pyx_type_5yapic_6entity_6_error_JoinError __pyx_mstate_global->__pyx_type_5yapic_6entity_6_error_JoinError
+#define __pyx_type_5yapic_6entity_6_error_MultipleRows __pyx_mstate_global->__pyx_type_5yapic_6entity_6_error_MultipleRows
+#define __pyx_type_5yapic_6entity_6_error_MissingRow __pyx_mstate_global->__pyx_type_5yapic_6entity_6_error_MissingRow
 #endif
 #define __pyx_ptype_5yapic_6entity_6_error_EntityError __pyx_mstate_global->__pyx_ptype_5yapic_6entity_6_error_EntityError
 #define __pyx_ptype_5yapic_6entity_6_error_JoinError __pyx_mstate_global->__pyx_ptype_5yapic_6entity_6_error_JoinError
+#define __pyx_ptype_5yapic_6entity_6_error_MultipleRows __pyx_mstate_global->__pyx_ptype_5yapic_6entity_6_error_MultipleRows
+#define __pyx_ptype_5yapic_6entity_6_error_MissingRow __pyx_mstate_global->__pyx_ptype_5yapic_6entity_6_error_MissingRow
 #define __pyx_n_s_ __pyx_mstate_global->__pyx_n_s_
 #define __pyx_n_s_EntityError __pyx_mstate_global->__pyx_n_s_EntityError
 #define __pyx_n_s_JoinError __pyx_mstate_global->__pyx_n_s_JoinError
+#define __pyx_n_s_MissingRow __pyx_mstate_global->__pyx_n_s_MissingRow
+#define __pyx_n_s_MultipleRows __pyx_mstate_global->__pyx_n_s_MultipleRows
 #define __pyx_n_s_cline_in_traceback __pyx_mstate_global->__pyx_n_s_cline_in_traceback
 #define __pyx_kp_u_disable __pyx_mstate_global->__pyx_kp_u_disable
 #define __pyx_kp_u_enable __pyx_mstate_global->__pyx_kp_u_enable
@@ -2281,6 +2333,220 @@ static PyTypeObject __pyx_type_5yapic_6entity_6_error_JoinError = {
 };
 #endif
 
+static int __pyx_tp_traverse_5yapic_6entity_6_error_MultipleRows(PyObject *o, visitproc v, void *a) {
+  int e;
+  if (!(&((PyTypeObject*)PyExc_Exception)[0])->tp_traverse); else { e = (&((PyTypeObject*)PyExc_Exception)[0])->tp_traverse(o,v,a); if (e) return e; }
+  return 0;
+}
+
+static int __pyx_tp_clear_5yapic_6entity_6_error_MultipleRows(PyObject *o) {
+  if (!(&((PyTypeObject*)PyExc_Exception)[0])->tp_clear); else (&((PyTypeObject*)PyExc_Exception)[0])->tp_clear(o);
+  return 0;
+}
+#if CYTHON_USE_TYPE_SPECS
+static PyType_Slot __pyx_type_5yapic_6entity_6_error_MultipleRows_slots[] = {
+  {Py_tp_traverse, (void *)__pyx_tp_traverse_5yapic_6entity_6_error_MultipleRows},
+  {Py_tp_clear, (void *)__pyx_tp_clear_5yapic_6entity_6_error_MultipleRows},
+  {0, 0},
+};
+static PyType_Spec __pyx_type_5yapic_6entity_6_error_MultipleRows_spec = {
+  "yapic.entity._error.MultipleRows",
+  sizeof(struct __pyx_obj_5yapic_6entity_6_error_MultipleRows),
+  0,
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC|Py_TPFLAGS_HAVE_FINALIZE,
+  __pyx_type_5yapic_6entity_6_error_MultipleRows_slots,
+};
+#else
+
+static PyTypeObject __pyx_type_5yapic_6entity_6_error_MultipleRows = {
+  PyVarObject_HEAD_INIT(0, 0)
+  "yapic.entity._error.""MultipleRows", /*tp_name*/
+  sizeof(struct __pyx_obj_5yapic_6entity_6_error_MultipleRows), /*tp_basicsize*/
+  0, /*tp_itemsize*/
+  0, /*tp_dealloc*/
+  #if PY_VERSION_HEX < 0x030800b4
+  0, /*tp_print*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b4
+  0, /*tp_vectorcall_offset*/
+  #endif
+  0, /*tp_getattr*/
+  0, /*tp_setattr*/
+  #if PY_MAJOR_VERSION < 3
+  0, /*tp_compare*/
+  #endif
+  #if PY_MAJOR_VERSION >= 3
+  0, /*tp_as_async*/
+  #endif
+  0, /*tp_repr*/
+  0, /*tp_as_number*/
+  0, /*tp_as_sequence*/
+  0, /*tp_as_mapping*/
+  0, /*tp_hash*/
+  0, /*tp_call*/
+  0, /*tp_str*/
+  0, /*tp_getattro*/
+  0, /*tp_setattro*/
+  0, /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC|Py_TPFLAGS_HAVE_FINALIZE, /*tp_flags*/
+  0, /*tp_doc*/
+  __pyx_tp_traverse_5yapic_6entity_6_error_MultipleRows, /*tp_traverse*/
+  __pyx_tp_clear_5yapic_6entity_6_error_MultipleRows, /*tp_clear*/
+  0, /*tp_richcompare*/
+  0, /*tp_weaklistoffset*/
+  0, /*tp_iter*/
+  0, /*tp_iternext*/
+  0, /*tp_methods*/
+  0, /*tp_members*/
+  0, /*tp_getset*/
+  0, /*tp_base*/
+  0, /*tp_dict*/
+  0, /*tp_descr_get*/
+  0, /*tp_descr_set*/
+  #if !CYTHON_USE_TYPE_SPECS
+  0, /*tp_dictoffset*/
+  #endif
+  0, /*tp_init*/
+  0, /*tp_alloc*/
+  0, /*tp_new*/
+  0, /*tp_free*/
+  0, /*tp_is_gc*/
+  0, /*tp_bases*/
+  0, /*tp_mro*/
+  0, /*tp_cache*/
+  0, /*tp_subclasses*/
+  0, /*tp_weaklist*/
+  0, /*tp_del*/
+  0, /*tp_version_tag*/
+  #if PY_VERSION_HEX >= 0x030400a1
+  #if CYTHON_USE_TP_FINALIZE
+  0, /*tp_finalize*/
+  #else
+  NULL, /*tp_finalize*/
+  #endif
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b1 && (!CYTHON_COMPILING_IN_PYPY || PYPY_VERSION_NUM >= 0x07030800)
+  0, /*tp_vectorcall*/
+  #endif
+  #if __PYX_NEED_TP_PRINT_SLOT == 1
+  0, /*tp_print*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030C0000
+  0, /*tp_watched*/
+  #endif
+  #if CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX >= 0x03090000 && PY_VERSION_HEX < 0x030a0000
+  0, /*tp_pypy_flags*/
+  #endif
+};
+#endif
+
+static int __pyx_tp_traverse_5yapic_6entity_6_error_MissingRow(PyObject *o, visitproc v, void *a) {
+  int e;
+  if (!(&((PyTypeObject*)PyExc_Exception)[0])->tp_traverse); else { e = (&((PyTypeObject*)PyExc_Exception)[0])->tp_traverse(o,v,a); if (e) return e; }
+  return 0;
+}
+
+static int __pyx_tp_clear_5yapic_6entity_6_error_MissingRow(PyObject *o) {
+  if (!(&((PyTypeObject*)PyExc_Exception)[0])->tp_clear); else (&((PyTypeObject*)PyExc_Exception)[0])->tp_clear(o);
+  return 0;
+}
+#if CYTHON_USE_TYPE_SPECS
+static PyType_Slot __pyx_type_5yapic_6entity_6_error_MissingRow_slots[] = {
+  {Py_tp_traverse, (void *)__pyx_tp_traverse_5yapic_6entity_6_error_MissingRow},
+  {Py_tp_clear, (void *)__pyx_tp_clear_5yapic_6entity_6_error_MissingRow},
+  {0, 0},
+};
+static PyType_Spec __pyx_type_5yapic_6entity_6_error_MissingRow_spec = {
+  "yapic.entity._error.MissingRow",
+  sizeof(struct __pyx_obj_5yapic_6entity_6_error_MissingRow),
+  0,
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC|Py_TPFLAGS_HAVE_FINALIZE,
+  __pyx_type_5yapic_6entity_6_error_MissingRow_slots,
+};
+#else
+
+static PyTypeObject __pyx_type_5yapic_6entity_6_error_MissingRow = {
+  PyVarObject_HEAD_INIT(0, 0)
+  "yapic.entity._error.""MissingRow", /*tp_name*/
+  sizeof(struct __pyx_obj_5yapic_6entity_6_error_MissingRow), /*tp_basicsize*/
+  0, /*tp_itemsize*/
+  0, /*tp_dealloc*/
+  #if PY_VERSION_HEX < 0x030800b4
+  0, /*tp_print*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b4
+  0, /*tp_vectorcall_offset*/
+  #endif
+  0, /*tp_getattr*/
+  0, /*tp_setattr*/
+  #if PY_MAJOR_VERSION < 3
+  0, /*tp_compare*/
+  #endif
+  #if PY_MAJOR_VERSION >= 3
+  0, /*tp_as_async*/
+  #endif
+  0, /*tp_repr*/
+  0, /*tp_as_number*/
+  0, /*tp_as_sequence*/
+  0, /*tp_as_mapping*/
+  0, /*tp_hash*/
+  0, /*tp_call*/
+  0, /*tp_str*/
+  0, /*tp_getattro*/
+  0, /*tp_setattro*/
+  0, /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC|Py_TPFLAGS_HAVE_FINALIZE, /*tp_flags*/
+  0, /*tp_doc*/
+  __pyx_tp_traverse_5yapic_6entity_6_error_MissingRow, /*tp_traverse*/
+  __pyx_tp_clear_5yapic_6entity_6_error_MissingRow, /*tp_clear*/
+  0, /*tp_richcompare*/
+  0, /*tp_weaklistoffset*/
+  0, /*tp_iter*/
+  0, /*tp_iternext*/
+  0, /*tp_methods*/
+  0, /*tp_members*/
+  0, /*tp_getset*/
+  0, /*tp_base*/
+  0, /*tp_dict*/
+  0, /*tp_descr_get*/
+  0, /*tp_descr_set*/
+  #if !CYTHON_USE_TYPE_SPECS
+  0, /*tp_dictoffset*/
+  #endif
+  0, /*tp_init*/
+  0, /*tp_alloc*/
+  0, /*tp_new*/
+  0, /*tp_free*/
+  0, /*tp_is_gc*/
+  0, /*tp_bases*/
+  0, /*tp_mro*/
+  0, /*tp_cache*/
+  0, /*tp_subclasses*/
+  0, /*tp_weaklist*/
+  0, /*tp_del*/
+  0, /*tp_version_tag*/
+  #if PY_VERSION_HEX >= 0x030400a1
+  #if CYTHON_USE_TP_FINALIZE
+  0, /*tp_finalize*/
+  #else
+  NULL, /*tp_finalize*/
+  #endif
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b1 && (!CYTHON_COMPILING_IN_PYPY || PYPY_VERSION_NUM >= 0x07030800)
+  0, /*tp_vectorcall*/
+  #endif
+  #if __PYX_NEED_TP_PRINT_SLOT == 1
+  0, /*tp_print*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030C0000
+  0, /*tp_watched*/
+  #endif
+  #if CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX >= 0x03090000 && PY_VERSION_HEX < 0x030a0000
+  0, /*tp_pypy_flags*/
+  #endif
+};
+#endif
+
 static PyMethodDef __pyx_methods[] = {
   {0, 0, 0, 0}
 };
@@ -2300,6 +2566,8 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_, __pyx_k_, sizeof(__pyx_k_), 0, 0, 1, 1},
     {&__pyx_n_s_EntityError, __pyx_k_EntityError, sizeof(__pyx_k_EntityError), 0, 0, 1, 1},
     {&__pyx_n_s_JoinError, __pyx_k_JoinError, sizeof(__pyx_k_JoinError), 0, 0, 1, 1},
+    {&__pyx_n_s_MissingRow, __pyx_k_MissingRow, sizeof(__pyx_k_MissingRow), 0, 0, 1, 1},
+    {&__pyx_n_s_MultipleRows, __pyx_k_MultipleRows, sizeof(__pyx_k_MultipleRows), 0, 0, 1, 1},
     {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
     {&__pyx_kp_u_disable, __pyx_k_disable, sizeof(__pyx_k_disable), 0, 1, 0, 0},
     {&__pyx_kp_u_enable, __pyx_k_enable, sizeof(__pyx_k_enable), 0, 1, 0, 0},
@@ -2439,6 +2707,66 @@ static int __Pyx_modinit_type_init_code(void) {
   }
   #endif
   if (PyObject_SetAttr(__pyx_m, __pyx_n_s_JoinError, (PyObject *) __pyx_ptype_5yapic_6entity_6_error_JoinError) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  #if CYTHON_USE_TYPE_SPECS
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 9, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_ptype_5yapic_6entity_6_error_MultipleRows = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_5yapic_6entity_6_error_MultipleRows_spec, __pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (unlikely(!__pyx_ptype_5yapic_6entity_6_error_MultipleRows)) __PYX_ERR(0, 9, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_5yapic_6entity_6_error_MultipleRows_spec, __pyx_ptype_5yapic_6entity_6_error_MultipleRows) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
+  #else
+  __pyx_ptype_5yapic_6entity_6_error_MultipleRows = &__pyx_type_5yapic_6entity_6_error_MultipleRows;
+  #endif
+  if (sizeof(struct __pyx_obj_5yapic_6entity_6_error_MultipleRows) != sizeof(PyBaseExceptionObject)) {
+    if (__Pyx_validate_extern_base((&((PyTypeObject*)PyExc_Exception)[0])) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
+  }
+  #if !CYTHON_COMPILING_IN_LIMITED_API
+  __pyx_ptype_5yapic_6entity_6_error_MultipleRows->tp_dealloc = (&((PyTypeObject*)PyExc_Exception)[0])->tp_dealloc;
+  __pyx_ptype_5yapic_6entity_6_error_MultipleRows->tp_base = (&((PyTypeObject*)PyExc_Exception)[0]);
+  __pyx_ptype_5yapic_6entity_6_error_MultipleRows->tp_new = (&((PyTypeObject*)PyExc_Exception)[0])->tp_new;
+  #endif
+  #if !CYTHON_USE_TYPE_SPECS
+  if (__Pyx_PyType_Ready(__pyx_ptype_5yapic_6entity_6_error_MultipleRows) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
+  #endif
+  #if PY_MAJOR_VERSION < 3
+  __pyx_ptype_5yapic_6entity_6_error_MultipleRows->tp_print = 0;
+  #endif
+  #if !CYTHON_COMPILING_IN_LIMITED_API
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_ptype_5yapic_6entity_6_error_MultipleRows->tp_dictoffset && __pyx_ptype_5yapic_6entity_6_error_MultipleRows->tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_ptype_5yapic_6entity_6_error_MultipleRows->tp_getattro = __Pyx_PyObject_GenericGetAttr;
+  }
+  #endif
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_MultipleRows, (PyObject *) __pyx_ptype_5yapic_6entity_6_error_MultipleRows) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
+  #if CYTHON_USE_TYPE_SPECS
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_ptype_5yapic_6entity_6_error_MissingRow = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_5yapic_6entity_6_error_MissingRow_spec, __pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (unlikely(!__pyx_ptype_5yapic_6entity_6_error_MissingRow)) __PYX_ERR(0, 12, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_5yapic_6entity_6_error_MissingRow_spec, __pyx_ptype_5yapic_6entity_6_error_MissingRow) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
+  #else
+  __pyx_ptype_5yapic_6entity_6_error_MissingRow = &__pyx_type_5yapic_6entity_6_error_MissingRow;
+  #endif
+  if (sizeof(struct __pyx_obj_5yapic_6entity_6_error_MissingRow) != sizeof(PyBaseExceptionObject)) {
+    if (__Pyx_validate_extern_base((&((PyTypeObject*)PyExc_Exception)[0])) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
+  }
+  #if !CYTHON_COMPILING_IN_LIMITED_API
+  __pyx_ptype_5yapic_6entity_6_error_MissingRow->tp_dealloc = (&((PyTypeObject*)PyExc_Exception)[0])->tp_dealloc;
+  __pyx_ptype_5yapic_6entity_6_error_MissingRow->tp_base = (&((PyTypeObject*)PyExc_Exception)[0]);
+  __pyx_ptype_5yapic_6entity_6_error_MissingRow->tp_new = (&((PyTypeObject*)PyExc_Exception)[0])->tp_new;
+  #endif
+  #if !CYTHON_USE_TYPE_SPECS
+  if (__Pyx_PyType_Ready(__pyx_ptype_5yapic_6entity_6_error_MissingRow) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
+  #endif
+  #if PY_MAJOR_VERSION < 3
+  __pyx_ptype_5yapic_6entity_6_error_MissingRow->tp_print = 0;
+  #endif
+  #if !CYTHON_COMPILING_IN_LIMITED_API
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_ptype_5yapic_6entity_6_error_MissingRow->tp_dictoffset && __pyx_ptype_5yapic_6entity_6_error_MissingRow->tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_ptype_5yapic_6entity_6_error_MissingRow->tp_getattro = __Pyx_PyObject_GenericGetAttr;
+  }
+  #endif
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_MissingRow, (PyObject *) __pyx_ptype_5yapic_6entity_6_error_MissingRow) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
