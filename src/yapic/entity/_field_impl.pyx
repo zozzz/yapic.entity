@@ -452,7 +452,7 @@ cdef class ArrayImpl(FieldImpl):
         elif isinstance(value, (list, set, tuple)):
             return list(value)
         else:
-            raise ValueError(f"Invalid value for array: {type(initial)} {initial}")
+            raise ValueError(f"Invalid value for array: {type(value)} {value}")
 
     cdef object state_get_dirty(self, object initial, object current):
         if current is NOTSET:
