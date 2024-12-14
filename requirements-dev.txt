@@ -2,7 +2,8 @@ Cython
 docker
 pytest
 pytest-asyncio
-pytest-memray
+# pytest-memray
 yapic.json
 memory-profiler
 wheel
+distutils

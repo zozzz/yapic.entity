@@ -167,7 +167,7 @@ class PyTest(TestCommand):
 
         def requirements(dist):
             yield dist.install_requires
-            yield dist.tests_require
+            # yield dist.extras_require
 
         cmd_prerun(self, requirements)
         self.run_tests()
@@ -201,6 +201,7 @@ almafa = setup(
         },
     ),
     install_requires=Path(__file__).parent.joinpath("requirements.txt").read_text().splitlines(),
-    tests_require=["pytest", "docker", "pytest-asyncio", "pytest-leaks"],
+    extras_require={},
+    # extras_require=["pytest", "docker", "pytest-asyncio", "pytest-leaks"],
     cmdclass={"test": PyTest},
 )

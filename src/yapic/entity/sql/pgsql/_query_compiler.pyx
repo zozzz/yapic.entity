@@ -23,7 +23,7 @@ from yapic.entity._field_impl cimport JsonImpl, CompositeImpl, ArrayImpl
 from yapic.entity._relation cimport Relation, RelatedAttribute
 from yapic.entity._virtual_attr cimport VirtualAttribute
 
-from .._query cimport Query, QueryCompiler
+from .._query cimport Query, QueryCompiler, QueryLock, QUERY_LOCK_TYPE, QUERY_LOCK_FALLBACK
 from ._dialect cimport PostgreDialect
 
 
@@ -90,6 +90,9 @@ cdef class PostgreQueryCompiler(QueryCompiler):
                     self.parts.append(f"FETCH FIRST ROW ONLY")
                 else:
                     self.parts.append(f"FETCH FIRST {query._range.stop - query._range.start} ROWS ONLY")
+
+        if query._lock is not None:
+            self.parts.append(self.visit_query_lock(query._lock))
 
         return " ".join(self.parts), tuple(self.params)
 
@@ -393,6 +396,42 @@ cdef class PostgreQueryCompiler(QueryCompiler):
             return f"${len(self.params)}"
         else:
             return f"${idx + 1}"
+
+    def visit_query_lock(self, QueryLock lock):
+        cdef list result = ["FOR"]
+        cdef list refs
+
+        if lock.type == QUERY_LOCK_TYPE.UPDATE:
+            result.append("UPDATE")
+        elif lock.type == QUERY_LOCK_TYPE.NO_KEY_UPDATE:
+            result.append("NO KEY UPDATE")
+        elif lock.type == QUERY_LOCK_TYPE.SHARE:
+            result.append("SHARE")
+        elif lock.type == QUERY_LOCK_TYPE.KEY_SHARE:
+            result.append("KEY SHARE")
+        else:
+            raise ValueError(f"Unsupported lock type: {lock.type}")
+
+        if lock.refs:
+            refs = []
+            for r in lock.refs:
+                if isinstance(r, EntityType):
+                    qname, alias = self._get_entity_alias(r)
+                    refs.append(alias)
+                else:
+                    raise NotImplementedError("Lock references only supports EntityType")
+            result.append(f"OF {','.join(refs)}")
+
+        if lock.fallback == QUERY_LOCK_FALLBACK.NOWAIT:
+            result.append("NOWAIT")
+        elif lock.fallback == QUERY_LOCK_FALLBACK.SKIP_LOCKED:
+            result.append("SKIP LOCKED")
+        elif lock.fallback == QUERY_LOCK_FALLBACK.WAIT:
+            pass
+        else:
+            raise ValueError(f"Unsupported lock fallback: {lock.fallback}")
+
+        return " ".join(result)
 
     def _get_entity_alias(self, EntityType ent):
         try:

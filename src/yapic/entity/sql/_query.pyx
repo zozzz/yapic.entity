@@ -245,6 +245,22 @@ cdef class Query(Expression):
             self._range = slice(offset, stop)
         return self
 
+    def for_update(self, *refs, bint nowait=False, bint skip=False):
+        self._lock = QueryLock(QUERY_LOCK_TYPE.UPDATE, refs, nowait, skip)
+        return self
+
+    def for_no_key_update(self, *refs, bint nowait=False, bint skip=False):
+        self._lock = QueryLock(QUERY_LOCK_TYPE.NO_KEY_UPDATE, refs, nowait, skip)
+        return self
+
+    def for_share(self, *refs, bint nowait=False, bint skip=False):
+        self._lock = QueryLock(QUERY_LOCK_TYPE.SHARE, refs, nowait, skip)
+        return self
+
+    def for_key_share(self, *refs, bint nowait=False, bint skip=False):
+        self._lock = QueryLock(QUERY_LOCK_TYPE.KEY_SHARE, refs, nowait, skip)
+        return self
+
     def reset_columns(self):
         self._columns = None
         return self
@@ -267,6 +283,10 @@ cdef class Query(Expression):
 
     def reset_load(self):
         self._load = QueryLoad()
+        return self
+
+    def reset_lock(self):
+        self._lock = None
         return self
 
     def load(self, *load):
@@ -301,6 +321,7 @@ cdef class Query(Expression):
         if self._load:          q._load = self._load.clone()
         if self._parent:        q._parent = self._parent.clone()
         if self._pending_joins: q._pending_joins = list(self._pending_joins)
+        if self._lock:          q._lock = self._lock
 
         if self._reduce_children is not None:
             q._reduce_children = set(self._reduce_children)
@@ -1314,3 +1335,19 @@ class QueryRepr(Visitor):
     def __indent(self, value):
         return f"{self.indent_char * self.level}{value}"
 
+
+
+cdef class QueryLock:
+    def __init__(self, QUERY_LOCK_TYPE type, tuple refs, bint nowait, bint skip):
+        if nowait and skip:
+            raise ValueError("Only one of can set to true: nowait, skip")
+
+        self.type = type
+        self.refs = refs
+
+        if nowait:
+            self.fallback = QUERY_LOCK_FALLBACK.NOWAIT
+        elif skip:
+            self.fallback = QUERY_LOCK_FALLBACK.SKIP_LOCKED
+        else:
+            self.fallback = QUERY_LOCK_FALLBACK.WAIT

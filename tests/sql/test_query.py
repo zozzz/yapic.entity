@@ -4,6 +4,7 @@ import operator
 from typing import Any
 
 import pytest
+
 from yapic.entity import (
     Auto,
     Bool,
@@ -823,6 +824,48 @@ def test_raw():
 def test_order_by_binary_expr():
     q = Query(User).order(and_(User.id == 1, User.name == "Alma"))
     sql, params = dialect.create_query_compiler().compile_select(q)
-    print(sql)
     assert sql == '''SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" ORDER BY ("t0"."id" = $1 AND "t0"."name" = $2) ASC'''
     assert params == (1, "Alma")
+
+
+def test_lock():
+    q = Query(User).for_update()
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" FOR UPDATE"""
+
+    q = Query(User).for_no_key_update()
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" FOR NO KEY UPDATE"""
+
+    q = Query(User).for_share()
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" FOR SHARE"""
+
+    q = Query(User).for_key_share()
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == """SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" FOR KEY SHARE"""
+
+    q = Query(User).for_update(User)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == '''SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" FOR UPDATE OF "t0"'''
+
+    q = Query(User).for_update(User, nowait=True)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == '''SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" FOR UPDATE OF "t0" NOWAIT'''
+
+    q = Query(User).for_update(User, skip=True)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == '''SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" FOR UPDATE OF "t0" SKIP LOCKED'''
+
+    q = Query(User).for_update(nowait=True)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == '''SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" FOR UPDATE NOWAIT'''
+
+    q = Query(User).for_update(skip=True)
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == '''SELECT "t0"."id", "t0"."name", "t0"."email", "t0"."created_time", "t0"."address_id" FROM "User" "t0" FOR UPDATE SKIP LOCKED'''
+
+    # TODO
+    # q = Query(User).load(User.id, User.tags).for_update(User.tags, skip=True)
+    # sql, params = dialect.create_query_compiler().compile_select(q)
+    # assert sql == ""

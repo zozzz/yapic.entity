@@ -5,6 +5,7 @@ from decimal import Decimal
 from typing import List, TypedDict
 
 import pytest
+
 from yapic import json
 from yapic.entity import (
     UUID,
@@ -1627,3 +1628,25 @@ async def test_one(conn, pgclean):
 
     with pytest.raises(MissingRow):
         await conn.select(Query(Product).where(Product.id == 10)).one()
+
+
+async def test_lock(conn, pgclean):
+    reg = Registry()
+
+    class User(Entity, schema="qlock", registry=reg):
+        id: Int
+        name: String
+
+    await conn.execute(await sync(conn, reg))
+
+    async with conn.transaction():
+        await conn.select(Query(User).for_update())
+        await conn.select(Query(User).for_no_key_update())
+        await conn.select(Query(User).for_share())
+        await conn.select(Query(User).for_key_share())
+        await conn.select(Query(User).for_update(User))
+        await conn.select(Query(User).for_update(User, nowait=True))
+        await conn.select(Query(User).for_update(User, skip=True))
+        await conn.select(Query(User).for_update(nowait=True))
+        await conn.select(Query(User).for_update(skip=True))
+

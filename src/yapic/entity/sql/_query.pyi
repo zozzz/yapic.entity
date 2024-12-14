@@ -50,6 +50,18 @@ class Query(Generic[ENT], Expression):
     def offset(self, offset: int) -> "Query[ENT]":
         pass
 
+    def for_update(self, *refs: Entity, nowait: bool = False, skip: bool = False) -> "Query[ENT]":
+        pass
+
+    def for_no_key_update(self, *refs: Entity, nowait: bool = False, skip: bool = False) -> "Query[ENT]":
+        pass
+
+    def for_share(self, *refs: Entity, nowait: bool = False, skip: bool = False) -> "Query[ENT]":
+        pass
+
+    def for_key_share(self, *refs: Entity, nowait: bool = False, skip: bool = False) -> "Query[ENT]":
+        pass
+
     def reset_columns(self) -> "Query[ENT]":
         pass
 
@@ -69,6 +81,9 @@ class Query(Generic[ENT], Expression):
         pass
 
     def reset_exclude(self) -> "Query[ENT]":
+        pass
+
+    def reset_lock(self) -> "Query[ENT]":
         pass
 
     def load(self, *load) -> "Query[ENT]":

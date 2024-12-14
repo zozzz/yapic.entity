@@ -18,6 +18,7 @@ cdef class Query(Expression):
     cdef readonly dict _joins
     cdef readonly dict _aliases
     cdef readonly slice _range
+    cdef readonly QueryLock _lock
     cdef readonly set _entities
     cdef readonly set _reduce_children
     cdef readonly QueryLoad _load
@@ -37,6 +38,23 @@ cdef class Query(Expression):
     cdef str _get_next_alias(self)
     cdef object _resolve_pending_joins(self)
     # cdef _add_entity(self, EntityType ent)
+
+ctypedef enum QUERY_LOCK_TYPE:
+    UPDATE = 1
+    NO_KEY_UPDATE = 2
+    SHARE = 3
+    KEY_SHARE = 4
+
+ctypedef enum QUERY_LOCK_FALLBACK:
+    WAIT = 1
+    NOWAIT = 2
+    SKIP_LOCKED = 3
+
+@cython.final
+cdef class QueryLock:
+    cdef readonly QUERY_LOCK_TYPE type
+    cdef readonly tuple refs
+    cdef readonly QUERY_LOCK_FALLBACK fallback
 
 
 ctypedef enum QLS:
