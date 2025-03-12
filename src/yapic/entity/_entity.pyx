@@ -646,7 +646,7 @@ cdef class EntityAttribute(Expression):
 
     cdef object _bind(self, object entity_ref, object registry_ref):
         cdef EntityType current
-        cdef EntityType new
+        cdef EntityType new_entity
         cdef EntityAttributeExt ext
         cdef object attr_ref
 
@@ -655,9 +655,9 @@ cdef class EntityAttribute(Expression):
             self._deps_ = EntityDependency(registry_ref)
         else:
             current = <object>PyWeakref_GetObject(self.entity_ref)
-            new = <object>PyWeakref_GetObject(entity_ref)
-            if current is not new:
-                raise RuntimeError(f"Can't rebind entity attribute {current} -> {new}")
+            new_entity = <object>PyWeakref_GetObject(entity_ref)
+            if current is not new_entity:
+                raise RuntimeError(f"Can't rebind entity attribute {current} -> {new_entity}")
 
         if self._exts_:
             attr_ref = <object>PyWeakref_NewRef(self, None)
@@ -786,9 +786,9 @@ cdef class EntityAttributeExt:
             self.attr_ref = attr_ref
         else:
             current = <object>PyWeakref_GetObject(self.attr_ref)
-            new = <object>PyWeakref_GetObject(attr_ref)
-            if current is not new:
-                raise RuntimeError(f"Can't rebind attribute extension {current} -> {new}")
+            new_attr = <object>PyWeakref_GetObject(attr_ref)
+            if current is not new_attr:
+                raise RuntimeError(f"Can't rebind attribute extension {current} -> {new_attr}")
         return True
 
     cdef object _stage_resolving(self, ResolveContext ctx):
