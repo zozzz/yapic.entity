@@ -336,6 +336,20 @@ cdef class Query(Expression):
         if self._rcos:
             return self, self._rcos
 
+        if self._select_from is None:
+            if self._where:
+                raise ValueError("Where not allowed when missing FROM")
+            if self._order:
+                raise ValueError("Order not allowed when missing FROM")
+            if self._group:
+                raise ValueError("Group not allowed when missing FROM")
+            if self._having:
+                raise ValueError("Having not allowed when missing FROM")
+            if self._joins:
+                raise ValueError("Join not allowed when missing FROM")
+            if self._range:
+                raise ValueError("Range not allowed when missing FROM")
+
         cdef Query res = self
         if self._allow_clone:
             res = self.clone()

@@ -40,7 +40,11 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         self.params = self.parent.params if self.parent else []
         self.inline_values = False
 
-        from_ = self.visit_select_from(query._select_from)
+        if query._select_from is None:
+            from_ = None
+        else:
+            from_ = self.visit_select_from(query._select_from)
+
         if query._joins:
             join = self.visit_joins(query._joins)
         else:
@@ -59,8 +63,10 @@ cdef class PostgreQueryCompiler(QueryCompiler):
         else:
             self.parts.append(", ".join(self.visit_columns(query._columns)))
 
-        self.parts.append("FROM")
-        self.parts.append(from_)
+        if from_:
+            self.parts.append("FROM")
+            self.parts.append(from_)
+
         if join:
             self.parts.append(join)
 

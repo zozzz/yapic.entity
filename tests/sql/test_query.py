@@ -875,3 +875,12 @@ def test_query_columns_cast():
     q = Query(User).columns(User.id.cast("TEXT"))
     sql, params = dialect.create_query_compiler().compile_select(q)
     assert sql == 'SELECT "t0"."id"::TEXT FROM "User" "t0"'
+
+
+def test_query_without_from():
+    q1 = Query(User).columns(User.email).where(User.id == 42)
+    q2 = Query(User).columns(User.email).where(User.id == 56)
+    q = Query().columns(func.coalesce(q1, q2))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT coalesce((SELECT "t0"."email" FROM "User" "t0" WHERE "t0"."id" = $1), (SELECT "t1"."email" FROM "User" "t1" WHERE "t1"."id" = $2))'
+    assert params == (42, 56)
