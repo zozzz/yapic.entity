@@ -18646,12 +18646,12 @@ static int __pyx_pf_5yapic_6entity_7_entity_15EntityAttribute_8__delete__(struct
  * 
  *     cdef object _bind(self, object entity_ref, object registry_ref):             # <<<<<<<<<<<<<<
  *         cdef EntityType current
- *         cdef EntityType new
+ *         cdef EntityType new_entity
  */
 
 static PyObject *__pyx_f_5yapic_6entity_7_entity_15EntityAttribute__bind(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttribute *__pyx_v_self, PyObject *__pyx_v_entity_ref, PyObject *__pyx_v_registry_ref) {
   struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_current = 0;
-  struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_new = 0;
+  struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_v_new_entity = 0;
   struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt *__pyx_v_ext = 0;
   PyObject *__pyx_v_attr_ref = 0;
   PyObject *__pyx_r = NULL;
@@ -18719,8 +18719,8 @@ static PyObject *__pyx_f_5yapic_6entity_7_entity_15EntityAttribute__bind(struct 
  *             self._deps_ = EntityDependency(registry_ref)
  *         else:
  *             current = <object>PyWeakref_GetObject(self.entity_ref)             # <<<<<<<<<<<<<<
- *             new = <object>PyWeakref_GetObject(entity_ref)
- *             if current is not new:
+ *             new_entity = <object>PyWeakref_GetObject(entity_ref)
+ *             if current is not new_entity:
  */
   /*else*/ {
     __pyx_t_2 = __pyx_v_self->entity_ref;
@@ -18736,31 +18736,31 @@ static PyObject *__pyx_f_5yapic_6entity_7_entity_15EntityAttribute__bind(struct 
     /* "yapic/entity/_entity.pyx":658
  *         else:
  *             current = <object>PyWeakref_GetObject(self.entity_ref)
- *             new = <object>PyWeakref_GetObject(entity_ref)             # <<<<<<<<<<<<<<
- *             if current is not new:
- *                 raise RuntimeError(f"Can't rebind entity attribute {current} -> {new}")
+ *             new_entity = <object>PyWeakref_GetObject(entity_ref)             # <<<<<<<<<<<<<<
+ *             if current is not new_entity:
+ *                 raise RuntimeError(f"Can't rebind entity attribute {current} -> {new_entity}")
  */
     __pyx_t_3 = PyWeakref_GetObject(__pyx_v_entity_ref); if (unlikely(__pyx_t_3 == ((PyObject *)NULL))) __PYX_ERR(1, 658, __pyx_L1_error)
     if (!(likely(((((PyObject *)__pyx_t_3)) == Py_None) || likely(__Pyx_TypeTest(((PyObject *)__pyx_t_3), __pyx_ptype_5yapic_6entity_7_entity_EntityType))))) __PYX_ERR(1, 658, __pyx_L1_error)
     __pyx_t_2 = ((PyObject *)__pyx_t_3);
     __Pyx_INCREF(__pyx_t_2);
-    __pyx_v_new = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_2);
+    __pyx_v_new_entity = ((struct __pyx_obj_5yapic_6entity_7_entity_EntityType *)__pyx_t_2);
     __pyx_t_2 = 0;
 
     /* "yapic/entity/_entity.pyx":659
  *             current = <object>PyWeakref_GetObject(self.entity_ref)
- *             new = <object>PyWeakref_GetObject(entity_ref)
- *             if current is not new:             # <<<<<<<<<<<<<<
- *                 raise RuntimeError(f"Can't rebind entity attribute {current} -> {new}")
+ *             new_entity = <object>PyWeakref_GetObject(entity_ref)
+ *             if current is not new_entity:             # <<<<<<<<<<<<<<
+ *                 raise RuntimeError(f"Can't rebind entity attribute {current} -> {new_entity}")
  * 
  */
-    __pyx_t_1 = (__pyx_v_current != __pyx_v_new);
+    __pyx_t_1 = (__pyx_v_current != __pyx_v_new_entity);
     if (unlikely(__pyx_t_1)) {
 
       /* "yapic/entity/_entity.pyx":660
- *             new = <object>PyWeakref_GetObject(entity_ref)
- *             if current is not new:
- *                 raise RuntimeError(f"Can't rebind entity attribute {current} -> {new}")             # <<<<<<<<<<<<<<
+ *             new_entity = <object>PyWeakref_GetObject(entity_ref)
+ *             if current is not new_entity:
+ *                 raise RuntimeError(f"Can't rebind entity attribute {current} -> {new_entity}")             # <<<<<<<<<<<<<<
  * 
  *         if self._exts_:
  */
@@ -18783,7 +18783,7 @@ static PyObject *__pyx_f_5yapic_6entity_7_entity_15EntityAttribute__bind(struct 
       __pyx_t_4 += 4;
       __Pyx_GIVEREF(__pyx_kp_u__16);
       PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_kp_u__16);
-      __pyx_t_6 = __Pyx_PyObject_FormatSimple(((PyObject *)__pyx_v_new), __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 660, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_FormatSimple(((PyObject *)__pyx_v_new_entity), __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 660, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __pyx_t_5 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_5) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_5;
       __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
@@ -18802,9 +18802,9 @@ static PyObject *__pyx_f_5yapic_6entity_7_entity_15EntityAttribute__bind(struct 
 
       /* "yapic/entity/_entity.pyx":659
  *             current = <object>PyWeakref_GetObject(self.entity_ref)
- *             new = <object>PyWeakref_GetObject(entity_ref)
- *             if current is not new:             # <<<<<<<<<<<<<<
- *                 raise RuntimeError(f"Can't rebind entity attribute {current} -> {new}")
+ *             new_entity = <object>PyWeakref_GetObject(entity_ref)
+ *             if current is not new_entity:             # <<<<<<<<<<<<<<
+ *                 raise RuntimeError(f"Can't rebind entity attribute {current} -> {new_entity}")
  * 
  */
     }
@@ -18812,7 +18812,7 @@ static PyObject *__pyx_f_5yapic_6entity_7_entity_15EntityAttribute__bind(struct 
   __pyx_L3:;
 
   /* "yapic/entity/_entity.pyx":662
- *                 raise RuntimeError(f"Can't rebind entity attribute {current} -> {new}")
+ *                 raise RuntimeError(f"Can't rebind entity attribute {current} -> {new_entity}")
  * 
  *         if self._exts_:             # <<<<<<<<<<<<<<
  *             attr_ref = <object>PyWeakref_NewRef(self, None)
@@ -18889,7 +18889,7 @@ static PyObject *__pyx_f_5yapic_6entity_7_entity_15EntityAttribute__bind(struct 
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
     /* "yapic/entity/_entity.pyx":662
- *                 raise RuntimeError(f"Can't rebind entity attribute {current} -> {new}")
+ *                 raise RuntimeError(f"Can't rebind entity attribute {current} -> {new_entity}")
  * 
  *         if self._exts_:             # <<<<<<<<<<<<<<
  *             attr_ref = <object>PyWeakref_NewRef(self, None)
@@ -18902,7 +18902,7 @@ static PyObject *__pyx_f_5yapic_6entity_7_entity_15EntityAttribute__bind(struct 
  * 
  *     cdef object _bind(self, object entity_ref, object registry_ref):             # <<<<<<<<<<<<<<
  *         cdef EntityType current
- *         cdef EntityType new
+ *         cdef EntityType new_entity
  */
 
   /* function exit code */
@@ -18915,7 +18915,7 @@ static PyObject *__pyx_f_5yapic_6entity_7_entity_15EntityAttribute__bind(struct 
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF((PyObject *)__pyx_v_current);
-  __Pyx_XDECREF((PyObject *)__pyx_v_new);
+  __Pyx_XDECREF((PyObject *)__pyx_v_new_entity);
   __Pyx_XDECREF((PyObject *)__pyx_v_ext);
   __Pyx_XDECREF(__pyx_v_attr_ref);
   __Pyx_XGIVEREF(__pyx_r);
@@ -22119,7 +22119,7 @@ static struct __pyx_obj_5yapic_6entity_7_entity_EntityType *__pyx_f_5yapic_6enti
 
 static PyObject *__pyx_f_5yapic_6entity_7_entity_18EntityAttributeExt__bind(struct __pyx_obj_5yapic_6entity_7_entity_EntityAttributeExt *__pyx_v_self, PyObject *__pyx_v_attr_ref) {
   PyObject *__pyx_v_current = NULL;
-  PyObject *__pyx_v_new = NULL;
+  PyObject *__pyx_v_new_attr = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -22170,8 +22170,8 @@ static PyObject *__pyx_f_5yapic_6entity_7_entity_18EntityAttributeExt__bind(stru
  *             self.attr_ref = attr_ref
  *         else:
  *             current = <object>PyWeakref_GetObject(self.attr_ref)             # <<<<<<<<<<<<<<
- *             new = <object>PyWeakref_GetObject(attr_ref)
- *             if current is not new:
+ *             new_attr = <object>PyWeakref_GetObject(attr_ref)
+ *             if current is not new_attr:
  */
   /*else*/ {
     __pyx_t_2 = __pyx_v_self->attr_ref;
@@ -22186,30 +22186,30 @@ static PyObject *__pyx_f_5yapic_6entity_7_entity_18EntityAttributeExt__bind(stru
     /* "yapic/entity/_entity.pyx":789
  *         else:
  *             current = <object>PyWeakref_GetObject(self.attr_ref)
- *             new = <object>PyWeakref_GetObject(attr_ref)             # <<<<<<<<<<<<<<
- *             if current is not new:
- *                 raise RuntimeError(f"Can't rebind attribute extension {current} -> {new}")
+ *             new_attr = <object>PyWeakref_GetObject(attr_ref)             # <<<<<<<<<<<<<<
+ *             if current is not new_attr:
+ *                 raise RuntimeError(f"Can't rebind attribute extension {current} -> {new_attr}")
  */
     __pyx_t_3 = PyWeakref_GetObject(__pyx_v_attr_ref); if (unlikely(__pyx_t_3 == ((PyObject *)NULL))) __PYX_ERR(1, 789, __pyx_L1_error)
     __pyx_t_2 = ((PyObject *)__pyx_t_3);
     __Pyx_INCREF(__pyx_t_2);
-    __pyx_v_new = __pyx_t_2;
+    __pyx_v_new_attr = __pyx_t_2;
     __pyx_t_2 = 0;
 
     /* "yapic/entity/_entity.pyx":790
  *             current = <object>PyWeakref_GetObject(self.attr_ref)
- *             new = <object>PyWeakref_GetObject(attr_ref)
- *             if current is not new:             # <<<<<<<<<<<<<<
- *                 raise RuntimeError(f"Can't rebind attribute extension {current} -> {new}")
+ *             new_attr = <object>PyWeakref_GetObject(attr_ref)
+ *             if current is not new_attr:             # <<<<<<<<<<<<<<
+ *                 raise RuntimeError(f"Can't rebind attribute extension {current} -> {new_attr}")
  *         return True
  */
-    __pyx_t_1 = (__pyx_v_current != __pyx_v_new);
+    __pyx_t_1 = (__pyx_v_current != __pyx_v_new_attr);
     if (unlikely(__pyx_t_1)) {
 
       /* "yapic/entity/_entity.pyx":791
- *             new = <object>PyWeakref_GetObject(attr_ref)
- *             if current is not new:
- *                 raise RuntimeError(f"Can't rebind attribute extension {current} -> {new}")             # <<<<<<<<<<<<<<
+ *             new_attr = <object>PyWeakref_GetObject(attr_ref)
+ *             if current is not new_attr:
+ *                 raise RuntimeError(f"Can't rebind attribute extension {current} -> {new_attr}")             # <<<<<<<<<<<<<<
  *         return True
  * 
  */
@@ -22232,7 +22232,7 @@ static PyObject *__pyx_f_5yapic_6entity_7_entity_18EntityAttributeExt__bind(stru
       __pyx_t_4 += 4;
       __Pyx_GIVEREF(__pyx_kp_u__16);
       PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_kp_u__16);
-      __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_v_new, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 791, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_v_new_attr, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 791, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __pyx_t_5 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_5) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_5;
       __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
@@ -22251,9 +22251,9 @@ static PyObject *__pyx_f_5yapic_6entity_7_entity_18EntityAttributeExt__bind(stru
 
       /* "yapic/entity/_entity.pyx":790
  *             current = <object>PyWeakref_GetObject(self.attr_ref)
- *             new = <object>PyWeakref_GetObject(attr_ref)
- *             if current is not new:             # <<<<<<<<<<<<<<
- *                 raise RuntimeError(f"Can't rebind attribute extension {current} -> {new}")
+ *             new_attr = <object>PyWeakref_GetObject(attr_ref)
+ *             if current is not new_attr:             # <<<<<<<<<<<<<<
+ *                 raise RuntimeError(f"Can't rebind attribute extension {current} -> {new_attr}")
  *         return True
  */
     }
@@ -22261,8 +22261,8 @@ static PyObject *__pyx_f_5yapic_6entity_7_entity_18EntityAttributeExt__bind(stru
   __pyx_L3:;
 
   /* "yapic/entity/_entity.pyx":792
- *             if current is not new:
- *                 raise RuntimeError(f"Can't rebind attribute extension {current} -> {new}")
+ *             if current is not new_attr:
+ *                 raise RuntimeError(f"Can't rebind attribute extension {current} -> {new_attr}")
  *         return True             # <<<<<<<<<<<<<<
  * 
  *     cdef object _stage_resolving(self, ResolveContext ctx):
@@ -22288,7 +22288,7 @@ static PyObject *__pyx_f_5yapic_6entity_7_entity_18EntityAttributeExt__bind(stru
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_current);
-  __Pyx_XDECREF(__pyx_v_new);
+  __Pyx_XDECREF(__pyx_v_new_attr);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;

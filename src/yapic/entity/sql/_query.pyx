@@ -59,6 +59,7 @@ cdef class Query(Expression):
                     or isinstance(col, CallExpression) \
                     or isinstance(col, VirtualAttribute) \
                     or isinstance(col, OverExpression) \
+                    or isinstance(col, CastExpression) \
                     or isinstance(col, Query):
                 self._columns.append(col)
             else:
@@ -519,6 +520,9 @@ cdef class QueryLoad(Visitor):
 
     def visit_over(self, expr):
         pass
+
+    def visit_cast(self, CastExpression expr):
+        self.visit(expr.expr)
 
     def __default__(self, expr):
         if isinstance(expr, EntityAttribute):

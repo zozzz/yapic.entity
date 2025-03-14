@@ -869,3 +869,9 @@ def test_lock():
     # q = Query(User).load(User.id, User.tags).for_update(User.tags, skip=True)
     # sql, params = dialect.create_query_compiler().compile_select(q)
     # assert sql == ""
+
+
+def test_query_columns_cast():
+    q = Query(User).columns(User.id.cast("TEXT"))
+    sql, params = dialect.create_query_compiler().compile_select(q)
+    assert sql == 'SELECT "t0"."id"::TEXT FROM "User" "t0"'
