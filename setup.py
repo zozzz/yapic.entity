@@ -1,12 +1,11 @@
 import os
 import shutil
 import sys
-from distutils.extension import Extension
 from pathlib import Path
 
 from Cython.Build import cythonize
 from Cython.Build.Dependencies import parse_dependencies
-from setuptools import setup
+from setuptools import Extension, setup
 from setuptools.command.test import test as TestCommand
 
 RECOMPILE = True
