@@ -26,17 +26,15 @@ class PostgreConnection(AsyncPgConnection, Connection):
 
         q += f" RETURNING {', '.join(field_names)}"
 
-        self._check_open()
-        res = await self._execute(q, params, 0, timeout)
+        res = await self.fetchrow(q, *params, timeout=timeout)
         if res:
-            set_rec_on_entity(dialect, entity, entity_t, res[0])
+            set_rec_on_entity(dialect, entity, entity_t, res)
             return True
         else:
             return False
 
     async def _exec_del(self, str q, params, *, timeout=None):
-        self._check_open()
-        _, res, _ = await self._execute(q, params, 0, timeout, return_status=True)
+        res = await self.execute(q, *params,  timeout=timeout)
         return res and int(res[7:]) > 0
 
 
